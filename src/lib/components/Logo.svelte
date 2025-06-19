@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { cn } from '$lib/utils';
+	// import { cn } from '$lib/utils';
 </script>
 
-<div
+<!-- <div
 	role="img"
 	aria-label="SaaS Kit logo"
 	class={cn(
@@ -16,4 +16,5 @@
 >
 	<span>sa</span>
 	<span>as</span>
-</div>
+</div> -->
+<img src="/favicon.png" alt="Logo" class="h-6 w-6" />
