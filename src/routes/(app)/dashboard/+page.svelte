@@ -29,6 +29,6 @@
 		</Card.Description>
 	</Card.Header>
 	<Card.Content>
-		The <a href="/settings" class="underline">settings</a> page is a functional demo.
+		The <a href="/dashboard/test" class="underline">test</a> page is a functional demo.
 	</Card.Content>
 </Card.Root>

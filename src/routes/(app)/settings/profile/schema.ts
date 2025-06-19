@@ -11,7 +11,7 @@ export type EmailFormSchema = typeof emailFormSchema;
 ///
 
 export const infoFormSchema = z.object({
-	name: z.string().trim().nullable(),
+	full_name: z.string().trim().nullable(),
 });
 
 export type InfoFormSchema = typeof infoFormSchema;

@@ -30,15 +30,15 @@
 			</Card.Description>
 		</Card.Header>
 		<Card.Content>
-			<Form.Field {form} name="name">
+			<Form.Field {form} name="full_name">
 				<Form.Control let:attrs>
 					<Form.Label>Full Name</Form.Label>
 					<Input
 						{...attrs}
-						type="name"
+						type="text"
 						placeholder="John Doe"
 						required
-						bind:value={$formData.name}
+						bind:value={$formData.full_name}
 					/>
 				</Form.Control>
 				<Form.FieldErrors />

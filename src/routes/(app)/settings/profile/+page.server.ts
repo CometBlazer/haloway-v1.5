@@ -12,7 +12,7 @@ import {
 export const load: PageServerLoad = async ({ locals }) => {
 	const { user } = await locals.safeGetSession();
 
-	// let's not check for session here as it prevets us to show alert after sign out post-account deletion
+	// let's not check for session here as it prevents us to show alert after sign out post-account deletion
 	// everything is handled in the action
 	// if (!session || !user) {
 	// 	throw redirect(303, '/login');
@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	if (user) {
 		const { data, error } = await locals.supabase
 			.from('profiles')
-			.select('name')
+			.select('full_name')
 			.eq('id', user.id)
 			.single();
 		if (error) {
@@ -89,11 +89,11 @@ export const actions = {
 			});
 		}
 
-		const { name } = form.data;
+		const { full_name } = form.data;
 
 		const { error } = await supabase.from('profiles').upsert({
 			id: user.id,
-			name,
+			full_name,
 			updated_at: new Date(),
 		});
 

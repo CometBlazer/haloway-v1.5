@@ -5,11 +5,11 @@ export const WebsiteName: string = 'SaaS Kit';
 /* You'll need to configure your providers in
 your Supabase project settings `/supabase/config.toml` */
 export const oAuthProviders: Provider[] = [
-	'google',
-	'twitter',
+	// 'google',
+	// 'twitter',
 	// 'apple', // Consts $99/year to use Apple OAuth
 	// 'facebook',
-	'github',
+	// 'github',
 ];
 
 /**
