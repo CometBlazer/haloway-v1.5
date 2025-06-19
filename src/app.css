@@ -2,8 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Aurora keyframes for the background animation */
+@keyframes aurora {
+	from {
+		background-position:
+			50% 50%,
+			50% 50%;
+	}
+	to {
+		background-position:
+			350% 50%,
+			350% 50%;
+	}
+}
+
+/* shadcn-svelte color variables */
 @layer base {
 	:root {
+		/* shadcn base colors */
 		--background: 0 0% 100%;
 		--foreground: 0 0% 3.9%;
 		--card: 0 0% 100%;
@@ -24,8 +40,45 @@
 		--input: 0 0% 89.8%;
 		--ring: 0 0% 3.9%;
 		--radius: 0.5rem;
+
+		/* Your custom DaisyUI-style colors for backwards compatibility */
+		--color-primary: #a88bfe;
+		--color-primary-base: #f8f5ff;
+		--color-primary-content: #1e1b4b;
+		--color-secondary: #cbb7ff;
+		--color-secondary-content: #292524;
+		--color-accent: #e64c91;
+		--color-accent-content: #ffffff;
+		--color-neutral: #e4e4e7;
+		--color-neutral-content: #444444;
+		--color-base-000: #ffffff;
+		--color-base-100: #fafafa;
+		--color-base-200: #f4f4f5;
+		--color-base-300: #e4e4e7;
+		--color-base-400: #b8b8b9;
+		--color-base-content: #1f1f1f;
+		--color-base-content-accent: #111111;
+		--color-base-premium: #ffffff;
+		--color-info: #60a5fa;
+		--color-info-content: #f0f9ff;
+		--color-success: #34d399;
+		--color-success-content: #ecfdf5;
+		--color-warning: #ff9408;
+		--color-warning-content: #fef3c7;
+		--color-error: #f87171;
+		--color-error-content: #fef2f2;
+		--radius-selector: 1rem;
+		--radius-field: 0.5rem;
+		--radius-box: 0.5rem;
+		--size-selector: 0.25rem;
+		--size-field: 0.25rem;
+		--border: 1px;
+		--depth: 1;
+		--noise: 0;
 	}
+
 	.dark {
+		/* shadcn dark mode colors */
 		--background: 0 0% 3.9%;
 		--foreground: 0 0% 98%;
 		--card: 0 0% 3.9%;
@@ -45,15 +98,117 @@
 		--border: 0 0% 14.9%;
 		--input: 0 0% 14.9%;
 		--ring: 0 0% 83.1%;
+
+		/* Your custom dark mode colors */
+		--color-primary: #c4abff;
+		--color-primary-content: #1e1b4b;
+		--color-secondary: #a892fe;
+		--color-secondary-content: #ede9fe;
+		--color-accent: #ff5f8f;
+		--color-accent-content: #1a1a1a;
+		--color-neutral: #2f2f2f;
+		--color-neutral-content: #d4d4d8;
+		--color-base-000: #141414;
+		--color-base-100: #1e1e1e;
+		--color-base-200: #2a2a2a;
+		--color-base-300: #3a3a3a;
+		--color-base-400: #616161;
+		--color-base-content: #f1f5f9;
+		--color-base-content-accent: #ffffff;
+		--color-base-premium: #2a2a2a;
+		--color-info: #60a5fa;
+		--color-success: #4ade80;
+		--color-warning: #fa9715;
+		--color-error: #fb7185;
 	}
 }
 
 @layer base {
+	/* Custom border color compatibility - remove if using explicit border colors */
+	*,
+	::after,
+	::before,
+	::backdrop,
+	::file-selector-button {
+		border-color: theme('colors.gray.200');
+	}
+
+	/* shadcn base styles */
 	* {
 		@apply border-border;
 	}
 
 	body {
 		@apply bg-background text-foreground;
+		font-family:
+			ui-sans-serif,
+			system-ui,
+			-apple-system,
+			BlinkMacSystemFont,
+			'Segoe UI',
+			Roboto,
+			'Helvetica Neue',
+			Arial,
+			'Noto Sans',
+			sans-serif;
+		font-feature-settings: 'kern', 'liga', 'onum';
+		-webkit-font-smoothing: antialiased;
 	}
+
+	.ProseMirror {
+		font-size: 18px;
+		line-height: 1.75;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		color: var(--color-base-content-accent);
+	}
+
+	p {
+		font-family:
+			ui-sans-serif,
+			system-ui,
+			-apple-system,
+			BlinkMacSystemFont,
+			'Segoe UI',
+			Roboto,
+			'Helvetica Neue',
+			Arial,
+			'Noto Sans',
+			sans-serif;
+		color: var(--color-neutral-content);
+	}
+}
+
+/* Color scheme settings */
+html {
+	color-scheme: light;
+}
+
+html.dark {
+	color-scheme: dark;
+}
+
+/* Custom link styles */
+a {
+	@apply cursor-pointer;
+}
+
+/* Supabase Auth UI compatibility styles */
+.authBtn {
+	@apply inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground ring-offset-background transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+}
+button[disabled].authBtn {
+	font-size: 0.001px;
+	filter: brightness(65%);
+}
+button[disabled].authBtn::before {
+	font-size: 14px;
+	content: 'Loading...';
+	color: hsl(var(--primary-foreground));
 }
