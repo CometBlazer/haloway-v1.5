@@ -41,45 +41,44 @@
 		--ring: 0 0% 3.9%;
 		--radius: 0.5rem;
 
-		/* Your custom DaisyUI-style colors for backwards compatibility */
-		--color-primary: #a88bfe;
-		--color-primary-base: #f8f5ff;
-		--color-primary-content: #1e1b4b;
-		--color-secondary: #cbb7ff;
-		--color-secondary-content: #292524;
-		--color-accent: #e64c91;
-		--color-accent-content: #ffffff;
-		--color-neutral: #e4e4e7;
-		--color-neutral-content: #444444;
-		--color-base-000: #ffffff;
-		--color-base-100: #fafafa;
-		--color-base-200: #f4f4f5;
-		--color-base-300: #e4e4e7;
-		--color-base-400: #b8b8b9;
-		--color-base-content: #1f1f1f;
-		--color-base-content-accent: #111111;
-		--color-base-premium: #ffffff;
-		--color-info: #60a5fa;
-		--color-info-content: #f0f9ff;
-		--color-success: #34d399;
-		--color-success-content: #ecfdf5;
-		--color-warning: #ff9408;
-		--color-warning-content: #fef3c7;
-		--color-error: #f87171;
-		--color-error-content: #fef2f2;
+		/* DaisyUI colors converted to HSL format for opacity support */
+		--color-primary: 262 89% 76%; /* #a88bfe */
+		--color-primary-base: 256 100% 98%; /* #f8f5ff */
+		--color-primary-content: 235 83% 20%; /* #1e1b4b */
+		--color-secondary: 266 100% 85%; /* #cbb7ff */
+		--color-secondary-content: 19 8% 16%; /* #292524 */
+		--color-accent: 337 79% 59%; /* #e64c91 */
+		--color-accent-content: 0 0% 100%; /* #ffffff */
+		--color-neutral: 240 5% 91%; /* #e4e4e7 */
+		--color-neutral-content: 0 0% 27%; /* #444444 */
+		--color-base-000: 0 0% 100%; /* #ffffff */
+		--color-base-100: 0 0% 98%; /* #fafafa */
+		--color-base-200: 240 5% 96%; /* #f4f4f5 */
+		--color-base-300: 240 5% 90%; /* #e4e4e7 */
+		--color-base-400: 240 3% 72%; /* #b8b8b9 */
+		--color-base-content: 0 0% 12%; /* #1f1f1f */
+		--color-base-content-accent: 0 0% 7%; /* #111111 */
+		--color-base-premium: 0 0% 100%; /* #ffffff */
+		--color-info: 213 94% 68%; /* #60a5fa */
+		--color-info-content: 204 100% 97%; /* #f0f9ff */
+		--color-success: 158 64% 52%; /* #34d399 */
+		--color-success-content: 154 100% 95%; /* #ecfdf5 */
+		--color-warning: 32 100% 52%; /* #ff9408 */
+		--color-warning-content: 48 96% 89%; /* #fef3c7 */
+		--color-error: 0 77% 70%; /* #f87171 */
+		--color-error-content: 0 86% 97%; /* #fef2f2 */
 		--radius-selector: 1rem;
 		--radius-field: 0.5rem;
 		--radius-box: 0.5rem;
 		--size-selector: 0.25rem;
 		--size-field: 0.25rem;
-		/* --border: 1px; */
 		--depth: 1;
 		--noise: 0;
 	}
 
 	.dark {
 		/* shadcn dark mode colors */
-		--background: 0 0% 3.9%;
+		--background: 0 0% 8%;
 		--foreground: 0 0% 98%;
 		--card: 0 0% 3.9%;
 		--card-foreground: 0 0% 98%;
@@ -99,27 +98,27 @@
 		--input: 0 0% 14.9%;
 		--ring: 0 0% 83.1%;
 
-		/* Your custom dark mode colors */
-		--color-primary: #c4abff;
-		--color-primary-content: #1e1b4b;
-		--color-secondary: #a892fe;
-		--color-secondary-content: #ede9fe;
-		--color-accent: #ff5f8f;
-		--color-accent-content: #1a1a1a;
-		--color-neutral: #2f2f2f;
-		--color-neutral-content: #d4d4d8;
-		--color-base-000: #141414;
-		--color-base-100: #1e1e1e;
-		--color-base-200: #2a2a2a;
-		--color-base-300: #3a3a3a;
-		--color-base-400: #616161;
-		--color-base-content: #f1f5f9;
-		--color-base-content-accent: #ffffff;
-		--color-base-premium: #2a2a2a;
-		--color-info: #60a5fa;
-		--color-success: #4ade80;
-		--color-warning: #fa9715;
-		--color-error: #fb7185;
+		/* DaisyUI dark mode colors in HSL format */
+		--color-primary: 267 100% 86%; /* #c4abff */
+		--color-primary-content: 235 83% 20%; /* #1e1b4b */
+		--color-secondary: 260 97% 78%; /* #a892fe */
+		--color-secondary-content: 252 87% 95%; /* #ede9fe */
+		--color-accent: 338 100% 68%; /* #ff5f8f */
+		--color-accent-content: 0 0% 10%; /* #1a1a1a */
+		--color-neutral: 0 0% 18%; /* #2f2f2f */
+		--color-neutral-content: 240 4% 84%; /* #d4d4d8 */
+		--color-base-000: 0 0% 8%; /* #141414 */
+		--color-base-100: 0 0% 12%; /* #1e1e1e */
+		--color-base-200: 0 0% 16%; /* #2a2a2a */
+		--color-base-300: 0 0% 23%; /* #3a3a3a */
+		--color-base-400: 0 0% 38%; /* #616161 */
+		--color-base-content: 210 40% 95%; /* #f1f5f9 */
+		--color-base-content-accent: 0 0% 100%; /* #ffffff */
+		--color-base-premium: 0 0% 16%; /* #2a2a2a */
+		--color-info: 213 94% 68%; /* #60a5fa */
+		--color-success: 142 76% 56%; /* #4ade80 */
+		--color-warning: 32 95% 53%; /* #fa9715 */
+		--color-error: 347 77% 70%; /* #fb7185 */
 	}
 }
 
@@ -166,7 +165,7 @@
 	h4,
 	h5,
 	h6 {
-		color: var(--color-base-content-accent);
+		color: hsl(var(--color-base-content-accent));
 	}
 
 	p {
@@ -181,7 +180,7 @@
 			Arial,
 			'Noto Sans',
 			sans-serif;
-		color: var(--color-neutral-content);
+		color: hsl(var(--color-neutral-content));
 	}
 }
 

@@ -228,7 +228,7 @@
 				class="hero-content-fade mb-4 mt-6 max-w-5xl px-4 sm:mb-6 sm:mt-10 md:mt-20"
 			>
 				<div
-					class="bg-color-primary/10 mb-3 inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-semibold text-color-primary sm:mb-4 sm:px-3 sm:text-base"
+					class="mb-3 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-sm font-semibold text-primary sm:mb-4 sm:px-3 sm:text-base"
 				>
 					<div class="flex items-center gap-1"></div>
 					<svg
@@ -304,7 +304,7 @@
 	>
 		<!-- Background decoration -->
 		<div
-			class="from-color-primary/5 absolute inset-x-0 top-0 h-48 bg-gradient-to-b"
+			class="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-color-primary/5"
 		></div>
 
 		<div class="relative">
@@ -349,7 +349,7 @@
 							<div class="mt-6">
 								<a
 									href={featuresData[0].ctaLink}
-									class="hover:to-color-accent/90 hover:from-color-primary/90 inline-flex transform items-center rounded-xl border border-transparent bg-gradient-to-r from-color-primary to-color-accent px-6 py-3 text-base font-medium text-white shadow-sm transition-all duration-200 hover:-translate-y-1"
+									class="inline-flex transform items-center rounded-xl border border-transparent bg-gradient-to-r from-color-primary to-color-accent px-6 py-3 text-base font-medium text-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:from-color-primary/90 hover:to-color-accent/90"
 								>
 									{featuresData[0].ctaText}
 									<svg
@@ -437,7 +437,7 @@
 								<div class="mt-6">
 									<a
 										href={featuresData[1].ctaLink}
-										class="hover:from-color-info/90 hover:to-color-success/90 inline-flex transform items-center rounded-xl border border-transparent bg-gradient-to-r from-color-info to-color-success px-6 py-3 text-base font-medium text-white shadow-sm transition-all duration-200 hover:-translate-y-1"
+										class="inline-flex transform items-center rounded-xl border border-transparent bg-gradient-to-r from-color-info to-color-success px-6 py-3 text-base font-medium text-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:from-color-info/90 hover:to-color-success/90"
 									>
 										{featuresData[1].ctaText}
 										<svg
@@ -526,7 +526,7 @@
 								<div class="mt-6">
 									<a
 										href={featuresData[2].ctaLink}
-										class="hover:to-color-warning/90 hover:from-color-accent/90 inline-flex transform items-center rounded-xl border border-transparent bg-gradient-to-r from-color-accent to-color-warning px-6 py-3 text-base font-medium text-white shadow-sm transition-all duration-200 hover:-translate-y-1"
+										class="inline-flex transform items-center rounded-xl border border-transparent bg-gradient-to-r from-color-accent to-color-warning px-6 py-3 text-base font-medium text-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:from-color-accent/90 hover:to-color-warning/90"
 									>
 										{featuresData[2].ctaText}
 										<svg
@@ -763,7 +763,7 @@
 										>Feature</th
 									>
 									<th
-										class="bg-color-primary/50 w-1/5 border-l border-white/10 p-4 text-center text-lg font-bold text-color-primary sm:p-6"
+										class="w-1/5 border-l border-white/10 bg-gradient-to-r from-color-primary/20 to-color-accent/20 p-4 text-center text-lg font-bold text-color-primary sm:p-6"
 									>
 										{WebsiteName}
 									</th>
@@ -794,7 +794,7 @@
 
 										<!-- Haloway -->
 										<td
-											class="bg-color-primary/50 border-l border-white/10 p-4 text-center sm:p-6"
+											class="border-l border-white/10 bg-gradient-to-r from-color-primary/10 to-color-accent/10 p-4 text-center sm:p-6"
 										>
 											{#if feature.haloway}
 												<div
@@ -879,7 +879,7 @@
 								<div class="grid grid-cols-2 gap-3">
 									<!-- Haloway Highlighted -->
 									<div
-										class="bg-color-primary/50 flex items-center justify-between rounded-md px-4 py-3"
+										class="flex items-center justify-between rounded-md bg-gradient-to-r from-color-primary/50 to-color-accent/50 px-4 py-3"
 									>
 										<span class="font-semibold text-white">{WebsiteName}</span>
 										{#if feature.haloway}
@@ -941,13 +941,13 @@
 	>
 		<!-- Background decoration -->
 		<div
-			class="via-color-accent/5 from-color-primary/5 to-color-primary/5 absolute inset-0 bg-gradient-to-r"
+			class="absolute inset-0 bg-gradient-to-r from-color-primary/5 via-color-accent/5 to-color-primary/5"
 		></div>
 		<div
-			class="bg-color-primary/10 absolute left-1/4 top-0 h-72 w-72 rounded-full blur-3xl"
+			class="absolute left-1/4 top-0 h-72 w-72 rounded-full bg-color-primary/10 blur-3xl"
 		></div>
 		<div
-			class="bg-color-accent/10 absolute bottom-0 right-1/4 h-96 w-96 rounded-full blur-3xl"
+			class="absolute bottom-0 right-1/4 h-96 w-96 rounded-full bg-color-accent/10 blur-3xl"
 		></div>
 
 		<div class="relative z-10 mx-auto max-w-7xl px-4 text-center">
@@ -1072,10 +1072,10 @@
 
 					<!-- Auto-save Feature -->
 					<div
-						class="to-color-accent/10 border-color-primary/20 from-color-primary/10 rounded-2xl border bg-gradient-to-br p-6 sm:p-8"
+						class="rounded-2xl border border-color-primary/20 bg-gradient-to-br from-color-primary/10 to-color-accent/10 p-6 sm:p-8"
 					>
 						<div class="mb-4 flex items-center gap-3">
-							<div class="bg-color-primary/20 rounded-lg p-2">
+							<div class="rounded-lg bg-color-primary/20 p-2">
 								<svg
 									class="h-6 w-6 text-color-primary"
 									fill="none"
@@ -1225,7 +1225,7 @@
 			<div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
 				<a href="/dashboard">
 					<button
-						class="glow-button text-base-100 hover:to-color-accent/90 hover:from-color-primary/90 transform rounded-xl border-0 bg-gradient-to-r from-color-primary to-color-accent px-8 text-base transition-all duration-200 hover:-translate-y-1 sm:px-10 sm:text-lg"
+						class="glow-button text-base-100 transform rounded-xl border-0 bg-gradient-to-r from-color-primary to-color-accent px-8 text-base transition-all duration-200 hover:-translate-y-1 hover:from-color-primary/90 hover:to-color-accent/90 sm:px-10 sm:text-lg"
 					>
 						Start writing
 						<PenLine class="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
@@ -1303,8 +1303,8 @@
 		padding: 3px;
 		background: linear-gradient(
 			90deg,
-			var(--color-primary),
-			var(--color-accent)
+			hsl(var(--color-primary)),
+			hsl(var(--color-accent))
 		);
 		border-radius: 0.9em;
 		transition: all 0.4s ease;
@@ -1326,8 +1326,8 @@
 	.glow-container:hover::before {
 		background: linear-gradient(
 			90deg,
-			var(--color-primary),
-			var(--color-accent)
+			hsl(var(--color-primary)),
+			hsl(var(--color-accent))
 		);
 		filter: blur(1.2em);
 	}
@@ -1343,10 +1343,10 @@
 		border: none; /* Remove border */
 		background: linear-gradient(
 			90deg,
-			var(--color-primary),
-			var(--color-accent)
+			hsl(var(--color-primary)),
+			hsl(var(--color-accent))
 		);
-		color: var(--color-base-000);
+		color: hsl(var(--color-base-000));
 		cursor: pointer;
 		font-weight: 600;
 		display: flex;

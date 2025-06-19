@@ -48,49 +48,50 @@ const config = {
 				},
 
 				// ===== LEGACY DAISYUI COLORS =====
-				// Use 'color-' prefix to access DaisyUI colors
+				// Use 'color-' prefix to access DaisyUI colors (now with opacity support)
 				'color-primary': {
-					DEFAULT: 'var(--color-primary)',
-					base: 'var(--color-primary-base)',
-					content: 'var(--color-primary-content)',
+					DEFAULT: 'hsl(var(--color-primary) / <alpha-value>)',
+					base: 'hsl(var(--color-primary-base) / <alpha-value>)',
+					content: 'hsl(var(--color-primary-content) / <alpha-value>)',
 				},
 				'color-secondary': {
-					DEFAULT: 'var(--color-secondary)',
-					content: 'var(--color-secondary-content)',
+					DEFAULT: 'hsl(var(--color-secondary) / <alpha-value>)',
+					content: 'hsl(var(--color-secondary-content) / <alpha-value>)',
 				},
 				'color-accent': {
-					DEFAULT: 'var(--color-accent)',
-					content: 'var(--color-accent-content)',
+					DEFAULT: 'hsl(var(--color-accent) / <alpha-value>)',
+					content: 'hsl(var(--color-accent-content) / <alpha-value>)',
 				},
 				'color-neutral': {
-					DEFAULT: 'var(--color-neutral)',
-					content: 'var(--color-neutral-content)',
+					DEFAULT: 'hsl(var(--color-neutral) / <alpha-value>)',
+					content: 'hsl(var(--color-neutral-content) / <alpha-value>)',
 				},
 				'color-base': {
-					'000': 'var(--color-base-000)',
-					100: 'var(--color-base-100)',
-					200: 'var(--color-base-200)',
-					300: 'var(--color-base-300)',
-					400: 'var(--color-base-400)',
-					content: 'var(--color-base-content)',
-					'content-accent': 'var(--color-base-content-accent)',
-					premium: 'var(--color-base-premium)',
+					'000': 'hsl(var(--color-base-000) / <alpha-value>)',
+					100: 'hsl(var(--color-base-100) / <alpha-value>)',
+					200: 'hsl(var(--color-base-200) / <alpha-value>)',
+					300: 'hsl(var(--color-base-300) / <alpha-value>)',
+					400: 'hsl(var(--color-base-400) / <alpha-value>)',
+					content: 'hsl(var(--color-base-content) / <alpha-value>)',
+					'content-accent':
+						'hsl(var(--color-base-content-accent) / <alpha-value>)',
+					premium: 'hsl(var(--color-base-premium) / <alpha-value>)',
 				},
 				'color-info': {
-					DEFAULT: 'var(--color-info)',
-					content: 'var(--color-info-content)',
+					DEFAULT: 'hsl(var(--color-info) / <alpha-value>)',
+					content: 'hsl(var(--color-info-content) / <alpha-value>)',
 				},
 				'color-success': {
-					DEFAULT: 'var(--color-success)',
-					content: 'var(--color-success-content)',
+					DEFAULT: 'hsl(var(--color-success) / <alpha-value>)',
+					content: 'hsl(var(--color-success-content) / <alpha-value>)',
 				},
 				'color-warning': {
-					DEFAULT: 'var(--color-warning)',
-					content: 'var(--color-warning-content)',
+					DEFAULT: 'hsl(var(--color-warning) / <alpha-value>)',
+					content: 'hsl(var(--color-warning-content) / <alpha-value>)',
 				},
 				'color-error': {
-					DEFAULT: 'var(--color-error)',
-					content: 'var(--color-error-content)',
+					DEFAULT: 'hsl(var(--color-error) / <alpha-value>)',
+					content: 'hsl(var(--color-error-content) / <alpha-value>)',
 				},
 			},
 
