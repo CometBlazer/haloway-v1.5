@@ -1,57 +1,76 @@
-<script>
-  import { toggleMode, mode } from "mode-watcher"
-  import { onMount } from "svelte"
+<!-- src/lib/components/ThemeSwitchButton.svelte -->
+<script lang="ts">
+	import { setMode, mode } from 'mode-watcher';
+	import Button from '$lib/components/ui/button/button.svelte';
+	import { Sun, Moon, Monitor } from 'lucide-svelte';
 
-  let currentMode = mode.current
+	export let variant: 'button' | 'dropdown' = 'button';
+	export let buttonMode: 'system' | 'light' | 'dark' | undefined = undefined;
 
-  onMount(() => {
-    // Alternative: Poll for changes (not ideal, but might work as a fallback)
-    const interval = setInterval(() => {
-      if (mode.current !== currentMode) {
-        currentMode = mode.current
-      }
-    }, 100)
+	// For dropdown variant, we show all options
+	// For button variant, we cycle between modes
+	function toggleTheme() {
+		if (variant === 'button') {
+			switch ($mode) {
+				case 'light':
+					setMode('dark');
+					break;
+				case 'dark':
+					setMode('system');
+					break;
+				// case 'system':
+				default:
+					setMode('light');
+					break;
+			}
+		}
+	}
 
-    return () => clearInterval(interval)
-  })
+	function setThemeMode() {
+		if (buttonMode && variant === 'dropdown') {
+			setMode(buttonMode);
+		}
+	}
+
+	// Get current icon for button variant
+	$: currentIcon = 
+		$mode === 'light' ? Sun : 
+		$mode === 'dark' ? Moon : 
+		Monitor;
+
+	// Get icon for dropdown variant
+	$: dropdownIcon = 
+		buttonMode === 'light' ? Sun : 
+		buttonMode === 'dark' ? Moon : 
+		Monitor;
+
+	// Get text for dropdown variant
+	$: dropdownText = 
+		buttonMode === 'light' ? 'Light' : 
+		buttonMode === 'dark' ? 'Dark' : 
+		'System';
 </script>
 
-<button
-  on:click={toggleMode}
-  class="btn btn-ghost btn-circle"
-  aria-label="Toggle theme"
->
-  {#if currentMode === "dark"}
-    <!-- Sun icon for light mode -->
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-      class="w-5 h-5"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-      />
-    </svg>
-  {:else}
-    <!-- Moon icon for dark mode -->
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke-width="1.5"
-      stroke="currentColor"
-      class="w-5 h-5"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
-      />
-    </svg>
-  {/if}
-</button>
+{#if variant === 'button'}
+	<Button
+		variant="ghost"
+		size="icon"
+		on:click={toggleTheme}
+		class="transition-colors duration-200"
+		aria-label="Toggle theme"
+	>
+		<svelte:component this={currentIcon} class="w-5 h-5" />
+	</Button>
+{:else if variant === 'dropdown'}
+	<Button
+		variant="ghost"
+		class="w-full justify-start gap-2 text-base"
+		on:click={setThemeMode}
+	>
+		<svelte:component this={dropdownIcon} class="w-4 h-4" />
+		{dropdownText}
+		{#if $mode === buttonMode}
+			<div class="ml-auto w-2 h-2 bg-primary rounded-full"></div>
+		{/if}
+	</Button>
+{/if}

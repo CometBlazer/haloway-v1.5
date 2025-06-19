@@ -219,7 +219,7 @@
   </svelte:head>
   
   <!-- Hero Section with Aurora Background -->
-  <AuroraBackground showRadialGradient={true}>
+  <AuroraBackground showRadialGradient={true} className="mt-[-12rem]">
 	<div class="flex flex-col items-center justify-center text-center py-8 sm:py-12 relative z-10">
 	  <div
 		class="max-w-5xl mt-6 sm:mt-10 md:mt-20 mb-4 sm:mb-6 px-4 hero-content-fade"

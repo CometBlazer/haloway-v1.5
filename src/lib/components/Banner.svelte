@@ -48,7 +48,7 @@
 
 <div
   bind:this={bannerEl}
-  class="banner-container fixed top-0 left-0 right-0 z-50"
+  class="fixed banner-container top-0 left-0 right-0 z-50"
 >
   <div
     class="glass-banner relative overflow-hidden backdrop-blur-3xl
