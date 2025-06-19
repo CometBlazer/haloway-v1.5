@@ -16,7 +16,7 @@
 	const menuItems = {
 		'/': 'Home',
 		'/#features': 'Features',
-		'/#pricing': 'Pricing',
+		'/#security': 'Security',
 		'/contact': 'Contact',
 	};
 
@@ -28,13 +28,13 @@
 
 <header class="sticky top-0 z-50 border-b border-border bg-card py-4">
 	<div
-		class="container grid grid-cols-2 flex-nowrap items-center justify-between sm:grid-cols-[auto,auto,auto]"
+		class="container grid grid-cols-2 flex-nowrap items-center justify-between lg:grid-cols-[auto,auto,auto]"
 	>
 		<HomeButton />
-		<nav class="hidden sm:block">
-			<ul class="hidden flex-wrap px-1 text-lg font-bold sm:flex">
+		<nav class="hidden lg:block">
+			<ul class="hidden flex-wrap px-1 text-lg font-bold lg:flex">
 				{#each Object.entries(menuItems) as [href, text]}
-					<li class="md:mx-2">
+					<li class="lg:mx-2">
 						<Button variant="ghost" {href} class="text-base text-foreground">
 							{text}
 						</Button>
@@ -42,7 +42,7 @@
 				{/each}
 			</ul>
 		</nav>
-		<div class="hidden justify-self-end sm:flex sm:gap-4">
+		<div class="hidden justify-self-end lg:flex lg:gap-4">
 			{#if user}
 				<Button href="/dashboard">Dashboard</Button>
 				<PersonalMenu {user} />
@@ -52,7 +52,7 @@
 			{/if}
 		</div>
 
-		<div class="justify-self-end sm:hidden">
+		<div class="justify-self-end lg:hidden">
 			<Drawer.Root bind:open={menuOpen}>
 				<Drawer.Trigger asChild let:builder>
 					<Button variant="ghost" size="icon" builders={[builder]}>
