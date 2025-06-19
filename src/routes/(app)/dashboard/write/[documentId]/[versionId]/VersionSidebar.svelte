@@ -1,4 +1,4 @@
-<!-- src/routes/(admin)/account/(menu)/write/[documentId]/[versionId]/VersionSidebar.svelte -->
+<!-- src/routes/(admin)/dashboard/(menu)/write/[documentId]/[versionId]/VersionSidebar.svelte -->
 <script lang="ts">
   import { goto } from "$app/navigation"
   import { createEventDispatcher } from "svelte"
@@ -67,7 +67,7 @@
         // Update the versions array in-memory
         versions = [version, ...versions]
         // Navigate to the new version
-        await goto(`/account/write/${documentId}/${version.id}`, {
+        await goto(`/dashboard/write/${documentId}/${version.id}`, {
           replaceState: true,
         })
         // Reset form state
@@ -147,7 +147,7 @@
     }
 
     // Navigate directly - the server load function will handle setting current_version_id
-    goto(`/account/write/${documentId}/${versionId}`)
+    goto(`/dashboard/write/${documentId}/${versionId}`)
     closeSidebar()
   }
 

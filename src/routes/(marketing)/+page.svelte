@@ -133,7 +133,7 @@
 		// "https://res.cloudinary.com/dqdasxxho/image/upload/v1750269497/editor_zj9qvi.png",
 		imageAlt: "Haloway essay editor interface",
 		ctaText: "Try the Editor",
-		ctaLink: "/account/write",
+		ctaLink: "/dashboard/write",
 	  },
 	  {
 		title: "Essay Dashboard & Organization",
@@ -143,7 +143,7 @@
 		  "https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png",
 		imageAlt: "Haloway dashboard showing organized essays",
 		ctaText: "View Dashboard",
-		ctaLink: "/account",
+		ctaLink: "/dashboard",
 	  },
 	  {
 		title: "Backups & Checkpoints",
@@ -154,7 +154,7 @@
 		  "https://res.cloudinary.com/dqdasxxho/image/upload/v1750286065/haloway_version_control_product_screenshot_fstidc.png",
 		imageAlt: "Checkpoint manager showing version history",
 		ctaText: "Try the Checkpoint Manager",
-		ctaLink: "/account/write",
+		ctaLink: "/dashboard/write",
 	  },
 	]
   
@@ -269,7 +269,7 @@
 		<div
 		  class="mt-6 sm:mt-8 flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 place-content-center"
 		>
-		  <a href="/account">
+		  <a href="/dashboard">
 			<div class="glow-container">
 			  <button class="glow-button">
 				Start writing for free
@@ -714,7 +714,7 @@
 			  >
 				{school.name}
 			  </h2>
-			  <a href="/account/write" class="w-full">
+			  <a href="/dashboard/write" class="w-full">
 				<button
 				  class="btn {school.name === 'And more'
 					? 'btn-warning'
@@ -747,7 +747,7 @@
 			  >
 				{school.name}
 			  </h2>
-			  <a href="/account/write" class="w-full">
+			  <a href="/dashboard/write" class="w-full">
 				<button
 				  class="btn {school.name === 'And more'
 					? 'btn-warning'
@@ -1111,7 +1111,7 @@
 			<p class="text-gray-300 text-base sm:text-lg leading-relaxed">
 			  Your essays are stored securely with Row-Level Security (RLS), so
 			  only you can access your work. We never share, sell, or use your
-			  data beyond your account. All essays are yours and yours only.
+			  data beyond your dashboard. All essays are yours and yours only.
 			</p>
 		  </div>
   
@@ -1285,7 +1285,7 @@
 		</p>
   
 		<div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-		  <a href="/account">
+		  <a href="/dashboard">
 			<button
 			  class="glow-button rounded-xl px-8 sm:px-10 text-base-100 bg-gradient-to-r from-primary to-accent border-0 text-base sm:text-lg hover:from-primary/90 hover:to-accent/90 transition-all duration-200 transform hover:-translate-y-1"
 			>

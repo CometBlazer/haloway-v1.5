@@ -31,11 +31,11 @@
 					</li>
 					<li>
 						<Button
-							href="/account"
+							href="/dashboard"
 							variant="link"
 							class="h-auto p-0 text-sm text-muted-foreground hover:text-foreground"
 						>
-							Account
+							dashboard
 						</Button>
 					</li>
 				</ul>

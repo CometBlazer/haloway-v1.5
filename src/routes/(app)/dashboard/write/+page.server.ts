@@ -1,4 +1,4 @@
-// src/routes/(admin)/account/(menu)/write/+page.server.ts
+// src/routes/(admin)/dashboard/(menu)/write/+page.server.ts
 import { error, redirect } from "@sveltejs/kit"
 import type { Actions } from "./$types"
 import { supabase } from "$lib/supabase"
@@ -41,6 +41,6 @@ export const actions = {
     }
 
     // Redirect to the new document
-    throw redirect(303, `/account/write/${document.id}/${version.id}`)
+    throw redirect(303, `/dashboard/write/${document.id}/${version.id}`)
   },
 } satisfies Actions

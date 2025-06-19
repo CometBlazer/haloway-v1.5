@@ -1,4 +1,4 @@
-<!-- src/routes/(admin)/account/(menu)/write/[documentId]/[versionId]/DocumentHeader.svelte -->
+<!-- src/routes/(admin)/dashboard/(menu)/write/[documentId]/[versionId]/DocumentHeader.svelte -->
 <script lang="ts">
   import { createEventDispatcher } from "svelte"
   import { History } from "lucide-svelte"

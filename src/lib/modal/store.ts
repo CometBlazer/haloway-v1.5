@@ -56,7 +56,7 @@ export class VersionManager {
           const version = result.data.version
           this.callbacks.onSuccess("Checkpoint created successfully")
           this.callbacks.onNavigate(
-            `/account/write/${documentId}/${version.id}`,
+            `/dashboard/write/${documentId}/${version.id}`,
           )
         } else {
           this.callbacks.onError("Failed to create checkpoint")
@@ -166,7 +166,7 @@ export class VersionManager {
           const version = result.data.version
           this.callbacks.onSuccess("Checkpoint duplicated successfully")
           this.callbacks.onNavigate(
-            `/account/write/${documentId}/${version.id}`,
+            `/dashboard/write/${documentId}/${version.id}`,
           )
         } else {
           this.callbacks.onError("Failed to duplicate checkpoint")
@@ -218,10 +218,10 @@ export class VersionManager {
                   new Date(a.updated_at).getTime(),
               )
               this.callbacks.onNavigate(
-                `/account/write/${documentId}/${sortedRemaining[0].id}`,
+                `/dashboard/write/${documentId}/${sortedRemaining[0].id}`,
               )
             } else {
-              this.callbacks.onNavigate("/account/documents")
+              this.callbacks.onNavigate("/dashboard/documents")
             }
           }
         } else {
@@ -260,7 +260,7 @@ export class VersionManager {
       if (response.ok && result.type === "success" && result.data?.version) {
         const version = result.data.version
         this.callbacks.onSuccess("Checkpoint saved successfully")
-        return `/account/write/${documentId}/${version.id}`
+        return `/dashboard/write/${documentId}/${version.id}`
       } else {
         throw new Error("Failed to create checkpoint")
       }
@@ -297,7 +297,7 @@ export class VersionManager {
       if (response.ok && result.type === "success" && result.data?.version) {
         const version = result.data.version
         this.callbacks.onSuccess("Checkpoint saved successfully")
-        return `/account/write/${documentId}/${version.id}`
+        return `/dashboard/write/${documentId}/${version.id}`
       } else {
         throw new Error("Failed to create checkpoint")
       }
