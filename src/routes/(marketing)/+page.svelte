@@ -1,14 +1,14 @@
 <script lang="ts">
-	import * as Section from '$lib/components/landing/section';
-	import Features from './components/sections/features/features.svelte';
-	import HeroSection from './components/sections/hero.svelte';
-	import LogosCloud from './components/sections/logos-cloud.svelte';
-	import Pricing from './components/sections/pricing.svelte';
-	import Testimonials from './components/sections/testimonials.svelte';
+	// import * as Section from '$lib/components/landing/section';
+	// import Features from './components/sections/features/features.svelte';
+	// import HeroSection from './components/sections/hero.svelte';
+	// import LogosCloud from './components/sections/logos-cloud.svelte';
+	// import Pricing from './components/sections/pricing.svelte';
+	// import Testimonials from './components/sections/testimonials.svelte';
 
-	export let data;
+	// export let data;
 
-	const { prices } = data;
+	// const { prices } = data;
 	import {
 	  WebsiteName,
 	  WebsiteBaseUrl,
@@ -220,7 +220,7 @@
   
   <!-- Hero Section with Aurora Background -->
   <AuroraBackground showRadialGradient={true}>
-	<div class="hero-content text-center py-8 sm:py-12 relative z-10">
+	<div class="flex flex-col items-center justify-center text-center py-8 sm:py-12 relative z-10">
 	  <div
 		class="max-w-5xl mt-6 sm:mt-10 md:mt-20 mb-4 sm:mb-6 px-4 hero-content-fade"
 	  >
@@ -1256,7 +1256,7 @@
   <div
 	class="hero min-h-[50vh] sm:min-h-[60vh] bg-gradient-to-b from-base-100 to-base-200"
   >
-	<div class="hero-content text-center py-24 sm:py-32 lg:py-40 px-4">
+	<div class="flex flex-col items-center justify-center text-center py-24 sm:py-32 lg:py-40 px-4">
 	  <div class="max-w-4xl relative">
 		<!-- Responsive illustration container -->
 		<div
@@ -1408,7 +1408,7 @@
 
 
 
-<div class="mb-40 flex flex-col gap-20">
+<!-- <div class="mb-40 flex flex-col gap-20">
 	<Section.Root>
 		<HeroSection />
 	</Section.Root>
@@ -1445,4 +1445,4 @@
 		</Section.Header>
 		<Pricing {prices} />
 	</Section.Root>
-</div>
+</div> -->
