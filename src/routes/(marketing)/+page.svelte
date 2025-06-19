@@ -228,7 +228,7 @@
 				class="hero-content-fade mb-4 mt-6 max-w-5xl px-4 sm:mb-6 sm:mt-10 md:mt-20"
 			>
 				<div
-					class="mb-3 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-sm font-semibold text-primary sm:mb-4 sm:px-3 sm:text-base"
+					class="bg-color-primary/10 mb-3 inline-flex items-center gap-1 rounded-full px-2 py-1 text-sm font-semibold text-color-primary sm:mb-4 sm:px-3 sm:text-base"
 				>
 					<div class="flex items-center gap-1"></div>
 					<svg
@@ -255,9 +255,9 @@
 			class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold px-2 tracking-tight leading-tight"
 			>
 			Finish your essays <span
-				class="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
+				class="bg-gradient-to-r from-color-primary to-color-accent bg-clip-text text-transparent"
 				><span
-				class="underline decoration-secondary decoration-4 sm:decoration-6 md:decoration-8 lg:decoration-[10px]"
+				class="underline decoration-color-secondary decoration-4 sm:decoration-6 md:decoration-8 lg:decoration-[10px]"
 				>faster</span
 				> with Haloway.</span
 			>
@@ -300,11 +300,11 @@
 <!-- Features Showcase Section -->
 <Section.Root anchor="features">
 	<div
-		class="from-color-base-100 to-color-base-200 relative overflow-hidden bg-gradient-to-b py-16 sm:py-20 lg:py-24"
+		class="from-base-100 to-base-200 relative overflow-hidden bg-gradient-to-b py-16 sm:py-20 lg:py-24"
 	>
 		<!-- Background decoration -->
 		<div
-			class="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-primary/5"
+			class="from-color-primary/5 absolute inset-x-0 top-0 h-48 bg-gradient-to-b"
 		></div>
 
 		<div class="relative">
@@ -318,7 +318,7 @@
 					<div>
 						<div>
 							<span
-								class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-primary to-accent shadow-lg"
+								class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-color-primary to-color-accent shadow-lg"
 							>
 								<svg
 									class="h-8 w-8 text-white"
@@ -337,19 +337,19 @@
 						</div>
 						<div class="mt-6">
 							<h2
-								class="text-3xl font-bold tracking-tight text-base-content sm:text-4xl"
+								class="text-base-content text-3xl font-bold tracking-tight sm:text-4xl"
 							>
 								{featuresData[0].title}
 							</h2>
 							<p
-								class="mt-4 text-lg leading-relaxed text-base-content/70 sm:text-xl"
+								class="text-base-content/70 mt-4 text-lg leading-relaxed sm:text-xl"
 							>
 								{featuresData[0].description}
 							</p>
 							<div class="mt-6">
 								<a
 									href={featuresData[0].ctaLink}
-									class="inline-flex transform items-center rounded-xl border border-transparent bg-gradient-to-r from-primary to-accent px-6 py-3 text-base font-medium text-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:from-primary/90 hover:to-accent/90"
+									class="hover:to-color-accent/90 hover:from-color-primary/90 inline-flex transform items-center rounded-xl border border-transparent bg-gradient-to-r from-color-primary to-color-accent px-6 py-3 text-base font-medium text-white shadow-sm transition-all duration-200 hover:-translate-y-1"
 								>
 									{featuresData[0].ctaText}
 									<svg
@@ -406,7 +406,7 @@
 						<div>
 							<div>
 								<span
-									class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-info to-success shadow-lg"
+									class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-color-info to-color-success shadow-lg"
 								>
 									<svg
 										class="h-8 w-8 text-white"
@@ -425,19 +425,19 @@
 							</div>
 							<div class="mt-6">
 								<h2
-									class="text-3xl font-bold tracking-tight text-base-content sm:text-4xl"
+									class="text-base-content text-3xl font-bold tracking-tight sm:text-4xl"
 								>
 									{featuresData[1].title}
 								</h2>
 								<p
-									class="mt-4 text-lg leading-relaxed text-base-content/70 sm:text-xl"
+									class="text-base-content/70 mt-4 text-lg leading-relaxed sm:text-xl"
 								>
 									{featuresData[1].description}
 								</p>
 								<div class="mt-6">
 									<a
 										href={featuresData[1].ctaLink}
-										class="inline-flex transform items-center rounded-xl border border-transparent bg-gradient-to-r from-info to-success px-6 py-3 text-base font-medium text-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:from-info/90 hover:to-success/90"
+										class="hover:from-color-info/90 hover:to-color-success/90 inline-flex transform items-center rounded-xl border border-transparent bg-gradient-to-r from-color-info to-color-success px-6 py-3 text-base font-medium text-white shadow-sm transition-all duration-200 hover:-translate-y-1"
 									>
 										{featuresData[1].ctaText}
 										<svg
@@ -495,7 +495,7 @@
 						<div>
 							<div>
 								<span
-									class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-accent to-warning shadow-lg"
+									class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-color-accent to-color-warning shadow-lg"
 								>
 									<svg
 										class="h-8 w-8 text-white"
@@ -514,19 +514,19 @@
 							</div>
 							<div class="mt-6">
 								<h2
-									class="text-3xl font-bold tracking-tight text-base-content sm:text-4xl"
+									class="text-base-content text-3xl font-bold tracking-tight sm:text-4xl"
 								>
 									{featuresData[2].title}
 								</h2>
 								<p
-									class="mt-4 text-lg leading-relaxed text-base-content/70 sm:text-xl"
+									class="text-base-content/70 mt-4 text-lg leading-relaxed sm:text-xl"
 								>
 									{featuresData[2].description}
 								</p>
 								<div class="mt-6">
 									<a
 										href={featuresData[2].ctaLink}
-										class="inline-flex transform items-center rounded-xl border border-transparent bg-gradient-to-r from-accent to-warning px-6 py-3 text-base font-medium text-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:from-accent/90 hover:to-warning/90"
+										class="hover:to-color-warning/90 hover:from-color-accent/90 inline-flex transform items-center rounded-xl border border-transparent bg-gradient-to-r from-color-accent to-color-warning px-6 py-3 text-base font-medium text-white shadow-sm transition-all duration-200 hover:-translate-y-1"
 									>
 										{featuresData[2].ctaText}
 										<svg
@@ -575,14 +575,14 @@
 
 			<!-- Section Header -->
 			<div class="mb-16 mt-32 text-center">
-				<h2 class="mb-6 text-4xl text-base-content sm:text-5xl md:text-6xl">
+				<h2 class="text-base-content mb-6 text-4xl sm:text-5xl md:text-6xl">
 					Better than <span
 						class="bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text font-bold text-transparent"
 						>Google Docs</span
 					>
 				</h2>
 				<p
-					class="mx-auto max-w-3xl px-4 text-xl text-base-content/70 sm:text-2xl"
+					class="text-base-content/70 mx-auto max-w-3xl px-4 text-xl sm:text-2xl"
 				>
 					Built specifically for college apps with features that help you write,
 					organize, and perfect your essays.
@@ -595,7 +595,7 @@
 					class="inline-flex animate-bounce cursor-pointer flex-col items-center gap-3"
 				>
 					<div
-						class="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-primary to-accent shadow-lg"
+						class="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-color-primary to-color-accent shadow-lg"
 					>
 						<svg
 							class="h-9 w-9 text-white"
@@ -618,7 +618,7 @@
 </Section.Root>
 
 <!-- Schools Section -->
-<div class="min-h-[60vh] py-12 sm:min-h-[70vh] sm:py-16">
+<div class="bg-base-200 min-h-[60vh] py-12 sm:min-h-[70vh] sm:py-16">
 	<div class="px-4 pb-6 pt-12 sm:px-7 sm:pb-8 sm:pt-20">
 		<div class="mx-auto max-w-7xl text-center">
 			<h1 class="px-2 text-2xl md:text-3xl lg:text-5xl">
@@ -631,7 +631,7 @@
 		>
 			{#each schools.filter((school) => school.showOnMobile) as school (school.name)}
 				<div
-					class="card mx-auto w-full max-w-sm bg-base-200 shadow-xl transition-shadow hover:shadow-2xl sm:hidden"
+					class="card bg-base-200 mx-auto w-full max-w-sm shadow-xl transition-shadow hover:shadow-2xl sm:hidden"
 				>
 					<figure class="relative aspect-square overflow-hidden">
 						<img
@@ -651,8 +651,8 @@
 						<a href="/dashboard/write" class="w-full">
 							<button
 								class="btn {school.name === 'And more'
-									? 'btn-warning'
-									: 'btn-primary'} btn-sm sm:btn-md w-full rounded-full text-sm text-primary-content sm:text-base lg:text-lg"
+									? 'btn-color-warning'
+									: 'btn-color-primary'} btn-sm sm:btn-md w-full rounded-full text-sm text-color-primary-content sm:text-base lg:text-lg"
 							>
 								{school.name === 'And more' ? 'Choose another school' : 'Go'}
 								<ArrowRight class="ml-1 h-4 w-4 sm:h-5 sm:w-5" />
@@ -664,7 +664,7 @@
 
 			{#each schools as school (school.name)}
 				<div
-					class="card mx-auto hidden w-full max-w-sm bg-base-200 shadow-xl transition-shadow hover:shadow-2xl sm:block"
+					class="card bg-base-200 mx-auto hidden w-full max-w-sm shadow-xl transition-shadow hover:shadow-2xl sm:block"
 				>
 					<figure class="relative aspect-square overflow-hidden">
 						<img
@@ -684,8 +684,8 @@
 						<a href="/dashboard/write" class="w-full">
 							<button
 								class="btn {school.name === 'And more'
-									? 'btn-warning'
-									: 'btn-primary'} btn-sm sm:btn-md w-full rounded-full text-sm text-primary-content sm:text-base lg:text-lg"
+									? 'btn-color-warning'
+									: 'btn-color-primary'} btn-sm sm:btn-md w-full rounded-full text-sm text-color-primary-content sm:text-base lg:text-lg"
 							>
 								{school.name === 'And more' ? 'Choose another school' : 'Go'}
 								<ArrowRight class="ml-1 h-4 w-4 sm:h-5 sm:w-5" />
@@ -716,16 +716,16 @@
 		<div class="font-heading mx-auto max-w-5xl">
 			<div>
 				<h1
-					class="mt-4 bg-gradient-to-r from-primary to-accent bg-clip-text pb-2 text-4xl font-bold text-transparent sm:text-5xl"
+					class="mt-4 bg-gradient-to-r from-color-primary to-color-accent bg-clip-text pb-2 text-4xl font-bold text-transparent sm:text-5xl"
 				>
 					Writing college essays is <span
-						class="sm:decoration-5 underline decoration-secondary decoration-4 lg:decoration-[8px]"
+						class="sm:decoration-5 underline decoration-color-secondary decoration-4 lg:decoration-[8px]"
 						>stressful</span
 					>.
 				</h1>
 				<h2 class="mt-4 pb-2 text-4xl font-bold text-white sm:text-5xl">
 					It doesn't also have to be <span
-						class="sm:decoration-5 underline decoration-secondary decoration-4 lg:decoration-[8px]"
+						class="sm:decoration-5 underline decoration-color-secondary decoration-4 lg:decoration-[8px]"
 						>disorganized</span
 					>.
 				</h2>
@@ -746,7 +746,7 @@
 				>
 					<h3 class="mb-8 text-2xl text-white sm:mb-10 sm:text-3xl lg:text-4xl">
 						Why choose <span
-							class="bg-gradient-to-r from-primary to-accent bg-clip-text font-semibold text-transparent"
+							class="bg-gradient-to-r from-color-primary to-color-accent bg-clip-text font-semibold text-transparent"
 							>{WebsiteName}</span
 						>?
 					</h3>
@@ -763,7 +763,7 @@
 										>Feature</th
 									>
 									<th
-										class="w-1/5 border-l border-white/10 bg-gradient-to-r from-primary/20 to-accent/20 p-4 text-center text-lg font-bold text-primary sm:p-6"
+										class="bg-color-primary/50 w-1/5 border-l border-white/10 p-4 text-center text-lg font-bold text-color-primary sm:p-6"
 									>
 										{WebsiteName}
 									</th>
@@ -794,7 +794,7 @@
 
 										<!-- Haloway -->
 										<td
-											class="border-l border-white/10 bg-gradient-to-r from-primary/10 to-accent/10 p-4 text-center sm:p-6"
+											class="bg-color-primary/50 border-l border-white/10 p-4 text-center sm:p-6"
 										>
 											{#if feature.haloway}
 												<div
@@ -879,7 +879,7 @@
 								<div class="grid grid-cols-2 gap-3">
 									<!-- Haloway Highlighted -->
 									<div
-										class="flex items-center justify-between rounded-md bg-gradient-to-r from-primary/50 to-accent/50 px-4 py-3"
+										class="bg-color-primary/50 flex items-center justify-between rounded-md px-4 py-3"
 									>
 										<span class="font-semibold text-white">{WebsiteName}</span>
 										{#if feature.haloway}
@@ -941,13 +941,13 @@
 	>
 		<!-- Background decoration -->
 		<div
-			class="absolute inset-0 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5"
+			class="via-color-accent/5 from-color-primary/5 to-color-primary/5 absolute inset-0 bg-gradient-to-r"
 		></div>
 		<div
-			class="absolute left-1/4 top-0 h-72 w-72 rounded-full bg-primary/10 blur-3xl"
+			class="bg-color-primary/10 absolute left-1/4 top-0 h-72 w-72 rounded-full blur-3xl"
 		></div>
 		<div
-			class="absolute bottom-0 right-1/4 h-96 w-96 rounded-full bg-accent/10 blur-3xl"
+			class="bg-color-accent/10 absolute bottom-0 right-1/4 h-96 w-96 rounded-full blur-3xl"
 		></div>
 
 		<div class="relative z-10 mx-auto max-w-7xl px-4 text-center">
@@ -969,7 +969,7 @@
 				<Lock class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white" />
 			</div>
 			<div
-				class="bg-gradient-to-r from-primary to-accent p-3 sm:p-4 rounded-2xl shadow-lg"
+				class="bg-gradient-to-r from-color-primary to-color-accent p-3 sm:p-4 rounded-2xl shadow-lg"
 			>
 				<svg
 				class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white"
@@ -1001,7 +1001,7 @@
 				>safe</span
 			><span class="text-white">, and </span>
 			<span
-				class="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent underline decoration-primary decoration-4 sm:decoration-6 lg:decoration-[8px]"
+				class="bg-gradient-to-r from-color-primary via-color-accent to-color-primary bg-clip-text text-transparent underline decoration-color-primary decoration-4 sm:decoration-6 lg:decoration-[8px]"
 				>secure</span
 			><span class="text-white">.</span>
 			</h1> -->
@@ -1072,12 +1072,12 @@
 
 					<!-- Auto-save Feature -->
 					<div
-						class="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 to-accent/10 p-6 sm:p-8"
+						class="to-color-accent/10 border-color-primary/20 from-color-primary/10 rounded-2xl border bg-gradient-to-br p-6 sm:p-8"
 					>
 						<div class="mb-4 flex items-center gap-3">
-							<div class="rounded-lg bg-primary/20 p-2">
+							<div class="bg-color-primary/20 rounded-lg p-2">
 								<svg
-									class="h-6 w-6 text-primary"
+									class="h-6 w-6 text-color-primary"
 									fill="none"
 									stroke="currentColor"
 									viewBox="0 0 24 24"
@@ -1090,7 +1090,7 @@
 									/>
 								</svg>
 							</div>
-							<h3 class="text-xl font-bold text-primary sm:text-2xl">
+							<h3 class="text-xl font-bold text-color-primary sm:text-2xl">
 								Auto-Save & Backup
 							</h3>
 						</div>
@@ -1190,7 +1190,7 @@
 
 <!-- Final Call to Action -->
 <div
-	class="hero min-h-[50vh] bg-gradient-to-b from-base-100 to-base-200 sm:min-h-[60vh]"
+	class="hero from-base-100 to-base-200 min-h-[50vh] bg-gradient-to-b sm:min-h-[60vh]"
 >
 	<div
 		class="flex flex-col items-center justify-center px-4 py-24 text-center sm:py-32 lg:py-40"
@@ -1216,7 +1216,7 @@
 			</h1>
 
 			<p
-				class="mx-auto mb-8 max-w-3xl text-lg text-base-content/80 sm:mb-12 sm:text-xl md:text-2xl"
+				class="text-base-content/80 mx-auto mb-8 max-w-3xl text-lg sm:mb-12 sm:text-xl md:text-2xl"
 			>
 				Experience a faster, more organized way to write your college essays. No
 				credit card required to try.
@@ -1225,7 +1225,7 @@
 			<div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
 				<a href="/dashboard">
 					<button
-						class="glow-button transform rounded-xl border-0 bg-gradient-to-r from-primary to-accent px-8 text-base text-base-100 transition-all duration-200 hover:-translate-y-1 hover:from-primary/90 hover:to-accent/90 sm:px-10 sm:text-lg"
+						class="glow-button text-base-100 hover:to-color-accent/90 hover:from-color-primary/90 transform rounded-xl border-0 bg-gradient-to-r from-color-primary to-color-accent px-8 text-base transition-all duration-200 hover:-translate-y-1 sm:px-10 sm:text-lg"
 					>
 						Start writing
 						<PenLine class="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
