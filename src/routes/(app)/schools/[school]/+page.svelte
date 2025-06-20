@@ -1,6 +1,5 @@
-<!-- src/routes/(app)/dashboard/+page.svelte -->
+<!-- src/routes/(app)/schools/[school]/+page.svelte -->
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import {
 		FileText,
@@ -10,9 +9,10 @@
 		Trash,
 		Loader2,
 		Clock,
+		ArrowLeft,
 	} from 'lucide-svelte';
-	import type { PageData, ActionData } from './$types';
-	import { WebsiteBaseUrl, WebsiteName } from '../../../config';
+	import type { PageData } from './$types';
+	import { WebsiteName } from '../../../../config';
 	import { toastStore } from '$lib/stores/toast';
 	import { enhance } from '$app/forms';
 	import type { Status } from '$lib/components/Editor/StatusDropdown.svelte';
@@ -24,30 +24,16 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Alert from '$lib/components/ui/alert';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
-	import CompleteProfileModal from '$lib/components/CompleteProfileModal.svelte';
-
 	export let data: PageData;
-	export let form: ActionData;
 
 	// Modal state
 	let showDeleteModal = false;
 	let isDeleting = false;
 	let documentToDelete: { id: string; title: string } | null = null;
 
-	// Profile completion modal state
-	let showProfileModal = !data.profileComplete;
-
-	// Handle profile completion
-	function handleProfileCompleted() {
-		showProfileModal = false;
-		// Refresh the page to update the profile data
-		goto('/dashboard', { replaceState: true, noScroll: true });
-	}
-
-	// Watch for successful form submission
-	$: if (form?.success && showProfileModal) {
-		handleProfileCompleted();
-	}
+	// Get school from params
+	$: school = data.school;
+	$: schoolDisplayName = school.charAt(0).toUpperCase() + school.slice(1);
 
 	// Type definitions
 	interface DocumentVersion {
@@ -64,24 +50,7 @@
 		versions_count: number;
 		status: Status | null;
 		current_version: DocumentVersion | null;
-		school: string; // Added school field for routing
 	}
-
-	// Set admin section context for sidebar highlighting
-	onMount(async () => {
-		try {
-			const { getContext } = await import('svelte');
-			const adminSectionStore = getContext<{ set: (value: string) => void }>(
-				'adminSection',
-			);
-			if (adminSectionStore && typeof adminSectionStore.set === 'function') {
-				adminSectionStore.set('home');
-			}
-		} catch {
-			// Context might not be available, that's ok
-			console.debug('Admin section context not available');
-		}
-	});
 
 	function formatDate(dateInput: string | Date | null): string {
 		if (!dateInput) return 'Unknown';
@@ -100,29 +69,21 @@
 
 		return date.toLocaleDateString();
 	}
+
 	function openDocument(
 		documentId: string,
 		currentVersion: DocumentVersion | null,
-		school: string,
 	): void {
-		console.log(
-			'Opening document:',
-			documentId,
-			currentVersion,
-			'for school:',
-			school,
-		);
-		// Convert school name to URL-safe format (lowercase, replace spaces with hyphens)
-		const schoolSlug = school.toLowerCase().replace(/\s+/g, '-');
-
+		console.log('Opening document:', documentId, currentVersion);
 		if (currentVersion?.id) {
-			goto(`/schools/${schoolSlug}/write/${documentId}/${currentVersion.id}`);
+			goto(`/schools/${school}/write/${documentId}/${currentVersion.id}`);
 		} else {
-			goto(`/schools/${schoolSlug}/write/${documentId}`);
+			goto(`/schools/${school}/write/${documentId}`);
 		}
 	}
+
 	function createNewDocument(): void {
-		goto('/dashboard/write');
+		goto(`/schools/${school}/write`);
 	}
 
 	function handleDeleteClick(
@@ -252,7 +213,7 @@
 </script>
 
 <svelte:head>
-	<title>Dashboard | {WebsiteName}</title>
+	<title>{schoolDisplayName} Essays | {WebsiteName}</title>
 </svelte:head>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -263,17 +224,26 @@
 		class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
 	>
 		<div class="space-y-1">
-			<h1 class="text-3xl font-semibold tracking-tight">All Essays</h1>
-			<a href="/test" class="text-sm text-muted-foreground hover:underline"
-				>View your drafts</a
-			>
+			<div class="flex items-center gap-3">
+				<Button
+					variant="ghost"
+					size="sm"
+					on:click={() => goto('/dashboard')}
+					class="px-2"
+				>
+					<ArrowLeft class="h-4 w-4" />
+				</Button>
+				<h1 class="text-3xl font-semibold tracking-tight">
+					{schoolDisplayName} Essays
+				</h1>
+			</div>
 			<p class="text-lg text-muted-foreground">
-				{documents.length} essay{documents.length !== 1 ? 's' : ''} total
+				{documents.length} essay{documents.length !== 1 ? 's' : ''} for {schoolDisplayName}
 			</p>
 		</div>
 		<Button size="lg" on:click={createNewDocument}>
 			<Plus class="mr-2 h-5 w-5" />
-			New Essay
+			New {schoolDisplayName} Essay
 		</Button>
 	</div>
 
@@ -283,15 +253,8 @@
 	>
 		<Alert.Description class="text-center">
 			<p class="text-sm leading-relaxed">
-				We're working on sorting, searching, due date notifications, AI
-				feedback, and more. Love what you see? <strong
-					>Share <a
-						href={WebsiteBaseUrl}
-						class="underline hover:no-underline"
-						target="_blank">{WebsiteBaseUrl}</a
-					>
-					with your friends</strong
-				> and help us grow!
+				Organize your essays by school to stay focused on each application. All
+				your {schoolDisplayName} essays are in one place.
 			</p>
 		</Alert.Description>
 	</Alert.Root>
@@ -302,14 +265,14 @@
 		<div class="flex min-h-[400px] items-center justify-center p-8">
 			<div class="max-w-md space-y-4 text-center">
 				<FileText class="mx-auto h-16 w-16 text-muted-foreground" />
-				<h3 class="text-xl font-semibold">No essays yet</h3>
+				<h3 class="text-xl font-semibold">No {schoolDisplayName} essays yet</h3>
 				<p class="leading-relaxed text-muted-foreground">
-					Get started by creating your first essay. Click the "New Essay" button
-					above to begin writing.
+					Get started by creating your first essay for {schoolDisplayName}.
+					Click the "New {schoolDisplayName} Essay" button above to begin writing.
 				</p>
 				<Button size="lg" on:click={createNewDocument}>
 					<Plus class="mr-2 h-5 w-5" />
-					Create Your First Essay
+					Create Your First {schoolDisplayName} Essay
 				</Button>
 			</div>
 		</div>
@@ -326,25 +289,15 @@
 								'Card clicked! Opening document:',
 								document.id,
 								document.current_version,
-								'for school:',
-								document.school,
 							);
-							openDocument(
-								document.id,
-								document.current_version,
-								document.school,
-							);
+							openDocument(document.id, document.current_version);
 						}}
 						on:keydown={(e) => {
 							console.log('Key pressed:', e.key);
 							if (e.key === 'Enter' || e.key === ' ') {
 								e.preventDefault();
 								console.log('Enter/Space pressed, opening document');
-								openDocument(
-									document.id,
-									document.current_version,
-									document.school,
-								);
+								openDocument(document.id, document.current_version);
 							}
 						}}
 						class="h-full w-full cursor-pointer"
@@ -352,7 +305,6 @@
 						role="button"
 						aria-label="Open document"
 					>
-						>
 						<Card.Header class="pb-3">
 							<div class="flex items-start justify-between gap-3">
 								<div class="flex min-w-0 flex-1 items-start gap-3">
@@ -386,7 +338,6 @@
 							</div>
 						</Card.Header>
 
-						<!-- Rest of your card content stays the same -->
 						<Card.Content class="pb-3 pt-0">
 							<div class="space-y-3">
 								{#if document.prompt}
@@ -491,27 +442,7 @@
 	</Dialog.Content>
 </Dialog.Root>
 
-<!-- Complete Profile Modal -->
-{#if showProfileModal}
-	<CompleteProfileModal
-		bind:open={showProfileModal}
-		userEmail={data.user?.email || ''}
-		{form}
-		profile={data.profile}
-		on:completed={handleProfileCompleted}
-	/>
-{/if}
-
 <style>
-	/* Utility classes for line clamping with proper browser support */
-	/* .line-clamp-2 {
-		display: -webkit-box;
-		-webkit-line-clamp: 2;
-		line-clamp: 2;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
-	} */
-
 	.line-clamp-3 {
 		display: -webkit-box;
 		-webkit-line-clamp: 3;
