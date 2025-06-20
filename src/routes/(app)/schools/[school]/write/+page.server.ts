@@ -1,7 +1,10 @@
 import { error, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { supabase } from '$lib/supabase';
-import { validateAndNormalizeSchool } from '$lib/utils/validation';
+import {
+	validateAndNormalizeSchoolSlug,
+	schoolToSlug,
+} from '$lib/utils/validation';
 
 export const actions = {
 	default: async ({ params, locals }) => {
@@ -14,10 +17,10 @@ export const actions = {
 
 		const { school } = params;
 
-		// Validate and normalize the school parameter
+		// Validate and normalize the school slug parameter
 		let normalizedSchool: string;
 		try {
-			normalizedSchool = validateAndNormalizeSchool(school);
+			normalizedSchool = validateAndNormalizeSchoolSlug(school);
 		} catch {
 			throw error(400, 'Invalid school parameter');
 		}
@@ -68,10 +71,11 @@ export const actions = {
 			);
 		}
 
-		// Redirect to the new document
+		// Redirect to the new document (convert school name back to slug for URL)
+		const schoolSlug = schoolToSlug(normalizedSchool);
 		throw redirect(
 			303,
-			`/schools/${normalizedSchool}/write/${document.id}/${version.id}`,
+			`/schools/${schoolSlug}/write/${document.id}/${version.id}`,
 		);
 	},
 } satisfies Actions;

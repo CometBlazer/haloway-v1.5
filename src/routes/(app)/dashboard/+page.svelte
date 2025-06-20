@@ -16,6 +16,7 @@
 	import { toastStore } from '$lib/stores/toast';
 	import { enhance } from '$app/forms';
 	import type { Status } from '$lib/components/Editor/StatusDropdown.svelte';
+	import { schoolToSlug } from '$lib/utils/validation';
 	import dayjs from 'dayjs';
 
 	// shadcn-svelte components
@@ -112,8 +113,8 @@
 			'for school:',
 			school,
 		);
-		// Convert school name to URL-safe format (lowercase, replace spaces with hyphens)
-		const schoolSlug = school.toLowerCase().replace(/\s+/g, '-');
+		// Convert school name to URL-safe format using the helper function
+		const schoolSlug = schoolToSlug(school);
 
 		if (currentVersion?.id) {
 			goto(`/schools/${schoolSlug}/write/${documentId}/${currentVersion.id}`);

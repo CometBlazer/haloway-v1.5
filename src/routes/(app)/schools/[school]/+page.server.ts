@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { supabase } from '$lib/supabase';
-import { validateAndNormalizeSchool } from '$lib/utils/validation';
+import { validateAndNormalizeSchoolSlug } from '$lib/utils/validation';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	// Session is already validated by the layout, no need to check again
@@ -13,10 +13,10 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	}
 
 	const { school } = params;
-	// Validate and normalize the school parameter
+	// Validate and normalize the school slug parameter
 	let normalizedSchool: string;
 	try {
-		normalizedSchool = validateAndNormalizeSchool(school);
+		normalizedSchool = validateAndNormalizeSchoolSlug(school);
 	} catch {
 		throw error(400, 'Invalid school parameter');
 	}

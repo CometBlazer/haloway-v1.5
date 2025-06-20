@@ -40,12 +40,13 @@
 			method="post"
 			use:enhance={() => {
 				isCreating = true;
-				return async ({ result }) => {
-					if (result.type === 'redirect') {
-						// The server action will handle the redirect
-					} else {
+				return async ({ result, update }) => {
+					// Always reset loading state for non-redirect results
+					if (result.type !== 'redirect') {
 						isCreating = false;
 					}
+					// Let SvelteKit handle all result types naturally
+					await update();
 				};
 			}}
 		>
