@@ -290,7 +290,7 @@
 
 	// Unified button classes
 	const buttonClasses =
-		'flex items-center justify-center border-none bg-transparent rounded-md cursor-pointer transition-all duration-150 ease-in-out text-base-content';
+		'flex items-center justify-center border-none bg-transparent rounded-md cursor-pointer transition-all duration-150 ease-in-out';
 
 	const standardButtonClasses = `${buttonClasses} w-8 h-8 font-medium text-sm`;
 
@@ -311,7 +311,7 @@
 	>
 		<button
 			on:click={() => editor.chain().focus().toggleBold().run()}
-			class={standardButtonClasses}
+			class="{standardButtonClasses} editor-btn"
 			class:active={editor.isActive('bold')}
 			class:active-highlight={editor.isActive('bold')}
 		>
@@ -319,7 +319,7 @@
 		</button>
 		<button
 			on:click={() => editor.chain().focus().toggleItalic().run()}
-			class={standardButtonClasses}
+			class="{standardButtonClasses} editor-btn"
 			class:active={editor.isActive('italic')}
 			class:active-highlight={editor.isActive('italic')}
 		>
@@ -327,7 +327,7 @@
 		</button>
 		<button
 			on:click={() => editor.chain().focus().toggleUnderline().run()}
-			class={standardButtonClasses}
+			class="{standardButtonClasses} editor-btn"
 			class:active={editor.isActive('underline')}
 			class:active-highlight={editor.isActive('underline')}
 		>
@@ -339,7 +339,7 @@
 		<div class="flex items-center gap-1">
 			<button
 				on:click={setLink}
-				class={textButtonClasses}
+				class="{textButtonClasses} editor-btn"
 				class:active={editor.isActive('link')}
 				class:active-highlight={editor.isActive('link')}
 				title="Add link"
@@ -349,7 +349,7 @@
 			<button
 				on:click={() => editor.chain().focus().unsetLink().run()}
 				disabled={!editor.isActive('link')}
-				class={textButtonClasses}
+				class="{textButtonClasses} editor-btn"
 				title="Remove link"
 			>
 				<Link2Off size={iconSize - 4} />
@@ -357,7 +357,7 @@
 			<button
 				on:click={openLink}
 				disabled={!editor.isActive('link')}
-				class={textButtonClasses}
+				class="{textButtonClasses} editor-btn"
 				title="Open link"
 			>
 				<ExternalLink size={iconSize - 4} />
@@ -369,7 +369,7 @@
 		<!-- Transform dropdown -->
 		<div class="transform-container relative">
 			<button
-				class={textButtonClasses}
+				class="{textButtonClasses} editor-btn"
 				on:click={() => (showTransformDropdown = !showTransformDropdown)}
 			>
 				<span class="transform-icon w-5 text-center font-semibold">⟲</span>
@@ -379,7 +379,7 @@
 			{#if showTransformDropdown}
 				<div class="dropdown-container">
 					<button
-						class={dropdownOptionClasses}
+						class="{dropdownOptionClasses} dropdown-item"
 						class:active={editor.isActive('paragraph')}
 						class:active-highlight={editor.isActive('paragraph')}
 						on:click={() => {
@@ -391,7 +391,7 @@
 						<span class="option-label flex-1">Paragraph</span>
 					</button>
 					<button
-						class={dropdownOptionClasses}
+						class="{dropdownOptionClasses} dropdown-item"
 						class:active={editor.isActive('heading', { level: 1 })}
 						class:active-highlight={editor.isActive('heading', { level: 1 })}
 						on:click={() => {
@@ -403,7 +403,7 @@
 						<span class="option-label flex-1">Heading 1</span>
 					</button>
 					<button
-						class={dropdownOptionClasses}
+						class="{dropdownOptionClasses} dropdown-item"
 						class:active={editor.isActive('heading', { level: 2 })}
 						class:active-highlight={editor.isActive('heading', { level: 2 })}
 						on:click={() => {
@@ -415,7 +415,7 @@
 						<span class="option-label flex-1">Heading 2</span>
 					</button>
 					<button
-						class={dropdownOptionClasses}
+						class="{dropdownOptionClasses} dropdown-item"
 						class:active={editor.isActive('heading', { level: 3 })}
 						class:active-highlight={editor.isActive('heading', { level: 3 })}
 						on:click={() => {
@@ -444,7 +444,7 @@
 					<button
 						on:click={() => editor.chain().focus().toggleBold().run()}
 						disabled={!editor.can().chain().focus().toggleBold().run()}
-						class={standardButtonClasses}
+						class="{standardButtonClasses} editor-btn"
 						class:active={editor.isActive('bold')}
 						class:active-highlight={editor.isActive('bold')}
 						title="Bold (Ctrl+B)"
@@ -454,7 +454,7 @@
 					<button
 						on:click={() => editor.chain().focus().toggleItalic().run()}
 						disabled={!editor.can().chain().focus().toggleItalic().run()}
-						class={standardButtonClasses}
+						class="{standardButtonClasses} editor-btn"
 						class:active={editor.isActive('italic')}
 						class:active-highlight={editor.isActive('italic')}
 						title="Italic (Ctrl+I)"
@@ -464,7 +464,7 @@
 					<button
 						on:click={() => editor.chain().focus().toggleUnderline().run()}
 						disabled={!editor.can().chain().focus().toggleUnderline().run()}
-						class={standardButtonClasses}
+						class="{standardButtonClasses} editor-btn"
 						class:active={editor.isActive('underline')}
 						class:active-highlight={editor.isActive('underline')}
 						title="Underline (Ctrl+U)"
@@ -480,7 +480,7 @@
 					<button
 						on:click={() => editor.chain().focus().undo().run()}
 						disabled={!editor.can().chain().focus().undo().run()}
-						class={standardButtonClasses}
+						class="{standardButtonClasses} editor-btn"
 						title="Undo (Ctrl+Z)"
 					>
 						<Undo2 size={iconSize} />
@@ -488,7 +488,7 @@
 					<button
 						on:click={() => editor.chain().focus().redo().run()}
 						disabled={!editor.can().chain().focus().redo().run()}
-						class={standardButtonClasses}
+						class="{standardButtonClasses} editor-btn"
 						title="Redo (Ctrl+Y)"
 					>
 						<Redo2 size={iconSize} />
@@ -500,7 +500,7 @@
 					<div class="menu-separator"></div>
 					<div class="turn-into-container relative">
 						<button
-							class={textButtonClasses}
+							class="{textButtonClasses} editor-btn"
 							on:click={() => (showMainDropdown = !showMainDropdown)}
 							title="Turn into H1, H2, H3, or Paragraph"
 						>
@@ -511,7 +511,7 @@
 						{#if showMainDropdown}
 							<div class="dropdown-container">
 								<button
-									class={`${dropdownOptionClasses} w-full`}
+									class="{dropdownOptionClasses} dropdown-item w-full"
 									class:active={editor.isActive('paragraph')}
 									class:active-highlight={editor.isActive('paragraph')}
 									on:click={() => {
@@ -525,7 +525,7 @@
 									<span class="option-label flex-1">Paragraph</span>
 								</button>
 								<button
-									class={`${dropdownOptionClasses} w-full`}
+									class="{dropdownOptionClasses} dropdown-item w-full"
 									class:active={editor.isActive('heading', { level: 1 })}
 									class:active-highlight={editor.isActive('heading', {
 										level: 1,
@@ -541,7 +541,7 @@
 									<span class="option-label flex-1">Heading 1</span>
 								</button>
 								<button
-									class={`${dropdownOptionClasses} w-full`}
+									class="{dropdownOptionClasses} dropdown-item w-full"
 									class:active={editor.isActive('heading', { level: 2 })}
 									class:active-highlight={editor.isActive('heading', {
 										level: 2,
@@ -557,7 +557,7 @@
 									<span class="option-label flex-1">Heading 2</span>
 								</button>
 								<button
-									class={`${dropdownOptionClasses} w-full`}
+									class="{dropdownOptionClasses} dropdown-item w-full"
 									class:active={editor.isActive('heading', { level: 3 })}
 									class:active-highlight={editor.isActive('heading', {
 										level: 3,
@@ -579,7 +579,7 @@
 					<div class="menu-separator"></div>
 					<button
 						on:click={() => editor.chain().focus().setHorizontalRule().run()}
-						class={standardButtonClasses}
+						class="{standardButtonClasses} editor-btn"
 						title="Insert horizontal rule"
 					>
 						<span class="text-xl">—</span>
@@ -592,7 +592,7 @@
 					<div class="flex items-center gap-1">
 						<button
 							on:click={setLink}
-							class={textButtonClasses}
+							class="{textButtonClasses} editor-btn"
 							class:active={editor.isActive('link')}
 							class:active-highlight={editor.isActive('link')}
 							title="Add link"
@@ -603,7 +603,7 @@
 						<button
 							on:click={openLink}
 							disabled={!editor.isActive('link')}
-							class={textButtonClasses}
+							class="{textButtonClasses} editor-btn"
 							title="Open link"
 						>
 							<span class="hidden xl:inline">Open Link</span>
@@ -612,7 +612,7 @@
 						<button
 							on:click={() => editor.chain().focus().unsetLink().run()}
 							disabled={!editor.isActive('link')}
-							class={textButtonClasses}
+							class="{textButtonClasses} editor-btn"
 							title="Remove link"
 						>
 							<span class="hidden xl:inline">Remove Link</span>
@@ -625,7 +625,7 @@
 				<div class="hidden md:flex md:items-center">
 					<div class="menu-separator"></div>
 					<button
-						class={`${textButtonClasses} bg-base-100 hover:bg-base-200`}
+						class="{textButtonClasses} editor-btn clear-btn"
 						on:click={() =>
 							editor.chain().focus().unsetAllMarks().clearNodes().run()}
 						title="Clear formatting"
@@ -639,7 +639,7 @@
 					<div class="menu-separator"></div>
 					<div class="mobile-menu-container relative">
 						<button
-							class={`${standardButtonClasses} mobile-menu-button`}
+							class="{standardButtonClasses} mobile-menu-button editor-btn"
 							on:click={toggleMobileMenu}
 							class:active={showMobileMenu}
 							class:active-highlight={showMobileMenu}
@@ -654,7 +654,7 @@
 								<div class="mobile-menu-section">
 									<span class="mobile-menu-section-title">Text Style</span>
 									<button
-										class={dropdownOptionClasses}
+										class="{dropdownOptionClasses} dropdown-item"
 										class:active={editor.isActive('paragraph')}
 										class:active-highlight={editor.isActive('paragraph')}
 										on:click={() => {
@@ -668,7 +668,7 @@
 										<span class="option-label flex-1">Paragraph</span>
 									</button>
 									<button
-										class={dropdownOptionClasses}
+										class="{dropdownOptionClasses} dropdown-item"
 										class:active={editor.isActive('heading', { level: 1 })}
 										class:active-highlight={editor.isActive('heading', {
 											level: 1,
@@ -684,7 +684,7 @@
 										<span class="option-label flex-1">Heading 1</span>
 									</button>
 									<button
-										class={dropdownOptionClasses}
+										class="{dropdownOptionClasses} dropdown-item"
 										class:active={editor.isActive('heading', { level: 2 })}
 										class:active-highlight={editor.isActive('heading', {
 											level: 2,
@@ -700,7 +700,7 @@
 										<span class="option-label flex-1">Heading 2</span>
 									</button>
 									<button
-										class={dropdownOptionClasses}
+										class="{dropdownOptionClasses} dropdown-item"
 										class:active={editor.isActive('heading', { level: 3 })}
 										class:active-highlight={editor.isActive('heading', {
 											level: 3,
@@ -720,7 +720,7 @@
 								<div class="mobile-menu-section">
 									<span class="mobile-menu-section-title">Insert</span>
 									<button
-										class={dropdownOptionClasses}
+										class="{dropdownOptionClasses} dropdown-item"
 										on:click={() => {
 											editor.chain().focus().setHorizontalRule().run();
 											showMobileMenu = false;
@@ -736,7 +736,7 @@
 								<div class="mobile-menu-section">
 									<span class="mobile-menu-section-title">Links</span>
 									<button
-										class={dropdownOptionClasses}
+										class="{dropdownOptionClasses} dropdown-item"
 										class:active={editor.isActive('link')}
 										class:active-highlight={editor.isActive('link')}
 										on:click={() => {
@@ -755,7 +755,7 @@
 											showMobileMenu = false;
 										}}
 										disabled={!editor.isActive('link')}
-										class={dropdownOptionClasses}
+										class="{dropdownOptionClasses} dropdown-item"
 										title="Open link"
 									>
 										<span class="option-icon w-5 text-center font-semibold">
@@ -764,7 +764,7 @@
 										<span class="option-label flex-1">Open Link</span>
 									</button>
 									<button
-										class={dropdownOptionClasses}
+										class="{dropdownOptionClasses} dropdown-item"
 										disabled={!editor.isActive('link')}
 										on:click={() => {
 											editor.chain().focus().unsetLink().run();
@@ -781,7 +781,7 @@
 								<div class="mobile-menu-section">
 									<span class="mobile-menu-section-title">Formatting</span>
 									<button
-										class={dropdownOptionClasses}
+										class="{dropdownOptionClasses} dropdown-item"
 										on:click={() => {
 											editor.chain().focus().unsetAllMarks().clearNodes().run();
 											showMobileMenu = false;
@@ -811,7 +811,7 @@
 			class:limit-over={isOverLimit}
 		>
 			<svg height="20" width="20" viewBox="0 0 20 20">
-				<circle r="10" cx="10" cy="10" fill="var(--color-base-300)" />
+				<circle r="10" cx="10" cy="10" fill="hsl(var(--color-base-300))" />
 				<circle
 					r="5"
 					cx="10"
@@ -822,7 +822,7 @@
 					stroke-dasharray="{(percentage * 31.4) / 100} 31.4"
 					transform="rotate(-90) translate(-20)"
 				/>
-				<circle r="6" cx="10" cy="10" fill="var(--color-base-100)" />
+				<circle r="6" cx="10" cy="10" fill="hsl(var(--color-base-100))" />
 			</svg>
 			<span class="word-count-text">
 				{wordCount} words {isOverLimit
@@ -832,16 +832,18 @@
 		</div>
 
 		<!-- Zen/Focus Mode Toggle -->
-		<div class="flex items-center gap-2">
-			<span class="text-sm">{zenMode ? 'Zen Mode' : 'Focus Mode'}</span>
-			<input
-				type="checkbox"
-				class="toggle toggle-sm"
-				class:toggle-primary={!zenMode}
-				checked={!zenMode}
-				on:change={toggleZenMode}
-				aria-label={zenMode ? 'Switch to Focus Mode' : 'Switch to Zen Mode'}
-			/>
+		<div class="toggle-container">
+			<span class="toggle-label">{zenMode ? 'Zen Mode' : 'Focus Mode'}</span>
+			<label class="toggle-switch">
+				<input
+					type="checkbox"
+					class="toggle-input"
+					checked={!zenMode}
+					on:change={toggleZenMode}
+					aria-label={zenMode ? 'Switch to Focus Mode' : 'Switch to Zen Mode'}
+				/>
+				<span class="toggle-slider"></span>
+			</label>
 		</div>
 	</div>
 {/if}
@@ -859,9 +861,9 @@
 			0 1px 1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 		--dropdown-shadow:
 			0 12px 16px -4px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
-		--active-bg: rgba(var(--color-primary-rgb, 196, 171, 255), 0.1);
-		--active-color: var(--color-primary, #4f46e5);
-		--hover-bg: var(--color-base-200);
+		--active-bg: hsl(var(--color-primary) / 0.1);
+		--active-color: hsl(var(--color-primary));
+		--hover-bg: hsl(var(--color-base-200));
 		--toolbar-spacing: 0.5rem;
 		--menu-separator-margin: 0.5rem;
 	}
@@ -872,8 +874,8 @@
 		align-items: center;
 		gap: var(--toolbar-spacing);
 		padding: 0.5rem;
-		background: var(--color-base-000, white);
-		border: 1px solid var(--color-base-300);
+		background: hsl(var(--color-base-000));
+		border: 1px solid hsl(var(--color-base-300));
 		border-radius: 15px;
 		box-shadow: var(--menu-shadow);
 	}
@@ -885,32 +887,75 @@
 	.modern-toolbar {
 		padding: 0.75rem 0.875rem;
 		border-radius: 19px;
-		margin-bottom: 1.25rem; /* Spacing between toolbar and editor controls */
+		margin-bottom: 1.25rem;
 	}
 
 	.menu-separator {
 		width: 1px;
-		height: 24px; /* Ensure this aligns well with button heights */
-		background: var(--color-neutral);
+		height: 24px;
+		background: hsl(var(--color-neutral));
 		margin: 0 var(--menu-separator-margin);
 	}
 
-	:global(.active-highlight) {
+	/* Button Styles */
+	.editor-btn {
+		color: hsl(var(--color-base-content));
+		transition: all 0.2s ease;
+	}
+
+	.editor-btn:hover:not(:disabled) {
+		background: var(--hover-bg);
+	}
+
+	.editor-btn:disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
+	}
+
+	.editor-btn:focus {
+		outline: 2px solid hsl(var(--color-primary));
+		outline-offset: 2px;
+	}
+
+	.active-highlight {
 		background: var(--active-bg) !important;
 		color: var(--active-color) !important;
 	}
 
+	.clear-btn {
+		background: hsl(var(--color-base-100));
+	}
+
+	.clear-btn:hover {
+		background: hsl(var(--color-base-200));
+	}
+
+	/* Dropdown Styles */
 	.dropdown-container {
 		position: absolute;
-		top: calc(100% + 0.5rem); /* Position below button with a small gap */
+		top: calc(100% + 0.5rem);
 		left: 0;
 		min-width: 180px;
-		background: var(--color-base-100);
-		border: 1px solid var(--color-neutral);
+		background: hsl(var(--color-base-100));
+		border: 1px solid hsl(var(--color-neutral));
 		border-radius: 0.5rem;
 		padding: 0.5rem;
 		box-shadow: var(--dropdown-shadow);
 		z-index: 1000;
+	}
+
+	.dropdown-item {
+		color: hsl(var(--color-base-content));
+		transition: all 0.2s ease;
+	}
+
+	.dropdown-item:hover:not(:disabled) {
+		background: hsl(var(--color-base-200));
+	}
+
+	.dropdown-item:disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
 	}
 
 	.mobile-dropdown-container {
@@ -924,124 +969,173 @@
 	.mobile-menu-section {
 		margin-bottom: 1rem;
 	}
+
 	.mobile-menu-section:last-child {
 		margin-bottom: 0;
 	}
+
 	.mobile-menu-section-title {
 		display: block;
 		font-size: 0.75rem;
 		font-weight: 600;
-		color: var(--color-neutral-content);
+		color: hsl(var(--color-neutral-content));
 		margin-bottom: 0.5rem;
 		padding-left: 0.5rem;
 	}
 
 	.dots-icon {
-		font-size: 1.5rem; /* Increased for better visibility */
+		font-size: 1.5rem;
 		line-height: 1;
 		font-weight: bold;
-	}
-
-	button:hover:not(:disabled) {
-		background: var(--hover-bg);
-	}
-	button:disabled {
-		opacity: 0.4;
-		cursor: not-allowed;
 	}
 
 	.toolbar-group {
 		display: flex;
 		align-items: center;
-		gap: 0.25rem; /* Reduced gap slightly for tighter grouping */
+		gap: 0.25rem;
 	}
 
+	/* Word Count Display */
 	.word-count-display {
 		align-items: center;
-		color: var(--color-neutral-content);
+		color: hsl(var(--color-neutral-content));
 		display: flex;
 		font-size: 0.75rem;
 		gap: 0.5rem;
-		/* margin: 1rem 0; Removed to be controlled by editor-controls */
 	}
+
 	.word-count-display svg {
-		color: var(--color-primary);
+		color: hsl(var(--color-primary));
 	}
+
 	.word-count-display.limit-near svg {
-		color: var(--color-warning, #f59e0b);
+		color: hsl(var(--color-warning));
 	}
+
 	.word-count-display.limit-reached svg {
-		color: var(--color-info);
+		color: hsl(var(--color-info));
 	}
+
 	.word-count-display.limit-over svg {
-		color: var(--color-error);
+		color: hsl(var(--color-error));
 	}
 
+	/* Editor Controls */
 	.editor-controls {
-		padding: 0.5rem; /* Add some padding around controls */
+		padding: 0.5rem;
 		border-radius: 0.375rem;
-		margin-bottom: 0.75rem; /* Spacing between controls and editor area */
+		margin-bottom: 0.75rem;
 	}
 
-	/* Basic editor styles - Premium Paper Feel */
-	/* Replace the existing :global(.tiptap) rule around line 548 */
+	/* Toggle Switch */
+	.toggle-container {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.toggle-label {
+		font-size: 0.875rem;
+		color: hsl(var(--color-base-content));
+	}
+
+	.toggle-switch {
+		position: relative;
+		display: inline-block;
+		width: 44px;
+		height: 24px;
+	}
+
+	.toggle-input {
+		opacity: 0;
+		width: 0;
+		height: 0;
+	}
+
+	.toggle-slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: hsl(var(--color-base-300));
+		transition: 0.3s;
+		border-radius: 24px;
+	}
+
+	.toggle-slider:before {
+		position: absolute;
+		content: '';
+		height: 18px;
+		width: 18px;
+		left: 3px;
+		bottom: 3px;
+		background-color: hsl(var(--color-base-000));
+		transition: 0.3s;
+		border-radius: 50%;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	}
+
+	.toggle-input:checked + .toggle-slider {
+		background-color: hsl(var(--color-primary));
+	}
+
+	.toggle-input:focus + .toggle-slider {
+		box-shadow: 0 0 1px hsl(var(--color-primary));
+	}
+
+	.toggle-input:checked + .toggle-slider:before {
+		transform: translateX(20px);
+	}
+
+	/* Editor Content Styles */
 	:global(.tiptap) {
-		background: var(--color-base-premium);
+		background: hsl(var(--color-base-premium));
 		font-family: var(--font-sans);
-		/* Moved to +page.svelte */
-		/* min-height: 200px;
-    font-size: 18px; */
-		line-height: 1;
-		color: var(--color-base-content);
-		/* padding: 2.5rem 3.5rem; */
+		line-height: 1.75;
+		color: hsl(var(--color-base-content));
 		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.16);
 		border-radius: 18px;
 		outline: none;
 		transition: box-shadow 0.2s ease;
-		border: 1px solid var(--color-base-300);
+		border: 1px solid hsl(var(--color-base-300));
 	}
 
 	:global(.tiptap:focus-within) {
-		/* Use focus-within for parent focus state */
 		box-shadow:
-			0 0 0 4px rgba(var(--color-primary-rgb, 168, 139, 254), 0.15),
+			0 0 0 4px hsl(var(--color-primary) / 0.15),
 			0 10px 40px rgba(0, 0, 0, 0.06);
-		border-color: rgba(var(--color-primary-rgb, 168, 139, 254), 0.5);
+		border-color: hsl(var(--color-primary) / 0.5);
 	}
 
 	:global(.tiptap.ProseMirror-readonly) {
-		/* This will apply if editor.setEditable(false) is called externally */
-		background-color: var(--color-base-50);
+		background-color: hsl(var(--color-base-100));
 		cursor: default;
 	}
+
 	:global(.tiptap.ProseMirror-readonly a) {
-		cursor: pointer; /* Make links clickable in true read-only states */
+		cursor: pointer;
 	}
 
 	:global(.tiptap) :global(*) {
 		margin: 0;
 	}
+
 	:global(.tiptap) :global(*:first-child) {
 		margin-top: 0;
 	}
 
 	:global(.tiptap) :global(p) {
-		margin-bottom: 1.25rem; /* Slightly increased paragraph spacing */
+		margin-bottom: 1.25rem;
 	}
 
 	:global(.tiptap) :global(hr) {
 		height: 2px;
-		background-color: var(--color-base-300);
+		background-color: hsl(var(--color-base-300));
 		border: none;
-		margin: 2rem 0; /* Adjusted HR margin */
+		margin: 2rem 0;
 	}
-
-	/* :global(.tiptap) :global(p + p),
-  :global(.tiptap) :global(div + p),
-  :global(.tiptap) :global(p + div) {
-    /* This rule might be redundant if p has consistent margin-bottom, review if needed */
-	/* margin-top: 1rem; 
-  } */
 
 	:global(.tiptap) :global(h1),
 	:global(.tiptap) :global(h2),
@@ -1050,33 +1144,38 @@
 	:global(.tiptap) :global(h5),
 	:global(.tiptap) :global(h6) {
 		line-height: 1.2;
-		margin-top: 2.25rem; /* Adjusted heading top margin */
-		margin-bottom: 1.25rem; /* Adjusted heading bottom margin */
+		margin-top: 2.25rem;
+		margin-bottom: 1.25rem;
 		text-wrap: pretty;
 		font-weight: 700;
-		color: var(--color-base-content);
+		color: hsl(var(--color-base-content));
 	}
 
 	:global(.tiptap) :global(h1) {
 		font-size: 1.8rem;
 		margin-top: 3rem;
 	}
+
 	:global(.tiptap) :global(h2) {
 		font-size: 1.5rem;
 		margin-top: 2.5rem;
 	}
+
 	:global(.tiptap) :global(h3) {
 		font-size: 1.3rem;
 		margin-top: 2.25rem;
-	} /* Fine-tuned H3 margin */
+	}
+
 	:global(.tiptap) :global(h4) {
 		font-size: 1.15rem;
 		margin-top: 2rem;
 	}
+
 	:global(.tiptap) :global(h5) {
 		font-size: 1.05rem;
 		margin-top: 1.75rem;
 	}
+
 	:global(.tiptap) :global(h6) {
 		font-size: 1rem;
 		margin-top: 1.5rem;
@@ -1089,11 +1188,11 @@
 	:global(.tiptap) :global(h4 + *),
 	:global(.tiptap) :global(h5 + *),
 	:global(.tiptap) :global(h6 + *) {
-		margin-top: 0; /* Ensure no double margin after headings */
+		margin-top: 0;
 	}
 
 	:global(.tiptap .is-editor-empty:first-child::before) {
-		color: var(--color-base-400);
+		color: hsl(var(--color-base-400));
 		content: attr(data-placeholder);
 		float: left;
 		height: 0;
@@ -1103,29 +1202,62 @@
 
 	:global(.tiptap) :global(a),
 	:global(.tiptap) :global(.editor-link) {
-		color: var(--color-primary);
+		color: hsl(var(--color-primary));
 		text-decoration: underline;
-		text-decoration-thickness: 1.5px; /* Nicer underline */
-		text-underline-offset: 2px; /* Space underline from text */
+		text-decoration-thickness: 1.5px;
+		text-underline-offset: 2px;
 	}
 
 	:global(.tiptap) :global(a:hover),
 	:global(.tiptap) :global(.editor-link:hover) {
-		color: var(--color-accent);
-		/* Cursor behavior: In an editable Tiptap editor, links typically have a text cursor. */
-		/* This is generally preferred for editing. openOnClick: false is set. */
-		/* If truly read-only (editor.setEditable(false)), then ProseMirror-readonly class handles pointer. */
+		color: hsl(var(--color-accent));
 		cursor: text;
 	}
 
-	/* Fix: Removed empty CSS rulesets that were causing warnings */
-	/* The original empty rules for .editor-content and .zen-mode-active have been removed */
-	/* If you need to style the editor content wrapper in zen mode, uncomment and add styles: */
-	/* 
-	.editor-content {
-		&.zen-mode-active :global(.tiptap) { 
-			// Add zen mode styles here
+	/* Mobile responsiveness */
+	@media (max-width: 768px) {
+		.editor-controls {
+			flex-direction: column;
+			gap: 0.75rem;
+			align-items: flex-start;
+		}
+
+		.toggle-container {
+			align-self: flex-end;
+		}
+
+		.word-count-display {
+			font-size: 0.7rem;
 		}
 	}
-	*/
+
+	/* Touch handling */
+	.editor-btn,
+	.dropdown-item,
+	.toggle-switch {
+		-webkit-tap-highlight-color: transparent;
+		touch-action: manipulation;
+	}
+
+	/* High contrast mode support */
+	@media (prefers-contrast: high) {
+		.menu-container {
+			border-width: 2px;
+		}
+
+		.dropdown-container {
+			border-width: 2px;
+		}
+
+		:global(.tiptap) {
+			border-width: 2px;
+		}
+	}
+
+	/* Reduced motion support */
+	@media (prefers-reduced-motion: reduce) {
+		* {
+			transition: none !important;
+		}
+	}
 </style>

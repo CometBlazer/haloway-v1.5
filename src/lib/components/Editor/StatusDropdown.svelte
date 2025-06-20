@@ -33,32 +33,32 @@
 	> = {
 		'not-started': {
 			label: 'Not Started',
-			colorClass: 'btn-ghost text-base-content',
-			badgeClass: 'badge-ghost',
+			colorClass: 'status-not-started',
+			badgeClass: 'badge-not-started',
 		},
 		'in-progress': {
 			label: 'In Progress',
-			colorClass: 'btn-warning',
+			colorClass: 'status-warning',
 			badgeClass: 'badge-warning',
 		},
 		finished: {
 			label: 'Finished',
-			colorClass: 'btn-success',
+			colorClass: 'status-success',
 			badgeClass: 'badge-success',
 		},
 		polished: {
 			label: 'Polished',
-			colorClass: 'btn-info',
+			colorClass: 'status-info',
 			badgeClass: 'badge-info',
 		},
 		submitted: {
 			label: 'Submitted',
-			colorClass: 'btn-primary',
+			colorClass: 'status-primary',
 			badgeClass: 'badge-primary',
 		},
 		scrapped: {
 			label: 'Scrapped',
-			colorClass: 'btn-error',
+			colorClass: 'status-error',
 			badgeClass: 'badge-error',
 		},
 	};
@@ -66,11 +66,11 @@
 	// All possible status keys
 	const statusOptions = Object.keys(statusConfig) as Status[];
 
-	// Map size prop to DaisyUI size classes
+	// Map size prop to size classes
 	const sizeClasses = {
 		xs: 'btn-xs',
 		sm: 'btn-sm',
-		md: '',
+		md: 'btn-md',
 		lg: 'btn-lg',
 	};
 
@@ -131,7 +131,7 @@
 	<!-- Trigger button -->
 	<button
 		type="button"
-		class="btn btn-soft btn-sm md:btn-md md:w-45 w-20 {buttonClasses} gap-2 rounded-full"
+		class="status-btn {buttonClasses}"
 		{disabled}
 		on:click={toggleDropdown}
 		on:touchstart={toggleDropdown}
@@ -140,11 +140,11 @@
 		aria-expanded={isOpen}
 		title={currentConfig.label}
 	>
-		<div class="badge {currentConfig.badgeClass} badge-sm">
-			<div class="h-2 w-2 rounded-full bg-current opacity-80"></div>
+		<div class="status-badge {currentConfig.badgeClass}">
+			<div class="status-dot"></div>
 		</div>
-		<span class="hidden font-medium md:inline">{currentConfig.label}</span>
-		<div class="transition-transform duration-200" class:rotate-180={isOpen}>
+		<span class="status-label">{currentConfig.label}</span>
+		<div class="chevron" class:rotate-180={isOpen}>
 			<ChevronDown size={16} class="opacity-60" />
 		</div>
 	</button>
@@ -152,7 +152,7 @@
 	<!-- Dropdown menu -->
 	{#if isOpen}
 		<div
-			class="bg-base-100 rounded-box border-base-300 absolute left-0 top-full z-50 mt-2 w-44 border p-1 shadow-lg md:w-52 md:p-2"
+			class="dropdown-menu"
 			in:slide={{ duration: 200 }}
 			out:slide={{ duration: 200 }}
 			role="menu"
@@ -161,27 +161,18 @@
 				{@const cfg = statusConfig[status]}
 				<button
 					type="button"
-					class="hover:bg-base-200 flex w-full items-center gap-2 rounded-lg p-2 text-sm transition-colors md:gap-3 md:p-3 md:text-base {status ===
-					currentStatus
-						? 'bg-base-200 font-semibold'
-						: ''}"
+					class="dropdown-item {status === currentStatus ? 'active' : ''}"
 					on:click={(e) => handleStatusChange(status, e)}
 					on:touchstart={(e) => handleStatusChange(status, e)}
 					{disabled}
 					role="menuitem"
 				>
-					<div class="badge {cfg.badgeClass} badge-xs md:badge-sm">
-						<div
-							class="h-1.5 w-1.5 rounded-full bg-current opacity-80 md:h-2 md:w-2"
-						></div>
+					<div class="status-badge {cfg.badgeClass} badge-small">
+						<div class="status-dot status-dot-small"></div>
 					</div>
-					<span class="flex-1 text-left">{cfg.label}</span>
+					<span class="item-label">{cfg.label}</span>
 					{#if status === currentStatus}
-						<svg
-							class="text-success h-3 w-3 md:h-4 md:w-4"
-							fill="currentColor"
-							viewBox="0 0 20 20"
-						>
+						<svg class="check-icon" fill="currentColor" viewBox="0 0 20 20">
 							<path
 								fill-rule="evenodd"
 								d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0
@@ -197,21 +188,300 @@
 </div>
 
 <style>
-	/* Ensure proper touch handling on mobile */
-	button {
+	/* Base button styles */
+	.status-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		border-radius: 9999px;
+		border: 1px solid hsl(var(--color-base-300));
+		background: hsl(var(--color-base-000));
+		color: hsl(var(--color-base-content));
+		font-weight: 500;
+		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+		touch-action: manipulation;
+		white-space: nowrap;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+	}
+
+	.status-btn:hover {
+		background: hsl(var(--color-base-100));
+		border-color: hsl(var(--color-base-400));
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	}
+
+	.status-btn:focus {
+		outline: 2px solid hsl(var(--color-primary));
+		outline-offset: 2px;
+	}
+
+	.status-btn:active {
+		transform: translateY(0);
+	}
+
+	.status-btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+		transform: none;
+	}
+
+	/* Button sizes */
+	.btn-xs {
+		padding: 0.25rem 0.75rem;
+		font-size: 0.75rem;
+		width: 4rem;
+	}
+
+	.btn-sm {
+		padding: 0.375rem 0.875rem;
+		font-size: 0.875rem;
+		width: 5rem;
+	}
+
+	.btn-md {
+		padding: 0.5rem 1rem;
+		font-size: 0.875rem;
+		width: 5rem;
+	}
+
+	.btn-lg {
+		padding: 0.625rem 1.25rem;
+		font-size: 1rem;
+		width: 11.25rem;
+	}
+
+	@media (min-width: 768px) {
+		.btn-md {
+			width: 11.25rem;
+		}
+	}
+
+	/* Status color variations */
+	.status-not-started {
+		background: hsl(var(--color-base-000));
+		color: hsl(var(--color-base-content));
+		border-color: hsl(var(--color-base-300));
+	}
+
+	.status-warning {
+		background: hsl(var(--color-warning));
+		color: hsl(var(--color-warning-content));
+		border-color: hsl(var(--color-warning));
+	}
+
+	.status-success {
+		background: hsl(var(--color-success));
+		color: hsl(var(--color-success-content));
+		border-color: hsl(var(--color-success));
+	}
+
+	.status-info {
+		background: hsl(var(--color-info));
+		color: hsl(var(--color-info-content));
+		border-color: hsl(var(--color-info));
+	}
+
+	.status-primary {
+		background: hsl(var(--color-primary));
+		color: hsl(var(--color-primary-content));
+		border-color: hsl(var(--color-primary));
+	}
+
+	.status-error {
+		background: hsl(var(--color-error));
+		color: hsl(var(--color-error-content));
+		border-color: hsl(var(--color-error));
+	}
+
+	/* Status badges */
+	.status-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 9999px;
+		padding: 0.125rem 0.25rem;
+		font-size: 0.75rem;
+		font-weight: 500;
+	}
+
+	.badge-small {
+		padding: 0.0625rem 0.1875rem;
+		font-size: 0.625rem;
+	}
+
+	.badge-not-started {
+		background: hsl(var(--color-neutral));
+		color: hsl(var(--color-neutral-content));
+	}
+
+	.badge-warning {
+		background: hsl(var(--color-warning) / 0.2);
+		color: hsl(var(--color-warning));
+	}
+
+	.badge-success {
+		background: hsl(var(--color-success) / 0.2);
+		color: hsl(var(--color-success));
+	}
+
+	.badge-info {
+		background: hsl(var(--color-info) / 0.2);
+		color: hsl(var(--color-info));
+	}
+
+	.badge-primary {
+		background: hsl(var(--color-primary) / 0.2);
+		color: hsl(var(--color-primary));
+	}
+
+	.badge-error {
+		background: hsl(var(--color-error) / 0.2);
+		color: hsl(var(--color-error));
+	}
+
+	/* Status dots */
+	.status-dot {
+		height: 0.5rem;
+		width: 0.5rem;
+		border-radius: 50%;
+		background-color: currentColor;
+		opacity: 0.8;
+	}
+
+	.status-dot-small {
+		height: 0.375rem;
+		width: 0.375rem;
+	}
+
+	@media (min-width: 768px) {
+		.status-dot-small {
+			height: 0.5rem;
+			width: 0.5rem;
+		}
+	}
+
+	/* Status label */
+	.status-label {
+		display: none;
+		font-weight: 500;
+		flex: 1;
+		text-align: left;
+	}
+
+	@media (min-width: 768px) {
+		.status-label {
+			display: inline;
+		}
+	}
+
+	/* Chevron animation */
+	.chevron {
+		transition: transform 0.2s ease;
+		display: flex;
+		align-items: center;
+	}
+
+	.rotate-180 {
+		transform: rotate(180deg);
+	}
+
+	/* Dropdown menu */
+	.dropdown-menu {
+		position: absolute;
+		left: 0;
+		top: 100%;
+		z-index: 50;
+		margin-top: 0.5rem;
+		width: 11rem;
+		background: hsl(var(--color-base-100));
+		border: 1px solid hsl(var(--color-base-300));
+		border-radius: 0.75rem;
+		padding: 0.25rem;
+		box-shadow:
+			0 10px 15px -3px rgba(0, 0, 0, 0.1),
+			0 4px 6px -2px rgba(0, 0, 0, 0.05);
+	}
+
+	@media (min-width: 768px) {
+		.dropdown-menu {
+			width: 13rem;
+			padding: 0.5rem;
+		}
+	}
+
+	/* Dropdown items */
+	.dropdown-item {
+		display: flex;
+		width: 100%;
+		align-items: center;
+		gap: 0.5rem;
+		border-radius: 0.5rem;
+		padding: 0.5rem;
+		font-size: 0.875rem;
+		background: transparent;
+		border: none;
+		color: hsl(var(--color-base-content));
+		transition: all 0.2s ease;
+		cursor: pointer;
+		text-align: left;
 		-webkit-tap-highlight-color: transparent;
 		touch-action: manipulation;
 	}
 
-	/* Lift on hover for non-touch devices */
+	@media (min-width: 768px) {
+		.dropdown-item {
+			gap: 0.75rem;
+			padding: 0.75rem;
+			font-size: 1rem;
+		}
+	}
+
+	.dropdown-item:hover {
+		background: hsl(var(--color-base-200));
+	}
+
+	.dropdown-item.active {
+		background: hsl(var(--color-base-200));
+		font-weight: 600;
+	}
+
+	.dropdown-item:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	/* Item label */
+	.item-label {
+		flex: 1;
+		text-align: left;
+	}
+
+	/* Check icon */
+	.check-icon {
+		height: 0.75rem;
+		width: 0.75rem;
+		color: hsl(var(--color-success));
+	}
+
+	@media (min-width: 768px) {
+		.check-icon {
+			height: 1rem;
+			width: 1rem;
+		}
+	}
+
+	/* Ensure proper touch handling on mobile */
 	@media (hover: hover) {
-		button:hover {
+		.status-btn:hover {
 			transform: translateY(-1px);
 		}
 	}
 
 	/* Ensure the dropdown appears above other elements */
-	.z-50 {
-		z-index: 50;
+	.relative {
+		position: relative;
 	}
 </style>

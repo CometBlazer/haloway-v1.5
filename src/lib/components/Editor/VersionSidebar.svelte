@@ -183,7 +183,7 @@
 	<div class="sidebar-header">
 		<div class="header-content">
 			<div class="header-icon">
-				<History size={20} class="text-primary" />
+				<History size={20} class="icon-primary" />
 			</div>
 			<div class="header-text">
 				<h2 class="sidebar-title">Checkpoint Manager</h2>
@@ -195,7 +195,7 @@
 
 		<button
 			type="button"
-			class="btn btn-ghost btn-circle btn-sm"
+			class="close-btn"
 			on:click={closeSidebar}
 			aria-label="Close checkpoint sidebar"
 		>
@@ -208,28 +208,28 @@
 		<div class="status-section">
 			{#if isCreatingLoading}
 				<div class="status-message creating">
-					<span class="loading loading-spinner loading-sm"></span>
+					<div class="spinner"></div>
 					<span>Creating checkpoint...</span>
 				</div>
 			{/if}
 
 			{#if isRenamingLoading}
 				<div class="status-message renaming">
-					<span class="loading loading-spinner loading-sm"></span>
+					<div class="spinner"></div>
 					<span>Renaming checkpoint...</span>
 				</div>
 			{/if}
 
 			{#if isDuplicatingId}
 				<div class="status-message duplicating">
-					<span class="loading loading-spinner loading-sm"></span>
+					<div class="spinner"></div>
 					<span>Duplicating checkpoint...</span>
 				</div>
 			{/if}
 
 			{#if isDeletingId}
 				<div class="status-message deleting">
-					<span class="loading loading-spinner loading-sm"></span>
+					<div class="spinner"></div>
 					<span>Deleting checkpoint...</span>
 				</div>
 			{/if}
@@ -248,10 +248,8 @@
 				<input type="hidden" name="documentId" value={documentId} />
 
 				<div class="form-control">
-					<label for="checkpoint-name" class="label">
-						<span class="label-text mb-2 mr-2 font-semibold"
-							>Checkpoint Name:</span
-						>
+					<label for="checkpoint-name" class="form-label">
+						<span class="label-text">Checkpoint Name:</span>
 					</label>
 					<input
 						id="checkpoint-name"
@@ -264,7 +262,7 @@
 								newVersionName = '';
 							}
 						}}
-						class="input input-bordered"
+						class="form-input"
 						placeholder="e.g., First draft complete"
 						use:focus
 						disabled={isCreatingLoading}
@@ -272,14 +270,14 @@
 					/>
 				</div>
 
-				<div class="flex gap-2">
+				<div class="form-actions">
 					<button
 						type="submit"
-						class="btn btn-primary flex-1"
+						class="primary-btn flex-1"
 						disabled={!newVersionName.trim() || isCreatingLoading}
 					>
 						{#if isCreatingLoading}
-							<span class="loading loading-spinner loading-sm"></span>
+							<div class="spinner spinner-sm"></div>
 							Creating…
 						{:else}
 							<Bookmark size={16} />
@@ -289,7 +287,7 @@
 
 					<button
 						type="button"
-						class="btn btn-ghost"
+						class="secondary-btn"
 						on:click={() => {
 							isCreatingVersion = false;
 							newVersionName = '';
@@ -303,7 +301,7 @@
 		{:else}
 			<button
 				type="button"
-				class="btn btn-primary w-full"
+				class="primary-btn w-full"
 				on:click={() => {
 					// generate your default timestamped name
 					const now = new Date();
@@ -327,7 +325,7 @@
 	<div class="checkpoints-section">
 		<div class="section-header">
 			<h3 class="section-title">Your Checkpoints</h3>
-			<span class="badge badge-neutral">{versions.length}</span>
+			<span class="counter-badge">{versions.length}</span>
 		</div>
 
 		<div class="checkpoints-list">
@@ -348,22 +346,22 @@
 										if (e.key === 'Enter') handleRenameVersion();
 										if (e.key === 'Escape') cancelRename();
 									}}
-									class="input input-bordered input-sm"
+									class="form-input form-input-sm"
 									placeholder="Checkpoint name"
 									use:focus
 									disabled={isRenamingLoading}
 								/>
 							</div>
 
-							<div class="flex gap-2">
+							<div class="form-actions">
 								<button
 									type="button"
-									class="btn btn-sm btn-primary"
+									class="primary-btn btn-sm"
 									on:click={handleRenameVersion}
 									disabled={!tempVersionName.trim() || isRenamingLoading}
 								>
 									{#if isRenamingLoading}
-										<span class="loading loading-spinner loading-xs"></span>
+										<div class="spinner spinner-xs"></div>
 										Saving...
 									{:else}
 										Save
@@ -372,7 +370,7 @@
 
 								<button
 									type="button"
-									class="btn btn-sm btn-ghost"
+									class="secondary-btn btn-sm"
 									on:click={cancelRename}
 									disabled={isRenamingLoading}
 								>
@@ -395,7 +393,7 @@
 										{version.version_name}
 									</div>
 									{#if version.id === currentVersionId}
-										<span class="badge badge-primary badge-sm">Current</span>
+										<span class="current-badge">Current</span>
 									{/if}
 								</div>
 
@@ -442,7 +440,7 @@
 									title="Duplicate Checkpoint"
 								>
 									{#if isDuplicatingId === version.id}
-										<span class="loading loading-spinner loading-xs"></span>
+										<div class="spinner spinner-xs"></div>
 									{:else}
 										<Copy size={14} />
 									{/if}
@@ -457,7 +455,7 @@
 										title="Delete Checkpoint"
 									>
 										{#if isDeletingId === version.id}
-											<span class="loading loading-spinner loading-xs"></span>
+											<div class="spinner spinner-xs"></div>
 										{:else}
 											<Trash2 size={14} />
 										{/if}
@@ -476,8 +474,8 @@
 	.checkpoint-sidebar {
 		height: 100vh;
 		width: 380px;
-		background: var(--color-base-100);
-		border-left: 1px solid var(--color-base-300);
+		background: hsl(var(--color-base-100));
+		border-left: 1px solid hsl(var(--color-base-300));
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
@@ -489,8 +487,8 @@
 		align-items: flex-start;
 		justify-content: space-between;
 		padding: 1.5rem;
-		border-bottom: 1px solid var(--color-base-200);
-		background: var(--color-base-50);
+		border-bottom: 1px solid hsl(var(--color-base-200));
+		background: hsl(var(--color-base-100) / 0.8);
 	}
 
 	.header-content {
@@ -502,10 +500,14 @@
 
 	.header-icon {
 		padding: 0.5rem;
-		background: var(--color-primary-50);
+		background: hsl(var(--color-primary) / 0.1);
 		border-radius: 0.5rem;
 		flex-shrink: 0;
 	}
+
+	/* .icon-primary {
+		color: hsl(var(--color-primary));
+	} */
 
 	.header-text {
 		flex: 1;
@@ -515,28 +517,51 @@
 	.sidebar-title {
 		font-size: 1.125rem;
 		font-weight: 600;
-		color: var(--color-base-content);
+		color: hsl(var(--color-base-content));
 		margin: 0 0 0.25rem 0;
 		line-height: 1.3;
 	}
 
 	.sidebar-description {
 		font-size: 0.875rem;
-		color: var(--color-base-content-secondary);
+		color: hsl(var(--color-neutral-content));
 		margin: 0;
 		line-height: 1.4;
 	}
 
 	.current-checkpoint {
 		font-weight: 500;
-		color: var(--color-primary);
+		color: hsl(var(--color-primary));
+	}
+
+	.close-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		background: transparent;
+		border: none;
+		border-radius: 50%;
+		color: hsl(var(--color-base-content));
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.close-btn:hover {
+		background: hsl(var(--color-base-200));
+	}
+
+	.close-btn:focus {
+		outline: 2px solid hsl(var(--color-primary));
+		outline-offset: 2px;
 	}
 
 	/* Status Section */
 	.status-section {
 		padding: 1rem 1.5rem;
-		border-bottom: 1px solid var(--color-base-200);
-		background: var(--color-base-50);
+		border-bottom: 1px solid hsl(var(--color-base-200));
+		background: hsl(var(--color-base-100) / 0.8);
 	}
 
 	.status-message {
@@ -548,26 +573,50 @@
 		padding: 0.5rem 0;
 	}
 
-	.status-message.creating {
-		color: var(--color-primary);
-	}
-
-	.status-message.renaming {
-		color: var(--color-primary);
-	}
-
+	.status-message.creating,
+	.status-message.renaming,
 	.status-message.duplicating {
-		color: var(--color-primary);
+		color: hsl(var(--color-primary));
 	}
 
 	.status-message.deleting {
-		color: var(--color-error);
+		color: hsl(var(--color-error));
+	}
+
+	/* Spinner */
+	.spinner {
+		width: 1rem;
+		height: 1rem;
+		border: 2px solid hsl(var(--color-base-300));
+		border-top: 2px solid currentColor;
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+	}
+
+	.spinner-sm {
+		width: 0.875rem;
+		height: 0.875rem;
+	}
+
+	.spinner-xs {
+		width: 0.75rem;
+		height: 0.75rem;
+		border-width: 1.5px;
+	}
+
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
 	}
 
 	/* Create Section */
 	.create-section {
 		padding: 1.5rem;
-		border-bottom: 1px solid var(--color-base-200);
+		border-bottom: 1px solid hsl(var(--color-base-200));
 	}
 
 	.create-form {
@@ -576,10 +625,138 @@
 		gap: 1rem;
 	}
 
+	.form-control {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.form-label {
+		display: block;
+		margin-bottom: 0.5rem;
+	}
+
+	.label-text {
+		font-weight: 600;
+		font-size: 0.875rem;
+		color: hsl(var(--color-base-content));
+	}
+
+	.form-input {
+		width: 100%;
+		padding: 0.75rem;
+		background: hsl(var(--color-base-000));
+		border: 1px solid hsl(var(--color-base-300));
+		border-radius: 0.375rem;
+		font-size: 0.875rem;
+		color: hsl(var(--color-base-content));
+		transition: all 0.2s ease;
+	}
+
+	.form-input:focus {
+		outline: none;
+		border-color: hsl(var(--color-primary));
+		box-shadow: 0 0 0 3px hsl(var(--color-primary) / 0.1);
+	}
+
+	.form-input::placeholder {
+		color: hsl(var(--color-base-400));
+	}
+
+	.form-input:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	.form-input-sm {
+		padding: 0.5rem;
+		font-size: 0.8125rem;
+	}
+
+	.form-actions {
+		display: flex;
+		gap: 0.5rem;
+	}
+
+	/* Buttons */
+	.primary-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 0.75rem 1rem;
+		background: hsl(var(--color-primary));
+		color: hsl(var(--color-primary-content));
+		border: 1px solid hsl(var(--color-primary));
+		border-radius: 0.375rem;
+		font-size: 0.875rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		text-decoration: none;
+	}
+
+	.primary-btn:hover:not(:disabled) {
+		background: hsl(var(--color-primary) / 0.9);
+	}
+
+	.primary-btn:focus {
+		outline: 2px solid hsl(var(--color-primary));
+		outline-offset: 2px;
+	}
+
+	.primary-btn:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	.secondary-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 0.75rem 1rem;
+		background: transparent;
+		color: hsl(var(--color-base-content));
+		border: 1px solid hsl(var(--color-base-300));
+		border-radius: 0.375rem;
+		font-size: 0.875rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.secondary-btn:hover:not(:disabled) {
+		background: hsl(var(--color-base-200));
+	}
+
+	.secondary-btn:focus {
+		outline: 2px solid hsl(var(--color-primary));
+		outline-offset: 2px;
+	}
+
+	.secondary-btn:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	.btn-sm {
+		padding: 0.375rem 0.75rem;
+		font-size: 0.8125rem;
+	}
+
+	.w-full {
+		width: 100%;
+	}
+
+	.flex-1 {
+		flex: 1;
+	}
+
 	.create-hint {
 		margin-top: 0.75rem;
 		font-size: 0.8125rem;
-		color: var(--color-base-content-tertiary);
+		color: hsl(var(--color-neutral-content));
 		line-height: 1.4;
 		font-style: italic;
 	}
@@ -602,8 +779,20 @@
 	.section-title {
 		font-size: 0.9375rem;
 		font-weight: 600;
-		color: var(--color-base-content);
+		color: hsl(var(--color-base-content));
 		margin: 0;
+	}
+
+	.counter-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.125rem 0.5rem;
+		background: hsl(var(--color-neutral));
+		color: hsl(var(--color-neutral-content));
+		border-radius: 9999px;
+		font-size: 0.75rem;
+		font-weight: 500;
 	}
 
 	.checkpoints-list {
@@ -617,21 +806,21 @@
 
 	/* Checkpoint Cards */
 	.checkpoint-card {
-		border: 1px solid var(--color-base-200);
+		border: 1px solid hsl(var(--color-base-200));
 		border-radius: 0.75rem;
-		background: var(--color-base-100);
+		background: hsl(var(--color-base-100));
 		transition: all 0.2s ease;
 	}
 
 	.checkpoint-card:hover {
-		border-color: var(--color-base-300);
+		border-color: hsl(var(--color-base-300));
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 	}
 
 	.checkpoint-card.current {
-		border-color: var(--color-primary);
-		background: var(--color-primary-50);
-		box-shadow: 0 0 0 1px rgba(var(--color-primary-rgb), 0.1);
+		border-color: hsl(var(--color-primary));
+		background: hsl(var(--color-primary) / 0.05);
+		box-shadow: 0 0 0 1px hsl(var(--color-primary) / 0.1);
 	}
 
 	.checkpoint-card.deleting {
@@ -654,10 +843,17 @@
 		cursor: pointer;
 		width: 100%;
 		transition: all 0.2s ease;
+		color: hsl(var(--color-base-content));
 	}
 
 	.checkpoint-main:hover:not(:disabled) {
 		opacity: 0.8;
+	}
+
+	.checkpoint-main:focus {
+		outline: 2px solid hsl(var(--color-primary));
+		outline-offset: 2px;
+		border-radius: 0.25rem;
 	}
 
 	.checkpoint-header {
@@ -671,9 +867,21 @@
 	.checkpoint-name {
 		font-size: 0.9375rem;
 		font-weight: 600;
-		color: var(--color-base-content);
+		color: hsl(var(--color-base-content));
 		line-height: 1.3;
 		flex: 1;
+	}
+
+	.current-badge {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.125rem 0.5rem;
+		background: hsl(var(--color-primary));
+		color: hsl(var(--color-primary-content));
+		border-radius: 9999px;
+		font-size: 0.75rem;
+		font-weight: 500;
+		flex-shrink: 0;
 	}
 
 	.checkpoint-meta {
@@ -690,7 +898,7 @@
 
 	.checkpoint-time {
 		font-size: 0.8125rem;
-		color: var(--color-base-content-secondary);
+		color: hsl(var(--color-neutral-content));
 	}
 
 	.checkpoint-time.created {
@@ -699,7 +907,7 @@
 
 	.checkpoint-time.edited {
 		font-weight: 500;
-		color: var(--color-primary);
+		color: hsl(var(--color-primary));
 	}
 
 	.checkpoint-actions {
@@ -707,7 +915,7 @@
 		align-items: center;
 		gap: 0.25rem;
 		padding-top: 0.5rem;
-		border-top: 1px solid var(--color-base-200);
+		border-top: 1px solid hsl(var(--color-base-200));
 	}
 
 	.action-btn {
@@ -721,21 +929,26 @@
 		border-radius: 0.375rem;
 		cursor: pointer;
 		transition: all 0.2s ease;
-		color: var(--color-base-content-secondary);
+		color: hsl(var(--color-neutral-content));
 	}
 
 	.action-btn:hover:not(:disabled) {
-		background: var(--color-base-200);
-		color: var(--color-base-content);
+		background: hsl(var(--color-base-200));
+		color: hsl(var(--color-base-content));
+	}
+
+	.action-btn:focus {
+		outline: 2px solid hsl(var(--color-primary));
+		outline-offset: 2px;
 	}
 
 	.action-btn.delete {
-		color: var(--color-error-secondary);
+		color: hsl(var(--color-error));
 	}
 
 	.action-btn.delete:hover:not(:disabled) {
-		background: var(--color-error-50);
-		color: var(--color-error);
+		background: hsl(var(--color-error) / 0.1);
+		color: hsl(var(--color-error));
 	}
 
 	.action-btn:disabled {
@@ -761,12 +974,12 @@
 	}
 
 	.checkpoints-list::-webkit-scrollbar-thumb {
-		background: var(--color-base-300);
+		background: hsl(var(--color-base-300));
 		border-radius: 3px;
 	}
 
 	.checkpoints-list::-webkit-scrollbar-thumb:hover {
-		background: var(--color-base-400);
+		background: hsl(var(--color-base-400));
 	}
 
 	/* Mobile Responsiveness */
@@ -790,20 +1003,81 @@
 		.section-header {
 			padding: 0.75rem 1rem 0.5rem 1rem;
 		}
+
+		.form-actions {
+			flex-direction: column;
+		}
+
+		.checkpoint-actions {
+			justify-content: center;
+		}
+	}
+
+	/* Touch handling */
+	.primary-btn,
+	.secondary-btn,
+	.action-btn,
+	.close-btn,
+	.checkpoint-main {
+		-webkit-tap-highlight-color: transparent;
+		touch-action: manipulation;
+	}
+
+	/* High contrast mode support */
+	@media (prefers-contrast: high) {
+		.checkpoint-sidebar {
+			border-left-width: 2px;
+		}
+
+		.sidebar-header {
+			border-bottom-width: 2px;
+		}
+
+		.checkpoint-card {
+			border-width: 2px;
+		}
+
+		.form-input {
+			border-width: 2px;
+		}
+
+		.primary-btn,
+		.secondary-btn {
+			border-width: 2px;
+		}
+	}
+
+	/* Reduced motion support */
+	@media (prefers-reduced-motion: reduce) {
+		* {
+			transition: none !important;
+			animation: none !important;
+		}
+	}
+
+	/* Focus visible for better accessibility */
+	.primary-btn:focus-visible,
+	.secondary-btn:focus-visible,
+	.action-btn:focus-visible,
+	.close-btn:focus-visible,
+	.checkpoint-main:focus-visible,
+	.form-input:focus-visible {
+		outline: 2px solid hsl(var(--color-primary));
+		outline-offset: 2px;
 	}
 
 	/* Dark mode adjustments */
 	@media (prefers-color-scheme: dark) {
 		.sidebar-header {
-			background: var(--color-base-200);
+			background: hsl(var(--color-base-200));
 		}
 
 		.status-section {
-			background: var(--color-base-200);
+			background: hsl(var(--color-base-200));
 		}
 
 		.checkpoint-card.current {
-			background: rgba(var(--color-primary-rgb), 0.1);
+			background: hsl(var(--color-primary) / 0.1);
 		}
 	}
 </style>

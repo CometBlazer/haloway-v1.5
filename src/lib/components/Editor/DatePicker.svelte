@@ -121,14 +121,14 @@
 	onDestroy(() => picker?.destroy());
 </script>
 
-<div class="relative inline-block" bind:this={containerEl}>
+<div class="date-picker-container" bind:this={containerEl}>
 	<button
 		bind:this={buttonEl}
 		type="button"
-		class="btn btn-sm md:btn-md btn-soft rounded-full {buttonColor} flex justify-start pl-4"
+		class="date-picker-btn {buttonColor}"
 		on:click={toggleCalendar}
 	>
-		<AlarmClock class="mr-1 h-4 w-4" />
+		<AlarmClock class="icon" />
 		{buttonText}
 	</button>
 
@@ -136,11 +136,103 @@
 </div>
 
 <style>
+	.date-picker-container {
+		position: relative;
+		display: inline-block;
+	}
+
+	.date-picker-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: flex-start;
+		gap: 0.25rem;
+		padding: 0.375rem 1rem;
+		border: 1px solid;
+		border-radius: 9999px;
+		font-size: 0.875rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		background: hsl(var(--color-base-000));
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+		white-space: nowrap;
+	}
+
+	@media (min-width: 768px) {
+		.date-picker-btn {
+			padding: 0.5rem 1rem;
+			font-size: 0.875rem;
+		}
+	}
+
+	.date-picker-btn:hover {
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	}
+
+	.date-picker-btn:focus {
+		outline: 2px solid hsl(var(--color-primary));
+		outline-offset: 2px;
+	}
+
+	.date-picker-btn:active {
+		transform: translateY(0);
+	}
+
+	.icon {
+		width: 1rem;
+		height: 1rem;
+		flex-shrink: 0;
+	}
+
+	/* Button color variants */
+	.btn-primary {
+		background: hsl(var(--color-primary));
+		color: hsl(var(--color-primary-content));
+		border-color: hsl(var(--color-primary));
+	}
+
+	.btn-primary:hover {
+		background: hsl(var(--color-primary) / 0.9);
+	}
+
+	.btn-warning {
+		background: hsl(var(--color-warning));
+		color: hsl(var(--color-warning-content));
+		border-color: hsl(var(--color-warning));
+	}
+
+	.btn-warning:hover {
+		background: hsl(var(--color-warning) / 0.9);
+	}
+
+	.btn-error {
+		background: hsl(var(--color-error));
+		color: hsl(var(--color-error-content));
+		border-color: hsl(var(--color-error));
+	}
+
+	.btn-error:hover {
+		background: hsl(var(--color-error) / 0.9);
+	}
+
+	.btn-info {
+		background: hsl(var(--color-info));
+		color: hsl(var(--color-info-content));
+		border-color: hsl(var(--color-info));
+	}
+
+	.btn-info:hover {
+		background: hsl(var(--color-info) / 0.9);
+	}
+
+	/* Pikaday Calendar Styling */
 	:global(.pika-title) {
 		background: transparent !important;
 		border: none !important;
 		box-shadow: none !important;
 	}
+
 	:global(.pika-label),
 	:global(.pika-select-month),
 	:global(.pika-select-year) {
@@ -149,99 +241,171 @@
 		box-shadow: none !important;
 	}
 
-	/* dark-mode Pikaday header selects */
+	/* Dark-mode Pikaday header selects */
 	:global(html.dark .pika-single .pika-title select),
 	:global(html.dark .pika-single .pika-select-month),
 	:global(html.dark .pika-single .pika-select-year) {
-		background-color: var(--color-base-200) !important;
-		color: var(--color-base-content) !important;
-		border: 1px solid var(--color-base-300) !important;
+		background-color: hsl(var(--color-base-200)) !important;
+		color: hsl(var(--color-base-content)) !important;
+		border: 1px solid hsl(var(--color-base-300)) !important;
 		box-shadow: none !important;
-		/* remove the system arrow background on WebKit/Edge if desired */
 		-webkit-appearance: none !important;
 		-moz-appearance: none !important;
 		appearance: none !important;
 	}
 
-	/* if you want the dropdown arrow icon itself to invert in WebKit */
 	:global(html.dark .pika-single .pika-title select::-ms-expand) {
 		filter: invert(1) !important;
 	}
 
 	:global(.pika-single) {
-		background: var(--color-base-100);
-		border: 1px solid var(--color-base-300);
-		border-radius: 0.75rem;
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-		font-family: var(--font-sans);
-		padding: 0.75rem;
-		width: max-content;
-		margin-top: 0.5rem;
+		background: hsl(var(--color-base-100)) !important;
+		border: 1px solid hsl(var(--color-base-300)) !important;
+		border-radius: 0.75rem !important;
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+		font-family: var(--font-sans) !important;
+		padding: 0.75rem !important;
+		width: max-content !important;
+		margin-top: 0.5rem !important;
 	}
 
 	:global(.pika-title) {
-		margin-bottom: 0.5rem;
-		text-align: center;
-		font-weight: 500;
-		font-size: 1rem;
-		color: var(--color-base-content);
+		margin-bottom: 0.5rem !important;
+		text-align: center !important;
+		font-weight: 500 !important;
+		font-size: 1rem !important;
+		color: hsl(var(--color-base-content)) !important;
 	}
 
 	:global(.pika-prev),
 	:global(.pika-next) {
-		color: var(--color-base-content) !important;
-		transition: color 0.2s ease;
+		color: hsl(var(--color-base-content)) !important;
+		transition: color 0.2s ease !important;
 	}
 
 	:global(.pika-prev:hover),
 	:global(.pika-next:hover) {
-		color: var(--color-base-content) !important;
+		color: hsl(var(--color-base-content)) !important;
 	}
 
 	:global(.pika-table) {
-		width: 100%;
-		border-collapse: collapse;
+		width: 100% !important;
+		border-collapse: collapse !important;
 	}
 
 	:global(.pika-table th) {
-		color: var(--color-base-content);
-		font-size: 0.75rem;
-		font-weight: 500;
-		padding-bottom: 0.25rem;
+		color: hsl(var(--color-base-content)) !important;
+		font-size: 0.75rem !important;
+		font-weight: 500 !important;
+		padding-bottom: 0.25rem !important;
 	}
 
 	:global(.pika-button) {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 2.25rem;
-		height: 2.25rem;
+		display: inline-flex !important;
+		align-items: center !important;
+		justify-content: center !important;
+		width: 2.25rem !important;
+		height: 2.25rem !important;
 		border-radius: 0.75rem !important;
-		font-size: 0.875rem;
-		background-color: var(--color-base-100);
-		font-weight: 500;
-		color: var(--color-base-content);
-		transition: background 0.2s ease;
-		border: none;
+		font-size: 0.875rem !important;
+		background-color: hsl(var(--color-base-100)) !important;
+		font-weight: 500 !important;
+		color: hsl(var(--color-base-content)) !important;
+		transition: background 0.2s ease !important;
+		border: none !important;
 	}
 
 	:global(.pika-button:hover) {
-		background-color: var(--color-base-300) !important;
-		color: var(--color-base-content) !important;
+		background-color: hsl(var(--color-base-300)) !important;
+		color: hsl(var(--color-base-content)) !important;
 	}
 
 	:global(.pika-button.is-selected) {
-		background-color: var(--color-primary) !important;
-		color: var(--color-primary-content) !important;
+		background-color: hsl(var(--color-primary)) !important;
+		color: hsl(var(--color-primary-content)) !important;
 	}
 
 	:global(.pika-button.is-today) {
-		background-color: var(--color-warning-content) !important;
-		color: var(--color-warning) !important;
+		background-color: hsl(var(--color-warning-content)) !important;
+		color: hsl(var(--color-warning)) !important;
 	}
 
 	:global(.pika-button.is-disabled) {
-		color: var(--color-base-300) !important;
-		pointer-events: none;
+		color: hsl(var(--color-base-300)) !important;
+		pointer-events: none !important;
+	}
+
+	/* Mobile responsiveness */
+	@media (max-width: 768px) {
+		.date-picker-btn {
+			font-size: 0.8125rem;
+			padding: 0.25rem 0.75rem;
+		}
+
+		.icon {
+			width: 0.875rem;
+			height: 0.875rem;
+		}
+
+		:global(.pika-single) {
+			font-size: 0.875rem !important;
+			padding: 0.5rem !important;
+		}
+
+		:global(.pika-button) {
+			width: 2rem !important;
+			height: 2rem !important;
+			font-size: 0.8125rem !important;
+		}
+	}
+
+	/* Touch handling */
+	.date-picker-btn {
+		-webkit-tap-highlight-color: transparent;
+		touch-action: manipulation;
+	}
+
+	/* High contrast mode support */
+	@media (prefers-contrast: high) {
+		.date-picker-btn {
+			border-width: 2px;
+		}
+
+		:global(.pika-single) {
+			border-width: 2px !important;
+		}
+
+		:global(.pika-button) {
+			border: 1px solid hsl(var(--color-base-400)) !important;
+		}
+	}
+
+	/* Reduced motion support */
+	@media (prefers-reduced-motion: reduce) {
+		.date-picker-btn {
+			transition: none !important;
+		}
+
+		:global(.pika-button) {
+			transition: none !important;
+		}
+
+		:global(.pika-prev),
+		:global(.pika-next) {
+			transition: none !important;
+		}
+	}
+
+	/* Focus visible for better accessibility */
+	.date-picker-btn:focus-visible {
+		outline: 2px solid hsl(var(--color-primary));
+		outline-offset: 2px;
+	}
+
+	/* Enhanced calendar styling for dark mode */
+	@media (prefers-color-scheme: dark) {
+		:global(.pika-single) {
+			box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+		}
 	}
 </style>

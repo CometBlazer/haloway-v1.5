@@ -269,16 +269,18 @@
 		container-type: inline-size;
 		container-name: document-header;
 		width: 100%;
-		background: var(--color-base-000);
+		background: hsl(var(--color-base-000));
 		border-radius: 1.125rem;
-		/* box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); */
 		padding: 1.5rem;
-		border: 1px solid var(--color-base-300);
+		border: 1px solid hsl(var(--color-base-300));
 		transition: all 0.3s ease;
+		box-shadow:
+			0 1px 3px 0 rgb(0 0 0 / 0.1),
+			0 1px 2px -1px rgb(0 0 0 / 0.1);
 	}
 
 	.document-header.zen-mode {
-		background: var(--color-base-100);
+		background: hsl(var(--color-base-100));
 		border-radius: 0;
 		padding: 0;
 		box-shadow: none;
@@ -293,8 +295,8 @@
 		gap: 1rem;
 		margin-bottom: 1.5rem;
 		padding: 0.75rem 1rem;
-		background: var(--color-base-50);
-		/* border: 1px solid var(--color-base-200); */
+		background: hsl(var(--color-base-100) / 0.8);
+		border: 1px solid hsl(var(--color-base-200));
 		border-radius: 0.875rem;
 		backdrop-filter: blur(8px);
 		position: relative;
@@ -302,11 +304,11 @@
 	}
 
 	.zen-mode .control-bar {
-		background: var(--color-base-100);
-		border-color: var(--color-base-300);
+		background: hsl(var(--color-base-100));
+		border-color: hsl(var(--color-base-300));
 		margin-bottom: 1rem;
 		padding: 0.5rem 0.75rem;
-		overflow: visible; /* Allow dropdowns to show */
+		overflow: visible;
 	}
 
 	.control-group {
@@ -327,8 +329,8 @@
 		display: flex;
 		align-items: center;
 		position: relative;
-		z-index: auto; /* Remove high z-index */
-		overflow: visible; /* Allow dropdowns to show */
+		z-index: auto;
+		overflow: visible;
 	}
 
 	/* Enhanced Control Button Styles */
@@ -337,27 +339,27 @@
 		align-items: center;
 		gap: 0.5rem;
 		padding: 0.625rem 0.875rem;
-		background: var(--color-base-000);
-		border: 1px solid var(--color-base-300);
+		background: hsl(var(--color-base-000));
+		border: 1px solid hsl(var(--color-base-300));
 		border-radius: 0.625rem;
 		cursor: pointer;
 		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 		font-size: 0.8125rem;
 		font-weight: 500;
-		color: var(--color-base-content);
+		color: hsl(var(--color-base-content));
 		white-space: nowrap;
 		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 	}
 
 	.control-btn:hover {
-		background: var(--color-base-100);
-		border-color: var(--color-primary-300);
+		background: hsl(var(--color-base-100));
+		border-color: hsl(var(--color-primary));
 		transform: translateY(-1px);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 	}
 
 	.control-btn:focus {
-		outline: 2px solid var(--color-primary);
+		outline: 2px solid hsl(var(--color-primary));
 		outline-offset: 2px;
 	}
 
@@ -387,16 +389,18 @@
 		font-size: 0.7rem;
 		font-weight: 600;
 		line-height: 1;
-		opacity: 0.8;
+		color: hsl(var(--color-neutral-content));
 		margin-bottom: 0.125rem;
 		text-transform: uppercase;
 		letter-spacing: 0.025em;
+		opacity: 0.8;
 	}
 
 	.current-checkpoint {
 		font-size: 0.75rem;
 		font-weight: 500;
 		line-height: 1.2;
+		color: hsl(var(--color-base-content));
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -438,20 +442,20 @@
 	}
 
 	.title-button:hover {
-		background: var(--color-base-100);
-		border-color: var(--color-primary);
+		background: hsl(var(--color-base-100));
+		border-color: hsl(var(--color-primary));
 	}
 
 	.title-button:focus {
 		outline: none;
-		background: var(--color-base-100);
-		border-color: var(--color-primary);
+		background: hsl(var(--color-base-100));
+		border-color: hsl(var(--color-primary));
 	}
 
 	.document-title {
 		font-size: 2rem;
 		font-weight: 700;
-		color: var(--color-base-content);
+		color: hsl(var(--color-base-content));
 		margin: 0;
 		line-height: 1.2;
 	}
@@ -459,7 +463,7 @@
 	.edit-icon {
 		width: 1.25rem;
 		height: 1.25rem;
-		color: var(--color-base-content);
+		color: hsl(var(--color-base-content));
 		opacity: 0;
 		transition: opacity 0.2s ease;
 	}
@@ -477,16 +481,17 @@
 		width: 100%;
 		font-size: 2rem;
 		font-weight: 700;
-		color: var(--color-base-content);
-		background: var(--color-base-100);
-		border: 2px solid var(--color-primary);
+		color: hsl(var(--color-base-content));
+		background: hsl(var(--color-base-100));
+		border: 2px solid hsl(var(--color-primary));
 		border-radius: 0.75rem;
 		padding: 0.75rem 1rem;
 		outline: none;
 		transition: all 0.2s ease;
 	}
+
 	.title-input::placeholder {
-		color: var(--color-base-400);
+		color: hsl(var(--color-base-400));
 		font-weight: 400;
 		font-style: italic;
 	}
@@ -508,14 +513,14 @@
 	}
 
 	.prompt-button:hover {
-		background: var(--color-base-50);
-		border-color: var(--color-primary);
+		background: hsl(var(--color-base-100) / 0.5);
+		border-color: hsl(var(--color-primary));
 	}
 
 	.prompt-button:focus {
 		outline: none;
-		background: var(--color-base-50);
-		border-color: var(--color-primary);
+		background: hsl(var(--color-base-100) / 0.5);
+		border-color: hsl(var(--color-primary));
 	}
 
 	.prompt-content {
@@ -528,7 +533,7 @@
 	.prompt-text {
 		font-size: 1rem;
 		line-height: 1.6;
-		color: var(--color-base-content);
+		color: hsl(var(--color-base-content));
 		white-space: pre-wrap;
 		flex: 1;
 	}
@@ -537,7 +542,7 @@
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
-		color: var(--color-base-400);
+		color: hsl(var(--color-base-400));
 		font-style: italic;
 		flex: 1;
 	}
@@ -550,7 +555,7 @@
 	.edit-icon-small {
 		width: 0.875rem;
 		height: 0.875rem;
-		color: var(--color-base-content-secondary);
+		color: hsl(var(--color-neutral-content));
 		opacity: 0;
 		transition: opacity 0.2s ease;
 		flex-shrink: 0;
@@ -570,9 +575,9 @@
 		min-height: 120px;
 		font-size: 0.9375rem;
 		line-height: 1.6;
-		color: var(--color-base-content);
-		background: var(--color-base-100);
-		border: 2px solid var(--color-primary);
+		color: hsl(var(--color-base-content));
+		background: hsl(var(--color-base-100));
+		border: 2px solid hsl(var(--color-primary));
 		border-radius: 0.75rem;
 		padding: 1rem;
 		outline: none;
@@ -581,7 +586,7 @@
 	}
 
 	.prompt-textarea::placeholder {
-		color: var(--color-base-400);
+		color: hsl(var(--color-base-400));
 	}
 
 	.input-hint {
@@ -590,13 +595,14 @@
 		left: 0;
 		margin-top: 0.5rem;
 		font-size: 0.75rem;
-		color: var(--color-base-content);
-		background: var(--color-base-100);
+		color: hsl(var(--color-base-content));
+		background: hsl(var(--color-base-100));
 		padding: 0.25rem 0.5rem;
 		border-radius: 0.375rem;
 		backdrop-filter: blur(4px);
-		border: 1px solid var(--color-base-300);
+		border: 1px solid hsl(var(--color-base-300));
 		z-index: 25;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	}
 
 	/* Container Query for medium-sized containers (tablet-like) */
@@ -844,44 +850,6 @@
 				font-size: 1.25rem;
 				padding: 0.5rem 0.625rem;
 			}
-		}
-	}
-
-	@media (prefers-color-scheme: dark) {
-		.document-header {
-			background: var(--color-base-000);
-			border-radius: 18px;
-			padding: 1.5rem;
-			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-			border-bottom-color: var(--color-base-300);
-			transition: all 0.3s ease;
-		}
-
-		.document-header.zen-mode {
-			background: var(--color-base-100);
-			border-radius: 0px;
-			padding: 0rem;
-			box-shadow: 0 1px 3px rgba(0, 0, 0, 0);
-		}
-
-		.control-bar {
-			background: var(--color-base-100);
-			border-color: var(--color-base-300);
-		}
-
-		.control-btn {
-			background: var(--color-base-000);
-			border-color: var(--color-base-400);
-		}
-
-		.control-btn:hover {
-			background: var(--color-base-200);
-			border-color: var(--color-primary-300);
-		}
-
-		.input-hint {
-			background: var(--color-base-100);
-			color: var(--color-neutral-content);
 		}
 	}
 
