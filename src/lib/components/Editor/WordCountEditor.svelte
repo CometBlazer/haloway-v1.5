@@ -1,4 +1,4 @@
-<!-- WordCountEditor.svelte -->
+<!-- src/lib/components/Editor/WordCountEditor.svelte -->
 <script lang="ts">
 	// import { Pencil } from "lucide-svelte"
 	import { createEventDispatcher } from 'svelte';

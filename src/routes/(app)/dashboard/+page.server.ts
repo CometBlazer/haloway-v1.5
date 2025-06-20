@@ -1,4 +1,4 @@
-// src/routes/(admin)/account/(menu)/+page.server.ts
+// src/routes/(app)/dashboard/+page.server.ts
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { supabase } from '$lib/supabase';

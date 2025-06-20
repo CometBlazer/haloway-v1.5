@@ -1,4 +1,4 @@
-<!-- src/routes/(admin)/dashboard/(menu)/write/[documentId]/[versionId]/VersionSidebar.svelte -->
+<!-- src/lib/components/Editor/VersionSidebar.svelte -->
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { createEventDispatcher } from 'svelte';

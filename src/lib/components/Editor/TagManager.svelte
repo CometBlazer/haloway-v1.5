@@ -1,4 +1,4 @@
-<!-- src/routes/(admin)/account/(menu)/write/[documentId]/[versionId]/TagManager.svelte -->
+<!-- src/lib/components/Editor/TagManager.svelte -->
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import type { ComponentTag } from '../../../DatabaseDefinitions';
