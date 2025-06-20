@@ -97,7 +97,8 @@
 							window.location.reload();
 						}
 					}, 1000);
-				},				onAuthError: () => {
+				},
+				onAuthError: () => {
 					goto('/login');
 				},
 			},
@@ -459,7 +460,8 @@
 				body: formData,
 			});
 
-			const result = await response.json();			if (response.ok && result.type === 'success' && result.data?.version) {
+			const result = await response.json();
+			if (response.ok && result.type === 'success' && result.data?.version) {
 				const version = result.data.version;
 				toastStore.show('Checkpoint saved successfully', 'success');
 				await goto(`/dashboard/write/${$page.params.documentId}/${version.id}`);
@@ -506,7 +508,8 @@
 		document.body.appendChild(form);
 
 		enhance(form, () => {
-			return async ({ result }: { result: ActionResult }) => {				if (result.type === 'success' && result.data?.version) {
+			return async ({ result }: { result: ActionResult }) => {
+				if (result.type === 'success' && result.data?.version) {
 					const version = result.data.version;
 					toastStore.show('Checkpoint created successfully', 'success');
 					goto(`/dashboard/write/${$page.params.documentId}/${version.id}`);
@@ -598,7 +601,8 @@
 		document.body.appendChild(form);
 
 		enhance(form, () => {
-			return async ({ result }: { result: ActionResult }) => {				if (result.type === 'success' && result.data?.version) {
+			return async ({ result }: { result: ActionResult }) => {
+				if (result.type === 'success' && result.data?.version) {
 					const version = result.data.version;
 					toastStore.show('Checkpoint duplicated successfully', 'success');
 					goto(`/dashboard/write/${$page.params.documentId}/${version.id}`);
@@ -634,7 +638,8 @@
 				if (result.type === 'success') {
 					toastStore.show('Checkpoint deleted successfully', 'success');
 
-					if (event.detail === $page.params.versionId) {						if (updatedVersions.length > 0) {
+					if (event.detail === $page.params.versionId) {
+						if (updatedVersions.length > 0) {
 							const sortedRemaining = [...updatedVersions].sort(
 								(a, b) =>
 									new Date(b.updated_at).getTime() -

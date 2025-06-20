@@ -86,7 +86,8 @@
 	function openDocument(
 		documentId: string,
 		currentVersion: DocumentVersion | null,
-	): void {		if (currentVersion?.id) {
+	): void {
+		if (currentVersion?.id) {
 			goto(`/dashboard/write/${documentId}/${currentVersion.id}`);
 		} else {
 			goto(`/dashboard/write/${documentId}`);
