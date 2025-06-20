@@ -11,48 +11,226 @@ export interface Database {
 		Tables: {
 			contact_messages: {
 				Row: {
-					email: string | null;
-					name: string | null;
-					subject: string | null;
 					id: string;
+					name: string | null;
+					email: string | null;
+					subject: string | null;
 					body: string | null;
+					created_at: Date | null;
 					updated_at: Date | null;
-					created_at: Date;
 				};
 				Insert: {
-					email?: string | null;
-					name?: string | null;
-					subject?: string | null;
 					id?: string;
+					name?: string | null;
+					email?: string | null;
+					subject?: string | null;
 					body?: string | null;
-					updated_at: Date | null;
-				};
-				Update: {
-					email: string | null;
-					name: string | null;
-					subject: string | null;
-					id: string;
-					body: string | null;
-					updated_at: Date | null;
-				};
-				Relationships: [];
-			};
-			profiles: {
-				Row: {
-					full_name: string | null;
-					id: string;
-					updated_at: string | null;
-					created_at: Date;
-				};
-				Insert: {
-					full_name?: string | null;
-					id: string;
+					created_at?: Date | null;
 					updated_at?: Date | null;
 				};
 				Update: {
-					full_name?: string | null;
 					id?: string;
-					updated_at?: string | null;
+					name?: string | null;
+					email?: string | null;
+					subject?: string | null;
+					body?: string | null;
+					created_at?: Date | null;
+					updated_at?: Date | null;
+				};
+				Relationships: [];
+			};
+			contact_requests: {
+				Row: {
+					id: string;
+					first_name: string | null;
+					last_name: string | null;
+					email: string | null;
+					phone: string | null;
+					company_name: string | null;
+					message_body: string | null;
+					updated_at: Date | null;
+				};
+				Insert: {
+					id?: string;
+					first_name?: string | null;
+					last_name?: string | null;
+					email?: string | null;
+					phone?: string | null;
+					company_name?: string | null;
+					message_body?: string | null;
+					updated_at?: Date | null;
+				};
+				Update: {
+					id?: string;
+					first_name?: string | null;
+					last_name?: string | null;
+					email?: string | null;
+					phone?: string | null;
+					company_name?: string | null;
+					message_body?: string | null;
+					updated_at?: Date | null;
+				};
+				Relationships: [];
+			};
+			document_tags: {
+				Row: {
+					document_id: string;
+					tag_id: string;
+					created_at: Date | null;
+					updated_at: Date | null;
+				};
+				Insert: {
+					document_id: string;
+					tag_id: string;
+					created_at: Date | null;
+					updated_at: Date | null;
+				};
+				Update: {
+					document_id?: string;
+					tag_id?: string;
+					created_at?: Date | null;
+					updated_at?: Date | null;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'document_tags_document_id_fkey';
+						columns: ['document_id'];
+						referencedRelation: 'documents';
+						referencedColumns: ['id'];
+					},
+					{
+						foreignKeyName: 'document_tags_tag_id_fkey';
+						columns: ['tag_id'];
+						referencedRelation: 'tags';
+						referencedColumns: ['id'];
+					},
+				];
+			};
+			document_versions: {
+				Row: {
+					id: string;
+					document_id: string | null;
+					content: Json;
+					created_by: string | null;
+					created_at: Date | null;
+					updated_at: Date | null; // Added updated_at field
+					version_name: string;
+				};
+				Insert: {
+					id?: string;
+					document_id?: string | null;
+					content: Json;
+					created_by?: string | null;
+					created_at?: Date | null;
+					updated_at?: Date | null;
+					version_name?: string;
+				};
+				Update: {
+					id?: string;
+					document_id?: string | null;
+					content?: Json;
+					created_by?: string | null;
+					created_at?: Date | null;
+					updated_at?: Date | null;
+					version_name?: string;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'document_versions_created_by_fkey';
+						columns: ['created_by'];
+						referencedRelation: 'users';
+						referencedColumns: ['id'];
+					},
+					{
+						foreignKeyName: 'document_versions_document_id_fkey';
+						columns: ['document_id'];
+						referencedRelation: 'documents';
+						referencedColumns: ['id'];
+					},
+				];
+			};
+			documents: {
+				Row: {
+					id: string;
+					user_id: string | null;
+					title: string | null;
+					prompt: string | null;
+					status: string | null;
+					due_date: Date | null;
+					created_at: Date | null;
+					updated_at: Date | null;
+					current_version_id: string | null;
+					word_count_limit: number | null; // Added word count limit field
+				};
+				Insert: {
+					id?: string;
+					user_id?: string | null;
+					title?: string | null;
+					prompt?: string | null;
+					status?: string | null;
+					due_date?: Date | null;
+					created_at?: Date | null;
+					updated_at?: Date | null;
+					current_version_id?: string | null;
+					word_count_limit?: number | null;
+				};
+				Update: {
+					id?: string;
+					user_id?: string | null;
+					title?: string | null;
+					prompt?: string | null;
+					status?: string | null;
+					due_date?: Date | null;
+					created_at?: Date | null;
+					updated_at?: Date | null;
+					current_version_id?: string | null;
+					word_count_limit?: number | null;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'documents_current_version_id_fkey';
+						columns: ['current_version_id'];
+						referencedRelation: 'document_versions';
+						referencedColumns: ['id'];
+					},
+					{
+						foreignKeyName: 'documents_user_id_fkey';
+						columns: ['user_id'];
+						referencedRelation: 'users';
+						referencedColumns: ['id'];
+					},
+				];
+			};
+			profiles: {
+				Row: {
+					id: string;
+					updated_at: Date | null;
+					full_name: string | null;
+					avatar_url: string | null;
+					grade: string | null;
+					dream_school: string | null;
+					referral_source: string | null;
+					unsubscribed: boolean;
+				};
+				Insert: {
+					id: string;
+					updated_at?: Date | null;
+					full_name?: string | null;
+					avatar_url?: string | null;
+					grade?: string | null;
+					dream_school?: string | null;
+					referral_source?: string | null;
+					unsubscribed: boolean;
+				};
+				Update: {
+					id?: string;
+					updated_at?: Date | null;
+					full_name?: string | null;
+					avatar_url?: string | null;
+					grade?: string | null;
+					dream_school?: string | null;
+					referral_source?: string | null;
+					unsubscribed?: boolean;
 				};
 				Relationships: [
 					{
@@ -65,20 +243,19 @@ export interface Database {
 			};
 			stripe_customers: {
 				Row: {
-					stripe_customer_id: string;
-					updated_at: Date | null;
 					user_id: string;
-					created_at: Date;
+					updated_at: Date | null;
+					stripe_customer_id: string | null;
 				};
 				Insert: {
-					stripe_customer_id: string;
-					updated_at?: Date | null;
 					user_id: string;
+					updated_at?: Date | null;
+					stripe_customer_id?: string | null;
 				};
 				Update: {
-					stripe_customer_id?: string;
-					updated_at?: Date | null;
 					user_id?: string;
+					updated_at?: Date | null;
+					stripe_customer_id?: string | null;
 				};
 				Relationships: [
 					{
@@ -89,54 +266,110 @@ export interface Database {
 					},
 				];
 			};
-			// TODO: we'll need to use that once we handle products nicely
-			// 	user_products: {
-			// 		Row: {
-			// 			user_id: string;
-			// 			stripe_product_id: string;
-			// 			type: 'payment' | 'subscription';
-			// 			created_at: Date;
-			// 			updated_at: Date | null;
-			// 		};
-			// 		Insert: {
-			// 			user_id: string;
-			// 			stripe_product_id: string;
-			// 			type: 'payment' | 'subscription';
-			// 			updated_at?: Date | null;
-			// 		};
-			// 		Update: {
-			// 			user_id?: string;
-			// 			stripe_product_id?: string;
-			// 			updated_at?: Date | null;
-			// 		};
-			// 		Relationships: [
-			// 			{
-			// 				foreignKeyName: 'user_products_user_id_fkey';
-			// 				columns: ['user_id'];
-			// 				referencedRelation: 'users';
-			// 				referencedColumns: ['id'];
-			// 			},
-			// 		];
-			// 	};
+			tags: {
+				Row: {
+					id: string;
+					type: string;
+					label: string;
+					created_at: Date | null;
+					updated_at: Date | null;
+					color: string;
+					created_by: string | null;
+				};
+				Insert: {
+					id?: string;
+					type: string;
+					label: string;
+					created_at?: Date | null;
+					updated_at?: Date | null;
+					color?: string;
+					created_by?: string | null;
+				};
+				Update: {
+					id?: string;
+					type?: string;
+					label?: string;
+					created_at?: Date | null;
+					updated_at?: Date | null;
+					color?: string;
+					created_by?: string | null;
+				};
+				Relationships: [];
+			};
+			user_products: {
+				Row: {
+					user_id: string;
+					type: string;
+					stripe_product_id: string;
+					created_at: Date;
+					updated_at: Date | null;
+				};
+				Insert: {
+					user_id: string;
+					type: string;
+					stripe_product_id: string;
+					created_at?: Date;
+					updated_at?: Date | null;
+				};
+				Update: {
+					user_id?: string;
+					type?: string;
+					stripe_product_id?: string;
+					created_at?: Date;
+					updated_at?: Date | null;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'user_products_user_id_fkey';
+						columns: ['user_id'];
+						referencedRelation: 'users';
+						referencedColumns: ['id'];
+					},
+				];
+			};
 		};
 		Views: {
 			[_ in never]: never;
 		};
 		Functions: {
 			user_password_set: {
-				Args: {
-					[_ in never]: never;
-				};
+				Args: Record<PropertyKey, never>;
 				Returns: boolean;
 			};
 		};
 		Enums: {
-			stripe_payment_mode: {
-				values: ['payment', 'subscription'];
-			};
+			[_ in never]: never;
 		};
 		CompositeTypes: {
 			[_ in never]: never;
 		};
 	};
+}
+
+// Additional type helpers for your components
+export type DocumentVersion =
+	Database['public']['Tables']['document_versions']['Row'];
+export type Document = Database['public']['Tables']['documents']['Row'];
+export type Tag = Database['public']['Tables']['tags']['Row'];
+
+// Type for your component usage (with field transformations)
+export interface ComponentTag {
+	id: string;
+	name: string; // Transformed from 'label'
+	color: string;
+	type?: string;
+	created_at?: Date | null;
+	updated_at?: Date | null;
+	created_by?: string | null;
+}
+
+// Type for version data as used in your components - updated to include updated_at, removed word_count
+export interface ComponentVersion {
+	id: string;
+	version_name: string;
+	created_at: string; // ISO string for component usage
+	updated_at: string; // Added updated_at field
+	created_by: string;
+	document_id?: string | null;
+	content?: Json;
 }

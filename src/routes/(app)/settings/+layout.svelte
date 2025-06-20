@@ -22,12 +22,12 @@
 			>
 				Security
 			</NavLink>
-			<NavLink
+			<!-- <NavLink
 				href="/settings/billing"
 				activeClass="font-semibold text-primary"
 			>
 				Billing
-			</NavLink>
+			</NavLink> -->
 		</nav>
 		<div class="flex flex-1 flex-col gap-6">
 			<slot />

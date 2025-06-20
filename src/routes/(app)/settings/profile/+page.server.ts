@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	if (user) {
 		const { data, error } = await locals.supabase
 			.from('profiles')
-			.select('full_name')
+			.select('full_name, grade, dream_school, referral_source, unsubscribed')
 			.eq('id', user.id)
 			.single();
 		if (error) {
@@ -38,7 +38,23 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	return {
 		emailForm: await superValidate(user, zod(emailFormSchema)),
-		infoForm: await superValidate(info, zod(infoFormSchema)),
+		infoForm: await superValidate(
+			{
+				full_name: info?.full_name || '',
+				grade: (info?.grade as '9' | '10' | '11' | '12' | 'other') || undefined,
+				dream_school: info?.dream_school || '',
+				referral_source:
+					(info?.referral_source as
+						| 'friend'
+						| 'social_media'
+						| 'search'
+						| 'school'
+						| 'ad'
+						| 'other') || undefined,
+				subscribed_to_emails: !info?.unsubscribed, // Convert unsubscribed to subscribed_to_emails
+			},
+			zod(infoFormSchema),
+		),
 		deleteAccountForm:
 			passwordSet && (await superValidate(zod(deleteAccountFormSchema))),
 	};
@@ -89,11 +105,21 @@ export const actions = {
 			});
 		}
 
-		const { full_name } = form.data;
+		const {
+			full_name,
+			grade,
+			dream_school,
+			referral_source,
+			subscribed_to_emails,
+		} = form.data;
 
 		const { error } = await supabase.from('profiles').upsert({
 			id: user.id,
 			full_name,
+			grade,
+			dream_school: dream_school || null,
+			referral_source,
+			unsubscribed: !subscribed_to_emails, // Convert subscribed_to_emails back to unsubscribed
 			updated_at: new Date(),
 		});
 
@@ -141,7 +167,7 @@ export const actions = {
 			.eq('user_id', user.id)
 			.single();
 
-		if (error) {
+		if (error || !customer?.stripe_customer_id) {
 			console.error('Error fetching stripe customer:', error);
 			return fail(500, {
 				errorMessage: 'Unknown error. If this persists please contact us.',

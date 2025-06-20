@@ -4,7 +4,7 @@
   import { createEventDispatcher } from "svelte"
   import { formatDistanceToNow } from "date-fns"
   import { Bookmark, X, History, Edit2, Copy, Trash2 } from "lucide-svelte"
-  import type { ComponentVersion } from "../../../../../../../DatabaseDefinitions"
+  import type { ComponentVersion } from "./../../../../../../DatabaseDefinitions"
   import { enhance } from "$app/forms"
 
   export let documentId: string
