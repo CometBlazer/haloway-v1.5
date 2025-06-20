@@ -1,6 +1,5 @@
-// src/routes/(app)/dashboard/+page.server.ts
-import { error } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
+import { error, fail } from '@sveltejs/kit';
+import type { PageServerLoad, Actions } from './$types';
 import { supabase } from '$lib/supabase';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -107,6 +106,68 @@ export const actions = {
 
 		if (deleteError) {
 			throw error(500, `Failed to delete document: ${deleteError.message}`);
+		}
+
+		return { success: true };
+	},
+
+	updateProfile: async ({ request, locals }) => {
+		const { session } = await locals.safeGetSession();
+		if (!session?.user?.id) {
+			return fail(401, { errorMessage: 'Unauthorized' });
+		}
+
+		const formData = await request.formData();
+		const fullName = formData.get('fullName') as string;
+		const grade = formData.get('grade') as string;
+		const referralSource = formData.get('referralSource') as string;
+		const dreamSchool = formData.get('dreamSchool') as string;
+
+		// Validation
+		const errorFields: string[] = [];
+
+		if (!fullName?.trim()) {
+			errorFields.push('fullName');
+		}
+		if (!grade?.trim()) {
+			errorFields.push('grade');
+		}
+		if (!referralSource?.trim()) {
+			errorFields.push('referralSource');
+		}
+
+		if (errorFields.length > 0) {
+			return fail(400, {
+				errorMessage: 'Please fill in all required fields',
+				errorFields,
+				fullName,
+				grade,
+				referralSource,
+				dreamSchool,
+			});
+		}
+
+		// Update profile
+		const { error: updateError } = await locals.supabaseServiceRole
+			.from('profiles')
+			.update({
+				full_name: fullName.trim(),
+				grade: grade.trim(),
+				referral_source: referralSource.trim(),
+				dream_school: dreamSchool?.trim() || null,
+				updated_at: new Date(),
+			})
+			.eq('id', session.user.id);
+
+		if (updateError) {
+			console.error('Failed to update profile:', updateError);
+			return fail(500, {
+				errorMessage: 'Failed to update profile. Please try again.',
+				fullName,
+				grade,
+				referralSource,
+				dreamSchool,
+			});
 		}
 
 		return { success: true };

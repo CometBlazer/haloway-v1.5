@@ -11,7 +11,7 @@
 		Loader2,
 		Clock,
 	} from 'lucide-svelte';
-	import type { PageData } from './$types';
+	import type { PageData, ActionData } from './$types';
 	import { WebsiteBaseUrl, WebsiteName } from '../../../config';
 	import { toastStore } from '$lib/stores/toast';
 	import { enhance } from '$app/forms';
@@ -24,13 +24,30 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Alert from '$lib/components/ui/alert';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
+	import CompleteProfileModal from '$lib/components/CompleteProfileModal.svelte';
 
 	export let data: PageData;
+	export let form: ActionData;
 
 	// Modal state
 	let showDeleteModal = false;
 	let isDeleting = false;
 	let documentToDelete: { id: string; title: string } | null = null;
+
+	// Profile completion modal state
+	let showProfileModal = !data.profileComplete;
+
+	// Handle profile completion
+	function handleProfileCompleted() {
+		showProfileModal = false;
+		// Refresh the page to update the profile data
+		goto('/dashboard', { replaceState: true, noScroll: true });
+	}
+
+	// Watch for successful form submission
+	$: if (form?.success && showProfileModal) {
+		handleProfileCompleted();
+	}
 
 	// Type definitions
 	interface DocumentVersion {
@@ -449,6 +466,17 @@
 		{/if}
 	</Dialog.Content>
 </Dialog.Root>
+
+<!-- Complete Profile Modal -->
+{#if showProfileModal}
+	<CompleteProfileModal
+		bind:open={showProfileModal}
+		userEmail={data.user?.email || ''}
+		{form}
+		profile={data.profile}
+		on:completed={handleProfileCompleted}
+	/>
+{/if}
 
 <style>
 	/* Utility classes for line clamping with proper browser support */
