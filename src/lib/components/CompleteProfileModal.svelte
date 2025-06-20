@@ -34,6 +34,7 @@
 	export let userEmail = '';
 	export let form: FormResult = null;
 	export let profile: Profile = null;
+	export let showCloseButton = false;
 
 	const dispatch = createEventDispatcher();
 
@@ -111,7 +112,10 @@
 </script>
 
 <Dialog.Root bind:open closeOnEscape={false} closeOnOutsideClick={false}>
-	<Dialog.Content class="max-h-[90vh] max-w-2xl overflow-y-auto">
+	<Dialog.Content
+		class="max-h-[90vh] max-w-2xl overflow-y-auto"
+		{showCloseButton}
+	>
 		<div class="space-y-6 p-6">
 			<!-- Header with progress -->
 			<div class="space-y-4 text-center">
