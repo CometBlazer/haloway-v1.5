@@ -1120,9 +1120,12 @@
 
 	/* Fix: Removed empty CSS rulesets that were causing warnings */
 	/* The original empty rules for .editor-content and .zen-mode-active have been removed */
-	/* Style for the .editor-content wrapper itself, if needed */
+	/* If you need to style the editor content wrapper in zen mode, uncomment and add styles: */
+	/* 
 	.editor-content {
-		/* If you want to visually distinguish zen mode on the container: */
-		/* &.zen-mode-active :global(.tiptap) { ... } */
+		&.zen-mode-active :global(.tiptap) { 
+			// Add zen mode styles here
+		}
 	}
+	*/
 </style>

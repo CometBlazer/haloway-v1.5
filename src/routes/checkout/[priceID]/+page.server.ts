@@ -37,7 +37,7 @@ export const load: PageServerLoad = async ({
 		.eq('user_id', user.id);
 
 	let customer: string;
-	if (results && results.length > 0) {
+	if (results && results.length > 0 && results[0].stripe_customer_id) {
 		customer = results[0].stripe_customer_id;
 	} else {
 		const { id } = await stripe.customers.create({

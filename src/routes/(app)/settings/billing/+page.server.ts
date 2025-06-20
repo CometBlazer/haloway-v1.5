@@ -22,8 +22,8 @@ export const load: PageServerLoad = async ({
 		.limit(1)
 		.single();
 
-	if (error) {
-		console.error(error);
+	if (error || !stripeCustomer?.stripe_customer_id) {
+		console.error(error || 'No stripe customer ID found');
 		return { products };
 	}
 
