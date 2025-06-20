@@ -115,6 +115,7 @@ export interface Database {
 					created_at: Date | null;
 					updated_at: Date | null; // Added updated_at field
 					version_name: string;
+					latest_ai_response: string | null; // Added latest_ai_response field
 				};
 				Insert: {
 					id?: string;
@@ -124,6 +125,7 @@ export interface Database {
 					created_at?: Date | null;
 					updated_at?: Date | null;
 					version_name?: string;
+					latest_ai_response?: string | null;
 				};
 				Update: {
 					id?: string;
@@ -133,6 +135,7 @@ export interface Database {
 					created_at?: Date | null;
 					updated_at?: Date | null;
 					version_name?: string;
+					latest_ai_response?: string | null;
 				};
 				Relationships: [
 					{
@@ -161,6 +164,7 @@ export interface Database {
 					updated_at: Date | null;
 					current_version_id: string | null;
 					word_count_limit: number | null; // Added word count limit field
+					school: string; // Added school field (non-null)
 				};
 				Insert: {
 					id?: string;
@@ -173,6 +177,7 @@ export interface Database {
 					updated_at?: Date | null;
 					current_version_id?: string | null;
 					word_count_limit?: number | null;
+					school?: string; // Optional on insert due to default value
 				};
 				Update: {
 					id?: string;
@@ -185,6 +190,7 @@ export interface Database {
 					updated_at?: Date | null;
 					current_version_id?: string | null;
 					word_count_limit?: number | null;
+					school?: string;
 				};
 				Relationships: [
 					{
@@ -372,4 +378,5 @@ export interface ComponentVersion {
 	created_by: string;
 	document_id?: string | null;
 	content?: Json;
+	latest_ai_response?: string | null; // Added latest_ai_response field
 }

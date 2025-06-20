@@ -2,6 +2,7 @@
 import { error, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { supabase } from '$lib/supabase';
+import { getDefaultSchool } from '$lib/utils/validation';
 
 export const actions = {
 	default: async ({ locals }) => {
@@ -18,6 +19,7 @@ export const actions = {
 			.insert({
 				title: '[List your school here and name your essay]',
 				user_id: session.user.id,
+				school: getDefaultSchool(), // Add default school value
 			})
 			.select()
 			.single();

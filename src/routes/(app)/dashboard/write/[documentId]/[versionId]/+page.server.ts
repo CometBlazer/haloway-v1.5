@@ -9,6 +9,7 @@ import type {
 	ComponentVersion,
 } from './../../../../../../DatabaseDefinitions.ts';
 import type { PostgrestError } from '@supabase/supabase-js';
+import { validateAndNormalizeSchool } from '$lib/utils/validation';
 
 type DocumentVersion = Database['public']['Tables']['document_versions']['Row'];
 type DocumentWithTags = Database['public']['Tables']['documents']['Row'] & {
@@ -188,16 +189,37 @@ export const actions: Actions = {
 		const wordCountLimit = formData.get('wordCountLimit') as string;
 		const status = formData.get('status') as string;
 		const dueDate = formData.get('dueDate') as string;
+		const school = formData.get('school') as string;
 		const documentId = params.documentId;
 
 		const updateData: Partial<
 			Pick<
 				Database['public']['Tables']['documents']['Update'],
-				'title' | 'prompt' | 'word_count_limit' | 'status' | 'due_date'
+				| 'title'
+				| 'prompt'
+				| 'word_count_limit'
+				| 'status'
+				| 'due_date'
+				| 'school'
 			>
 		> = {};
 
 		if (title !== null) updateData.title = title;
+		if (prompt !== null) updateData.prompt = prompt;
+		if (wordCountLimit !== null) {
+			const limit = parseInt(wordCountLimit, 10);
+			if (!isNaN(limit) && limit > 0 && limit <= 10000) {
+				updateData.word_count_limit = limit;
+			}
+		}
+		if (status !== null) updateData.status = status;
+		if (school !== null) {
+			try {
+				updateData.school = validateAndNormalizeSchool(school);
+			} catch {
+				return { error: 'School name must be at least 1 character long' };
+			}
+		}
 		if (prompt !== null) updateData.prompt = prompt;
 		if (wordCountLimit !== null) {
 			const limit = parseInt(wordCountLimit, 10);
