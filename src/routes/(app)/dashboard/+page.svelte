@@ -253,6 +253,9 @@
 	>
 		<div class="space-y-1">
 			<h1 class="text-3xl font-semibold tracking-tight">All Essays</h1>
+			<a href="/test" class="text-sm text-muted-foreground hover:underline"
+				>View your drafts</a
+			>
 			<p class="text-lg text-muted-foreground">
 				{documents.length} essay{documents.length !== 1 ? 's' : ''} total
 			</p>
