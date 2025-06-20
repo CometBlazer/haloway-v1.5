@@ -18,7 +18,11 @@
 
 	function toggleCalendar() {
 		if (!picker) return;
-		picker.isVisible() ? picker.hide() : picker.show();
+		if (picker.isVisible()) {
+			picker.hide();
+		} else {
+			picker.show();
+		}
 	}
 
 	// Watch for changes to selectedDate prop and update Pikaday
