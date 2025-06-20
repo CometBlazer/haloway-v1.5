@@ -82,11 +82,11 @@
 
 		return date.toLocaleDateString();
 	}
-
 	function openDocument(
 		documentId: string,
 		currentVersion: DocumentVersion | null,
 	): void {
+		console.log('Opening document:', documentId, currentVersion);
 		if (currentVersion?.id) {
 			goto(`/dashboard/write/${documentId}/${currentVersion.id}`);
 		} else {
@@ -288,109 +288,127 @@
 			{#each documents as document}
 				<Card.Root
 					class="group cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-					role="button"
-					tabindex={0}
-					on:click={() => openDocument(document.id, document.current_version)}
-					on:keydown={(e) => {
-						if (e.detail?.key === 'Enter' || e.detail?.key === ' ') {
-							e.preventDefault();
-							openDocument(document.id, document.current_version);
-						}
-					}}
 				>
-					<Card.Header class="pb-3">
-						<div class="flex items-start justify-between gap-3">
-							<div class="flex min-w-0 flex-1 items-start gap-3">
-								<div class="shrink-0 rounded-lg bg-muted p-2">
-									<FileText class="h-5 w-5 text-primary" />
+					<div
+						on:click={() => {
+							console.log(
+								'Card clicked! Opening document:',
+								document.id,
+								document.current_version,
+							);
+							openDocument(document.id, document.current_version);
+						}}
+						on:keydown={(e) => {
+							console.log('Key pressed:', e.key);
+							if (e.key === 'Enter' || e.key === ' ') {
+								e.preventDefault();
+								console.log('Enter/Space pressed, opening document');
+								openDocument(document.id, document.current_version);
+							}
+						}}
+						class="h-full w-full cursor-pointer"
+						tabindex="0"
+						role="button"
+						aria-label="Open document"
+					>
+						>
+						<Card.Header class="pb-3">
+							<div class="flex items-start justify-between gap-3">
+								<div class="flex min-w-0 flex-1 items-start gap-3">
+									<div class="shrink-0 rounded-lg bg-muted p-2">
+										<FileText class="h-5 w-5 text-primary" />
+									</div>
+									<div class="min-w-0 flex-1">
+										<Card.Title class="line-clamp-2 text-base leading-tight">
+											{document.title && document.title.length > 40
+												? document.title.substring(0, 40) + '...'
+												: document.title || 'Untitled Essay'}
+										</Card.Title>
+									</div>
 								</div>
-								<div class="min-w-0 flex-1">
-									<Card.Title class="line-clamp-2 text-base leading-tight">
-										{document.title && document.title.length > 40
-											? document.title.substring(0, 40) + '...'
-											: document.title || 'Untitled Essay'}
-									</Card.Title>
-								</div>
-							</div>
-							<Button
-								variant="ghost"
-								size="sm"
-								class="h-8 w-8 shrink-0 p-0 text-destructive opacity-0 transition-opacity hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
-								on:click={(e) =>
-									handleDeleteClick(
-										e,
-										document.id,
-										document.title || 'Untitled Essay',
-									)}
-								aria-label="Delete essay"
-							>
-								<Trash class="h-4 w-4" />
-							</Button>
-						</div>
-					</Card.Header>
-
-					<Card.Content class="pb-3 pt-0">
-						<div class="space-y-3">
-							{#if document.prompt}
-								<p
-									class="line-clamp-3 text-sm leading-relaxed text-muted-foreground"
+								<Button
+									variant="ghost"
+									size="sm"
+									class="h-8 w-8 shrink-0 p-0 text-destructive opacity-0 transition-opacity hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
+									on:click={(e) => {
+										console.log('Delete button clicked');
+										handleDeleteClick(
+											e,
+											document.id,
+											document.title || 'Untitled Essay',
+										);
+									}}
+									aria-label="Delete essay"
 								>
-									{document.prompt.length > 120
-										? document.prompt.substring(0, 120) + '...'
-										: document.prompt}
-								</p>
-							{:else}
-								<p class="text-sm italic text-muted-foreground">
-									No prompt added yet
-								</p>
-							{/if}
+									<Trash class="h-4 w-4" />
+								</Button>
+							</div>
+						</Card.Header>
 
-							{#if document.due_date}
-								{@const deadline = getDeadlineText(document.due_date)}
-								<div class="flex items-center gap-2">
-									<Clock class="h-4 w-4" />
-									<Badge variant={deadline.variant} class="text-xs">
-										{deadline.text}
-									</Badge>
-								</div>
-							{/if}
-						</div>
-					</Card.Content>
+						<!-- Rest of your card content stays the same -->
+						<Card.Content class="pb-3 pt-0">
+							<div class="space-y-3">
+								{#if document.prompt}
+									<p
+										class="line-clamp-3 text-sm leading-relaxed text-muted-foreground"
+									>
+										{document.prompt.length > 120
+											? document.prompt.substring(0, 120) + '...'
+											: document.prompt}
+									</p>
+								{:else}
+									<p class="text-sm italic text-muted-foreground">
+										No prompt added yet
+									</p>
+								{/if}
 
-					<Card.Footer class="border-t pt-3">
-						<div class="w-full space-y-3">
-							<div class="flex flex-col gap-1 text-xs text-muted-foreground">
-								<div class="flex items-center gap-1.5">
-									<Calendar class="h-3.5 w-3.5" />
-									<span>Created {formatDate(document.created_at)}</span>
-								</div>
-								{#if document.updated_at && document.updated_at !== document.created_at}
-									<div class="flex items-center gap-1.5">
-										<Edit3 class="h-3.5 w-3.5" />
-										<span>Updated {formatDate(document.updated_at)}</span>
+								{#if document.due_date}
+									{@const deadline = getDeadlineText(document.due_date)}
+									<div class="flex items-center gap-2">
+										<Clock class="h-4 w-4" />
+										<Badge variant={deadline.variant} class="text-xs">
+											{deadline.text}
+										</Badge>
 									</div>
 								{/if}
 							</div>
+						</Card.Content>
 
-							<div class="flex items-center justify-between gap-2">
-								<span class="text-xs font-medium text-muted-foreground">
-									{document.versions_count} checkpoint{document.versions_count !==
-									1
-										? 's'
-										: ''} saved
-								</span>
-								{#if document.status}
-									<Badge
-										variant={statusConfig[document.status]?.variant ||
-											'outline'}
-										class="text-xs"
-									>
-										{statusConfig[document.status]?.label || document.status}
-									</Badge>
-								{/if}
+						<Card.Footer class="border-t pt-3">
+							<div class="w-full space-y-3">
+								<div class="flex flex-col gap-1 text-xs text-muted-foreground">
+									<div class="flex items-center gap-1.5">
+										<Calendar class="h-3.5 w-3.5" />
+										<span>Created {formatDate(document.created_at)}</span>
+									</div>
+									{#if document.updated_at && document.updated_at !== document.created_at}
+										<div class="flex items-center gap-1.5">
+											<Edit3 class="h-3.5 w-3.5" />
+											<span>Updated {formatDate(document.updated_at)}</span>
+										</div>
+									{/if}
+								</div>
+
+								<div class="flex items-center justify-between gap-2">
+									<span class="text-xs font-medium text-muted-foreground">
+										{document.versions_count} checkpoint{document.versions_count !==
+										1
+											? 's'
+											: ''} saved
+									</span>
+									{#if document.status}
+										<Badge
+											variant={statusConfig[document.status]?.variant ||
+												'outline'}
+											class="text-xs"
+										>
+											{statusConfig[document.status]?.label || document.status}
+										</Badge>
+									{/if}
+								</div>
 							</div>
-						</div>
-					</Card.Footer>
+						</Card.Footer>
+					</div>
 				</Card.Root>
 			{/each}
 		</div>
