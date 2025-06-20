@@ -1,4 +1,4 @@
-<!-- src/routes/(admin)/account/(menu)/+page.svelte -->
+<!-- src/routes/(app)/dashboard/+page.svelte -->
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
@@ -86,16 +86,14 @@
 	function openDocument(
 		documentId: string,
 		currentVersion: DocumentVersion | null,
-	): void {
-		if (currentVersion?.id) {
-			goto(`/account/write/${documentId}/${currentVersion.id}`);
+	): void {		if (currentVersion?.id) {
+			goto(`/dashboard/write/${documentId}/${currentVersion.id}`);
 		} else {
-			goto(`/account/write/${documentId}`);
+			goto(`/dashboard/write/${documentId}`);
 		}
 	}
-
 	function createNewDocument(): void {
-		goto('/account/write');
+		goto('/dashboard/write');
 	}
 
 	function handleDeleteClick(

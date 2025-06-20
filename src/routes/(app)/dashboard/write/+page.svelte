@@ -1,4 +1,4 @@
-<!-- src/routes/(admin)/account/(menu)/write/+page.svelte -->
+<!-- src/routes/(app)/dashboard/write/+page.svelte -->
 <script lang="ts">
   import { onMount } from "svelte"
   import { enhance } from "$app/forms"

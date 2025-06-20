@@ -1,4 +1,4 @@
-<!-- src/routes/(admin)/account/(menu)/write/[documentId]/[versionId]/+page.svelte -->
+<!-- src/routes/(app)/dashboard/write/[documentId]/[versionId]/+page.svelte -->
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
@@ -97,8 +97,7 @@
 							window.location.reload();
 						}
 					}, 1000);
-				},
-				onAuthError: () => {
+				},				onAuthError: () => {
 					goto('/login');
 				},
 			},
@@ -422,7 +421,7 @@
 	//     if (response.ok && result.type === "success" && result.data?.version) {
 	//       const version = result.data.version
 	//       toastStore.show("Checkpoint saved successfully", "success")
-	//       await goto(`/account/write/${$page.params.documentId}/${version.id}`)
+	//       await goto(`/dashboard/write/${$page.params.documentId}/${version.id}`)
 	//     } else {
 	//       throw new Error("Failed to create checkpoint")
 	//     }
@@ -460,12 +459,10 @@
 				body: formData,
 			});
 
-			const result = await response.json();
-
-			if (response.ok && result.type === 'success' && result.data?.version) {
+			const result = await response.json();			if (response.ok && result.type === 'success' && result.data?.version) {
 				const version = result.data.version;
 				toastStore.show('Checkpoint saved successfully', 'success');
-				await goto(`/account/write/${$page.params.documentId}/${version.id}`);
+				await goto(`/dashboard/write/${$page.params.documentId}/${version.id}`);
 			} else {
 				throw new Error('Failed to create checkpoint');
 			}
@@ -509,11 +506,10 @@
 		document.body.appendChild(form);
 
 		enhance(form, () => {
-			return async ({ result }: { result: ActionResult }) => {
-				if (result.type === 'success' && result.data?.version) {
+			return async ({ result }: { result: ActionResult }) => {				if (result.type === 'success' && result.data?.version) {
 					const version = result.data.version;
 					toastStore.show('Checkpoint created successfully', 'success');
-					goto(`/account/write/${$page.params.documentId}/${version.id}`);
+					goto(`/dashboard/write/${$page.params.documentId}/${version.id}`);
 				} else {
 					data.versions = data.versions.filter((v) => v.id !== tempId);
 					toastStore.show('Failed to create checkpoint', 'error');
@@ -602,11 +598,10 @@
 		document.body.appendChild(form);
 
 		enhance(form, () => {
-			return async ({ result }: { result: ActionResult }) => {
-				if (result.type === 'success' && result.data?.version) {
+			return async ({ result }: { result: ActionResult }) => {				if (result.type === 'success' && result.data?.version) {
 					const version = result.data.version;
 					toastStore.show('Checkpoint duplicated successfully', 'success');
-					goto(`/account/write/${$page.params.documentId}/${version.id}`);
+					goto(`/dashboard/write/${$page.params.documentId}/${version.id}`);
 				} else {
 					data.versions = data.versions.filter((v) => v.id !== tempId);
 					toastStore.show('Failed to duplicate checkpoint', 'error');
@@ -639,18 +634,17 @@
 				if (result.type === 'success') {
 					toastStore.show('Checkpoint deleted successfully', 'success');
 
-					if (event.detail === $page.params.versionId) {
-						if (updatedVersions.length > 0) {
+					if (event.detail === $page.params.versionId) {						if (updatedVersions.length > 0) {
 							const sortedRemaining = [...updatedVersions].sort(
 								(a, b) =>
 									new Date(b.updated_at).getTime() -
 									new Date(a.updated_at).getTime(),
 							);
 							goto(
-								`/account/write/${$page.params.documentId}/${sortedRemaining[0].id}`,
+								`/dashboard/write/${$page.params.documentId}/${sortedRemaining[0].id}`,
 							);
 						} else {
-							goto('/account/documents');
+							goto('/dashboard');
 						}
 					}
 				} else {
