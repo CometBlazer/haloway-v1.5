@@ -7,9 +7,9 @@
 	import { browser } from '$app/environment';
 	import { onMount, onDestroy } from 'svelte';
 	import { fade, slide } from 'svelte/transition';
-	import DocumentHeader from './DocumentHeader.svelte';
-	import VersionSidebar from './VersionSidebar.svelte';
-	import TiptapEditor from '$lib/components/TiptapEditor.svelte';
+	import DocumentHeader from '../../../../../../lib/components/Editor/DocumentHeader.svelte';
+	import VersionSidebar from '../../../../../../lib/components/Editor/VersionSidebar.svelte';
+	import TiptapEditor from '$lib/components/Editor/TiptapEditor.svelte';
 	import { toastStore } from '$lib/stores/toast';
 	import type { PageData } from './$types';
 	import type { ActionResult } from '@sveltejs/kit';
@@ -17,7 +17,7 @@
 	import type { ComponentVersion } from '../../../../../../DatabaseDefinitions';
 	import { WebsiteName } from '../../../../../../config';
 	import { Download, FileText, Text, Save } from 'lucide-svelte';
-	import type { Status } from '$lib/components/StatusDropdown.svelte';
+	import type { Status } from '$lib/components/Editor/StatusDropdown.svelte';
 
 	// Import modular systems
 	import { AutoSaveManager, getStatusDisplay } from '$lib/autosave';

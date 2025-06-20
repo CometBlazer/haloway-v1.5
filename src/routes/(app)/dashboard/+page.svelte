@@ -15,7 +15,7 @@
 	import { WebsiteBaseUrl, WebsiteName } from '../../../config';
 	import { toastStore } from '$lib/stores/toast';
 	import { enhance } from '$app/forms';
-	import type { Status } from '$lib/components/StatusDropdown.svelte';
+	import type { Status } from '$lib/components/Editor/StatusDropdown.svelte';
 	import dayjs from 'dayjs';
 
 	// shadcn-svelte components

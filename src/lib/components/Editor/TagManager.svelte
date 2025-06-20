@@ -1,7 +1,7 @@
 <!-- src/routes/(admin)/account/(menu)/write/[documentId]/[versionId]/TagManager.svelte -->
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import type { ComponentTag } from './../../../../../../DatabaseDefinitions';
+	import type { ComponentTag } from '../../../DatabaseDefinitions';
 
 	export let tags: ComponentTag[];
 	export let selectedTags: string[] = [];
