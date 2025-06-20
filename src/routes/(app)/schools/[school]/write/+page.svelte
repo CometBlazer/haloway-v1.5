@@ -1,63 +1,36 @@
 <!-- src/routes/(app)/schools/[school]/write/+page.svelte -->
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 	import { enhance } from '$app/forms';
-	import { Loader2, ArrowLeft } from 'lucide-svelte';
-	import Button from '$lib/components/ui/button/button.svelte';
+	import { page } from '$app/stores';
+	import { Loader2 } from 'lucide-svelte';
 	import { WebsiteName } from '../../../../../config';
 
 	$: school = $page.params.school;
 	$: schoolDisplayName = school.charAt(0).toUpperCase() + school.slice(1);
 
-	let isCreating = false;
+	let form: HTMLFormElement;
+
+	onMount(() => {
+		// Automatically submit the form when the page loads
+		form.requestSubmit();
+	});
 </script>
 
 <svelte:head>
-	<title>New {schoolDisplayName} Essay | {WebsiteName}</title>
+	<title>Creating {schoolDisplayName} Essay | {WebsiteName}</title>
 </svelte:head>
 
-<div class="mx-auto max-w-2xl space-y-6 p-6">
-	<div class="flex items-center gap-3">
-		<Button
-			variant="ghost"
-			size="sm"
-			on:click={() => goto(`/schools/${school}`)}
-			class="px-2"
-		>
-			<ArrowLeft class="h-4 w-4" />
-		</Button>
-		<h1 class="text-2xl font-semibold">New {schoolDisplayName} Essay</h1>
-	</div>
-
-	<div class="space-y-4 text-center">
+<div class="flex min-h-screen items-center justify-center">
+	<form
+		bind:this={form}
+		method="POST"
+		use:enhance
+		class="flex flex-col items-center gap-4"
+	>
+		<Loader2 class="h-8 w-8 animate-spin text-primary" />
 		<p class="text-muted-foreground">
-			Create a new essay for {schoolDisplayName}. You'll be taken to the editor
-			where you can start writing.
+			Creating new {schoolDisplayName} essay...
 		</p>
-
-		<form
-			method="post"
-			use:enhance={() => {
-				isCreating = true;
-				return async ({ result, update }) => {
-					// Always reset loading state for non-redirect results
-					if (result.type !== 'redirect') {
-						isCreating = false;
-					}
-					// Let SvelteKit handle all result types naturally
-					await update();
-				};
-			}}
-		>
-			<Button type="submit" size="lg" disabled={isCreating}>
-				{#if isCreating}
-					<Loader2 class="mr-2 h-5 w-5 animate-spin" />
-					Creating Essay...
-				{:else}
-					Create {schoolDisplayName} Essay
-				{/if}
-			</Button>
-		</form>
-	</div>
+	</form>
 </div>
