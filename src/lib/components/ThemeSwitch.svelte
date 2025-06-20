@@ -33,22 +33,19 @@
 	}
 
 	// Get current icon for button variant
-	$: currentIcon = 
-		$mode === 'light' ? Sun : 
-		$mode === 'dark' ? Moon : 
-		Monitor;
+	$: currentIcon = $mode === 'light' ? Sun : $mode === 'dark' ? Moon : Monitor;
 
 	// Get icon for dropdown variant
-	$: dropdownIcon = 
-		buttonMode === 'light' ? Sun : 
-		buttonMode === 'dark' ? Moon : 
-		Monitor;
+	$: dropdownIcon =
+		buttonMode === 'light' ? Sun : buttonMode === 'dark' ? Moon : Monitor;
 
 	// Get text for dropdown variant
-	$: dropdownText = 
-		buttonMode === 'light' ? 'Light' : 
-		buttonMode === 'dark' ? 'Dark' : 
-		'System';
+	$: dropdownText =
+		buttonMode === 'light'
+			? 'Light'
+			: buttonMode === 'dark'
+				? 'Dark'
+				: 'System';
 </script>
 
 {#if variant === 'button'}
@@ -59,7 +56,7 @@
 		class="transition-colors duration-200"
 		aria-label="Toggle theme"
 	>
-		<svelte:component this={currentIcon} class="w-5 h-5" />
+		<svelte:component this={currentIcon} class="h-5 w-5" />
 	</Button>
 {:else if variant === 'dropdown'}
 	<Button
@@ -67,10 +64,10 @@
 		class="w-full justify-start gap-2 text-base"
 		on:click={setThemeMode}
 	>
-		<svelte:component this={dropdownIcon} class="w-4 h-4" />
+		<svelte:component this={dropdownIcon} class="h-4 w-4" />
 		{dropdownText}
 		{#if $mode === buttonMode}
-			<div class="ml-auto w-2 h-2 bg-primary rounded-full"></div>
+			<div class="ml-auto h-2 w-2 rounded-full bg-primary"></div>
 		{/if}
 	</Button>
 {/if}

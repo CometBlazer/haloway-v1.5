@@ -5,13 +5,17 @@
 	import { Mail } from 'lucide-svelte';
 </script>
 
-<div class="border-t w-full border-border bg-card">
-	<footer class="px-6 py-8 md:py-12 max-w-6xl mx-auto">
-		<div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12">
+<div class="w-full border-t border-border bg-card">
+	<footer class="mx-auto max-w-6xl px-6 py-8 md:py-12">
+		<div class="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-12">
 			<!-- Brand Section - full width on small mobile, half on larger mobile -->
-			<div class="col-span-2 md:col-span-1 my-5 md:my-0">
+			<div class="col-span-2 my-5 md:col-span-1 md:my-0">
 				<a href="/" class="flex flex-col space-y-4">
-					<img src="/favicon.png" alt="Logo" class="w-12 h-12 md:w-20 md:h-20" />
+					<img
+						src="/favicon.png"
+						alt="Logo"
+						class="h-12 w-12 md:h-20 md:w-20"
+					/>
 					<span class="text-2xl font-bold text-foreground">{WebsiteName}</span>
 					<p class="text-lg text-muted-foreground">Where great essays begin.</p>
 				</a>
@@ -89,9 +93,9 @@
 		</div>
 		<!-- Bottom Section with Socials and Copyright -->
 		<div
-			class="flex flex-col md:flex-row justify-between items-center mt-8 md:mt-12 pt-6 border-t border-border"
+			class="mt-8 flex flex-col items-center justify-between border-t border-border pt-6 md:mt-12 md:flex-row"
 		>
-			<p class="text-sm text-muted-foreground mb-4 md:mb-0">
+			<p class="mb-4 text-sm text-muted-foreground md:mb-0">
 				© {new Date().getFullYear()}
 				{WebsiteName}. All rights reserved. Illustrations from
 				<Button
@@ -110,7 +114,7 @@
 					target="_blank"
 					variant="ghost"
 					size="icon"
-					class="p-2 rounded-full hover:bg-muted transition-colors duration-200"
+					class="rounded-full p-2 transition-colors duration-200 hover:bg-muted"
 					aria-label="Instagram"
 				>
 					<!-- Instagram SVG -->
@@ -135,7 +139,7 @@
 					target="_blank"
 					variant="ghost"
 					size="icon"
-					class="p-2 rounded-full hover:bg-muted transition-colors duration-200"
+					class="rounded-full p-2 transition-colors duration-200 hover:bg-muted"
 					aria-label="LinkedIn"
 				>
 					<!-- LinkedIn SVG -->
@@ -162,10 +166,10 @@
 					target="_blank"
 					variant="ghost"
 					size="icon"
-					class="p-2 rounded-full hover:bg-muted transition-colors duration-200"
+					class="rounded-full p-2 transition-colors duration-200 hover:bg-muted"
 					aria-label="Email"
 				>
-					<Mail class="w-5 h-5" />
+					<Mail class="h-5 w-5" />
 				</Button>
 			</div>
 		</div>
