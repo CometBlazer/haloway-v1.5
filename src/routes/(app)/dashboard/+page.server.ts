@@ -1,4 +1,4 @@
-import { error, fail } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { supabase } from '$lib/supabase';
 
@@ -216,7 +216,10 @@ export const actions = {
 				.insert({
 					document_id: document.id,
 					version_name: 'Version 1',
-					content: '',
+					content: {
+						type: 'doc',
+						content: [],
+					},
 					created_by: session.user.id,
 				})
 				.select()
@@ -239,11 +242,25 @@ export const actions = {
 				console.error('Failed to update document:', updateError);
 			}
 
-			return {
-				type: 'success',
-				data: { documentId: document.id },
-			};
+			// Import the validation function and redirect to the school-specific route
+			const { getSchoolUrlSafeName } = await import('$lib/utils/validation');
+			const schoolSlug = getSchoolUrlSafeName(school.trim());
+
+			throw redirect(
+				303,
+				`/schools/${schoolSlug}/write/${document.id}/${version.id}`,
+			);
 		} catch (err) {
+			// If it's already a redirect, re-throw it
+			if (
+				err &&
+				typeof err === 'object' &&
+				'status' in err &&
+				err.status === 303
+			) {
+				throw err;
+			}
+
 			console.error('Document creation error:', err);
 			return fail(500, { error: { message: 'Failed to create document' } });
 		}

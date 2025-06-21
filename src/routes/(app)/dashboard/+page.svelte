@@ -408,65 +408,113 @@
 				<p class="text-center text-muted-foreground">Creating essay...</p>
 			</div>
 		{:else}
-			<div class="space-y-4">
-				<div class="space-y-2">
-					<Label for="school" class="text-sm font-medium">
-						School <span class="text-destructive">*</span>
-					</Label>
-					<SchoolDropdown
-						currentSchool={newEssayForm.school}
-						on:schoolChange={handleSchoolChange}
-						disabled={false}
-					/>
+			<form
+				method="POST"
+				action="?/createDocument"
+				use:enhance={() => {
+					isCreatingEssay = true;
+					return async ({ result, update }) => {
+						if (result.type === 'redirect') {
+							// Server is redirecting - show success and let SvelteKit handle redirect
+							toastStore.show('Essay created successfully', 'success');
+							closeNewEssayModal();
+							// Don't reset isCreatingEssay here - the page will change
+						} else if (result.type === 'failure') {
+							// Handle errors
+							isCreatingEssay = false;
+							if (
+								result.data?.error &&
+								typeof result.data.error === 'object' &&
+								'message' in result.data.error
+							) {
+								toastStore.show(String(result.data.error.message), 'error');
+							} else {
+								toastStore.show('Failed to create essay', 'error');
+							}
+							await update();
+						} else {
+							// Handle other result types
+							isCreatingEssay = false;
+							toastStore.show('Failed to create essay', 'error');
+							await update();
+						}
+					};
+				}}
+			>
+				<div class="space-y-4">
+					<div class="space-y-2">
+						<Label for="school" class="text-sm font-medium">
+							School <span class="text-destructive">*</span>
+						</Label>
+						<SchoolDropdown
+							currentSchool={newEssayForm.school}
+							on:schoolChange={handleSchoolChange}
+							disabled={false}
+						/>
+						<!-- Hidden input to ensure school value is submitted -->
+						<input type="hidden" name="school" value={newEssayForm.school} />
+					</div>
+
+					<div class="space-y-2">
+						<Label for="title" class="text-sm font-medium">Title</Label>
+						<Input
+							id="title"
+							name="title"
+							bind:value={newEssayForm.title}
+							placeholder="Enter essay title (optional)"
+						/>
+					</div>
+
+					<div class="space-y-2">
+						<Label for="prompt" class="text-sm font-medium">Prompt</Label>
+						<Textarea
+							id="prompt"
+							name="prompt"
+							bind:value={newEssayForm.prompt}
+							placeholder="Enter essay prompt (optional)"
+							rows={3}
+						/>
+					</div>
+
+					<div class="space-y-2">
+						<Label for="dueDate" class="text-sm font-medium">Due Date</Label>
+						<Input
+							id="dueDate"
+							name="dueDate"
+							type="date"
+							bind:value={newEssayForm.dueDate}
+							placeholder="Select due date (optional)"
+						/>
+					</div>
+
+					<input type="hidden" name="status" value="not-started" />
 				</div>
 
-				<div class="space-y-2">
-					<Label for="title" class="text-sm font-medium">Title</Label>
-					<Input
-						id="title"
-						bind:value={newEssayForm.title}
-						placeholder="Enter essay title (optional)"
-					/>
-				</div>
-
-				<div class="space-y-2">
-					<Label for="prompt" class="text-sm font-medium">Prompt</Label>
-					<Textarea
-						id="prompt"
-						bind:value={newEssayForm.prompt}
-						placeholder="Enter essay prompt (optional)"
-						rows={3}
-					/>
-				</div>
-
-				<div class="space-y-2">
-					<Label for="dueDate" class="text-sm font-medium">Due Date</Label>
-					<Input
-						id="dueDate"
-						type="date"
-						bind:value={newEssayForm.dueDate}
-						placeholder="Select due date (optional)"
-					/>
-				</div>
-			</div>
-
-			<Dialog.Footer class="gap-2">
-				<Button
-					variant="outline"
-					on:click={closeNewEssayModal}
-					class="w-full sm:w-auto"
-				>
-					Cancel
-				</Button>
-				<Button
-					on:click={handleCreateEssay}
-					disabled={!newEssayForm.school}
-					class="w-full sm:w-auto"
-				>
-					<Plus class="mr-2 h-4 w-4" />
-					Create Essay
-				</Button>
-			</Dialog.Footer>
+				<Dialog.Footer class="mt-4 gap-2">
+					<Button
+						type="button"
+						variant="outline"
+						on:click={closeNewEssayModal}
+						class="w-full sm:w-auto"
+						disabled={isCreatingEssay}
+					>
+						Cancel
+					</Button>
+					<Button
+						type="submit"
+						disabled={!newEssayForm.school || isCreatingEssay}
+						class="w-full sm:w-auto"
+					>
+						{#if isCreatingEssay}
+							<Loader2 class="mr-2 h-4 w-4 animate-spin" />
+							Creating...
+						{:else}
+							<Plus class="mr-2 h-4 w-4" />
+							Create Essay
+						{/if}
+					</Button>
+				</Dialog.Footer>
+			</form>
 		{/if}
 	</Dialog.Content>
 </Dialog.Root>
