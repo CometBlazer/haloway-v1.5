@@ -6,7 +6,7 @@
 	import StatusDropdown, {
 		type Status,
 	} from '$lib/components/Editor/StatusDropdown.svelte';
-
+	import SchoolDropdown from '$lib/components/Editor/SchoolDropdown.svelte';
 	import DatePicker from '$lib/components/Editor/DatePicker.svelte';
 
 	const focus = (node: HTMLElement) => {
@@ -22,6 +22,8 @@
 	export let zenMode: boolean = false;
 	export let initialStatus: Status = 'not-started';
 	export let initialDueDate: Date | null = null;
+	export let currentSchool: string = '';
+	export let schoolChangeDisabled: boolean = false;
 
 	$: picked = initialDueDate;
 
@@ -32,6 +34,7 @@
 		toggleSidebar: void;
 		updateStatus: Status;
 		updateDueDate: Date | null;
+		updateSchool: string;
 	}>();
 
 	let isEditingTitle = false;
@@ -55,6 +58,11 @@
 	function handleDueDateChange(date: Date) {
 		picked = date;
 		dispatch('updateDueDate', date);
+	}
+
+	function handleSchoolChange(event: CustomEvent<string>) {
+		const newSchool = event.detail;
+		dispatch('updateSchool', newSchool);
 	}
 
 	function handleTitleSubmit() {
@@ -127,6 +135,13 @@
 		<div class="control-group left">
 			<div class="control-item">
 				<DatePicker bind:selectedDate={picked} onSelect={handleDueDateChange} />
+			</div>
+			<div class="control-item">
+				<SchoolDropdown
+					{currentSchool}
+					disabled={schoolChangeDisabled}
+					on:schoolChange={handleSchoolChange}
+				/>
 			</div>
 			<div class="control-item">
 				<button
@@ -624,14 +639,22 @@
 			justify-content: space-between;
 		}
 
+		.control-group.left {
+			gap: 0.5rem;
+		}
+
 		.control-btn {
 			flex: 1;
 			min-width: 0;
-			max-width: 200px;
+			max-width: 180px;
 		}
 
 		.checkpoint-btn {
-			min-width: 120px;
+			min-width: 100px;
+		}
+
+		:global(.school-dropdown) {
+			max-width: 160px;
 		}
 
 		.btn-label {
@@ -640,7 +663,7 @@
 
 		.current-checkpoint {
 			font-size: 0.7rem;
-			max-width: 80px;
+			max-width: 70px;
 		}
 
 		.document-title {
@@ -666,13 +689,13 @@
 
 		.control-group.left,
 		.control-group.right {
-			gap: 0.5rem;
+			gap: 0.375rem;
 		}
 
 		.control-btn {
 			padding: 0.5rem 0.75rem;
 			font-size: 0.75rem;
-			max-width: 150px;
+			max-width: 120px;
 		}
 
 		.checkpoint-btn {
@@ -681,6 +704,10 @@
 
 		.checkpoint-btn .btn-content {
 			display: none;
+		}
+
+		:global(.school-dropdown) {
+			min-width: 110px;
 		}
 
 		.zen-mode .checkpoint-btn {
@@ -714,18 +741,23 @@
 
 		.control-group.left,
 		.control-group.right {
-			gap: 0.375rem;
+			gap: 0.25rem;
 		}
 
 		.control-btn {
-			padding: 0.5rem;
+			padding: 0.375rem 0.5rem;
 			font-size: 0.7rem;
 			min-width: 0;
 			flex: 1;
+			max-width: 100px;
 		}
 
 		.checkpoint-btn {
 			min-width: 0;
+		}
+
+		:global(.school-dropdown) {
+			min-width: 90px;
 		}
 	}
 
@@ -749,14 +781,22 @@
 				justify-content: space-between;
 			}
 
+			.control-group.left {
+				gap: 0.5rem;
+			}
+
 			.control-btn {
 				flex: 1;
 				min-width: 0;
-				max-width: 200px;
+				max-width: 180px;
 			}
 
 			.checkpoint-btn {
-				min-width: 120px;
+				min-width: 100px;
+			}
+
+			:global(.school-dropdown) {
+				max-width: 160px;
 			}
 
 			.document-title {
@@ -781,13 +821,13 @@
 
 			.control-group.left,
 			.control-group.right {
-				gap: 0.5rem;
+				gap: 0.375rem;
 			}
 
 			.control-btn {
 				padding: 0.5rem 0.75rem;
 				font-size: 0.75rem;
-				max-width: 150px;
+				max-width: 120px;
 			}
 
 			.checkpoint-btn {
@@ -796,6 +836,10 @@
 
 			.checkpoint-btn .btn-content {
 				display: none;
+			}
+
+			:global(.school-dropdown) {
+				min-width: 110px;
 			}
 
 			.zen-mode .checkpoint-btn {
@@ -828,18 +872,23 @@
 
 			.control-group.left,
 			.control-group.right {
-				gap: 0.375rem;
+				gap: 0.25rem;
 			}
 
 			.control-btn {
-				padding: 0.5rem;
+				padding: 0.375rem 0.5rem;
 				font-size: 0.7rem;
 				min-width: 0;
 				flex: 1;
+				max-width: 100px;
 			}
 
 			.checkpoint-btn {
 				min-width: 0;
+			}
+
+			:global(.school-dropdown) {
+				min-width: 90px;
 			}
 
 			.document-title {

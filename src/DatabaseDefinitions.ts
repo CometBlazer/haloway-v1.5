@@ -247,6 +247,33 @@ export interface Database {
 					},
 				];
 			};
+			schools: {
+				Row: {
+					id: string;
+					name: string;
+					url_safe_name: string;
+					image_url: string | null;
+					created_at: Date | null;
+					updated_at: Date | null;
+				};
+				Insert: {
+					id?: string;
+					name: string;
+					url_safe_name: string;
+					image_url?: string | null;
+					created_at?: Date | null;
+					updated_at?: Date | null;
+				};
+				Update: {
+					id?: string;
+					name?: string;
+					url_safe_name?: string;
+					image_url?: string | null;
+					created_at?: Date | null;
+					updated_at?: Date | null;
+				};
+				Relationships: [];
+			};
 			stripe_customers: {
 				Row: {
 					user_id: string;
@@ -357,6 +384,7 @@ export type DocumentVersion =
 	Database['public']['Tables']['document_versions']['Row'];
 export type Document = Database['public']['Tables']['documents']['Row'];
 export type Tag = Database['public']['Tables']['tags']['Row'];
+export type School = Database['public']['Tables']['schools']['Row'];
 
 // Type for your component usage (with field transformations)
 export interface ComponentTag {

@@ -383,6 +383,41 @@
 		}
 	}
 
+	async function handleSchoolUpdate(event: CustomEvent<string>) {
+		const newSchool = event.detail;
+		try {
+			const formData = new FormData();
+			formData.append('school', newSchool);
+			const response = await fetch('?/updateDocument', {
+				method: 'POST',
+				body: formData,
+			});
+
+			if (response.ok) {
+				// Update the local data
+				data.document.school = newSchool;
+				toastStore.show('School updated successfully', 'success');
+
+				// Navigate to the new URL if the school changed
+				const currentSchool = $page.params.school;
+				const { schoolToSlug } = await import('$lib/utils/validation');
+				const newSchoolSlug = schoolToSlug(newSchool);
+
+				if (currentSchool !== newSchoolSlug) {
+					// Navigate to the new school-based URL
+					goto(
+						`/schools/${newSchoolSlug}/write/${$page.params.documentId}/${$page.params.versionId}`,
+					);
+				}
+			} else {
+				throw new Error('Failed to update school');
+			}
+		} catch (error) {
+			console.error('Failed to update school:', error);
+			toastStore.show('Failed to update school', 'error');
+		}
+	}
+
 	// Sidebar functions
 	function toggleSidebar() {
 		isSidebarOpen = !isSidebarOpen;
@@ -959,12 +994,15 @@
 				initialDueDate={data.document.due_date
 					? new Date(data.document.due_date)
 					: null}
+				currentSchool={data.document.school || ''}
+				schoolChangeDisabled={false}
 				on:updateTitle={handleTitleUpdate}
 				on:updatePrompt={handlePromptUpdate}
 				on:updateWordCountLimit={handleWordCountLimitUpdate}
 				on:toggleSidebar={toggleSidebar}
 				on:updateStatus={handleStatusUpdate}
 				on:updateDueDate={handleDueDateUpdate}
+				on:updateSchool={handleSchoolUpdate}
 			/>
 		</div>
 	</header>
