@@ -77,11 +77,11 @@
 				<Sheet.Content side="left" class="sm:max-w-xs">
 					<nav class="grid gap-6 text-lg font-medium">
 						<a
-							href="##"
-							class="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
+							href="/"
+							class="flex items-center gap-2 px-2.5 text-xl font-semibold"
 						>
 							<Logo />
-							<span class="sr-only">{WebsiteName}</span>
+							<span class="ml-2">{WebsiteName}</span>
 						</a>
 						<a
 							href="##"
@@ -89,6 +89,14 @@
 						>
 							<Home class="h-5 w-5" />
 							Dashboard
+						</a>
+						<a
+							href="https://www.commonapp.org/blog/announcing-2025-2026-common-app-essay-prompts"
+							target="_blank"
+							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+						>
+							<ExternalLink class="h-5 w-5" />
+							Common App Prompts
 						</a>
 					</nav>
 				</Sheet.Content>

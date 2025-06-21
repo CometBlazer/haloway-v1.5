@@ -924,20 +924,20 @@
 
 		<!-- Zen/Focus Mode Toggle -->
 		<div class="toggle-container">
-			{#if zenMode}
-				<button
-					class="copy-all-button {textButtonClasses} editor-btn"
-					class:copy-success={copySuccess}
-					on:click={copyAllText}
-					title="Copy all text to clipboard"
-				>
-					{#if copySuccess}
-						<Check size={16} class="text-green-500" />
-					{:else}
-						<Copy size={16} />
-					{/if}
-				</button>
-			{/if}
+			<!-- {#if zenMode} -->
+			<button
+				class="copy-all-button {textButtonClasses} editor-btn"
+				class:copy-success={copySuccess}
+				on:click={copyAllText}
+				title="Copy all text to clipboard"
+			>
+				{#if copySuccess}
+					<Check size={16} class="text-green-500" />
+				{:else}
+					<Copy size={16} />
+				{/if}
+			</button>
+			<!-- {/if} -->
 			<span class="toggle-label">{zenMode ? 'Zen Mode' : 'Focus Mode'}</span>
 			<label class="toggle-switch">
 				<input
@@ -1322,17 +1322,51 @@
 	/* Mobile responsiveness */
 	@media (max-width: 768px) {
 		.editor-controls {
-			flex-direction: column;
+			/* Keep flex-direction: row to maintain horizontal layout */
+			flex-direction: row;
 			gap: 0.75rem;
-			align-items: flex-start;
-		}
-
-		.toggle-container {
-			align-self: flex-end;
+			align-items: center;
+			justify-content: space-between;
+			/* Add flex-wrap in case content gets too wide */
+			flex-wrap: wrap;
 		}
 
 		.word-count-display {
 			font-size: 0.7rem;
+			/* Ensure it doesn't shrink too much */
+			flex-shrink: 1;
+			min-width: 0;
+		}
+
+		.toggle-container {
+			/* Ensure it stays on the right */
+			flex-shrink: 0;
+			align-items: center;
+		}
+
+		.word-count-text {
+			/* Allow text to wrap if needed on very small screens */
+			word-break: break-word;
+		}
+	}
+
+	/* For very small screens, stack them if absolutely necessary */
+	@media (max-width: 480px) {
+		.editor-controls {
+			/* Only stack on very small screens if needed */
+			flex-direction: column;
+			gap: 0.5rem;
+			align-items: stretch;
+		}
+
+		.word-count-display {
+			justify-content: center;
+			font-size: 0.65rem;
+		}
+
+		.toggle-container {
+			justify-content: center;
+			align-self: center;
 		}
 	}
 

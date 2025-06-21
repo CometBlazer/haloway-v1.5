@@ -1137,14 +1137,11 @@
 	.enhanced-toolbar {
 		display: flex;
 		align-items: center;
-		justify-content: right;
+		justify-content: flex-end;
 		gap: 1.5rem;
-		/* padding: 1rem 1.5rem; */
-		/* background: hsl(var(--color-base-100)); */
-		/* border: 1px solid hsl(var(--color-base-300)); */
 		border-radius: 1rem;
 		margin-bottom: 1.5rem;
-		/* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); */
+		flex-wrap: nowrap;
 	}
 
 	/* Status Section */
@@ -1288,9 +1285,10 @@
 	/* Mobile Responsive */
 	@media (max-width: 768px) {
 		.enhanced-toolbar {
-			flex-direction: column;
-			gap: 1rem;
-			padding: 1rem;
+			display: flex;
+			justify-content: right;
+			gap: 1.5rem;
+			margin-bottom: 1.5rem;
 		}
 
 		.status-section {
@@ -1314,9 +1312,9 @@
 	}
 
 	@media (max-width: 480px) {
-		.enhanced-toolbar {
+		/* .enhanced-toolbar {
 			padding: 0.75rem;
-		}
+		} */
 
 		.status-indicator {
 			padding: 0.375rem 0.5rem;
