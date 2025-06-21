@@ -172,4 +172,80 @@ export const actions = {
 
 		return { success: true };
 	},
+
+	createDocument: async ({ request, locals }) => {
+		const { session } = await locals.safeGetSession();
+		if (!session?.user?.id) {
+			throw error(401, 'Unauthorized');
+		}
+
+		const formData = await request.formData();
+		const school = formData.get('school') as string;
+		const title = formData.get('title') as string;
+		const prompt = formData.get('prompt') as string;
+		const dueDate = formData.get('dueDate') as string;
+		const status = formData.get('status') as string;
+
+		if (!school || typeof school !== 'string' || school.trim().length === 0) {
+			return fail(400, { error: { message: 'School is required' } });
+		}
+
+		try {
+			// Create document
+			const { data: document, error: documentError } = await supabase
+				.from('documents')
+				.insert({
+					title: title?.trim() || `[${school.trim()} Essay]`,
+					user_id: session.user.id,
+					school: school.trim(),
+					prompt: prompt?.trim() || null,
+					due_date: dueDate ? new Date(dueDate) : null,
+					status: status || 'not-started',
+				})
+				.select()
+				.single();
+
+			if (documentError) {
+				console.error('Failed to create document:', documentError);
+				return fail(500, { error: { message: 'Failed to create document' } });
+			}
+
+			// Create initial version
+			const { data: version, error: versionError } = await supabase
+				.from('document_versions')
+				.insert({
+					document_id: document.id,
+					version_name: 'Version 1',
+					content: '',
+					created_by: session.user.id,
+				})
+				.select()
+				.single();
+
+			if (versionError) {
+				console.error('Failed to create version:', versionError);
+				return fail(500, {
+					error: { message: 'Failed to create document version' },
+				});
+			}
+
+			// Update document with current version
+			const { error: updateError } = await supabase
+				.from('documents')
+				.update({ current_version_id: version.id })
+				.eq('id', document.id);
+
+			if (updateError) {
+				console.error('Failed to update document:', updateError);
+			}
+
+			return {
+				type: 'success',
+				data: { documentId: document.id },
+			};
+		} catch (err) {
+			console.error('Document creation error:', err);
+			return fail(500, { error: { message: 'Failed to create document' } });
+		}
+	},
 };

@@ -2,29 +2,23 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import {
-		FileText,
-		Calendar,
-		Edit3,
-		Plus,
-		Trash,
-		Loader2,
-		Clock,
-	} from 'lucide-svelte';
+	import { FileText, Plus, Trash, Loader2 } from 'lucide-svelte';
 	import type { PageData, ActionData } from './$types';
 	import { WebsiteBaseUrl, WebsiteName } from '../../../config';
 	import { toastStore } from '$lib/stores/toast';
 	import { enhance } from '$app/forms';
 	import type { Status } from '$lib/components/Editor/StatusDropdown.svelte';
-	import dayjs from 'dayjs';
 
 	// shadcn-svelte components
 	import Button from '$lib/components/ui/button/button.svelte';
-	import * as Card from '$lib/components/ui/card';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Alert from '$lib/components/ui/alert';
-	import Badge from '$lib/components/ui/badge/badge.svelte';
+	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
+	import { Textarea } from '$lib/components/ui/textarea';
 	import CompleteProfileModal from '$lib/components/CompleteProfileModal.svelte';
+	import SchoolDropdown from '$lib/components/Editor/SchoolDropdown.svelte';
+	import EssayCard from '$lib/components/EssayCard.svelte';
 
 	export let data: PageData;
 	export let form: ActionData;
@@ -33,6 +27,18 @@
 	let showDeleteModal = false;
 	let isDeleting = false;
 	let documentToDelete: { id: string; title: string } | null = null;
+
+	// New essay modal state
+	let showNewEssayModal = false;
+	let isCreatingEssay = false;
+
+	// New essay form data
+	let newEssayForm = {
+		school: '',
+		title: '',
+		prompt: '',
+		dueDate: '',
+	};
 
 	// Profile completion modal state
 	let showProfileModal = !data.profileComplete;
@@ -83,23 +89,6 @@
 		}
 	});
 
-	function formatDate(dateInput: string | Date | null): string {
-		if (!dateInput) return 'Unknown';
-
-		const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
-		const now = new Date();
-		const diffInDays = Math.floor(
-			(now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24),
-		);
-
-		if (diffInDays === 0) return 'Today';
-		if (diffInDays === 1) return 'Yesterday';
-		if (diffInDays < 7) return `${diffInDays} days ago`;
-		if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} weeks ago`;
-		if (diffInDays < 365) return `${Math.floor(diffInDays / 30)} months ago`;
-
-		return date.toLocaleDateString();
-	}
 	async function openDocument(
 		documentId: string,
 		currentVersion: DocumentVersion | null,
@@ -122,16 +111,106 @@
 			goto(`/schools/${schoolSlug}/write/${documentId}`);
 		}
 	}
+
 	function createNewDocument(): void {
-		goto('/dashboard/write');
+		showNewEssayModal = true;
 	}
 
-	function handleDeleteClick(
-		event: Event,
-		documentId: string,
-		documentTitle: string,
-	): void {
-		event.stopPropagation();
+	function closeNewEssayModal(): void {
+		if (isCreatingEssay) return;
+		showNewEssayModal = false;
+		// Reset form
+		newEssayForm = {
+			school: '',
+			title: '',
+			prompt: '',
+			dueDate: '',
+		};
+	}
+
+	function handleSchoolChange(event: CustomEvent<string>) {
+		newEssayForm.school = event.detail;
+	}
+
+	async function handleCreateEssay(): Promise<void> {
+		if (!newEssayForm.school) {
+			toastStore.show('Please select a school', 'error');
+			return;
+		}
+
+		isCreatingEssay = true;
+
+		try {
+			// Get the URL-safe name for the school
+			const { getSchoolUrlSafeName } = await import('$lib/utils/validation');
+			const schoolSlug = await getSchoolUrlSafeName(newEssayForm.school);
+
+			// Create FormData for the request
+			const formData = new FormData();
+			formData.append('school', newEssayForm.school);
+			formData.append(
+				'title',
+				newEssayForm.title || `[${newEssayForm.school} Essay]`,
+			);
+			formData.append('prompt', newEssayForm.prompt);
+			formData.append('dueDate', newEssayForm.dueDate);
+			formData.append('status', 'not-started');
+
+			const response = await fetch('?/createDocument', {
+				method: 'POST',
+				body: formData,
+			});
+
+			if (response.ok) {
+				const result = await response.text();
+				// Try to parse as JSON, but handle both JSON and redirect responses
+				try {
+					const jsonResult = JSON.parse(result);
+					if (jsonResult.type === 'success' && jsonResult.data?.documentId) {
+						toastStore.show('Essay created successfully', 'success');
+						closeNewEssayModal();
+						// Navigate to the new essay
+						goto(`/schools/${schoolSlug}/write/${jsonResult.data.documentId}`);
+						return;
+					}
+				} catch {
+					// Response might be a redirect or other format
+					// If we get here, assume success and reload page
+					toastStore.show('Essay created successfully', 'success');
+					closeNewEssayModal();
+					window.location.reload();
+					return;
+				}
+			}
+
+			throw new Error('Failed to create essay');
+		} catch (error) {
+			console.error('Failed to create essay:', error);
+			toastStore.show('Failed to create essay', 'error');
+		} finally {
+			isCreatingEssay = false;
+		}
+	}
+
+	// Handle card events
+	function handleCardClick(
+		event: CustomEvent<{
+			documentId: string;
+			currentVersion: DocumentVersion | null;
+			school: string;
+		}>,
+	) {
+		const { documentId, currentVersion, school } = event.detail;
+		openDocument(documentId, currentVersion, school);
+	}
+
+	function handleCardDelete(
+		event: CustomEvent<{
+			documentId: string;
+			documentTitle: string;
+		}>,
+	) {
+		const { documentId, documentTitle } = event.detail;
 		showDeleteConfirmation(documentId, documentTitle);
 	}
 
@@ -191,62 +270,9 @@
 		if (event.key === 'Escape' && showDeleteModal && !isDeleting) {
 			closeDeleteModal();
 		}
-	}
-
-	// Status configuration with updated colors
-	const statusConfig: Record<
-		Status,
-		{
-			label: string;
-			variant: 'default' | 'secondary' | 'destructive' | 'outline';
+		if (event.key === 'Escape' && showNewEssayModal && !isCreatingEssay) {
+			closeNewEssayModal();
 		}
-	> = {
-		'not-started': {
-			label: 'Not Started',
-			variant: 'outline',
-		},
-		'in-progress': {
-			label: 'In Progress',
-			variant: 'secondary',
-		},
-		finished: {
-			label: 'Finished',
-			variant: 'default',
-		},
-		polished: {
-			label: 'Polished',
-			variant: 'default',
-		},
-		submitted: {
-			label: 'Submitted',
-			variant: 'default',
-		},
-		scrapped: {
-			label: 'Scrapped',
-			variant: 'destructive',
-		},
-	};
-
-	function getDeadlineText(dueDate: Date | null): {
-		text: string;
-		variant: 'default' | 'secondary' | 'destructive' | 'outline';
-	} {
-		if (!dueDate) return { text: 'No deadline', variant: 'outline' };
-
-		const diff = dayjs(dueDate)
-			.startOf('day')
-			.diff(dayjs().startOf('day'), 'day');
-
-		if (diff < 0) return { text: 'Past deadline', variant: 'secondary' };
-		if (diff === 0) return { text: 'Due today', variant: 'destructive' };
-		if (diff === 1) return { text: 'Due tomorrow', variant: 'destructive' };
-		if (diff <= 3)
-			return { text: `Due in ${diff} days`, variant: 'destructive' };
-		if (diff <= 7) return { text: `Due in ${diff} days`, variant: 'secondary' };
-		return {
-			text: `Due ${dayjs(dueDate).format('MMM D')}`,
-			variant: 'default',
-		};
 	}
 
 	$: documents = (data.documents || []) as Document[];
@@ -258,17 +284,13 @@
 
 <svelte:window on:keydown={handleKeydown} />
 
-<div class="mx-auto max-w-7xl space-y-6 p-6">
+<div class="dashboard-container">
 	<!-- Header -->
-	<div
-		class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
-	>
-		<div class="space-y-1">
-			<h1 class="text-3xl font-semibold tracking-tight">All Essays</h1>
-			<a href="/test" class="text-sm text-muted-foreground hover:underline"
-				>View your drafts</a
-			>
-			<p class="text-lg text-muted-foreground">
+	<div class="dashboard-header">
+		<div class="header-content">
+			<h1 class="header-title">All Essays</h1>
+			<a href="/test" class="header-link">View your drafts</a>
+			<p class="header-subtitle">
 				{documents.length} essay{documents.length !== 1 ? 's' : ''} total
 			</p>
 		</div>
@@ -279,17 +301,13 @@
 	</div>
 
 	<!-- Info Banner -->
-	<Alert.Root
-		class="border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50"
-	>
+	<Alert.Root class="info-banner">
 		<Alert.Description class="text-center">
-			<p class="text-sm leading-relaxed">
+			<p class="banner-text">
 				We're working on sorting, searching, due date notifications, AI
 				feedback, and more. Love what you see? <strong
-					>Share <a
-						href={WebsiteBaseUrl}
-						class="underline hover:no-underline"
-						target="_blank">{WebsiteBaseUrl}</a
+					>Share <a href={WebsiteBaseUrl} class="banner-link" target="_blank"
+						>{WebsiteBaseUrl}</a
 					>
 					with your friends</strong
 				> and help us grow!
@@ -300,11 +318,11 @@
 	<!-- Documents Grid -->
 	{#if documents.length === 0}
 		<!-- Empty State -->
-		<div class="flex min-h-[400px] items-center justify-center p-8">
-			<div class="max-w-md space-y-4 text-center">
-				<FileText class="mx-auto h-16 w-16 text-muted-foreground" />
-				<h3 class="text-xl font-semibold">No essays yet</h3>
-				<p class="leading-relaxed text-muted-foreground">
+		<div class="empty-state">
+			<div class="empty-content">
+				<FileText class="empty-icon" />
+				<h3 class="empty-title">No essays yet</h3>
+				<p class="empty-description">
 					Get started by creating your first essay. Click the "New Essay" button
 					above to begin writing.
 				</p>
@@ -316,142 +334,13 @@
 		</div>
 	{:else}
 		<!-- Documents Grid -->
-		<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-			{#each documents as document}
-				<Card.Root
-					class="group cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-				>
-					<div
-						on:click={() => {
-							console.log(
-								'Card clicked! Opening document:',
-								document.id,
-								document.current_version,
-								'for school:',
-								document.school,
-							);
-							openDocument(
-								document.id,
-								document.current_version,
-								document.school,
-							);
-						}}
-						on:keydown={(e) => {
-							console.log('Key pressed:', e.key);
-							if (e.key === 'Enter' || e.key === ' ') {
-								e.preventDefault();
-								console.log('Enter/Space pressed, opening document');
-								openDocument(
-									document.id,
-									document.current_version,
-									document.school,
-								);
-							}
-						}}
-						class="h-full w-full cursor-pointer"
-						tabindex="0"
-						role="button"
-						aria-label="Open document"
-					>
-						>
-						<Card.Header class="pb-3">
-							<div class="flex items-start justify-between gap-3">
-								<div class="flex min-w-0 flex-1 items-start gap-3">
-									<div class="shrink-0 rounded-lg bg-muted p-2">
-										<FileText class="h-5 w-5 text-primary" />
-									</div>
-									<div class="min-w-0 flex-1">
-										<Card.Title class="line-clamp-2 text-base leading-tight">
-											{document.title && document.title.length > 40
-												? document.title.substring(0, 40) + '...'
-												: document.title || 'Untitled Essay'}
-										</Card.Title>
-									</div>
-								</div>
-								<Button
-									variant="ghost"
-									size="sm"
-									class="h-8 w-8 shrink-0 p-0 text-destructive opacity-0 transition-opacity hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
-									on:click={(e) => {
-										console.log('Delete button clicked');
-										handleDeleteClick(
-											e,
-											document.id,
-											document.title || 'Untitled Essay',
-										);
-									}}
-									aria-label="Delete essay"
-								>
-									<Trash class="h-4 w-4" />
-								</Button>
-							</div>
-						</Card.Header>
-
-						<!-- Rest of your card content stays the same -->
-						<Card.Content class="pb-3 pt-0">
-							<div class="space-y-3">
-								{#if document.prompt}
-									<p
-										class="line-clamp-3 text-sm leading-relaxed text-muted-foreground"
-									>
-										{document.prompt.length > 120
-											? document.prompt.substring(0, 120) + '...'
-											: document.prompt}
-									</p>
-								{:else}
-									<p class="text-sm italic text-muted-foreground">
-										No prompt added yet
-									</p>
-								{/if}
-
-								{#if document.due_date}
-									{@const deadline = getDeadlineText(document.due_date)}
-									<div class="flex items-center gap-2">
-										<Clock class="h-4 w-4" />
-										<Badge variant={deadline.variant} class="text-xs">
-											{deadline.text}
-										</Badge>
-									</div>
-								{/if}
-							</div>
-						</Card.Content>
-
-						<Card.Footer class="border-t pt-3">
-							<div class="w-full space-y-3">
-								<div class="flex flex-col gap-1 text-xs text-muted-foreground">
-									<div class="flex items-center gap-1.5">
-										<Calendar class="h-3.5 w-3.5" />
-										<span>Created {formatDate(document.created_at)}</span>
-									</div>
-									{#if document.updated_at && document.updated_at !== document.created_at}
-										<div class="flex items-center gap-1.5">
-											<Edit3 class="h-3.5 w-3.5" />
-											<span>Updated {formatDate(document.updated_at)}</span>
-										</div>
-									{/if}
-								</div>
-
-								<div class="flex items-center justify-between gap-2">
-									<span class="text-xs font-medium text-muted-foreground">
-										{document.versions_count} checkpoint{document.versions_count !==
-										1
-											? 's'
-											: ''} saved
-									</span>
-									{#if document.status}
-										<Badge
-											variant={statusConfig[document.status]?.variant ||
-												'outline'}
-											class="text-xs"
-										>
-											{statusConfig[document.status]?.label || document.status}
-										</Badge>
-									{/if}
-								</div>
-							</div>
-						</Card.Footer>
-					</div>
-				</Card.Root>
+		<div class="documents-grid">
+			{#each documents as document (document.id)}
+				<EssayCard
+					{document}
+					on:click={handleCardClick}
+					on:delete={handleCardDelete}
+				/>
 			{/each}
 		</div>
 	{/if}
@@ -503,21 +392,249 @@
 	/>
 {/if}
 
+<!-- New Essay Modal -->
+<Dialog.Root bind:open={showNewEssayModal}>
+	<Dialog.Content class="sm:max-w-lg">
+		<Dialog.Header>
+			<Dialog.Title>Create a New Essay</Dialog.Title>
+			<Dialog.Description>
+				Fill in the details below to create a new essay.
+			</Dialog.Description>
+		</Dialog.Header>
+
+		{#if isCreatingEssay}
+			<div class="flex flex-col items-center justify-center space-y-4 py-8">
+				<Loader2 class="h-8 w-8 animate-spin text-primary" />
+				<p class="text-center text-muted-foreground">Creating essay...</p>
+			</div>
+		{:else}
+			<div class="space-y-4">
+				<div class="space-y-2">
+					<Label for="school" class="text-sm font-medium">
+						School <span class="text-destructive">*</span>
+					</Label>
+					<SchoolDropdown
+						currentSchool={newEssayForm.school}
+						on:schoolChange={handleSchoolChange}
+						disabled={false}
+					/>
+				</div>
+
+				<div class="space-y-2">
+					<Label for="title" class="text-sm font-medium">Title</Label>
+					<Input
+						id="title"
+						bind:value={newEssayForm.title}
+						placeholder="Enter essay title (optional)"
+					/>
+				</div>
+
+				<div class="space-y-2">
+					<Label for="prompt" class="text-sm font-medium">Prompt</Label>
+					<Textarea
+						id="prompt"
+						bind:value={newEssayForm.prompt}
+						placeholder="Enter essay prompt (optional)"
+						rows={3}
+					/>
+				</div>
+
+				<div class="space-y-2">
+					<Label for="dueDate" class="text-sm font-medium">Due Date</Label>
+					<Input
+						id="dueDate"
+						type="date"
+						bind:value={newEssayForm.dueDate}
+						placeholder="Select due date (optional)"
+					/>
+				</div>
+			</div>
+
+			<Dialog.Footer class="gap-2">
+				<Button
+					variant="outline"
+					on:click={closeNewEssayModal}
+					class="w-full sm:w-auto"
+				>
+					Cancel
+				</Button>
+				<Button
+					on:click={handleCreateEssay}
+					disabled={!newEssayForm.school}
+					class="w-full sm:w-auto"
+				>
+					<Plus class="mr-2 h-4 w-4" />
+					Create Essay
+				</Button>
+			</Dialog.Footer>
+		{/if}
+	</Dialog.Content>
+</Dialog.Root>
+
 <style>
-	/* Utility classes for line clamping with proper browser support */
-	/* .line-clamp-2 {
-		display: -webkit-box;
-		-webkit-line-clamp: 2;
-		line-clamp: 2;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
+	/* Dashboard Container */
+	.dashboard-container {
+		max-width: 1280px;
+		margin: 0 auto;
+		padding: 1.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	/* Header Styles */
+	.dashboard-header {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	@media (min-width: 640px) {
+		.dashboard-header {
+			flex-direction: row;
+			align-items: flex-start;
+			justify-content: space-between;
+		}
+	}
+
+	.header-content {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.header-title {
+		font-size: 1.875rem;
+		font-weight: 600;
+		line-height: 1.2;
+		color: hsl(var(--color-base-content));
+		letter-spacing: -0.025em;
+	}
+
+	.header-link {
+		font-size: 0.875rem;
+		color: hsl(var(--color-neutral-content));
+		text-decoration: none;
+		transition: text-decoration 0.2s ease;
+	}
+
+	.header-link:hover {
+		text-decoration: underline;
+	}
+
+	.header-subtitle {
+		font-size: 1.125rem;
+		color: hsl(var(--color-neutral-content));
+		margin: 0;
+	}
+
+	/* Banner Styles */
+	/* .info-banner {
+		border: 1px solid hsl(var(--color-info) / 0.3);
+		background: linear-gradient(
+			to right,
+			hsl(var(--color-info) / 0.05),
+			hsl(var(--color-primary) / 0.05)
+		);
+		border-radius: 0.75rem;
+		padding: 1rem;
 	} */
 
-	.line-clamp-3 {
-		display: -webkit-box;
-		-webkit-line-clamp: 3;
-		line-clamp: 3;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
+	.banner-text {
+		font-size: 0.875rem;
+		line-height: 1.6;
+		color: hsl(var(--color-base-content));
+		margin: 0;
+	}
+
+	.banner-link {
+		color: hsl(var(--color-primary));
+		text-decoration: underline;
+		transition: text-decoration 0.2s ease;
+	}
+
+	.banner-link:hover {
+		text-decoration: none;
+	}
+
+	/* Empty State */
+	.empty-state {
+		display: flex;
+		min-height: 400px;
+		align-items: center;
+		justify-content: center;
+		padding: 2rem;
+	}
+
+	.empty-content {
+		max-width: 384px;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		text-align: center;
+	}
+
+	/* .empty-icon {
+		width: 4rem;
+		height: 4rem;
+		color: hsl(var(--color-neutral-content));
+		margin: 0 auto;
+	} */
+
+	.empty-title {
+		font-size: 1.25rem;
+		font-weight: 600;
+		color: hsl(var(--color-base-content));
+		margin: 0;
+	}
+
+	.empty-description {
+		line-height: 1.6;
+		color: hsl(var(--color-neutral-content));
+		margin: 0;
+	}
+
+	/* Documents Grid */
+	.documents-grid {
+		display: grid;
+		gap: 1.5rem;
+		grid-template-columns: 1fr;
+	}
+
+	@media (min-width: 640px) {
+		.documents-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.documents-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	/* Mobile Responsiveness */
+	@media (max-width: 640px) {
+		.dashboard-container {
+			padding: 1rem;
+		}
+
+		.header-title {
+			font-size: 1.5rem;
+		}
+	}
+
+	/* High contrast mode support */
+	/* @media (prefers-contrast: high) {
+		.info-banner {
+			border-width: 2px;
+		}
+	} */
+
+	/* Reduced motion support */
+	@media (prefers-reduced-motion: reduce) {
+		* {
+			transition: none !important;
+		}
 	}
 </style>
