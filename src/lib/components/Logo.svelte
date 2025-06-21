@@ -1,10 +1,11 @@
 <script lang="ts">
 	// import { cn } from '$lib/utils';
+	// import { WebsiteName } from '../../..config';
 </script>
 
 <!-- <div
 	role="img"
-	aria-label="SaaS Kit logo"
+	aria-label="{WebsiteName} logo"
 	class={cn(
 		'aspect-square size-6',
 		'flex flex-col items-center justify-center',

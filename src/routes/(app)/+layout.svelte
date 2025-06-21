@@ -7,58 +7,58 @@
 	import PersonalMenu from '$lib/components/personal-menu.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Sheet from '$lib/components/ui/sheet';
-	import * as Tooltip from '$lib/components/ui/tooltip';
 	import Breadcrumbs from './components/breadcrumbs.svelte';
 	import NavLink from './components/nav-link.svelte';
+	import { WebsiteName } from '../../config';
+	import { ExternalLink } from 'lucide-svelte';
 
 	export let data;
 </script>
 
 <div class="flex min-h-screen w-full flex-col bg-muted/40">
 	<aside
-		class="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex"
+		class="fixed inset-y-0 left-0 z-10 hidden w-20 flex-col border-r bg-background sm:flex"
 	>
 		<nav class="flex flex-col items-center gap-4 px-2 sm:py-5">
 			<a
 				href="/"
-				class="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 md:h-8 md:w-8"
+				class="group flex flex-col items-center justify-center gap-1 py-2"
 			>
 				<Logo />
-				<span class="sr-only">SaaS Kit</span>
+				<span class="text-xs font-medium text-muted-foreground">Home</span>
 			</a>
-			<Tooltip.Root>
-				<Tooltip.Trigger asChild let:builder>
-					<NavLink
-						href="/dashboard"
-						class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-						activeClass="bg-accent text-accent-foreground"
-						{builder}
-					>
-						<Home class="h-5 w-5" />
-						<span class="sr-only">Dashboard</span>
-					</NavLink>
-				</Tooltip.Trigger>
-				<Tooltip.Content side="right">Dashboard</Tooltip.Content>
-			</Tooltip.Root>
+			<NavLink
+				href="/dashboard"
+				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
+				activeClass="bg-accent text-accent-foreground"
+			>
+				<Home class="h-5 w-5" />
+				<span class="text-xs font-medium">Dashboard</span>
+			</NavLink>
+			<NavLink
+				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
+				activeClass="bg-accent text-accent-foreground"
+				href="https://www.commonapp.org/blog/announcing-2025-2026-common-app-essay-prompts"
+				target="_blank"
+			>
+				<ExternalLink class="h-5 w-5" />
+				<span class="text-center text-xs font-medium text-muted-foreground"
+					>Common App Prompts</span
+				>
+			</NavLink>
 		</nav>
 		<nav class="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
-			<Tooltip.Root>
-				<Tooltip.Trigger asChild let:builder>
-					<NavLink
-						href="/settings"
-						class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-						activeClass="bg-accent text-accent-foreground"
-						{builder}
-					>
-						<Settings class="h-5 w-5" />
-						<span class="sr-only">Settings</span>
-					</NavLink>
-				</Tooltip.Trigger>
-				<Tooltip.Content side="right">Settings</Tooltip.Content>
-			</Tooltip.Root>
+			<NavLink
+				href="/settings"
+				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
+				activeClass="bg-accent text-accent-foreground"
+			>
+				<Settings class="h-5 w-5" />
+				<span class="text-xs font-medium">Settings</span>
+			</NavLink>
 		</nav>
 	</aside>
-	<div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+	<div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-20">
 		<header
 			class="sticky top-0 z-30 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
 		>
@@ -81,7 +81,7 @@
 							class="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
 						>
 							<Logo />
-							<span class="sr-only">SaaS Kit</span>
+							<span class="sr-only">{WebsiteName}</span>
 						</a>
 						<a
 							href="##"
