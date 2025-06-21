@@ -7,6 +7,8 @@
 	import { browser } from '$app/environment';
 	import { onMount, onDestroy } from 'svelte';
 	import { fade, slide } from 'svelte/transition';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import Button from '$lib/components/ui/button/button.svelte';
 	import DocumentHeader from '../../../../../../../lib/components/Editor/DocumentHeader.svelte';
 	import VersionSidebar from '../../../../../../../lib/components/Editor/VersionSidebar.svelte';
 	import TiptapEditor from '$lib/components/Editor/TiptapEditor.svelte';
@@ -920,41 +922,45 @@
 
 				<!-- Actions Section -->
 				<div class="actions-section">
-					<!-- Download Dropdown -->
-					<div class="dropdown-container">
-						<button class="action-button dropdown-trigger" type="button">
-							<Download size={18} />
-							<span class="action-text">Export</span>
-							<svg
-								class="dropdown-arrow"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
+					<!-- Export Dropdown using shadcn-svelte -->
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger asChild let:builder>
+							<Button
+								builders={[builder]}
+								variant="outline"
+								size="sm"
+								class="gap-2"
 							>
-								<polyline points="6,9 12,15 18,9" />
-							</svg>
-						</button>
-
-						<div class="dropdown-menu">
-							<button
-								type="button"
-								on:click={downloadAsTxt}
-								class="dropdown-item"
-							>
+								<Download size={18} />
+								<span class="action-text">Export</span>
+								<svg
+									class="dropdown-arrow h-4 w-4"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<polyline points="6,9 12,15 18,9" />
+								</svg>
+							</Button>
+						</DropdownMenu.Trigger>
+						<DropdownMenu.Content align="end" class="w-56">
+							<DropdownMenu.Item on:click={downloadAsTxt} class="gap-3">
 								<Text size={16} />
-								<span>Plain Text (.txt)</span>
-							</button>
-							<button
-								type="button"
-								on:click={downloadAsDoc}
-								class="dropdown-item"
-							>
+								<div class="flex flex-col">
+									<span class="font-medium">Plain Text</span>
+									<span class="text-xs text-muted-foreground">.txt file</span>
+								</div>
+							</DropdownMenu.Item>
+							<DropdownMenu.Item on:click={downloadAsDoc} class="gap-3">
 								<FileText size={16} />
-								<span>Word Document (.docx)</span>
-							</button>
-						</div>
-					</div>
+								<div class="flex flex-col">
+									<span class="font-medium">Word Document</span>
+									<span class="text-xs text-muted-foreground">.docx file</span>
+								</div>
+							</DropdownMenu.Item>
+						</DropdownMenu.Content>
+					</DropdownMenu.Root>
 				</div>
 			</div>
 
@@ -1268,83 +1274,15 @@
 		gap: 0.75rem;
 	}
 
-	/* Dropdown */
-	.dropdown-container {
-		position: relative;
-	}
-
-	.action-button {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.5rem 1rem;
-		background: hsl(var(--color-base-200));
-		color: hsl(var(--color-base-content));
-		border: 1px solid hsl(var(--color-base-300));
-		border-radius: 0.5rem;
-		font-size: 0.875rem;
-		font-weight: 500;
-		cursor: pointer;
-		transition: all 0.2s ease;
-	}
-
-	.action-button:hover {
-		background: hsl(var(--color-base-300));
-		transform: translateY(-1px);
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-	}
-
 	.dropdown-arrow {
 		width: 16px;
 		height: 16px;
 		transition: transform 0.2s ease;
 	}
 
-	.dropdown-container:hover .dropdown-arrow {
+	/* You can style the dropdown trigger state if needed */
+	:global([data-state='open']) .dropdown-arrow {
 		transform: rotate(180deg);
-	}
-
-	.dropdown-menu {
-		position: absolute;
-		top: calc(100% + 0.5rem);
-		right: 0;
-		min-width: 200px;
-		background: hsl(var(--color-base-100));
-		border: 1px solid hsl(var(--color-base-300));
-		border-radius: 0.75rem;
-		padding: 0.5rem;
-		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-		z-index: 1000;
-		opacity: 0;
-		visibility: hidden;
-		transform: translateY(-10px);
-		transition: all 0.2s ease;
-	}
-
-	.dropdown-container:hover .dropdown-menu {
-		opacity: 1;
-		visibility: visible;
-		transform: translateY(0);
-	}
-
-	.dropdown-item {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		width: 100%;
-		padding: 0.75rem;
-		background: transparent;
-		border: none;
-		border-radius: 0.5rem;
-		font-size: 0.875rem;
-		color: hsl(var(--color-base-content));
-		cursor: pointer;
-		transition: background 0.2s ease;
-		text-align: left;
-	}
-
-	.dropdown-item:hover {
-		background: hsl(var(--color-base-200));
 	}
 
 	/* Mobile Responsive */
@@ -1385,8 +1323,7 @@
 			font-size: 0.75rem;
 		}
 
-		.save-button,
-		.action-button {
+		.save-button {
 			padding: 0.375rem 0.75rem;
 			font-size: 0.75rem;
 		}
@@ -1398,17 +1335,11 @@
 			background: hsl(var(--color-base-800));
 			border-color: hsl(var(--color-base-600));
 		}
-
-		.dropdown-menu {
-			background: hsl(var(--color-base-800));
-			border-color: hsl(var(--color-base-600));
-		}
 	}
 
 	/* High contrast mode */
 	@media (prefers-contrast: high) {
-		.enhanced-toolbar,
-		.dropdown-menu {
+		.enhanced-toolbar {
 			border-width: 2px;
 		}
 
