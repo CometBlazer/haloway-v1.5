@@ -17,6 +17,8 @@
 		Link2Off,
 		ExternalLink,
 		X,
+		Copy,
+		Check,
 	} from 'lucide-svelte';
 	import { browser } from '$app/environment';
 
@@ -46,6 +48,10 @@
 	let showBubbleMenu = false;
 	let bubbleMenuTop = 0;
 	let bubbleMenuLeft = 0;
+
+	// Copy functionality
+	let copySuccess = false;
+	let copyTimeout: NodeJS.Timeout | null = null;
 
 	// Dropdown states
 	let showTransformDropdown = false;
@@ -148,6 +154,11 @@
 		if (iosScrollTimeout) {
 			clearTimeout(iosScrollTimeout);
 			iosScrollTimeout = null;
+		}
+
+		if (copyTimeout) {
+			clearTimeout(copyTimeout);
+			copyTimeout = null;
 		}
 
 		// Only remove event listeners in browser
@@ -286,6 +297,56 @@
 	function toggleMobileMenu() {
 		// if (readOnly) return
 		showMobileMenu = !showMobileMenu;
+	}
+
+	// Copy all text function
+	async function copyAllText() {
+		if (!editor || !browser) return;
+
+		try {
+			// Get plain text content from the editor
+			const textContent = editor.getText();
+
+			// Copy to clipboard
+			await navigator.clipboard.writeText(textContent);
+
+			// Show success feedback
+			copySuccess = true;
+
+			// Clear any existing timeout
+			if (copyTimeout) {
+				clearTimeout(copyTimeout);
+			}
+
+			// Reset success state after 2 seconds
+			copyTimeout = setTimeout(() => {
+				copySuccess = false;
+				copyTimeout = null;
+			}, 2000);
+		} catch (err) {
+			console.error('Failed to copy text:', err);
+			// Fallback for older browsers
+			try {
+				const textContent = editor.getText();
+				const textArea = document.createElement('textarea');
+				textArea.value = textContent;
+				document.body.appendChild(textArea);
+				textArea.select();
+				document.execCommand('copy');
+				document.body.removeChild(textArea);
+
+				copySuccess = true;
+				if (copyTimeout) {
+					clearTimeout(copyTimeout);
+				}
+				copyTimeout = setTimeout(() => {
+					copySuccess = false;
+					copyTimeout = null;
+				}, 2000);
+			} catch (fallbackErr) {
+				console.error('Fallback copy also failed:', fallbackErr);
+			}
+		}
 	}
 
 	// Unified button classes
@@ -632,6 +693,20 @@
 						><span class="hidden xl:inline">Clear Formatting</span>
 						<X size={iconSize - 4} />
 					</button>
+					<button
+						class="copy-all-button {textButtonClasses} editor-btn"
+						class:copy-success={copySuccess}
+						on:click={copyAllText}
+						title="Copy all text to clipboard"
+					>
+						{#if copySuccess}
+							<Check size={16} class="text-green-500" />
+							<span class="copy-button-text hidden xl:inline">Copied!</span>
+						{:else}
+							<Copy size={16} />
+							<span class="copy-button-text hidden xl:inline">Copy All</span>
+						{/if}
+					</button>
 				</div>
 
 				<!-- Mobile Three Dots Menu (Visible only on small screens) -->
@@ -792,6 +867,22 @@
 										>
 										<span class="option-label flex-1">Clear Formatting</span>
 									</button>
+									<button
+										class="{dropdownOptionClasses} dropdown-item"
+										on:click={() => {
+											copyAllText();
+											showMobileMenu = false;
+										}}
+									>
+										<span class="option-icon w-5 text-center font-semibold">
+											{#if copySuccess}
+												<Check size={iconSize - 4} class="text-green-500" />
+											{:else}
+												<Copy size={iconSize - 4} />
+											{/if}
+										</span>
+										<span class="option-label flex-1">Copy All Text</span>
+									</button>
 								</div>
 							</div>
 						{/if}
@@ -833,6 +924,20 @@
 
 		<!-- Zen/Focus Mode Toggle -->
 		<div class="toggle-container">
+			{#if zenMode}
+				<button
+					class="copy-all-button {textButtonClasses} editor-btn"
+					class:copy-success={copySuccess}
+					on:click={copyAllText}
+					title="Copy all text to clipboard"
+				>
+					{#if copySuccess}
+						<Check size={16} class="text-green-500" />
+					{:else}
+						<Copy size={16} />
+					{/if}
+				</button>
+			{/if}
 			<span class="toggle-label">{zenMode ? 'Zen Mode' : 'Focus Mode'}</span>
 			<label class="toggle-switch">
 				<input
