@@ -412,7 +412,9 @@
 					</div>
 
 					<div class="space-y-2">
-						<Label for="dueDate" class="text-sm font-medium">Due Date</Label>
+						<Label for="dueDate" class="text-sm font-medium"
+							>Due Date (optional)</Label
+						>
 						<Input
 							id="dueDate"
 							name="dueDate"
