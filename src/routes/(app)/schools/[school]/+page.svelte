@@ -1,29 +1,19 @@
 <!-- src/routes/(app)/schools/[school]/+page.svelte -->
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import {
-		FileText,
-		Calendar,
-		Edit3,
-		Plus,
-		Trash,
-		Loader2,
-		Clock,
-		ArrowLeft,
-	} from 'lucide-svelte';
+	import { FileText, Plus, Trash, Loader2, ArrowLeft } from 'lucide-svelte';
 	import type { PageData } from './$types';
 	import { WebsiteName } from '../../../../config';
 	import { toastStore } from '$lib/stores/toast';
 	import { enhance } from '$app/forms';
 	import type { Status } from '$lib/components/Editor/StatusDropdown.svelte';
-	import dayjs from 'dayjs';
 
-	// shadcn-svelte components
+	// Components
 	import Button from '$lib/components/ui/button/button.svelte';
-	import * as Card from '$lib/components/ui/card';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Alert from '$lib/components/ui/alert';
-	import Badge from '$lib/components/ui/badge/badge.svelte';
+	import EssayCard from '$lib/components/EssayCard.svelte';
+
 	export let data: PageData;
 
 	// Modal state
@@ -50,31 +40,24 @@
 		versions_count: number;
 		status: Status | null;
 		current_version: DocumentVersion | null;
+		school: string; // Add school field for EssayCard component
 	}
 
-	function formatDate(dateInput: string | Date | null): string {
-		if (!dateInput) return 'Unknown';
-
-		const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
-		const now = new Date();
-		const diffInDays = Math.floor(
-			(now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24),
-		);
-
-		if (diffInDays === 0) return 'Today';
-		if (diffInDays === 1) return 'Yesterday';
-		if (diffInDays < 7) return `${diffInDays} days ago`;
-		if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} weeks ago`;
-		if (diffInDays < 365) return `${Math.floor(diffInDays / 30)} months ago`;
-
-		return date.toLocaleDateString();
+	function createNewDocument(): void {
+		goto(`/schools/${url_safe_school}/write`);
 	}
 
-	function openDocument(
-		documentId: string,
-		currentVersion: DocumentVersion | null,
-	): void {
+	// Handle card events
+	function handleCardClick(
+		event: CustomEvent<{
+			documentId: string;
+			currentVersion: DocumentVersion | null;
+			school: string;
+		}>,
+	) {
+		const { documentId, currentVersion } = event.detail;
 		console.log('Opening document:', documentId, currentVersion);
+
 		if (currentVersion?.id) {
 			goto(
 				`/schools/${url_safe_school}/write/${documentId}/${currentVersion.id}`,
@@ -84,16 +67,13 @@
 		}
 	}
 
-	function createNewDocument(): void {
-		goto(`/schools/${url_safe_school}/write`);
-	}
-
-	function handleDeleteClick(
-		event: Event,
-		documentId: string,
-		documentTitle: string,
-	): void {
-		event.stopPropagation();
+	function handleCardDelete(
+		event: CustomEvent<{
+			documentId: string;
+			documentTitle: string;
+		}>,
+	) {
+		const { documentId, documentTitle } = event.detail;
 		showDeleteConfirmation(documentId, documentTitle);
 	}
 
@@ -155,63 +135,11 @@
 		}
 	}
 
-	// Status configuration with updated colors
-	const statusConfig: Record<
-		Status,
-		{
-			label: string;
-			variant: 'default' | 'secondary' | 'destructive' | 'outline';
-		}
-	> = {
-		'not-started': {
-			label: 'Not Started',
-			variant: 'outline',
-		},
-		'in-progress': {
-			label: 'In Progress',
-			variant: 'secondary',
-		},
-		finished: {
-			label: 'Finished',
-			variant: 'default',
-		},
-		polished: {
-			label: 'Polished',
-			variant: 'default',
-		},
-		submitted: {
-			label: 'Submitted',
-			variant: 'default',
-		},
-		scrapped: {
-			label: 'Scrapped',
-			variant: 'destructive',
-		},
-	};
-
-	function getDeadlineText(dueDate: Date | null): {
-		text: string;
-		variant: 'default' | 'secondary' | 'destructive' | 'outline';
-	} {
-		if (!dueDate) return { text: 'No deadline', variant: 'outline' };
-
-		const diff = dayjs(dueDate)
-			.startOf('day')
-			.diff(dayjs().startOf('day'), 'day');
-
-		if (diff < 0) return { text: 'Past deadline', variant: 'secondary' };
-		if (diff === 0) return { text: 'Due today', variant: 'destructive' };
-		if (diff === 1) return { text: 'Due tomorrow', variant: 'destructive' };
-		if (diff <= 3)
-			return { text: `Due in ${diff} days`, variant: 'destructive' };
-		if (diff <= 7) return { text: `Due in ${diff} days`, variant: 'secondary' };
-		return {
-			text: `Due ${dayjs(dueDate).format('MMM D')}`,
-			variant: 'default',
-		};
-	}
-
-	$: documents = (data.documents || []) as Document[];
+	// Add school field to documents for EssayCard component
+	$: documents = (data.documents || []).map((doc) => ({
+		...doc,
+		school: school,
+	})) as Document[];
 </script>
 
 <svelte:head>
@@ -220,41 +148,34 @@
 
 <svelte:window on:keydown={handleKeydown} />
 
-<div class="mx-auto max-w-7xl space-y-6 p-6">
+<div class="school-dashboard-container">
 	<!-- Header -->
-	<div
-		class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
-	>
-		<div class="space-y-1">
-			<div class="flex items-center gap-3">
-				<Button
-					variant="ghost"
-					size="sm"
+	<div class="school-header">
+		<div class="header-content">
+			<div class="title-with-back">
+				<button
+					class="back-button"
 					on:click={() => goto('/dashboard')}
-					class="px-2"
+					aria-label="Back to dashboard"
 				>
 					<ArrowLeft class="h-4 w-4" />
-				</Button>
-				<h1 class="text-3xl font-semibold tracking-tight">
-					{school} Essays
-				</h1>
+				</button>
+				<h1 class="school-title">{school}</h1>
 			</div>
-			<p class="text-lg text-muted-foreground">
+			<p class="school-subtitle">
 				{documents.length} essay{documents.length !== 1 ? 's' : ''} for {school}
 			</p>
 		</div>
-		<Button size="lg" on:click={createNewDocument}>
+		<Button size="lg" on:click={createNewDocument} class="new-essay-btn">
 			<Plus class="mr-2 h-5 w-5" />
 			New {school} Essay
 		</Button>
 	</div>
 
 	<!-- Info Banner -->
-	<Alert.Root
-		class="border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50"
-	>
+	<Alert.Root class="school-info-banner">
 		<Alert.Description class="text-center">
-			<p class="text-sm leading-relaxed">
+			<p class="banner-text">
 				Organize your essays by school to stay focused on each application. All
 				your {school} essays are in one place.
 			</p>
@@ -264,11 +185,11 @@
 	<!-- Documents Grid -->
 	{#if documents.length === 0}
 		<!-- Empty State -->
-		<div class="flex min-h-[400px] items-center justify-center p-8">
-			<div class="max-w-md space-y-4 text-center">
-				<FileText class="mx-auto h-16 w-16 text-muted-foreground" />
-				<h3 class="text-xl font-semibold">No {school} essays yet</h3>
-				<p class="leading-relaxed text-muted-foreground">
+		<div class="empty-state">
+			<div class="empty-content">
+				<FileText class="empty-icon" />
+				<h3 class="empty-title">No {school} essays yet</h3>
+				<p class="empty-description">
 					Get started by creating your first essay for {school}. Click the "New {school}
 					Essay" button above to begin writing.
 				</p>
@@ -280,130 +201,13 @@
 		</div>
 	{:else}
 		<!-- Documents Grid -->
-		<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-			{#each documents as document}
-				<Card.Root
-					class="group cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-				>
-					<div
-						on:click={() => {
-							console.log(
-								'Card clicked! Opening document:',
-								document.id,
-								document.current_version,
-							);
-							openDocument(document.id, document.current_version);
-						}}
-						on:keydown={(e) => {
-							console.log('Key pressed:', e.key);
-							if (e.key === 'Enter' || e.key === ' ') {
-								e.preventDefault();
-								console.log('Enter/Space pressed, opening document');
-								openDocument(document.id, document.current_version);
-							}
-						}}
-						class="h-full w-full cursor-pointer"
-						tabindex="0"
-						role="button"
-						aria-label="Open document"
-					>
-						<Card.Header class="pb-3">
-							<div class="flex items-start justify-between gap-3">
-								<div class="flex min-w-0 flex-1 items-start gap-3">
-									<div class="shrink-0 rounded-lg bg-muted p-2">
-										<FileText class="h-5 w-5 text-primary" />
-									</div>
-									<div class="min-w-0 flex-1">
-										<Card.Title class="line-clamp-2 text-base leading-tight">
-											{document.title && document.title.length > 40
-												? document.title.substring(0, 40) + '...'
-												: document.title || 'Untitled Essay'}
-										</Card.Title>
-									</div>
-								</div>
-								<Button
-									variant="ghost"
-									size="sm"
-									class="h-8 w-8 shrink-0 p-0 text-destructive opacity-0 transition-opacity hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
-									on:click={(e) => {
-										console.log('Delete button clicked');
-										handleDeleteClick(
-											e,
-											document.id,
-											document.title || 'Untitled Essay',
-										);
-									}}
-									aria-label="Delete essay"
-								>
-									<Trash class="h-4 w-4" />
-								</Button>
-							</div>
-						</Card.Header>
-
-						<Card.Content class="pb-3 pt-0">
-							<div class="space-y-3">
-								{#if document.prompt}
-									<p
-										class="line-clamp-3 text-sm leading-relaxed text-muted-foreground"
-									>
-										{document.prompt.length > 120
-											? document.prompt.substring(0, 120) + '...'
-											: document.prompt}
-									</p>
-								{:else}
-									<p class="text-sm italic text-muted-foreground">
-										No prompt added yet
-									</p>
-								{/if}
-
-								{#if document.due_date}
-									{@const deadline = getDeadlineText(document.due_date)}
-									<div class="flex items-center gap-2">
-										<Clock class="h-4 w-4" />
-										<Badge variant={deadline.variant} class="text-xs">
-											{deadline.text}
-										</Badge>
-									</div>
-								{/if}
-							</div>
-						</Card.Content>
-
-						<Card.Footer class="border-t pt-3">
-							<div class="w-full space-y-3">
-								<div class="flex flex-col gap-1 text-xs text-muted-foreground">
-									<div class="flex items-center gap-1.5">
-										<Calendar class="h-3.5 w-3.5" />
-										<span>Created {formatDate(document.created_at)}</span>
-									</div>
-									{#if document.updated_at && document.updated_at !== document.created_at}
-										<div class="flex items-center gap-1.5">
-											<Edit3 class="h-3.5 w-3.5" />
-											<span>Updated {formatDate(document.updated_at)}</span>
-										</div>
-									{/if}
-								</div>
-
-								<div class="flex items-center justify-between gap-2">
-									<span class="text-xs font-medium text-muted-foreground">
-										{document.versions_count} checkpoint{document.versions_count !==
-										1
-											? 's'
-											: ''} saved
-									</span>
-									{#if document.status}
-										<Badge
-											variant={statusConfig[document.status]?.variant ||
-												'outline'}
-											class="text-xs"
-										>
-											{statusConfig[document.status]?.label || document.status}
-										</Badge>
-									{/if}
-								</div>
-							</div>
-						</Card.Footer>
-					</div>
-				</Card.Root>
+		<div class="documents-grid">
+			{#each documents as document (document.id)}
+				<EssayCard
+					{document}
+					on:click={handleCardClick}
+					on:delete={handleCardDelete}
+				/>
 			{/each}
 		</div>
 	{/if}
@@ -445,11 +249,193 @@
 </Dialog.Root>
 
 <style>
-	.line-clamp-3 {
-		display: -webkit-box;
-		-webkit-line-clamp: 3;
-		line-clamp: 3;
-		-webkit-box-orient: vertical;
-		overflow: hidden;
+	/* School Dashboard Container */
+	.school-dashboard-container {
+		max-width: 1280px;
+		margin: 0 auto;
+		padding: 1.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		width: 100%;
+	}
+
+	/* Header Styles */
+	.school-header {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	@media (min-width: 640px) {
+		.school-header {
+			flex-direction: row;
+			align-items: flex-start;
+			justify-content: space-between;
+		}
+	}
+
+	.header-content {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.title-with-back {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.back-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.5rem;
+		background: transparent;
+		border: none;
+		border-radius: 0.375rem;
+		color: hsl(var(--color-neutral-content));
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.back-button:hover {
+		background: hsl(var(--color-base-200));
+		color: hsl(var(--color-base-content));
+	}
+
+	.back-button:focus {
+		outline: 2px solid hsl(var(--color-primary));
+		outline-offset: 2px;
+	}
+
+	.school-title {
+		font-size: 1.875rem;
+		font-weight: 600;
+		line-height: 1.2;
+		color: hsl(var(--color-base-content));
+		letter-spacing: -0.025em;
+		margin: 0;
+	}
+
+	.school-subtitle {
+		font-size: 1.125rem;
+		color: hsl(var(--color-neutral-content));
+		margin: 0;
+	}
+
+	/* Banner Styles */
+	:global(.school-info-banner) {
+		border: 1px solid hsl(var(--color-info) / 0.3) !important;
+		background: linear-gradient(
+			to right,
+			hsl(var(--color-info) / 0.05),
+			hsl(var(--color-primary) / 0.05)
+		) !important;
+		border-radius: 0.75rem !important;
+		padding: 1rem !important;
+	}
+
+	.banner-text {
+		font-size: 0.875rem;
+		line-height: 1.6;
+		color: hsl(var(--color-base-content));
+		margin: 0;
+	}
+
+	/* Empty State */
+	.empty-state {
+		display: flex;
+		min-height: 400px;
+		align-items: center;
+		justify-content: center;
+		padding: 2rem;
+	}
+
+	.empty-content {
+		max-width: 384px;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		text-align: center;
+	}
+
+	/* .empty-icon {
+		width: 4rem;
+		height: 4rem;
+		color: hsl(var(--color-neutral-content));
+		margin: 0 auto;
+	} */
+
+	.empty-title {
+		font-size: 1.25rem;
+		font-weight: 600;
+		color: hsl(var(--color-base-content));
+		margin: 0;
+	}
+
+	.empty-description {
+		line-height: 1.6;
+		color: hsl(var(--color-neutral-content));
+		margin: 0;
+	}
+
+	/* Documents Grid */
+	.documents-grid {
+		display: grid;
+		gap: 1.5rem;
+		grid-template-columns: 1fr;
+	}
+
+	@media (min-width: 640px) {
+		.documents-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.documents-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	/* Mobile Responsiveness */
+	@media (max-width: 640px) {
+		.school-dashboard-container {
+			padding: 1rem;
+		}
+
+		.school-title {
+			font-size: 1.5rem;
+		}
+
+		.title-with-back {
+			gap: 0.5rem;
+		}
+	}
+
+	/* High contrast mode support */
+	@media (prefers-contrast: high) {
+		:global(.school-info-banner) {
+			border-width: 2px !important;
+		}
+
+		.back-button {
+			border: 1px solid hsl(var(--color-base-400));
+		}
+	}
+
+	/* Reduced motion support */
+	@media (prefers-reduced-motion: reduce) {
+		.back-button {
+			transition: none !important;
+		}
+	}
+
+	/* Focus visible for better accessibility */
+	.back-button:focus-visible {
+		outline: 2px solid hsl(var(--color-primary));
+		outline-offset: 2px;
 	}
 </style>

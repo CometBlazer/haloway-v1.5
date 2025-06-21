@@ -9,7 +9,11 @@ import type {
 	ComponentVersion,
 } from './../../../../../../../DatabaseDefinitions';
 import type { PostgrestError } from '@supabase/supabase-js';
-import { validateAndNormalizeSchool } from '$lib/utils/validation';
+import {
+	validateAndNormalizeSchool,
+	getSchoolDisplayNameStrict,
+	getSchoolUrlSafeNameStrict,
+} from '$lib/utils/validation';
 
 type DocumentVersion = Database['public']['Tables']['document_versions']['Row'];
 type DocumentWithTags = Database['public']['Tables']['documents']['Row'] & {
@@ -19,12 +23,30 @@ type DocumentWithTags = Database['public']['Tables']['documents']['Row'] & {
 };
 
 export const load: PageServerLoad = async ({ params, locals }) => {
-	const { documentId, versionId } = params;
+	const { school, documentId, versionId } = params;
 	const { session } = await locals.safeGetSession();
 
 	// This should never happen due to layout protection, but TypeScript safety
 	if (!session?.user?.id) {
 		throw error(401, 'Unauthorized');
+	}
+
+	// Validate school parameter
+	if (!school || typeof school !== 'string' || school.trim().length === 0) {
+		throw error(400, 'School parameter is required');
+	}
+
+	// Validate school exists and get proper names
+	let schoolDisplayName: string;
+	let schoolUrlSafeName: string;
+	try {
+		// Get the display name for the school from the URL-safe name
+		schoolDisplayName = await getSchoolDisplayNameStrict(school.trim());
+		// Get the proper URL-safe name from the database
+		schoolUrlSafeName = await getSchoolUrlSafeNameStrict(schoolDisplayName);
+	} catch {
+		console.error('School not found in database:', school.trim());
+		throw error(404, `School "${school.trim()}" not found`);
 	}
 
 	// Get document and its tags
@@ -184,6 +206,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		},
 		currentVersion: transformedCurrentVersion,
 		versions: transformedVersions,
+		school: schoolDisplayName,
+		schoolUrlSafeName: schoolUrlSafeName,
 		session,
 	};
 };

@@ -1048,6 +1048,7 @@
 				documentId={$page.params.documentId}
 				currentVersionId={$page.params.versionId}
 				versions={data.versions}
+				schoolUrlSafeName={data.schoolUrlSafeName}
 				on:createVersion={handleVersionCreate}
 				on:renameVersion={handleVersionRename}
 				on:duplicateVersion={handleVersionDuplicate}

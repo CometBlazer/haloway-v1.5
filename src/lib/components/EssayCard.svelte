@@ -209,7 +209,7 @@
 		</div>
 
 		<!-- Card Footer -->
-		<div class="card-footer">
+		<div class="card-footer mt-2">
 			<div class="meta-info">
 				<div class="date-info">
 					<div class="date-item">

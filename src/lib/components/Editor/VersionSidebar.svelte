@@ -10,6 +10,7 @@
 	export let documentId: string;
 	export let currentVersionId: string;
 	export let versions: ComponentVersion[];
+	export let schoolUrlSafeName: string; // New prop for school-based routing
 
 	const dispatch = createEventDispatcher<{
 		createVersion: { name: string };
@@ -66,10 +67,13 @@
 				const version = result.data.version as ComponentVersion;
 				// Update the versions array in-memory
 				versions = [version, ...versions];
-				// Navigate to the new version
-				await goto(`/dashboard/write/${documentId}/${version.id}`, {
-					replaceState: true,
-				});
+				// Navigate to the new version using school-based routing
+				await goto(
+					`/schools/${schoolUrlSafeName}/write/${documentId}/${version.id}`,
+					{
+						replaceState: true,
+					},
+				);
 				// Reset form state
 				newVersionName = '';
 				isCreatingVersion = false;
@@ -146,8 +150,8 @@
 			return;
 		}
 
-		// Navigate directly - the server load function will handle setting current_version_id
-		goto(`/dashboard/write/${documentId}/${versionId}`);
+		// Navigate directly using school-based routing - the server load function will handle setting current_version_id
+		goto(`/schools/${schoolUrlSafeName}/write/${documentId}/${versionId}`);
 		closeSidebar();
 	}
 
