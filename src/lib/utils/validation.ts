@@ -148,3 +148,67 @@ export function validateAndNormalizeSchoolSlug(
 	// Convert slug back to proper school name for database storage
 	return slugToSchool(normalized);
 }
+
+/**
+ * Gets the display name for a school from the schools table (strict version)
+ * @param urlSafeName - The URL-safe name to get display name for
+ * @returns Display name from schools table, throws error if not found
+ */
+export async function getSchoolDisplayNameStrict(
+	urlSafeName: string,
+): Promise<string> {
+	try {
+		const { supabase } = await import('$lib/supabase');
+		const { data, error } = await supabase
+			.from('schools')
+			.select('name')
+			.eq('url_safe_name', urlSafeName)
+			.single();
+
+		if (error || !data) {
+			throw new Error(
+				`School with URL-safe name "${urlSafeName}" not found in schools table`,
+			);
+		}
+
+		return data.name;
+	} catch (err) {
+		if (err instanceof Error) {
+			throw err; // Re-throw our custom error
+		}
+		throw new Error(
+			`Error fetching display name for school URL "${urlSafeName}": ${err}`,
+		);
+	}
+}
+
+/**
+ * Gets the URL-safe name for a school from the schools table (strict version)
+ * @param schoolName - The school name to get URL-safe name for
+ * @returns URL-safe name from schools table, throws error if not found
+ */
+export async function getSchoolUrlSafeNameStrict(
+	schoolName: string,
+): Promise<string> {
+	try {
+		const { supabase } = await import('$lib/supabase');
+		const { data, error } = await supabase
+			.from('schools')
+			.select('url_safe_name')
+			.eq('name', schoolName)
+			.single();
+
+		if (error || !data) {
+			throw new Error(`School "${schoolName}" not found in schools table`);
+		}
+
+		return data.url_safe_name;
+	} catch (err) {
+		if (err instanceof Error) {
+			throw err; // Re-throw our custom error
+		}
+		throw new Error(
+			`Error fetching URL-safe name for school "${schoolName}": ${err}`,
+		);
+	}
+}

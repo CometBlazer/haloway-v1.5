@@ -2,8 +2,8 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { supabase } from '$lib/supabase';
 import {
-	getSchoolDisplayName,
-	getSchoolUrlSafeName,
+	getSchoolDisplayNameStrict,
+	getSchoolUrlSafeNameStrict,
 } from '$lib/utils/validation';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
@@ -22,20 +22,18 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	try {
 		if (!school || typeof school !== 'string' || school.trim().length === 0) {
 			throw error(400, 'School parameter is required');
-		}
-
-		// First, try to get the display name - this will throw if school doesn't exist
+		} // First, try to get the display name - this will throw if school doesn't exist
 		try {
-			schoolDisplayName = await getSchoolDisplayName(school.trim());
-		} catch (displayNameError) {
+			schoolDisplayName = await getSchoolDisplayNameStrict(school.trim());
+		} catch {
 			console.error('School not found in database:', school.trim());
 			throw error(404, `School "${school.trim()}" not found`);
 		}
 
 		// Then get the proper URL-safe name from the database
 		try {
-			schoolUrlSafeName = await getSchoolUrlSafeName(schoolDisplayName);
-		} catch (urlSafeError) {
+			schoolUrlSafeName = await getSchoolUrlSafeNameStrict(schoolDisplayName);
+		} catch {
 			console.error(
 				'Failed to get URL-safe name for school:',
 				schoolDisplayName,
