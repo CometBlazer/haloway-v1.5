@@ -400,8 +400,8 @@
 
 				// Navigate to the new URL if the school changed
 				const currentSchool = $page.params.school;
-				const { schoolToSlug } = await import('$lib/utils/validation');
-				const newSchoolSlug = schoolToSlug(newSchool);
+				const { getSchoolUrlSafeName } = await import('$lib/utils/validation');
+				const newSchoolSlug = await getSchoolUrlSafeName(newSchool);
 
 				if (currentSchool !== newSchoolSlug) {
 					// Navigate to the new school-based URL

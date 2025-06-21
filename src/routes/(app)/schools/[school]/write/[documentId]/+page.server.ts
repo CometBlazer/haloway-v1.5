@@ -1,7 +1,10 @@
 import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { supabase } from '$lib/supabase';
-import { validateAndNormalizeSchoolSlug } from '$lib/utils/validation';
+import {
+	getSchoolDisplayName,
+	getSchoolUrlSafeName,
+} from '$lib/utils/validation';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	const { session } = await locals.safeGetSession();
@@ -12,11 +15,15 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	const { school, documentId } = params;
 
-	// Validate and normalize the school slug parameter
-	let normalizedSchool: string;
+	// Get the display name for the school from the URL-safe name
+	let schoolDisplayName: string;
 	try {
-		normalizedSchool = validateAndNormalizeSchoolSlug(school);
-	} catch {
+		if (!school || typeof school !== 'string' || school.trim().length === 0) {
+			throw error(400, 'School parameter is required');
+		}
+		schoolDisplayName = await getSchoolDisplayName(school.trim());
+	} catch (err) {
+		console.error('Failed to resolve school display name:', err);
 		throw error(400, 'Invalid school parameter');
 	}
 
@@ -37,7 +44,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	}
 
 	// Verify the document belongs to the specified school (case-insensitive)
-	if (document.school?.toLowerCase() !== normalizedSchool.toLowerCase()) {
+	if (document.school?.toLowerCase() !== schoolDisplayName.toLowerCase()) {
 		throw error(404, 'Document not found in this school');
 	}
 
@@ -70,16 +77,22 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			console.error('Failed to update document:', updateError);
 		}
 
+		// Get the URL-safe name for redirect
+		const schoolUrlSafeName = await getSchoolUrlSafeName(schoolDisplayName);
+
 		// Redirect to the new version
 		throw redirect(
 			303,
-			`/schools/${normalizedSchool}/write/${documentId}/${version.id}`,
+			`/schools/${schoolUrlSafeName}/write/${documentId}/${version.id}`,
 		);
 	}
+
+	// Get the URL-safe name for redirect
+	const schoolUrlSafeName = await getSchoolUrlSafeName(schoolDisplayName);
 
 	// Redirect to the current version
 	throw redirect(
 		303,
-		`/schools/${normalizedSchool}/write/${documentId}/${document.current_version_id}`,
+		`/schools/${schoolUrlSafeName}/write/${documentId}/${document.current_version_id}`,
 	);
 };

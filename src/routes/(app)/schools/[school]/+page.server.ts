@@ -1,7 +1,10 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { supabase } from '$lib/supabase';
-import { validateAndNormalizeSchoolSlug } from '$lib/utils/validation';
+import {
+	getSchoolDisplayName,
+	getSchoolUrlSafeName,
+} from '$lib/utils/validation';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
 	// Session is already validated by the layout, no need to check again
@@ -13,11 +16,38 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	}
 
 	const { school } = params;
-	// Validate and normalize the school slug parameter
-	let normalizedSchool: string;
+	// Get the display name for the school from the URL-safe name
+	let schoolDisplayName: string;
+	let schoolUrlSafeName: string;
 	try {
-		normalizedSchool = validateAndNormalizeSchoolSlug(school);
-	} catch {
+		if (!school || typeof school !== 'string' || school.trim().length === 0) {
+			throw error(400, 'School parameter is required');
+		}
+
+		// First, try to get the display name - this will throw if school doesn't exist
+		try {
+			schoolDisplayName = await getSchoolDisplayName(school.trim());
+		} catch (displayNameError) {
+			console.error('School not found in database:', school.trim());
+			throw error(404, `School "${school.trim()}" not found`);
+		}
+
+		// Then get the proper URL-safe name from the database
+		try {
+			schoolUrlSafeName = await getSchoolUrlSafeName(schoolDisplayName);
+		} catch (urlSafeError) {
+			console.error(
+				'Failed to get URL-safe name for school:',
+				schoolDisplayName,
+			);
+			throw error(500, 'Failed to resolve school information');
+		}
+	} catch (err) {
+		// If it's already an error object (from our throws above), re-throw it
+		if (err && typeof err === 'object' && 'status' in err) {
+			throw err;
+		}
+		console.error('Failed to resolve school information:', err);
 		throw error(400, 'Invalid school parameter');
 	}
 
@@ -27,7 +57,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 			.from('documents')
 			.select('*')
 			.eq('user_id', session.user.id)
-			.ilike('school', normalizedSchool) // Case-insensitive matching
+			.ilike('school', schoolDisplayName) // Case-insensitive matching
 			.order('updated_at', { ascending: false });
 
 		if (documentsError) {
@@ -65,7 +95,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 		return {
 			documents: documentsWithVersionInfo,
-			school: normalizedSchool,
+			school: schoolDisplayName,
+			url_safe_school: schoolUrlSafeName,
 			session,
 		};
 	} catch (err) {

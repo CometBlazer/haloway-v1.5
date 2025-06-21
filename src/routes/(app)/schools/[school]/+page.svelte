@@ -31,9 +31,9 @@
 	let isDeleting = false;
 	let documentToDelete: { id: string; title: string } | null = null;
 
-	// Get school from params
+	// Get school from data (already the display name)
 	$: school = data.school;
-	$: schoolDisplayName = school.charAt(0).toUpperCase() + school.slice(1);
+	$: url_safe_school = data.url_safe_school;
 
 	// Type definitions
 	interface DocumentVersion {
@@ -76,14 +76,16 @@
 	): void {
 		console.log('Opening document:', documentId, currentVersion);
 		if (currentVersion?.id) {
-			goto(`/schools/${school}/write/${documentId}/${currentVersion.id}`);
+			goto(
+				`/schools/${url_safe_school}/write/${documentId}/${currentVersion.id}`,
+			);
 		} else {
-			goto(`/schools/${school}/write/${documentId}`);
+			goto(`/schools/${url_safe_school}/write/${documentId}`);
 		}
 	}
 
 	function createNewDocument(): void {
-		goto(`/schools/${school}/write`);
+		goto(`/schools/${url_safe_school}/write`);
 	}
 
 	function handleDeleteClick(
@@ -213,7 +215,7 @@
 </script>
 
 <svelte:head>
-	<title>{schoolDisplayName} Essays | {WebsiteName}</title>
+	<title>{school} Essays | {WebsiteName}</title>
 </svelte:head>
 
 <svelte:window on:keydown={handleKeydown} />
@@ -234,16 +236,16 @@
 					<ArrowLeft class="h-4 w-4" />
 				</Button>
 				<h1 class="text-3xl font-semibold tracking-tight">
-					{schoolDisplayName} Essays
+					{school} Essays
 				</h1>
 			</div>
 			<p class="text-lg text-muted-foreground">
-				{documents.length} essay{documents.length !== 1 ? 's' : ''} for {schoolDisplayName}
+				{documents.length} essay{documents.length !== 1 ? 's' : ''} for {school}
 			</p>
 		</div>
 		<Button size="lg" on:click={createNewDocument}>
 			<Plus class="mr-2 h-5 w-5" />
-			New {schoolDisplayName} Essay
+			New {school} Essay
 		</Button>
 	</div>
 
@@ -254,7 +256,7 @@
 		<Alert.Description class="text-center">
 			<p class="text-sm leading-relaxed">
 				Organize your essays by school to stay focused on each application. All
-				your {schoolDisplayName} essays are in one place.
+				your {school} essays are in one place.
 			</p>
 		</Alert.Description>
 	</Alert.Root>
@@ -265,14 +267,14 @@
 		<div class="flex min-h-[400px] items-center justify-center p-8">
 			<div class="max-w-md space-y-4 text-center">
 				<FileText class="mx-auto h-16 w-16 text-muted-foreground" />
-				<h3 class="text-xl font-semibold">No {schoolDisplayName} essays yet</h3>
+				<h3 class="text-xl font-semibold">No {school} essays yet</h3>
 				<p class="leading-relaxed text-muted-foreground">
-					Get started by creating your first essay for {schoolDisplayName}.
-					Click the "New {schoolDisplayName} Essay" button above to begin writing.
+					Get started by creating your first essay for {school}. Click the "New {school}
+					Essay" button above to begin writing.
 				</p>
 				<Button size="lg" on:click={createNewDocument}>
 					<Plus class="mr-2 h-5 w-5" />
-					Create Your First {schoolDisplayName} Essay
+					Create Your First {school} Essay
 				</Button>
 			</div>
 		</div>

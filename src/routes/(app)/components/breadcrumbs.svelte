@@ -7,6 +7,8 @@
 		settings: 'Settings',
 		profile: 'Profile',
 		documents: 'Documents',
+		write: 'Write',
+		schools: 'Schools',
 		// Add more custom labels as needed
 	};
 

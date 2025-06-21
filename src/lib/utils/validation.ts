@@ -34,7 +34,7 @@ export function getDefaultSchool(): string {
 }
 
 /**
- * Converts a school name to a URL-safe slug
+ * Converts a school name to a URL-safe slug (fallback for when no schools table entry exists)
  * @param school - The school name to convert
  * @returns URL-safe slug
  */
@@ -43,7 +43,7 @@ export function schoolToSlug(school: string): string {
 }
 
 /**
- * Converts a URL slug back to a school name
+ * Converts a URL slug back to a school name (fallback)
  * @param slug - The URL slug to convert
  * @returns properly formatted school name
  */
@@ -52,6 +52,80 @@ export function slugToSchool(slug: string): string {
 		.split('-')
 		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 		.join(' ');
+}
+
+/**
+ * Gets the URL-safe name for a school from the schools table
+ * @param schoolName - The school name to get URL-safe name for
+ * @returns URL-safe name from schools table, or fallback slug
+ */
+export async function getSchoolUrlSafeName(
+	schoolName: string,
+): Promise<string> {
+	try {
+		const { supabase } = await import('$lib/supabase');
+		const { data, error } = await supabase
+			.from('schools')
+			.select('url_safe_name')
+			.eq('name', schoolName)
+			.single();
+
+		if (error || !data) {
+			// Log warning when school is not found in database
+			console.warn(
+				`School "${schoolName}" not found in schools table. Using fallback URL generation. Please add this school to the schools table.`,
+			);
+			// Fallback to generated slug if school not found in table
+			return schoolToSlug(schoolName);
+		}
+
+		return data.url_safe_name;
+	} catch (err) {
+		// Log error for debugging
+		console.error(
+			`Error fetching URL-safe name for school "${schoolName}":`,
+			err,
+		);
+		// Fallback to generated slug on any error
+		return schoolToSlug(schoolName);
+	}
+}
+
+/**
+ * Gets the display name for a school from the schools table
+ * @param urlSafeName - The URL-safe name to get display name for
+ * @returns Display name from schools table, or fallback conversion
+ */
+export async function getSchoolDisplayName(
+	urlSafeName: string,
+): Promise<string> {
+	try {
+		const { supabase } = await import('$lib/supabase');
+		const { data, error } = await supabase
+			.from('schools')
+			.select('name')
+			.eq('url_safe_name', urlSafeName)
+			.single();
+
+		if (error || !data) {
+			// Log warning when school is not found in database
+			console.warn(
+				`School with URL-safe name "${urlSafeName}" not found in schools table. Using fallback name conversion. Please add this school to the schools table.`,
+			);
+			// Fallback to converted slug if school not found in table
+			return slugToSchool(urlSafeName);
+		}
+
+		return data.name;
+	} catch (err) {
+		// Log error for debugging
+		console.error(
+			`Error fetching display name for school URL "${urlSafeName}":`,
+			err,
+		);
+		// Fallback to converted slug on any error
+		return slugToSchool(urlSafeName);
+	}
 }
 
 /**

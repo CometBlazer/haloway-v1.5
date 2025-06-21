@@ -2,12 +2,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { enhance } from '$app/forms';
-	import { page } from '$app/stores';
 	import { Loader2 } from 'lucide-svelte';
 	import { WebsiteName } from '../../../../../config';
+	import type { PageData } from './$types';
 
-	$: school = $page.params.school;
-	$: schoolDisplayName = school.charAt(0).toUpperCase() + school.slice(1);
+	export let data: PageData;
+
+	$: schoolDisplayName = data.school; // Use the resolved school name from server
 
 	let form: HTMLFormElement;
 

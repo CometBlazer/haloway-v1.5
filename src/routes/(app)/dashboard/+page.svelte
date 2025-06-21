@@ -16,7 +16,6 @@
 	import { toastStore } from '$lib/stores/toast';
 	import { enhance } from '$app/forms';
 	import type { Status } from '$lib/components/Editor/StatusDropdown.svelte';
-	import { schoolToSlug } from '$lib/utils/validation';
 	import dayjs from 'dayjs';
 
 	// shadcn-svelte components
@@ -101,11 +100,11 @@
 
 		return date.toLocaleDateString();
 	}
-	function openDocument(
+	async function openDocument(
 		documentId: string,
 		currentVersion: DocumentVersion | null,
 		school: string,
-	): void {
+	): Promise<void> {
 		console.log(
 			'Opening document:',
 			documentId,
@@ -114,7 +113,8 @@
 			school,
 		);
 		// Convert school name to URL-safe format using the helper function
-		const schoolSlug = schoolToSlug(school);
+		const { getSchoolUrlSafeName } = await import('$lib/utils/validation');
+		const schoolSlug = await getSchoolUrlSafeName(school);
 
 		if (currentVersion?.id) {
 			goto(`/schools/${schoolSlug}/write/${documentId}/${currentVersion.id}`);

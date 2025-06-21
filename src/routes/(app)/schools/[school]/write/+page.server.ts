@@ -1,10 +1,30 @@
 import { error, redirect } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 import { supabase } from '$lib/supabase';
 import {
-	validateAndNormalizeSchoolSlug,
-	schoolToSlug,
+	getSchoolDisplayName,
+	getSchoolUrlSafeName,
 } from '$lib/utils/validation';
+
+export const load: PageServerLoad = async ({ params }) => {
+	const { school } = params;
+
+	// Get the display name for the school from the URL-safe name
+	let schoolDisplayName: string;
+	try {
+		if (!school || typeof school !== 'string' || school.trim().length === 0) {
+			throw error(400, 'School parameter is required');
+		}
+		schoolDisplayName = await getSchoolDisplayName(school.trim());
+	} catch (err) {
+		console.error('Failed to resolve school display name:', err);
+		throw error(400, 'Invalid school parameter');
+	}
+
+	return {
+		school: schoolDisplayName,
+	};
+};
 
 export const actions = {
 	default: async ({ params, locals }) => {
@@ -17,11 +37,15 @@ export const actions = {
 
 		const { school } = params;
 
-		// Validate and normalize the school slug parameter
-		let normalizedSchool: string;
+		// Get the display name for the school from the URL-safe name
+		let schoolDisplayName: string;
 		try {
-			normalizedSchool = validateAndNormalizeSchoolSlug(school);
-		} catch {
+			if (!school || typeof school !== 'string' || school.trim().length === 0) {
+				throw error(400, 'School parameter is required');
+			}
+			schoolDisplayName = await getSchoolDisplayName(school.trim());
+		} catch (err) {
+			console.error('Failed to resolve school display name:', err);
 			throw error(400, 'Invalid school parameter');
 		}
 
@@ -29,9 +53,9 @@ export const actions = {
 		const { data: document, error: documentError } = await supabase
 			.from('documents')
 			.insert({
-				title: `[${normalizedSchool.charAt(0).toUpperCase() + normalizedSchool.slice(1)} Essay]`,
+				title: `[${schoolDisplayName} Essay]`,
 				user_id: session.user.id,
-				school: normalizedSchool,
+				school: schoolDisplayName,
 			})
 			.select()
 			.single();
@@ -71,8 +95,8 @@ export const actions = {
 			);
 		}
 
-		// Redirect to the new document (convert school name back to slug for URL)
-		const schoolSlug = schoolToSlug(normalizedSchool);
+		// Redirect to the new document (convert school name to URL-safe format)
+		const schoolSlug = await getSchoolUrlSafeName(schoolDisplayName);
 		throw redirect(
 			303,
 			`/schools/${schoolSlug}/write/${document.id}/${version.id}`,
