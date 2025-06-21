@@ -132,66 +132,6 @@
 		newEssayForm.school = event.detail;
 	}
 
-	async function handleCreateEssay(): Promise<void> {
-		if (!newEssayForm.school) {
-			toastStore.show('Please select a school', 'error');
-			return;
-		}
-
-		isCreatingEssay = true;
-
-		try {
-			// Get the URL-safe name for the school
-			const { getSchoolUrlSafeName } = await import('$lib/utils/validation');
-			const schoolSlug = await getSchoolUrlSafeName(newEssayForm.school);
-
-			// Create FormData for the request
-			const formData = new FormData();
-			formData.append('school', newEssayForm.school);
-			formData.append(
-				'title',
-				newEssayForm.title || `[${newEssayForm.school} Essay]`,
-			);
-			formData.append('prompt', newEssayForm.prompt);
-			formData.append('dueDate', newEssayForm.dueDate);
-			formData.append('status', 'not-started');
-
-			const response = await fetch('?/createDocument', {
-				method: 'POST',
-				body: formData,
-			});
-
-			if (response.ok) {
-				const result = await response.text();
-				// Try to parse as JSON, but handle both JSON and redirect responses
-				try {
-					const jsonResult = JSON.parse(result);
-					if (jsonResult.type === 'success' && jsonResult.data?.documentId) {
-						toastStore.show('Essay created successfully', 'success');
-						closeNewEssayModal();
-						// Navigate to the new essay
-						goto(`/schools/${schoolSlug}/write/${jsonResult.data.documentId}`);
-						return;
-					}
-				} catch {
-					// Response might be a redirect or other format
-					// If we get here, assume success and reload page
-					toastStore.show('Essay created successfully', 'success');
-					closeNewEssayModal();
-					window.location.reload();
-					return;
-				}
-			}
-
-			throw new Error('Failed to create essay');
-		} catch (error) {
-			console.error('Failed to create essay:', error);
-			toastStore.show('Failed to create essay', 'error');
-		} finally {
-			isCreatingEssay = false;
-		}
-	}
-
 	// Handle card events
 	function handleCardClick(
 		event: CustomEvent<{
@@ -414,30 +354,26 @@
 				use:enhance={() => {
 					isCreatingEssay = true;
 					return async ({ result, update }) => {
-						if (result.type === 'redirect') {
-							// Server is redirecting - show success and let SvelteKit handle redirect
-							toastStore.show('Essay created successfully', 'success');
-							closeNewEssayModal();
-							// Don't reset isCreatingEssay here - the page will change
-						} else if (result.type === 'failure') {
-							// Handle errors
+						// Always reset loading state for non-redirect results
+						if (result.type !== 'redirect') {
 							isCreatingEssay = false;
 							if (
+								result.type === 'failure' &&
 								result.data?.error &&
 								typeof result.data.error === 'object' &&
 								'message' in result.data.error
 							) {
 								toastStore.show(String(result.data.error.message), 'error');
-							} else {
+							} else if (result.type === 'failure') {
 								toastStore.show('Failed to create essay', 'error');
 							}
-							await update();
 						} else {
-							// Handle other result types
-							isCreatingEssay = false;
-							toastStore.show('Failed to create essay', 'error');
-							await update();
+							// For redirects, show success but don't reset loading
+							toastStore.show('Essay created successfully', 'success');
+							closeNewEssayModal();
 						}
+						// Let SvelteKit handle all result types naturally
+						await update();
 					};
 				}}
 			>
@@ -451,7 +387,6 @@
 							on:schoolChange={handleSchoolChange}
 							disabled={false}
 						/>
-						<!-- Hidden input to ensure school value is submitted -->
 						<input type="hidden" name="school" value={newEssayForm.school} />
 					</div>
 

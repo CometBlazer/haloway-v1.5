@@ -244,7 +244,7 @@ export const actions = {
 
 			// Import the validation function and redirect to the school-specific route
 			const { getSchoolUrlSafeName } = await import('$lib/utils/validation');
-			const schoolSlug = getSchoolUrlSafeName(school.trim());
+			const schoolSlug = await getSchoolUrlSafeName(school.trim());
 
 			throw redirect(
 				303,
