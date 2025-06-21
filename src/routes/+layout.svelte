@@ -3,6 +3,7 @@
 	import { navigating, page } from '$app/stores';
 	import CookiesBanner from '$lib/components/landing/cookies-banner/cookies-banner.svelte';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
+	import ToastContainer from '$lib/components/ui/toast/ToastContainer.svelte';
 	import { ModeWatcher } from 'mode-watcher';
 	import { afterUpdate, onMount } from 'svelte';
 	import { expoOut } from 'svelte/easing';
@@ -84,4 +85,6 @@
 		in:slide={{ delay: 100, duration: 12000, axis: 'x', easing: expoOut }}
 	></div>
 {/if}
+
+<ToastContainer />
 <slot />

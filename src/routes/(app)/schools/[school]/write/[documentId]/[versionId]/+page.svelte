@@ -820,18 +820,82 @@
 	<header class:zen-mode={editorZenMode} class="mb-8 lg:mb-12">
 		<div class="w-full">
 			<!-- Enhanced toolbar integrated into header -->
-			<div
-				class="border-base-200 mb-4 flex flex-row items-center justify-end gap-3 border-b pb-4 lg:items-center"
-			>
-				<!-- Save status and manual save -->
-				<div class="flex items-center gap-3">
-					<!-- Contextual save button - only show when needed -->
+			<div class="enhanced-toolbar">
+				<!-- Status Section -->
+				<div class="status-section">
+					<div
+						class="status-indicator"
+						class:status-saved={statusDisplay.class === 'saved'}
+						class:status-saving={statusDisplay.class === 'saving' ||
+							statusDisplay.class === 'retrying'}
+						class:status-unsaved={statusDisplay.class === 'unsaved' ||
+							statusDisplay.class === 'pending'}
+						class:status-error={statusDisplay.class === 'error'}
+						class:status-offline={statusDisplay.class === 'offline'}
+						class:animate-pulse={saveState.status === 'error'}
+					>
+						<!-- Status Icon -->
+						<div class="status-icon">
+							{#if statusDisplay.icon === 'saved'}
+								<svg
+									class="h-4 w-4"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<path d="M20 6L9 17l-5-5" />
+								</svg>
+							{:else if statusDisplay.icon === 'saving'}
+								<div class="loading-spinner"></div>
+							{:else if statusDisplay.icon === 'unsaved' || statusDisplay.icon === 'pending'}
+								<svg
+									class="h-4 w-4"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<circle cx="12" cy="12" r="10" />
+									<polyline points="12,6 12,12 16,14" />
+								</svg>
+							{:else if statusDisplay.icon === 'error'}
+								<svg
+									class="h-4 w-4"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<circle cx="12" cy="12" r="10" />
+									<line x1="15" y1="9" x2="9" y2="15" />
+									<line x1="9" y1="9" x2="15" y2="15" />
+								</svg>
+							{:else if statusDisplay.icon === 'offline'}
+								<svg
+									class="h-4 w-4"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<path d="M3 12h18m-9-9v18" />
+									<path d="M3 12L21 12" />
+								</svg>
+							{/if}
+						</div>
+
+						<!-- Status Text -->
+						<span class="status-text">{statusDisplay.text}</span>
+					</div>
+
+					<!-- Manual Save Button (conditional) -->
 					{#if saveState.status === 'error' || saveState.status === 'offline' || (saveState.hasUnsavedChanges && !saveState.isOnline)}
 						<button
 							on:click={() => saveContent(false)}
-							class="btn btn-ghost btn-sm"
-							class:btn-error={saveState.status === 'error'}
-							class:btn-warning={saveState.status === 'offline'}
+							class="save-button"
+							class:save-error={saveState.status === 'error'}
+							class:save-offline={saveState.status === 'offline'}
 							disabled={saveState.status === 'saving' ||
 								saveState.status === 'retrying'}
 							title={saveState.status === 'error'
@@ -840,146 +904,57 @@
 									? 'Currently offline'
 									: 'Save changes manually'}
 						>
-							<Save size={14} />
-							{#if saveState.status === 'error'}
-								Retry Save
-							{:else if saveState.status === 'offline'}
-								Save When Online
-							{:else}
-								Save
-							{/if}
+							<Save size={16} />
+							<span class="save-text">
+								{#if saveState.status === 'error'}
+									Retry Save
+								{:else if saveState.status === 'offline'}
+									Save When Online
+								{:else}
+									Save Now
+								{/if}
+							</span>
 						</button>
 					{/if}
-
-					<!-- Status indicator -->
-					<div
-						class="flex items-center"
-						class:animate-pulse={saveState.status === 'error'}
-					>
-						<div
-							class="flex items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 md:py-3 {statusDisplay.class ===
-							'saved'
-								? 'text-success bg-success/10'
-								: statusDisplay.class === 'saving' ||
-									  statusDisplay.class === 'retrying'
-									? 'text-info bg-info/10'
-									: statusDisplay.class === 'unsaved' ||
-										  statusDisplay.class === 'pending'
-										? 'text-warning bg-warning/10'
-										: statusDisplay.class === 'error'
-											? 'text-error bg-error/10'
-											: 'text-base-content bg-base-200'}"
-						>
-							<!-- Dynamic status icon -->
-							{#if statusDisplay.icon === 'saved'}
-								<svg
-									class="h-4 w-4 shrink-0"
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 24 24"
-								>
-									<g
-										fill="none"
-										stroke="currentColor"
-										stroke-linejoin="round"
-										stroke-width="1.5"
-									>
-										<path
-											d="M2 14.5A4.5 4.5 0 0 0 6.5 19h12a3.5 3.5 0 0 0 .5-6.965a7 7 0 0 0-13.76-1.857A4.5 4.5 0 0 0 2 14.5Z"
-										/>
-										<path stroke-linecap="round" d="m15 11l-4 4l-2-2" />
-									</g>
-								</svg>
-							{:else if statusDisplay.icon === 'saving'}
-								<span class="loading loading-spinner loading-xs"></span>
-							{:else if statusDisplay.icon === 'unsaved' || statusDisplay.icon === 'pending'}
-								<svg
-									class="h-4 w-4 shrink-0"
-									viewBox="0 0 20 20"
-									fill="currentColor"
-								>
-									<path
-										fill-rule="evenodd"
-										d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-										clip-rule="evenodd"
-									/>
-								</svg>
-							{:else if statusDisplay.icon === 'error'}
-								<svg
-									class="h-4 w-4 shrink-0"
-									viewBox="0 0 20 20"
-									fill="currentColor"
-								>
-									<path
-										fill-rule="evenodd"
-										d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-										clip-rule="evenodd"
-									/>
-								</svg>
-							{:else if statusDisplay.icon === 'offline'}
-								<svg
-									class="h-4 w-4 shrink-0"
-									viewBox="0 0 20 20"
-									fill="currentColor"
-								>
-									<path
-										fill-rule="evenodd"
-										d="M3 4a1 1 0 011-1h12a1 1 0 011 1v8a1 1 0 01-1 1h-5L9 16v-3H4a1 1 0 01-1-1V4zm6 3a1 1 0 11-2 0 1 1 0 012 0zm-1 3a1 1 0 100-2 1 1 0 000 2z"
-										clip-rule="evenodd"
-									/>
-								</svg>
-							{/if}
-							<span class="min-w-0">{statusDisplay.text}</span>
-						</div>
-					</div>
 				</div>
 
-				<!-- Download dropdown -->
-				<div class="dropdown dropdown-end">
-					<button
-						tabindex="0"
-						type="button"
-						class="btn btn-outline btn-sm md:btn-md gap-2"
-						title="Download document"
-					>
-						<Download size={16} />
-						<svg
-							class="h-3 w-3"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
+				<!-- Actions Section -->
+				<div class="actions-section">
+					<!-- Download Dropdown -->
+					<div class="dropdown-container">
+						<button class="action-button dropdown-trigger" type="button">
+							<Download size={18} />
+							<span class="action-text">Export</span>
+							<svg
+								class="dropdown-arrow"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
 								stroke-width="2"
-								d="M19 9l-7 7-7-7"
-							></path>
-						</svg>
-					</button>
-					<ul
-						class="dropdown-content menu bg-base-100 rounded-box border-base-300 z-[1] mt-2 w-44 border p-2 shadow-lg"
-					>
-						<li>
+							>
+								<polyline points="6,9 12,15 18,9" />
+							</svg>
+						</button>
+
+						<div class="dropdown-menu">
 							<button
 								type="button"
 								on:click={downloadAsTxt}
-								class="flex items-center gap-2"
+								class="dropdown-item"
 							>
 								<Text size={16} />
-								Download as TXT
+								<span>Plain Text (.txt)</span>
 							</button>
-						</li>
-						<li>
 							<button
 								type="button"
 								on:click={downloadAsDoc}
-								class="flex items-center gap-2"
+								class="dropdown-item"
 							>
 								<FileText size={16} />
-								Download as DOC
+								<span>Word Document (.docx)</span>
 							</button>
-						</li>
-					</ul>
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -1153,6 +1128,303 @@
 </div>
 
 <style>
+	.enhanced-toolbar {
+		display: flex;
+		align-items: center;
+		justify-content: right;
+		gap: 1.5rem;
+		/* padding: 1rem 1.5rem; */
+		/* background: hsl(var(--color-base-100)); */
+		/* border: 1px solid hsl(var(--color-base-300)); */
+		border-radius: 1rem;
+		margin-bottom: 1.5rem;
+		/* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); */
+	}
+
+	/* Status Section */
+	.status-section {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.status-indicator {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 0.75rem;
+		border-radius: 9999px;
+		font-size: 0.875rem;
+		font-weight: 500;
+		transition: all 0.2s ease;
+	}
+
+	.status-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+	}
+
+	.status-text {
+		white-space: nowrap;
+	}
+
+	/* Status variants */
+	.status-saved {
+		background: hsl(var(--color-success) / 0.1);
+		color: hsl(var(--color-success));
+		border: 1px solid hsl(var(--color-success) / 0.2);
+	}
+
+	.status-saving {
+		background: hsl(var(--color-info) / 0.1);
+		color: hsl(var(--color-info));
+		border: 1px solid hsl(var(--color-info) / 0.2);
+	}
+
+	.status-unsaved {
+		background: hsl(var(--color-warning) / 0.1);
+		color: hsl(var(--color-warning));
+		border: 1px solid hsl(var(--color-warning) / 0.2);
+	}
+
+	.status-error {
+		background: hsl(var(--color-error) / 0.1);
+		color: hsl(var(--color-error));
+		border: 1px solid hsl(var(--color-error) / 0.2);
+	}
+
+	.status-offline {
+		background: hsl(var(--color-base-300) / 0.5);
+		color: hsl(var(--color-base-content) / 0.7);
+		border: 1px solid hsl(var(--color-base-300));
+	}
+
+	/* Loading spinner */
+	.loading-spinner {
+		width: 16px;
+		height: 16px;
+		border: 2px solid transparent;
+		border-top: 2px solid currentColor;
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	/* Save Button */
+	.save-button {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		background: hsl(var(--color-primary));
+		color: white;
+		border: none;
+		border-radius: 0.5rem;
+		font-size: 0.875rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.save-button:hover:not(:disabled) {
+		background: hsl(var(--color-primary) / 0.9);
+		transform: translateY(-1px);
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	}
+
+	.save-button:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+		transform: none;
+	}
+
+	.save-button.save-error {
+		background: hsl(var(--color-error));
+	}
+
+	.save-button.save-error:hover:not(:disabled) {
+		background: hsl(var(--color-error) / 0.9);
+	}
+
+	.save-button.save-offline {
+		background: hsl(var(--color-warning));
+	}
+
+	.save-button.save-offline:hover:not(:disabled) {
+		background: hsl(var(--color-warning) / 0.9);
+	}
+
+	/* Actions Section */
+	.actions-section {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	/* Dropdown */
+	.dropdown-container {
+		position: relative;
+	}
+
+	.action-button {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		background: hsl(var(--color-base-200));
+		color: hsl(var(--color-base-content));
+		border: 1px solid hsl(var(--color-base-300));
+		border-radius: 0.5rem;
+		font-size: 0.875rem;
+		font-weight: 500;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.action-button:hover {
+		background: hsl(var(--color-base-300));
+		transform: translateY(-1px);
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+	}
+
+	.dropdown-arrow {
+		width: 16px;
+		height: 16px;
+		transition: transform 0.2s ease;
+	}
+
+	.dropdown-container:hover .dropdown-arrow {
+		transform: rotate(180deg);
+	}
+
+	.dropdown-menu {
+		position: absolute;
+		top: calc(100% + 0.5rem);
+		right: 0;
+		min-width: 200px;
+		background: hsl(var(--color-base-100));
+		border: 1px solid hsl(var(--color-base-300));
+		border-radius: 0.75rem;
+		padding: 0.5rem;
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+		z-index: 1000;
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(-10px);
+		transition: all 0.2s ease;
+	}
+
+	.dropdown-container:hover .dropdown-menu {
+		opacity: 1;
+		visibility: visible;
+		transform: translateY(0);
+	}
+
+	.dropdown-item {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		width: 100%;
+		padding: 0.75rem;
+		background: transparent;
+		border: none;
+		border-radius: 0.5rem;
+		font-size: 0.875rem;
+		color: hsl(var(--color-base-content));
+		cursor: pointer;
+		transition: background 0.2s ease;
+		text-align: left;
+	}
+
+	.dropdown-item:hover {
+		background: hsl(var(--color-base-200));
+	}
+
+	/* Mobile Responsive */
+	@media (max-width: 768px) {
+		.enhanced-toolbar {
+			flex-direction: column;
+			gap: 1rem;
+			padding: 1rem;
+		}
+
+		.status-section {
+			width: 100%;
+			justify-content: center;
+		}
+
+		.actions-section {
+			width: 100%;
+			justify-content: center;
+		}
+
+		.action-text,
+		.save-text {
+			display: none;
+		}
+
+		.status-text {
+			font-size: 0.8rem;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.enhanced-toolbar {
+			padding: 0.75rem;
+		}
+
+		.status-indicator {
+			padding: 0.375rem 0.5rem;
+			font-size: 0.75rem;
+		}
+
+		.save-button,
+		.action-button {
+			padding: 0.375rem 0.75rem;
+			font-size: 0.75rem;
+		}
+	}
+
+	/* Dark mode support */
+	@media (prefers-color-scheme: dark) {
+		.enhanced-toolbar {
+			background: hsl(var(--color-base-800));
+			border-color: hsl(var(--color-base-600));
+		}
+
+		.dropdown-menu {
+			background: hsl(var(--color-base-800));
+			border-color: hsl(var(--color-base-600));
+		}
+	}
+
+	/* High contrast mode */
+	@media (prefers-contrast: high) {
+		.enhanced-toolbar,
+		.dropdown-menu {
+			border-width: 2px;
+		}
+
+		.status-indicator {
+			border-width: 2px;
+		}
+	}
+
+	/* Reduced motion */
+	@media (prefers-reduced-motion: reduce) {
+		* {
+			transition: none !important;
+			animation: none !important;
+		}
+	}
+
 	.container {
 		max-width: 1400px;
 		margin: 0 auto;
@@ -1244,7 +1516,7 @@
 
 	/* Print styles */
 	@media print {
-		.dropdown,
+		/* .dropdown, */
 		.btn {
 			display: none !important;
 		}
