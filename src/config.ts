@@ -1,9 +1,9 @@
 import type { Provider } from '@supabase/supabase-js';
 
 export const WebsiteName: string = 'Haloway';
-export const WebsiteBaseUrl: string = 'https://haloway.pages.dev';
+export const WebsiteBaseUrl: string = 'https://halowaywriting.pages.dev';
 export const WebsiteSlogan: string =
-	'the ULTIMATE college essay writing platform';
+	'The ULTIMATE college essay writing platform';
 export const WebsiteDescription: string =
 	'Haloway is a college essay writing platform that helps students draft, organize, and finalize their essays with ease. With beautiful UI and draft-management features, Haloway aims to replace Google Docs as the go-to tool for college essay writing.';
 export const CreateProfileStep: boolean = true;

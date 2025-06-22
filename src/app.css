@@ -160,14 +160,14 @@
 	}
 
 	/* Only apply to non-prose headings */
-	:not(.prose) h1,
+	/* :not(.prose) h1,
 	:not(.prose) h2,
 	:not(.prose) h3,
 	:not(.prose) h4,
 	:not(.prose) h5,
 	:not(.prose) h6 {
 		color: hsl(var(--foreground));
-	}
+	} */
 
 	/* Only apply to non-prose paragraphs */
 	:not(.prose) p {
@@ -182,7 +182,7 @@
 			Arial,
 			'Noto Sans',
 			sans-serif;
-		color: hsl(var(--color-neutral-content));
+		/* color: hsl(var(--color-neutral-content)); */
 	}
 }
 
@@ -199,35 +199,35 @@
 	.prose h4,
 	.prose h5,
 	.prose h6 {
-		@apply text-foreground !important;
+		@apply text-foreground;
 	}
 
 	.prose p {
-		@apply text-foreground !important;
+		@apply text-foreground;
 	}
 
 	.prose a {
-		@apply text-blue-600 no-underline hover:text-blue-800 !important;
+		@apply text-blue-600 no-underline hover:text-blue-800;
 	}
 
 	.prose strong {
-		@apply text-foreground !important;
+		@apply text-foreground;
 	}
 
 	.prose ul li,
 	.prose ol li {
-		@apply text-foreground !important;
+		@apply text-foreground;
 	}
 
 	.prose hr {
-		@apply border-border !important;
+		@apply border-border;
 	}
 }
 
 /* Dark mode prose overrides */
 @layer components {
 	.dark .prose a {
-		@apply text-blue-400 hover:text-blue-300 !important;
+		@apply text-blue-400 hover:text-blue-300;
 	}
 }
 

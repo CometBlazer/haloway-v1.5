@@ -1,5 +1,6 @@
 <script lang="ts">
 	import * as Section from '$lib/components/landing/section';
+	import * as Card from '$lib/components/ui/card';
 	// import Features from './components/sections/features/features.svelte';
 	// import HeroSection from './components/sections/hero.svelte';
 	// import LogosCloud from './components/sections/logos-cloud.svelte';
@@ -630,24 +631,26 @@
 			class="mx-auto mt-12 grid max-w-7xl grid-cols-1 gap-4 px-4 sm:mt-16 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8"
 		>
 			{#each schools.filter((school) => school.showOnMobile) as school (school.name)}
-				<div
-					class="card bg-base-200 mx-auto w-full max-w-sm shadow-xl transition-shadow hover:shadow-2xl sm:hidden"
+				<Card.Root
+					class="mx-auto w-full max-w-sm overflow-hidden shadow-xl transition-shadow hover:shadow-2xl sm:hidden"
 				>
-					<figure class="relative aspect-square overflow-hidden">
+					<div class="relative aspect-square overflow-hidden">
 						<img
 							src={school.image}
 							alt={school.name}
 							class="h-full w-full object-cover"
 							loading="lazy"
 						/>
-					</figure>
+					</div>
 
-					<div class="card-body items-center p-4 text-center sm:p-6">
-						<h2
-							class="card-title mb-3 text-lg sm:mb-4 sm:text-xl lg:mb-6 lg:text-2xl"
+					<Card.Content
+						class="flex flex-col items-center p-4 text-center sm:p-6"
+					>
+						<Card.Title
+							class="mb-3 text-lg sm:mb-4 sm:text-xl lg:mb-6 lg:text-2xl"
 						>
 							{school.name}
-						</h2>
+						</Card.Title>
 						<a href="/dashboard/write" class="w-full">
 							<button
 								class="btn {school.name === 'And more'
@@ -658,29 +661,31 @@
 								<ArrowRight class="ml-1 h-4 w-4 sm:h-5 sm:w-5" />
 							</button>
 						</a>
-					</div>
-				</div>
+					</Card.Content>
+				</Card.Root>
 			{/each}
 
 			{#each schools as school (school.name)}
-				<div
-					class="card bg-base-200 mx-auto hidden w-full max-w-sm shadow-xl transition-shadow hover:shadow-2xl sm:block"
+				<Card.Root
+					class="mx-auto hidden w-full max-w-sm overflow-hidden shadow-xl transition-shadow hover:shadow-2xl sm:block"
 				>
-					<figure class="relative aspect-square overflow-hidden">
+					<div class="relative aspect-square overflow-hidden">
 						<img
 							src={school.image}
 							alt={school.name}
 							class="h-full w-full object-cover"
 							loading="lazy"
 						/>
-					</figure>
+					</div>
 
-					<div class="card-body items-center p-4 text-center sm:p-6">
-						<h2
-							class="card-title mb-3 text-lg sm:mb-4 sm:text-xl lg:mb-6 lg:text-2xl"
+					<Card.Content
+						class="flex flex-col items-center p-4 text-center sm:p-6"
+					>
+						<Card.Title
+							class="mb-3 text-lg sm:mb-4 sm:text-xl lg:mb-6 lg:text-2xl"
 						>
 							{school.name}
-						</h2>
+						</Card.Title>
 						<a href="/dashboard/write" class="w-full">
 							<button
 								class="btn {school.name === 'And more'
@@ -691,8 +696,8 @@
 								<ArrowRight class="ml-1 h-4 w-4 sm:h-5 sm:w-5" />
 							</button>
 						</a>
-					</div>
-				</div>
+					</Card.Content>
+				</Card.Root>
 			{/each}
 		</div>
 	</div>
