@@ -20,6 +20,7 @@
 	import { PenLine, ArrowRight, Lock, Check, X } from 'lucide-svelte';
 
 	import AuroraBackground from '$lib/components/AuroraBackground.svelte';
+	import { Button } from '$lib/components/ui/button';
 
 	const ldJson = {
 		'@context': 'https://schema.org',
@@ -686,16 +687,17 @@
 						>
 							{school.name}
 						</Card.Title>
-						<a href="/dashboard/write" class="w-full">
-							<button
-								class="btn {school.name === 'And more'
-									? 'btn-color-warning'
-									: 'btn-color-primary'} btn-sm sm:btn-md w-full rounded-full text-sm text-color-primary-content sm:text-base lg:text-lg"
-							>
+						<Button
+							href="/dashboard"
+							class="{school.name === 'And more'
+								? 'bg-amber-500 hover:bg-amber-600'
+								: 'bg-foreground'} btn-sm sm:btn-md w-full rounded-full text-sm sm:text-base lg:text-lg"
+						>
+							<span>
 								{school.name === 'And more' ? 'Choose another school' : 'Go'}
-								<ArrowRight class="ml-1 h-4 w-4 sm:h-5 sm:w-5" />
-							</button>
-						</a>
+							</span>
+							<ArrowRight class="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+						</Button>
 					</Card.Content>
 				</Card.Root>
 			{/each}
