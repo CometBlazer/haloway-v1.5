@@ -1,6 +1,5 @@
 <!-- src/routes/(app)/dashboard/+page.svelte -->
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { FileText, Plus, Trash, Loader2 } from 'lucide-svelte';
 	import type { PageData, ActionData } from './$types';
@@ -19,6 +18,7 @@
 	import CompleteProfileModal from '$lib/components/CompleteProfileModal.svelte';
 	import SchoolDropdown from '$lib/components/Editor/SchoolDropdown.svelte';
 	import EssayCard from '$lib/components/EssayCard.svelte';
+	import SchoolChip from '$lib/components/SchoolChip.svelte';
 
 	export let data: PageData;
 	export let form: ActionData;
@@ -73,21 +73,25 @@
 		school: string; // Added school field for routing
 	}
 
-	// Set admin section context for sidebar highlighting
-	onMount(async () => {
-		try {
-			const { getContext } = await import('svelte');
-			const adminSectionStore = getContext<{ set: (value: string) => void }>(
-				'adminSection',
-			);
-			if (adminSectionStore && typeof adminSectionStore.set === 'function') {
-				adminSectionStore.set('home');
-			}
-		} catch {
-			// Context might not be available, that's ok
-			console.debug('Admin section context not available');
+	interface School {
+		name: string;
+		urlSafeName: string;
+		documentCount: number;
+	}
+
+	// Handle escape key to close modal
+	function handleKeydown(event: KeyboardEvent): void {
+		if (event.key === 'Escape' && showDeleteModal && !isDeleting) {
+			closeDeleteModal();
 		}
-	});
+		if (event.key === 'Escape' && showNewEssayModal && !isCreatingEssay) {
+			closeNewEssayModal();
+		}
+	}
+
+	// Cache data to avoid unnecessary re-computations
+	$: documents = data.documents as Document[];
+	$: schools = data.schools as School[];
 
 	async function openDocument(
 		documentId: string,
@@ -101,9 +105,15 @@
 			'for school:',
 			school,
 		);
-		// Convert school name to URL-safe format using the helper function
-		const { getSchoolUrlSafeName } = await import('$lib/utils/validation');
-		const schoolSlug = await getSchoolUrlSafeName(school);
+		// Use the already computed school URL-safe name from the server data
+		const schoolData = schools.find((s) => s.name === school);
+		const schoolSlug =
+			schoolData?.urlSafeName ||
+			school
+				.toLowerCase()
+				.replace(/[^a-z0-9-]/g, '-')
+				.replace(/-+/g, '-')
+				.replace(/^-+|-+$/g, '');
 
 		if (currentVersion?.id) {
 			goto(`/schools/${schoolSlug}/write/${documentId}/${currentVersion.id}`);
@@ -204,18 +214,6 @@
 			closeDeleteModal();
 		}
 	}
-
-	// Handle escape key to close modal
-	function handleKeydown(event: KeyboardEvent): void {
-		if (event.key === 'Escape' && showDeleteModal && !isDeleting) {
-			closeDeleteModal();
-		}
-		if (event.key === 'Escape' && showNewEssayModal && !isCreatingEssay) {
-			closeNewEssayModal();
-		}
-	}
-
-	$: documents = (data.documents || []) as Document[];
 </script>
 
 <svelte:head>
@@ -239,6 +237,23 @@
 			New Essay
 		</Button>
 	</div>
+
+	<!-- Schools Filter -->
+	{#if schools.length > 0}
+		<div class="schools-filter">
+			<div class="schools-filter-header">
+				<h2 class="schools-filter-title">Schools</h2>
+				<p class="schools-filter-subtitle">
+					{schools.length} school{schools.length !== 1 ? 's' : ''} with essays
+				</p>
+			</div>
+			<div class="schools-chips">
+				{#each schools as school (school.urlSafeName)}
+					<SchoolChip {school} variant="outline" size="md" />
+				{/each}
+			</div>
+		</div>
+	{/if}
 
 	<!-- Info Banner -->
 	<Alert.Root class="info-banner">
@@ -595,6 +610,53 @@
 	@media (min-width: 1024px) {
 		.documents-grid {
 			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	/* Schools Filter */
+	.schools-filter {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		padding: 1.5rem;
+		background: hsl(var(--color-base-100));
+		border: 1px solid hsl(var(--color-base-300));
+		border-radius: 0.75rem;
+	}
+
+	.schools-filter-header {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.schools-filter-title {
+		font-size: 1.125rem;
+		font-weight: 600;
+		color: hsl(var(--color-base-content));
+		margin: 0;
+	}
+
+	.schools-filter-subtitle {
+		font-size: 0.875rem;
+		color: hsl(var(--color-neutral-content));
+		margin: 0;
+	}
+
+	.schools-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		align-items: center;
+	}
+
+	@media (max-width: 640px) {
+		.schools-filter {
+			padding: 1rem;
+		}
+
+		.schools-chips {
+			gap: 0.5rem;
 		}
 	}
 

@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	}
 
 	try {
-		// First, get all documents for the user
+		// First, get all documents for the user (same as working version)
 		const { data: documents, error: documentsError } = await supabase
 			.from('documents')
 			.select('*')
@@ -24,7 +24,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 			throw error(500, 'Failed to load documents');
 		}
 
-		// For each document, get its current version and total version count
+		// For each document, get its current version and total version count (same as working version)
 		const documentsWithVersionInfo = await Promise.all(
 			(documents || []).map(async (doc) => {
 				// Get current version if current_version_id exists
@@ -52,8 +52,57 @@ export const load: PageServerLoad = async ({ locals }) => {
 			}),
 		);
 
+		// Process schools efficiently - NO async database calls in the map
+		const schoolCounts = new Map<string, number>();
+
+		// Single pass to count documents per school
+		(documents || []).forEach((doc) => {
+			if (doc.school && doc.school.trim().length > 0) {
+				const schoolName = doc.school.trim();
+				schoolCounts.set(schoolName, (schoolCounts.get(schoolName) || 0) + 1);
+			}
+		});
+
+		// Get ALL school URL mappings in a single query (batch operation)
+		const schoolNames = Array.from(schoolCounts.keys());
+		const schoolUrlMappings = new Map<string, string>();
+
+		if (schoolNames.length > 0) {
+			const { data: schoolsData, error: schoolsError } = await supabase
+				.from('schools')
+				.select('name, url_safe_name')
+				.in('name', schoolNames);
+
+			if (!schoolsError && schoolsData) {
+				schoolsData.forEach((school) => {
+					schoolUrlMappings.set(school.name, school.url_safe_name);
+				});
+			}
+		}
+
+		// Create school info objects with fallback URL generation (synchronous)
+		const schoolsWithInfo = Array.from(schoolCounts.entries())
+			.map(([schoolName, documentCount]) => {
+				// Use database URL if available, otherwise generate fallback
+				const urlSafeName =
+					schoolUrlMappings.get(schoolName) ||
+					schoolName
+						.toLowerCase()
+						.replace(/[^a-z0-9-]/g, '-')
+						.replace(/-+/g, '-')
+						.replace(/^-+|-+$/g, '');
+
+				return {
+					name: schoolName,
+					urlSafeName,
+					documentCount,
+				};
+			})
+			.sort((a, b) => a.name.localeCompare(b.name));
+
 		return {
 			documents: documentsWithVersionInfo,
+			schools: schoolsWithInfo,
 			session,
 		};
 	} catch (err) {
@@ -62,6 +111,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	}
 };
 
+// ... rest of your actions remain the same
 export const actions = {
 	signout: async ({ locals: { supabase, safeGetSession } }) => {
 		const { session } = await safeGetSession();
