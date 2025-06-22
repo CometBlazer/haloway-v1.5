@@ -17,6 +17,7 @@
 		'/': 'Home',
 		'/#features': 'Features',
 		'/#security': 'Security',
+		'/essayfeedback': 'AI Feedback',
 		'/contact': 'Contact',
 	};
 
