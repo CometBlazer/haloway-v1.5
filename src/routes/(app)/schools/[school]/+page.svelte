@@ -166,7 +166,7 @@
 				{documents.length} essay{documents.length !== 1 ? 's' : ''} for {school}
 			</p>
 		</div>
-		<Button size="lg" on:click={createNewDocument} class="new-essay-btn">
+		<Button size="lg" on:click={createNewDocument}>
 			<Plus class="mr-2 h-5 w-5" />
 			New {school} Essay
 		</Button>

@@ -2,6 +2,21 @@
 	import '../app.css';
 	import { page } from '$app/stores';
 	import { WebsiteName } from '../config';
+	import { Button } from '$lib/components/ui/button';
+	import { goto } from '$app/navigation';
+	import { browser } from '$app/environment';
+
+	function handleGoBack() {
+		if (browser) {
+			// Check if there's history to go back to
+			if (window.history.length > 1) {
+				window.history.back();
+			} else {
+				// Fallback to home page if no history
+				goto('/');
+			}
+		}
+	}
 </script>
 
 <svelte:head>
@@ -53,7 +68,7 @@
 
 		<!-- Action buttons -->
 		<div class="action-buttons">
-			<a href="/" class="primary-btn">
+			<Button href="/" class="w-full" size="lg">
 				<svg
 					class="btn-icon"
 					fill="none"
@@ -67,10 +82,15 @@
 						d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
 					/>
 				</svg>
-				Take me home
-			</a>
+				<span class="ml-2">Take me home</span>
+			</Button>
 
-			<button on:click={() => history.back()} class="secondary-btn">
+			<Button
+				variant="outline"
+				class="w-full"
+				size="lg"
+				on:click={handleGoBack}
+			>
 				<svg
 					class="btn-icon"
 					fill="none"
@@ -84,8 +104,8 @@
 						d="M10 19l-7-7m0 0l7-7m-7 7h18"
 					/>
 				</svg>
-				Go back a step
-			</button>
+				<span class="ml-2">Go back</span>
+			</Button>
 		</div>
 
 		<!-- Gentle help section -->
@@ -217,70 +237,6 @@
 		gap: 0.75rem;
 	}
 
-	.primary-btn {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		height: 3rem;
-		width: 100%;
-		background: linear-gradient(
-			to right,
-			hsl(var(--color-primary)),
-			hsl(var(--color-accent))
-		);
-		color: hsl(var(--color-primary-content));
-		border: none;
-		border-radius: 0.75rem;
-		font-weight: 500;
-		text-decoration: none;
-		cursor: pointer;
-		transform: translateY(0);
-		transition: all 0.2s ease;
-		box-shadow:
-			0 4px 6px -1px rgba(0, 0, 0, 0.1),
-			0 2px 4px -1px rgba(0, 0, 0, 0.06);
-	}
-
-	.primary-btn:hover {
-		transform: translateY(-2px);
-		box-shadow:
-			0 10px 15px -3px rgba(0, 0, 0, 0.1),
-			0 4px 6px -2px rgba(0, 0, 0, 0.05);
-	}
-
-	.primary-btn:focus {
-		outline: 2px solid hsl(var(--color-primary));
-		outline-offset: 2px;
-	}
-
-	.secondary-btn {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		height: 3rem;
-		width: 100%;
-		background: transparent;
-		color: hsl(var(--color-primary));
-		border: 1px solid hsl(var(--color-primary));
-		border-radius: 0.75rem;
-		font-weight: 500;
-		cursor: pointer;
-		transform: translateY(0);
-		transition: all 0.2s ease;
-	}
-
-	.secondary-btn:hover {
-		background: hsl(var(--color-primary) / 0.05);
-		transform: translateY(-2px);
-	}
-
-	.secondary-btn:focus {
-		outline: 2px solid hsl(var(--color-primary));
-		outline-offset: 2px;
-	}
-
 	.btn-icon {
 		height: 1.25rem;
 		width: 1.25rem;
@@ -353,8 +309,6 @@
 	}
 
 	/* Touch handling */
-	.primary-btn,
-	.secondary-btn,
 	.help-link {
 		-webkit-tap-highlight-color: transparent;
 		touch-action: manipulation;
@@ -365,27 +319,12 @@
 		.error-details {
 			border-width: 2px;
 		}
-
-		.primary-btn,
-		.secondary-btn {
-			border-width: 2px;
-		}
 	}
 
 	/* Reduced motion support */
 	@media (prefers-reduced-motion: reduce) {
 		.error-content {
 			animation: none;
-		}
-
-		.primary-btn,
-		.secondary-btn {
-			transition: none !important;
-		}
-
-		.primary-btn:hover,
-		.secondary-btn:hover {
-			transform: none !important;
 		}
 	}
 
