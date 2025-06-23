@@ -57,6 +57,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@google-cloud/aiplatform": "^4.2.0",
 		"@supabase/auth-ui-svelte": "^0.2.9",
 		"@supabase/ssr": "^0.3.0",
 		"@supabase/supabase-js": "^2.43.1",

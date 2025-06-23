@@ -12,6 +12,7 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Alert from '$lib/components/ui/alert';
+	import * as Section from '$lib/components/landing/section';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import { Textarea } from '$lib/components/ui/textarea';
@@ -240,19 +241,21 @@
 
 	<!-- Schools Filter -->
 	{#if schools.length > 0}
-		<div class="schools-filter">
-			<div class="schools-filter-header">
-				<h2 class="schools-filter-title">Schools</h2>
-				<p class="schools-filter-subtitle">
-					{schools.length} school{schools.length !== 1 ? 's' : ''} with essays
-				</p>
+		<Section.Root anchor="schools">
+			<div class="schools-filter">
+				<div class="schools-filter-header">
+					<h2 class="schools-filter-title">Schools</h2>
+					<p class="schools-filter-subtitle">
+						{schools.length} school{schools.length !== 1 ? 's' : ''} with essays
+					</p>
+				</div>
+				<div class="schools-chips">
+					{#each schools as school (school.urlSafeName)}
+						<SchoolChip {school} variant="outline" size="md" />
+					{/each}
+				</div>
 			</div>
-			<div class="schools-chips">
-				{#each schools as school (school.urlSafeName)}
-					<SchoolChip {school} variant="outline" size="md" />
-				{/each}
-			</div>
-		</div>
+		</Section.Root>
 	{/if}
 
 	<!-- Info Banner -->

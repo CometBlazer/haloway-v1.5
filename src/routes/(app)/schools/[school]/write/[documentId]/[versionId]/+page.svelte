@@ -9,6 +9,7 @@
 	import { fade, slide } from 'svelte/transition';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import * as Section from '$lib/components/landing/section';
 	import DocumentHeader from '../../../../../../../lib/components/Editor/DocumentHeader.svelte';
 	import VersionSidebar from '../../../../../../../lib/components/Editor/VersionSidebar.svelte';
 	import TiptapEditor from '$lib/components/Editor/TiptapEditor.svelte';
@@ -1001,15 +1002,18 @@
 		/>
 	</div>
 
-	<div class="mb-4 mt-8 flex w-full justify-between">
-		<h2 class="text-2xl font-semibold">AI Feedback: coming soon!</h2>
-		<button
-			class="btn btn-primary btn-sm md:btn-md"
-			on:click={() => alert("This doesn't do anything yet")}
-		>
-			Get New Feedback
-		</button>
-	</div>
+	<!-- AI Feedback section -->
+	<Section.Root anchor="feedback">
+		<div class="mb-4 mt-8 flex w-full justify-between">
+			<h2 class="text-2xl font-semibold">AI Feedback: coming soon!</h2>
+			<Button
+				on:click={() =>
+					alert("This doesn't do anything yet, I'm still working on it trust")}
+			>
+				Get New Feedback
+			</Button>
+		</div>
+	</Section.Root>
 
 	<!-- Checkpoint sidebar -->
 	{#if isSidebarOpen}
