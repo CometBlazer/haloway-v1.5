@@ -1,6 +1,8 @@
 <!-- src/lib/components/EssayCard.svelte -->
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { getSchoolUrlSafeName } from '$lib/utils/validation';
 	import {
 		FileText,
 		Calendar,
@@ -41,7 +43,6 @@
 			documentTitle: string;
 		};
 	}>();
-
 	function formatDate(dateInput: string | Date | null): string {
 		if (!dateInput) return 'Unknown';
 
@@ -58,6 +59,23 @@
 		if (diffInDays < 365) return `${Math.floor(diffInDays / 30)} months ago`;
 
 		return date.toLocaleDateString();
+	}
+
+	async function handleSchoolClick(event: Event) {
+		event.stopPropagation();
+		try {
+			const urlSafeSchool = await getSchoolUrlSafeName(document.school);
+			goto(`/schools/${urlSafeSchool}`);
+		} catch (error) {
+			console.error('Error navigating to school page:', error);
+			// Fallback to basic slug conversion if the validation function fails
+			const fallbackSlug = document.school
+				.toLowerCase()
+				.replace(/[^a-z0-9-]/g, '-')
+				.replace(/-+/g, '-')
+				.replace(/^-+|-+$/g, '');
+			goto(`/schools/${fallbackSlug}`);
+		}
 	}
 
 	// Status configuration
@@ -175,12 +193,17 @@
 				<Trash size={16} />
 			</button>
 		</div>
-
 		<!-- School Info -->
 		{#if document.school}
 			<div class="school-info">
 				<GraduationCap size={14} class="school-icon" />
-				<span class="school-name">{document.school}</span>
+				<button
+					class="school-name"
+					on:click={handleSchoolClick}
+					aria-label="Go to {document.school} essays"
+				>
+					{document.school}
+				</button>
 			</div>
 		{/if}
 
@@ -368,7 +391,6 @@
 		color: hsl(var(--color-primary));
 		flex-shrink: 0;
 	}
-
 	.school-name {
 		font-size: 0.875rem;
 		font-weight: 500;
@@ -376,6 +398,24 @@
 		background: hsl(var(--color-primary) / 0.1);
 		padding: 0.25rem 0.5rem;
 		border-radius: 0.375rem;
+		border: none;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		font-family: inherit;
+	}
+
+	.school-name:hover {
+		background: hsl(var(--color-primary) / 0.15);
+		transform: translateY(-1px);
+	}
+
+	.school-name:focus {
+		outline: 2px solid hsl(var(--color-primary));
+		outline-offset: 2px;
+	}
+
+	.school-name:active {
+		transform: translateY(0);
 	}
 
 	/* Card Body */
@@ -560,10 +600,10 @@
 			gap: 0.5rem;
 		}
 	}
-
 	/* Touch handling */
 	.card-content,
-	.delete-btn {
+	.delete-btn,
+	.school-name {
 		-webkit-tap-highlight-color: transparent;
 		touch-action: manipulation;
 	}
@@ -578,12 +618,12 @@
 			border-top-width: 2px;
 		}
 	}
-
 	/* Reduced motion support */
 	@media (prefers-reduced-motion: reduce) {
 		.essay-card,
 		.card-content,
-		.delete-btn {
+		.delete-btn,
+		.school-name {
 			transition: none !important;
 		}
 	}
