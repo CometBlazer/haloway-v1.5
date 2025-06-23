@@ -135,7 +135,7 @@
 			// "https://res.cloudinary.com/dqdasxxho/image/upload/v1750269497/editor_zj9qvi.png",
 			imageAlt: 'Haloway essay editor interface',
 			ctaText: 'Try the Editor',
-			ctaLink: '/dashboard/write',
+			ctaLink: '/schools/uncategorized/write',
 		},
 		{
 			title: 'Essay Dashboard & Organization',
@@ -156,7 +156,7 @@
 				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750286065/haloway_version_control_product_screenshot_fstidc.png',
 			imageAlt: 'Checkpoint manager showing version history',
 			ctaText: 'Try the Checkpoint Manager',
-			ctaLink: '/dashboard/write',
+			ctaLink: '/schools/uncategorized/write',
 		},
 	];
 
@@ -620,10 +620,10 @@
 </Section.Root>
 
 <!-- Schools Section -->
-<div class="bg-base-200 min-h-[60vh] py-12 sm:min-h-[70vh] sm:py-16">
+<div class="min-h-[60vh] bg-color-base-100 py-12 sm:min-h-[70vh] sm:py-16">
 	<div class="px-4 pb-6 pt-12 sm:px-7 sm:pb-8 sm:pt-20">
 		<div class="mx-auto max-w-7xl text-center">
-			<h1 class="px-2 text-2xl md:text-3xl lg:text-5xl">
+			<h1 class="px-2 text-4xl lg:text-5xl">
 				<span class="">Pick a school</span>
 			</h1>
 		</div>
@@ -633,7 +633,7 @@
 		>
 			{#each schools.filter((school) => school.showOnMobile) as school (school.name)}
 				<Card.Root
-					class="mx-auto w-full max-w-sm overflow-hidden shadow-xl transition-shadow hover:shadow-2xl sm:hidden"
+					class="mx-auto w-full max-w-sm overflow-hidden bg-color-base-200 shadow-xl transition-shadow hover:shadow-2xl sm:hidden"
 				>
 					<div class="relative aspect-square overflow-hidden">
 						<img
@@ -652,23 +652,25 @@
 						>
 							{school.name}
 						</Card.Title>
-						<a href="/dashboard/write" class="w-full">
-							<button
-								class="btn {school.name === 'And more'
-									? 'btn-color-warning'
-									: 'btn-color-primary'} btn-sm sm:btn-md w-full rounded-full text-sm text-color-primary-content sm:text-base lg:text-lg"
-							>
+						<!-- Replace with links to actual schools later (getUrlSafeName) -->
+						<Button
+							href="/schools"
+							class="{school.name === 'And more'
+								? 'bg-amber-500 hover:bg-amber-600'
+								: 'bg-foreground'} btn-sm sm:btn-md w-full rounded-full text-sm sm:text-base lg:text-lg"
+						>
+							<span>
 								{school.name === 'And more' ? 'Choose another school' : 'Go'}
-								<ArrowRight class="ml-1 h-4 w-4 sm:h-5 sm:w-5" />
-							</button>
-						</a>
+							</span>
+							<ArrowRight class="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+						</Button>
 					</Card.Content>
 				</Card.Root>
 			{/each}
 
 			{#each schools as school (school.name)}
 				<Card.Root
-					class="mx-auto hidden w-full max-w-sm overflow-hidden shadow-xl transition-shadow hover:shadow-2xl sm:block"
+					class="mx-auto hidden w-full max-w-sm overflow-hidden bg-color-base-200 shadow-xl transition-shadow hover:shadow-2xl sm:block"
 				>
 					<div class="relative aspect-square overflow-hidden">
 						<img
@@ -687,8 +689,9 @@
 						>
 							{school.name}
 						</Card.Title>
+						<!-- Replace with links to actual schools later (getUrlSafeName) -->
 						<Button
-							href="/dashboard"
+							href="/schools"
 							class="{school.name === 'And more'
 								? 'bg-amber-500 hover:bg-amber-600'
 								: 'bg-foreground'} btn-sm sm:btn-md w-full rounded-full text-sm sm:text-base lg:text-lg"
@@ -706,7 +709,7 @@
 </div>
 
 <!-- Stress Section -->
-<div class="hero relative mt-8 min-h-[80vh] overflow-hidden sm:mt-12">
+<div class="hero relative min-h-[80vh] overflow-hidden">
 	<img
 		src="https://res.cloudinary.com/dqdasxxho/image/upload/v1747532915/stressed-student_ob1v8h.jpg"
 		alt="Stressed student"
@@ -1196,9 +1199,7 @@
 </Section.Root>
 
 <!-- Final Call to Action -->
-<div
-	class="hero from-base-100 to-base-200 min-h-[50vh] bg-gradient-to-b sm:min-h-[60vh]"
->
+<div class="hero min-h-[50vh] sm:min-h-[60vh]">
 	<div
 		class="flex flex-col items-center justify-center px-4 py-24 text-center sm:py-32 lg:py-40"
 	>
