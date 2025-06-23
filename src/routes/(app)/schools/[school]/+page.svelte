@@ -158,9 +158,9 @@
 					on:click={() => goto('/dashboard')}
 					aria-label="Back to dashboard"
 				>
-					<ArrowLeft class="h-4 w-4" />
+					<ArrowLeft class="h-6 w-6" />
 				</button>
-				<h1 class="school-title">{school}</h1>
+				<h1 class="school-title mb-2">{school}</h1>
 			</div>
 			<p class="school-subtitle">
 				{documents.length} essay{documents.length !== 1 ? 's' : ''} for {school}
@@ -311,12 +311,11 @@
 	}
 
 	.school-title {
-		font-size: 1.875rem;
+		font-size: 2.5rem;
 		font-weight: 600;
 		line-height: 1.2;
 		color: hsl(var(--color-base-content));
 		letter-spacing: -0.025em;
-		margin: 0;
 	}
 
 	.school-subtitle {

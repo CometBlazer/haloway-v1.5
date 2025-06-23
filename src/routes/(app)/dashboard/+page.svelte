@@ -228,7 +228,7 @@
 	<div class="dashboard-header">
 		<div class="header-content">
 			<h1 class="header-title">All Essays</h1>
-			<a href="/test" class="header-link">View your drafts</a>
+			<p>View your drafts</p>
 			<p class="header-subtitle">
 				{documents.length} essay{documents.length !== 1 ? 's' : ''} total
 			</p>
@@ -507,14 +507,14 @@
 	}
 
 	.header-title {
-		font-size: 1.875rem;
+		font-size: 3rem;
 		font-weight: 600;
 		line-height: 1.2;
 		color: hsl(var(--color-base-content));
 		letter-spacing: -0.025em;
 	}
 
-	.header-link {
+	/* .header-link {
 		font-size: 0.875rem;
 		color: hsl(var(--color-neutral-content));
 		text-decoration: none;
@@ -523,7 +523,7 @@
 
 	.header-link:hover {
 		text-decoration: underline;
-	}
+	} */
 
 	.header-subtitle {
 		font-size: 1.125rem;

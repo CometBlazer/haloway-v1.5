@@ -10,7 +10,7 @@
 	import Breadcrumbs from './components/breadcrumbs.svelte';
 	import NavLink from './components/nav-link.svelte';
 	import { WebsiteName } from '../../config';
-	import { ExternalLink } from 'lucide-svelte';
+	import { ExternalLink, Sparkles } from 'lucide-svelte';
 
 	export let data;
 </script>
@@ -33,7 +33,7 @@
 				activeClass="bg-accent text-accent-foreground"
 			>
 				<Home class="h-5 w-5" />
-				<span class="text-xs font-medium">Dashboard</span>
+				<span class="text-center text-xs font-medium">Dashboard</span>
 			</NavLink>
 			<NavLink
 				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
@@ -45,6 +45,14 @@
 				<span class="text-center text-xs font-medium text-muted-foreground"
 					>Common App Prompts</span
 				>
+			</NavLink>
+			<NavLink
+				href="/essayfeedback"
+				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
+				activeClass="bg-accent text-accent-foreground"
+			>
+				<Sparkles class="h-5 w-5" />
+				<span class="text-center text-xs font-medium">AI Feedback</span>
 			</NavLink>
 		</nav>
 		<nav class="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
@@ -84,7 +92,7 @@
 							<span class="ml-2">{WebsiteName}</span>
 						</a>
 						<a
-							href="##"
+							href="/dashboard"
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
 						>
 							<Home class="h-5 w-5" />
@@ -97,6 +105,13 @@
 						>
 							<ExternalLink class="h-5 w-5" />
 							Common App Prompts
+						</a>
+						<a
+							href="/essayfeedback"
+							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+						>
+							<Sparkles class="h-5 w-5" />
+							AI Feedback
 						</a>
 					</nav>
 				</Sheet.Content>

@@ -22,7 +22,7 @@
 	<title>Creating {schoolDisplayName} Essay | {WebsiteName}</title>
 </svelte:head>
 
-<div class="flex min-h-screen items-center justify-center">
+<div class="fixed inset-0 flex items-center justify-center bg-background">
 	<form
 		bind:this={form}
 		method="POST"
