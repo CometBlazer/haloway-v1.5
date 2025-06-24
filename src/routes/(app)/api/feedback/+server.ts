@@ -1,4 +1,4 @@
-// src/routes/api/feedback/+server.ts
+// src/routes/api/feedback/+server.ts - WORKING VERSION
 import { json, error } from '@sveltejs/kit';
 import { supabase } from '$lib/supabase';
 
@@ -11,7 +11,12 @@ function wordCount(text: string): number {
 
 export async function POST({ request }) {
 	try {
-		const { essayText, limit = 260, versionId } = await request.json();
+		const {
+			essayText,
+			limit = 250,
+			currentWordCount,
+			versionId,
+		} = await request.json();
 
 		// Validation
 		if (!essayText || typeof essayText !== 'string') {
@@ -26,7 +31,8 @@ export async function POST({ request }) {
 			throw error(400, 'Invalid word limit (must be between 50-2000)');
 		}
 
-		const words = wordCount(essayText);
+		// Use provided currentWordCount or calculate from text as fallback
+		const words = currentWordCount ?? wordCount(essayText);
 
 		// For now, let's use a smart mock that gives realistic feedback
 		// This way you can test the component integration immediately
