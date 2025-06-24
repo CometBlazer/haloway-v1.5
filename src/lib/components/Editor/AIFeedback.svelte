@@ -129,7 +129,7 @@
 			// Dispatch event to parent
 			dispatch('feedbackReceived', { feedback: fb, wordCount });
 
-			toastStore.show('✨ Stella has reviewed your essay!', 'success');
+			toastStore.show('✨ Your essay has been reviewed!', 'success');
 		} catch (error) {
 			console.error('Feedback error:', error);
 			feedback =
@@ -157,13 +157,13 @@
 	}
 </script>
 
-<div class="stella-feedback-container">
+<div class="ai-feedback-container">
 	<!-- Header -->
 	<div class="feedback-header">
 		<div class="header-content">
 			<div class="title-section">
 				<Sparkles class="title-icon" size={24} />
-				<h2 class="title">Stella's AI Feedback</h2>
+				<h2 class="title">AI Feedback</h2>
 				{#if lastFeedbackTime}
 					<div class="last-updated" transition:fade={{ duration: 200 }}>
 						<Clock size={14} />
@@ -184,7 +184,7 @@
 					<span>Analyzing...</span>
 				{:else}
 					<Sparkles size={16} />
-					<span>Get Feedback</span>
+					<span class="ml-2">Get Feedback</span>
 				{/if}
 			</Button>
 		</div>
@@ -207,17 +207,21 @@
 			</div>
 			<div class="word-count-status">
 				{#if currentWordCount === 0}
-					<AlertCircle size={16} class="text-muted" />
-					<span class="status-text status-text-muted">No content yet</span>
+					<div class="chip variant-soft"></div>
+					<AlertCircle size={14} />
+					<span class="chip-content">No content yet</span>
 				{:else if currentWordCount > wordCountLimit}
-					<AlertCircle size={16} class="text-warning" />
-					<span class="status-text status-text-warning">Over limit</span>
+					<div class="chip variant-destructive"></div>
+					<AlertCircle size={14} />
+					<span class="chip-content">Over limit</span>
 				{:else if currentWordCount >= wordCountLimit * 0.8}
-					<CheckCircle size={16} class="text-success" />
-					<span class="status-text status-text-success">Good length</span>
+					<div class="chip variant-success"></div>
+					<CheckCircle size={14} />
+					<span class="chip-content">Good length</span>
 				{:else}
-					<AlertCircle size={16} class="text-info" />
-					<span class="status-text status-text-info">Room to expand</span>
+					<div class="chip variant-info"></div>
+					<AlertCircle size={14} />
+					<span class="chip-content">Room to expand</span>
 				{/if}
 			</div>
 		</div>
@@ -231,28 +235,28 @@
 					<Sparkles class="primary-color animate-pulse" size={32} />
 				</div>
 				<div class="loading-text">
-					<h3>Stella is reading your essay...</h3>
+					<h3>Reading your essay...</h3>
 					<p>Analyzing structure, style, and content</p>
 				</div>
 			</div>
 		{:else if !hasContent}
 			<div class="empty-state" transition:fade={{ duration: 200 }}>
 				<Sparkles class="primary-color" size={48} />
-				<h3>Ready to help!</h3>
-				<p>
-					Start writing your draft in the editor above, or copy and paste your
-					existing essay. Once you have some content, click "Get Feedback" to
-					receive Stella's detailed analysis of your writing structure, style,
-					and clarity.
+				<h3>Get AI feedback</h3>
+				<p class="text-left">
+					1. Copy and paste your existing essay into the editor or start writing
+					your draft above. <br />
+					2. Once you have some content, click "Get Feedback" to receive detailed
+					analysis of your writing structure, style, and clarity.
 				</p>
 			</div>
 		{:else if !hasFeedback}
 			<div class="get-started-state" transition:fade={{ duration: 200 }}>
 				<Sparkles class="primary-color" size={48} />
-				<h3>Get expert feedback</h3>
-				<p>
-					Your essay looks great! Click "Get Feedback" above to receive Stella's
-					detailed analysis with personalized suggestions for improvement.
+				<h3>Get AI feedback</h3>
+				<p class="text-center">
+					Click "Get Feedback" above to receive detailed analysis with
+					personalized suggestions for improvement.
 				</p>
 			</div>
 		{:else}
@@ -298,7 +302,7 @@
 </div>
 
 <style>
-	.stella-feedback-container {
+	.ai-feedback-container {
 		background: hsl(var(--color-base-000));
 		border: 1px solid hsl(var(--color-base-300));
 		border-radius: 1rem;
@@ -384,28 +388,6 @@
 		gap: 0.5rem;
 	}
 
-	/* Status text styles */
-	.status-text {
-		font-size: 0.75rem;
-		font-weight: 500;
-	}
-
-	.status-text-muted {
-		color: hsl(var(--color-base-400));
-	}
-
-	.status-text-warning {
-		color: hsl(var(--color-warning));
-	}
-
-	.status-text-success {
-		color: hsl(var(--color-success));
-	}
-
-	.status-text-info {
-		color: hsl(var(--color-info));
-	}
-
 	.feedback-content {
 		min-height: 400px;
 		max-height: 600px;
@@ -445,7 +427,6 @@
 		align-items: center;
 		justify-content: center;
 		padding: 3rem 2rem;
-		text-align: center;
 	}
 
 	.empty-state h3,
