@@ -8,6 +8,7 @@
 		Clock,
 		AlertCircle,
 		CheckCircle,
+		Info,
 	} from 'lucide-svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { toastStore } from '$lib/stores/toast';
@@ -26,49 +27,78 @@
 	let feedback = existingFeedback || '';
 	let loading = false;
 	let lastFeedbackTime: Date | null = null;
-	// let feedbackWordCount = 0;
 
 	// Update feedback when existingFeedback prop changes
 	$: if (existingFeedback !== feedback) {
 		feedback = existingFeedback || '';
 	}
 
-	// Sanitized feedback for display
-	$: sanitizedFeedback = sanitizeHtml(feedback);
+	// Calculate states
+	$: hasContent = essayText.trim().length > 0;
+	$: hasFeedback = feedback && feedback.trim().length > 0;
+	$: canGetFeedback = hasContent && !loading && !disabled;
 
-	// Calculate if feedback is needed
-	$: needsFeedback = !feedback || essayText.trim().length === 0;
-	$: canGetFeedback = essayText.trim().length > 0 && !loading && !disabled;
+	// Define types for sanitization
+	type SanitizedContent = {
+		type: 'text' | 'html';
+		content: string;
+	};
 
-	// function countWords(text: string): number {
-	//   return text.trim().split(/\s+/).filter(word => word.length > 0).length;
-	// }
+	// Simplified HTML sanitization function
+	function sanitizeAndParseHtml(html: string): SanitizedContent {
+		if (!html || html.trim().length === 0) {
+			return { type: 'text', content: '' };
+		}
 
-	// Safely render HTML - this is safe because it's from our own API
-	function sanitizeHtml(html: string): string {
-		// Basic HTML sanitization - only allow safe tags
-		const allowedTags = ['h4', 'ul', 'li', 'p', 'strong', 'em'];
-		const div = document.createElement('div');
-		div.innerHTML = html;
+		// Since this content comes from our own API, we can be less aggressive
+		// Just remove the most dangerous elements and return as HTML
+		const allowedTags = ['h4', 'ul', 'li', 'p', 'strong', 'em', 'br'];
 
-		// Remove any script tags or dangerous attributes
-		const elements = div.querySelectorAll('*');
-		elements.forEach((el) => {
-			if (!allowedTags.includes(el.tagName.toLowerCase())) {
-				el.remove();
+		try {
+			// Simple regex-based sanitization for our controlled content
+			let sanitizedHtml = html;
+
+			// Remove any script tags (just in case)
+			sanitizedHtml = sanitizedHtml.replace(
+				/<script[^>]*>.*?<\/script>/gis,
+				'',
+			);
+
+			// Remove any on* event handlers
+			sanitizedHtml = sanitizedHtml.replace(/\s+on\w+="[^"]*"/gi, '');
+			sanitizedHtml = sanitizedHtml.replace(/\s+on\w+='[^']*'/gi, '');
+
+			// Remove javascript: urls
+			sanitizedHtml = sanitizedHtml.replace(/javascript:[^"']*/gi, '');
+
+			// Convert \n to actual line breaks for better parsing
+			sanitizedHtml = sanitizedHtml.replace(/\\n/g, '\n');
+
+			// Basic check - if it contains our expected tags, treat as HTML
+			const containsExpectedTags = allowedTags.some(
+				(tag) =>
+					sanitizedHtml.includes(`<${tag}>`) ||
+					sanitizedHtml.includes(`<${tag} `),
+			);
+
+			if (containsExpectedTags) {
+				console.log('Sanitized HTML:', sanitizedHtml); // Debug log
+				return {
+					type: 'html',
+					content: sanitizedHtml,
+				};
 			} else {
-				// Remove all attributes except class
-				const attrs = [...el.attributes];
-				attrs.forEach((attr) => {
-					if (attr.name !== 'class') {
-						el.removeAttribute(attr.name);
-					}
-				});
+				// If no HTML tags found, treat as plain text
+				return { type: 'text', content: html };
 			}
-		});
-
-		return div.innerHTML;
+		} catch (error) {
+			console.warn('HTML sanitization failed, returning as text:', error);
+			return { type: 'text', content: html };
+		}
 	}
+
+	// Process feedback for safe rendering
+	$: processedFeedback = sanitizeAndParseHtml(feedback);
 
 	async function getFeedback() {
 		if (!canGetFeedback) return;
@@ -103,7 +133,7 @@
 		} catch (error) {
 			console.error('Feedback error:', error);
 			feedback =
-				'<p class="text-red-600">Sorry, I encountered an error while analyzing your essay. Please try again in a moment.</p>';
+				'Sorry, I encountered an error while analyzing your essay. Please try again in a moment.';
 			toastStore.show('Failed to get feedback. Please try again.', 'error');
 		} finally {
 			loading = false;
@@ -145,19 +175,16 @@
 			<Button
 				on:click={getFeedback}
 				disabled={!canGetFeedback}
-				variant={needsFeedback ? 'default' : 'outline'}
+				variant="default"
 				size="sm"
 				class="feedback-button"
 			>
 				{#if loading}
 					<RefreshCw class="animate-spin" size={16} />
 					<span>Analyzing...</span>
-				{:else if needsFeedback}
+				{:else}
 					<Sparkles size={16} />
 					<span>Get Feedback</span>
-				{:else}
-					<RefreshCw size={16} />
-					<span>Refresh Feedback</span>
 				{/if}
 			</Button>
 		</div>
@@ -180,17 +207,17 @@
 			</div>
 			<div class="word-count-status">
 				{#if currentWordCount === 0}
-					<AlertCircle size={16} class="text-gray-400" />
-					<span class="status-text text-gray-400">No content yet</span>
+					<AlertCircle size={16} class="text-muted" />
+					<span class="status-text status-text-muted">No content yet</span>
 				{:else if currentWordCount > wordCountLimit}
-					<AlertCircle size={16} class="text-orange-500" />
-					<span class="status-text text-orange-500">Over limit</span>
+					<AlertCircle size={16} class="text-warning" />
+					<span class="status-text status-text-warning">Over limit</span>
 				{:else if currentWordCount >= wordCountLimit * 0.8}
-					<CheckCircle size={16} class="text-green-500" />
-					<span class="status-text text-green-500">Good length</span>
+					<CheckCircle size={16} class="text-success" />
+					<span class="status-text status-text-success">Good length</span>
 				{:else}
-					<AlertCircle size={16} class="text-blue-500" />
-					<span class="status-text text-blue-500">Room to expand</span>
+					<AlertCircle size={16} class="text-info" />
+					<span class="status-text status-text-info">Room to expand</span>
 				{/if}
 			</div>
 		</div>
@@ -201,58 +228,91 @@
 		{#if loading}
 			<div class="loading-state" transition:fade={{ duration: 200 }}>
 				<div class="loading-animation">
-					<Sparkles class="animate-pulse" size={32} />
+					<Sparkles class="primary-color animate-pulse" size={32} />
 				</div>
 				<div class="loading-text">
 					<h3>Stella is reading your essay...</h3>
 					<p>Analyzing structure, style, and content</p>
-					<div class="feedback-display" transition:slide={{ duration: 300 }}>
-						<div class="feedback-html">
-							<!-- Using innerHTML for controlled HTML from our API -->
-							<!-- eslint-disable-next-line svelte/valid-compile -->
-							{sanitizedFeedback}
-						</div>
-					</div>
 				</div>
 			</div>
-		{:else if essayText.trim().length === 0}
+		{:else if !hasContent}
 			<div class="empty-state" transition:fade={{ duration: 200 }}>
-				<Sparkles class="empty-icon" size={48} />
+				<Sparkles class="primary-color" size={48} />
 				<h3>Ready to help!</h3>
 				<p>
-					Write some content in your essay and I'll provide personalized
-					feedback on clarity, style, and structure.
+					Start writing your draft in the editor above, or copy and paste your
+					existing essay. Once you have some content, click "Get Feedback" to
+					receive Stella's detailed analysis of your writing structure, style,
+					and clarity.
+				</p>
+			</div>
+		{:else if !hasFeedback}
+			<div class="get-started-state" transition:fade={{ duration: 200 }}>
+				<Sparkles class="primary-color" size={48} />
+				<h3>Get expert feedback</h3>
+				<p>
+					Your essay looks great! Click "Get Feedback" above to receive Stella's
+					detailed analysis with personalized suggestions for improvement.
 				</p>
 			</div>
 		{:else}
-			<div class="get-started-state" transition:fade={{ duration: 200 }}>
-				<Sparkles class="get-started-icon" size={48} />
-				<h3>Get expert feedback</h3>
-				<p>
-					Click "Get Feedback" to receive Stella's detailed analysis of your
-					essay.
-				</p>
+			<div class="feedback-display" transition:slide={{ duration: 300 }}>
+				<div class="feedback-content-area">
+					{#if processedFeedback.type === 'html'}
+						<!-- Safe HTML rendering using @html with robust sanitization -->
+						<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+						{@html processedFeedback.content}
+					{:else}
+						<!-- Fallback to text rendering -->
+						<p class="feedback-text">{processedFeedback.content}</p>
+					{/if}
+				</div>
 			</div>
 		{/if}
+	</div>
+
+	<!-- AI Disclaimer -->
+	<div class="ai-disclaimer">
+		<div class="disclaimer-header">
+			<Info size={16} class="disclaimer-icon" />
+			<span class="disclaimer-title">Important Disclaimer</span>
+		</div>
+		<p class="disclaimer-text">
+			<strong
+				>This AI feedback is a supplementary tool and should not replace human
+				guidance.</strong
+			>
+			We strongly recommend seeking feedback from experienced college counselors,
+			English teachers, or professionals familiar with college admissions essays.
+			If such resources aren't available, this AI analysis can serve as a helpful
+			starting point.
+		</p>
+		<p class="disclaimer-text disclaimer-text-small">
+			AI-generated feedback may contain inaccuracies, biases, or miss nuanced
+			aspects of your writing. Always use your judgment and consider multiple
+			perspectives when revising your essay. Remember that admission officers
+			value authentic, personal narratives—ensure your voice remains central to
+			your essay.
+		</p>
 	</div>
 </div>
 
 <style>
 	.stella-feedback-container {
-		background: white;
-		border: 1px solid hsl(var(--border));
+		background: hsl(var(--color-base-000));
+		border: 1px solid hsl(var(--color-base-300));
 		border-radius: 1rem;
 		overflow: hidden;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+		box-shadow: 0 1px 3px hsl(var(--color-neutral) / 0.1);
 	}
 
 	.feedback-header {
 		background: linear-gradient(
 			135deg,
-			hsl(var(--primary)) 0%,
-			hsl(var(--primary) / 0.8) 100%
+			hsl(var(--color-primary)) 0%,
+			hsl(var(--color-primary) / 0.8) 100%
 		);
-		color: white;
+		color: hsl(var(--color-primary-content));
 		padding: 1.5rem;
 	}
 
@@ -274,6 +334,7 @@
 		font-size: 1.5rem;
 		font-weight: 600;
 		margin: 0;
+		color: hsl(var(--color-primary-content));
 	}
 
 	.last-updated {
@@ -281,7 +342,7 @@
 		align-items: center;
 		gap: 0.25rem;
 		font-size: 0.75rem;
-		color: rgba(255, 255, 255, 0.8);
+		color: hsl(var(--color-primary-content) / 0.8);
 		margin-left: 0.5rem;
 	}
 
@@ -290,7 +351,7 @@
 		align-items: center;
 		gap: 1rem;
 		font-size: 0.875rem;
-		color: rgba(255, 255, 255, 0.9);
+		color: hsl(var(--color-primary-content) / 0.9);
 	}
 
 	.word-count-item {
@@ -300,20 +361,21 @@
 	}
 
 	.label {
-		color: rgba(255, 255, 255, 0.8);
+		color: hsl(var(--color-primary-content) / 0.8);
 	}
 
 	.count {
 		font-weight: 600;
 		font-size: 1rem;
+		color: hsl(var(--color-primary-content));
 	}
 
 	.count.over-limit {
-		color: #fbbf24;
+		color: hsl(var(--color-warning));
 	}
 
 	.word-count-divider {
-		color: rgba(255, 255, 255, 0.6);
+		color: hsl(var(--color-primary-content) / 0.6);
 	}
 
 	.word-count-status {
@@ -322,15 +384,33 @@
 		gap: 0.5rem;
 	}
 
+	/* Status text styles */
 	.status-text {
 		font-size: 0.75rem;
 		font-weight: 500;
+	}
+
+	.status-text-muted {
+		color: hsl(var(--color-base-400));
+	}
+
+	.status-text-warning {
+		color: hsl(var(--color-warning));
+	}
+
+	.status-text-success {
+		color: hsl(var(--color-success));
+	}
+
+	.status-text-info {
+		color: hsl(var(--color-info));
 	}
 
 	.feedback-content {
 		min-height: 400px;
 		max-height: 600px;
 		overflow-y: auto;
+		background: hsl(var(--color-base-000));
 	}
 
 	.loading-state {
@@ -344,18 +424,17 @@
 
 	.loading-animation {
 		margin-bottom: 1.5rem;
-		color: hsl(var(--primary));
 	}
 
 	.loading-text h3 {
 		font-size: 1.25rem;
 		font-weight: 600;
 		margin: 0 0 0.5rem 0;
-		color: hsl(var(--foreground));
+		color: hsl(var(--color-base-content));
 	}
 
 	.loading-text p {
-		color: hsl(var(--muted-foreground));
+		color: hsl(var(--color-base-content) / 0.7);
 		margin: 0;
 	}
 
@@ -368,69 +447,133 @@
 		padding: 3rem 2rem;
 		text-align: center;
 	}
+
 	.empty-state h3,
 	.get-started-state h3 {
 		font-size: 1.25rem;
 		font-weight: 600;
-		margin: 0 0 0.5rem 0;
-		color: hsl(var(--foreground));
+		margin: 1rem 0 0.5rem 0;
+		color: hsl(var(--color-base-content));
 	}
 
 	.empty-state p,
 	.get-started-state p {
-		color: hsl(var(--muted-foreground));
+		color: hsl(var(--color-base-content) / 0.7);
 		margin: 0;
 		max-width: 400px;
+		line-height: 1.6;
 	}
 
 	.feedback-display {
 		padding: 2rem;
+		background: hsl(var(--color-base-000));
 	}
 
-	/* Feedback HTML Styling */
-	.feedback-html :global(h4) {
+	.feedback-content-area {
+		color: hsl(var(--color-base-content));
+		line-height: 1.6;
+	}
+
+	.feedback-text {
+		color: hsl(var(--color-base-content));
+		line-height: 1.6;
+		margin: 1rem 0;
+	}
+
+	/* Feedback HTML Styling using CSS variables */
+	.feedback-content-area :global(h4) {
 		font-size: 1.125rem;
 		font-weight: 600;
-		color: hsl(var(--primary));
+		color: hsl(var(--color-primary));
 		margin: 2rem 0 1rem 0;
 		padding-bottom: 0.5rem;
-		border-bottom: 2px solid hsl(var(--primary) / 0.1);
+		border-bottom: 2px solid hsl(var(--color-primary) / 0.1);
 	}
 
-	.feedback-html :global(h4:first-child) {
+	.feedback-content-area :global(h4:first-child) {
 		margin-top: 0;
 	}
 
-	.feedback-html :global(ul) {
+	.feedback-content-area :global(ul) {
 		list-style-type: disc;
 		padding-left: 1.5rem;
 		margin: 1rem 0;
-		gap: 0.75rem; /* Replace space-y with gap */
 	}
 
-	.feedback-html :global(li) {
-		color: hsl(var(--foreground));
+	.feedback-content-area :global(li) {
+		color: hsl(var(--color-base-content));
 		line-height: 1.6;
 		margin-bottom: 0.75rem;
 	}
 
-	.feedback-html :global(li strong) {
+	.feedback-content-area :global(li strong) {
 		font-weight: 600;
-		color: hsl(var(--foreground));
+		color: hsl(var(--color-base-content));
 	}
 
-	.feedback-html :global(p) {
-		color: hsl(var(--foreground));
+	.feedback-content-area :global(p) {
+		color: hsl(var(--color-base-content));
 		line-height: 1.6;
 		margin: 1rem 0;
 	}
 
-	.feedback-html :global(p:first-child) {
+	.feedback-content-area :global(p:first-child) {
 		margin-top: 0;
 	}
 
-	.feedback-html :global(p:last-child) {
+	.feedback-content-area :global(p:last-child) {
 		margin-bottom: 0;
+	}
+
+	/* Error styling */
+	.feedback-content-area :global(.text-red-600) {
+		color: hsl(var(--color-error)) !important;
+	}
+
+	/* AI Disclaimer Section */
+	.ai-disclaimer {
+		background: hsl(var(--color-base-200));
+		border-top: 1px solid hsl(var(--color-base-300));
+		padding: 1.5rem;
+	}
+
+	.disclaimer-header {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: 0.75rem;
+	}
+
+	/* .disclaimer-icon {
+		color: hsl(var(--color-info));
+		flex-shrink: 0;
+	} */
+
+	.disclaimer-title {
+		font-weight: 600;
+		font-size: 0.875rem;
+		color: hsl(var(--color-base-content));
+	}
+
+	.disclaimer-text {
+		font-size: 0.875rem;
+		line-height: 1.5;
+		color: hsl(var(--color-base-content) / 0.8);
+		margin: 0 0 0.75rem 0;
+	}
+
+	.disclaimer-text:last-child {
+		margin-bottom: 0;
+	}
+
+	.disclaimer-text-small {
+		font-size: 0.8rem;
+		color: hsl(var(--color-base-content) / 0.7);
+	}
+
+	.disclaimer-text strong {
+		color: hsl(var(--color-base-content));
+		font-weight: 600;
 	}
 
 	/* Mobile Responsive */
@@ -462,6 +605,18 @@
 			min-height: 300px;
 			max-height: 500px;
 		}
+
+		.ai-disclaimer {
+			padding: 1rem;
+		}
+
+		.disclaimer-text {
+			font-size: 0.8rem;
+		}
+
+		.disclaimer-text-small {
+			font-size: 0.75rem;
+		}
 	}
 
 	@media (max-width: 480px) {
@@ -485,15 +640,9 @@
 			justify-content: center;
 			margin-top: 0.5rem;
 			padding-top: 0.5rem;
-			border-top: 1px solid rgba(255, 255, 255, 0.2);
+			border-top: 1px solid hsl(var(--color-primary-content) / 0.2);
 		}
 	}
 
-	/* Dark mode support */
-	@media (prefers-color-scheme: dark) {
-		.stella-feedback-container {
-			background: hsl(var(--card));
-			border-color: hsl(var(--border));
-		}
-	}
+	/* Dark mode will automatically work with CSS variables */
 </style>

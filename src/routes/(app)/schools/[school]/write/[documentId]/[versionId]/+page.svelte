@@ -36,6 +36,8 @@
 	let content = '';
 	let editorReady = false;
 
+	let contentLoaded = false;
+
 	// Document state
 	let documentTitle = data.document.title || '';
 	let documentPrompt = data.document.prompt || '';
@@ -257,17 +259,29 @@
 			}
 
 			editor.commands.setContent(parsedContent);
+
+			// Update the content variable with the actual text content
+			content = editor.getText();
+			contentLoaded = true;
+
 			console.log('Content loaded and initialized');
 		} catch (error) {
 			console.error('Failed to load checkpoint content:', error);
 			toastStore.show('Warning: Could not load checkpoint content', 'error');
 			const emptyContent = { type: 'doc', content: [] };
 			editor.commands.setContent(emptyContent);
+			content = '';
+			contentLoaded = true;
 		}
 	}
 
 	// Content and save handlers
 	function handleContentUpdate() {
+		// Update content with plain text when editor content changes
+		if (editor && contentLoaded) {
+			content = editor.getText();
+		}
+
 		if (autoSaveManager) {
 			autoSaveManager.onContentChange();
 		}
@@ -1035,7 +1049,7 @@
 				{currentWordCount}
 				versionId={$page.params.versionId}
 				existingFeedback={currentFeedback}
-				disabled={!editorReady}
+				disabled={!editorReady || !contentLoaded}
 				on:feedbackReceived={handleFeedbackReceived}
 			/>
 		</div>
