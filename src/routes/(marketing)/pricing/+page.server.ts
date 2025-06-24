@@ -2,6 +2,9 @@ import { toSortedPrices } from '$lib/stripe/product-utils';
 import { Stripe } from 'stripe';
 import type { PageServerLoad } from './$types';
 
+// This page is for marketing purposes, so it does not need to be server-rendered.
+export const ssr = false;
+
 export const load: PageServerLoad = async ({ locals: { stripe } }) => {
 	const { data: prices } = await stripe.prices.list({
 		expand: ['data.product'],
