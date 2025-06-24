@@ -188,9 +188,9 @@ export async function POST({ request }) {
    • If over ${limit} → "At ${words} words, it's too long. Let's tighten to the essentials."  
 
 2. **Several detailed sections: Praise or diagnose**  
-   **A. Strengths:** What's working well?  
-   **B. Polishedness**: If it's well-crafted (uses clear structure, vivid examples, runs under ${limit} words) → "This is stellar—ready to submit!"  
-   **C Areas to improve:** Be specific (e.g. "Paragraph 2 drifts—swap vague phrases for concrete examples.").  
+   **A. Your strengths:** What's working well?  
+   **B. Current state of essay**: If it's well-crafted (uses clear structure, vivid examples, runs under ${limit} words) → "This is stellar—ready to submit!"  
+   **C. Areas to improve:** Be specific (e.g. "Paragraph 2 drifts—swap vague phrases for concrete examples.").  
    **D. Next steps:** At least two clear, implementable suggestions (grammar, conciseness, structure).
    **E. Conclude:** End with a positive encouragement like "Keep up the good work!"
 

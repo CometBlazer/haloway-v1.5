@@ -55,7 +55,20 @@
 
 		// Since this content comes from our own API, we can be less aggressive
 		// Just remove the most dangerous elements and return as HTML
-		const allowedTags = ['h4', 'ul', 'li', 'p', 'strong', 'em', 'br'];
+		const allowedTags = [
+			'h1',
+			'h2',
+			'h3',
+			'h4',
+			'h5',
+			'h6',
+			'ul',
+			'li',
+			'p',
+			'strong',
+			'em',
+			'br',
+		];
 
 		try {
 			// Simple regex-based sanitization for our controlled content
