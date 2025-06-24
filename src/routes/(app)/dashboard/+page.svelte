@@ -276,11 +276,13 @@
 	<!-- Documents Grid -->
 	{#if documents.length === 0}
 		<!-- Empty State -->
-		<div class="empty-state">
-			<div class="empty-content">
-				<FileText class="empty-icon" />
-				<h3 class="empty-title">No essays yet</h3>
-				<p class="empty-description">
+		<div class="flex min-h-96 items-center justify-center p-8">
+			<div class="flex max-w-sm flex-col gap-4 text-center">
+				<FileText class="text-neutral-content mx-auto h-16 w-16" />
+				<h3 class="text-base-content m-0 text-xl font-semibold">
+					No essays yet
+				</h3>
+				<p class="text-neutral-content m-0 leading-relaxed">
 					Get started by creating your first essay. Click the "New Essay" button
 					above to begin writing.
 				</p>
@@ -354,9 +356,9 @@
 <Dialog.Root bind:open={showNewEssayModal}>
 	<Dialog.Content class="sm:max-w-lg">
 		<Dialog.Header>
-			<Dialog.Title>Create a New Essay</Dialog.Title>
+			<Dialog.Title>Add a New Essay</Dialog.Title>
 			<Dialog.Description>
-				Fill in the details below to create a new essay.
+				Fill in as much information as you can — you can always edit it later.
 			</Dialog.Description>
 		</Dialog.Header>
 
@@ -398,8 +400,14 @@
 				<div class="space-y-4">
 					<div class="space-y-2">
 						<Label for="school" class="text-sm font-medium">
-							School <span class="text-destructive">*</span>
+							Choose a school to assign this essay <span
+								class="text-destructive">*</span
+							>
 						</Label>
+						<p class="pb-2 text-xs text-muted-foreground">
+							We're constantly adding new schools — if you can't find your
+							school, please let us know and we'll add it as soon as possible.
+						</p>
 						<SchoolDropdown
 							currentSchool={newEssayForm.school}
 							on:schoolChange={handleSchoolChange}
@@ -409,30 +417,33 @@
 					</div>
 
 					<div class="space-y-2">
-						<Label for="title" class="text-sm font-medium">Title</Label>
+						<Label for="title" class="text-sm font-medium">Essay Title</Label>
 						<Input
 							id="title"
 							name="title"
 							bind:value={newEssayForm.title}
-							placeholder="Enter essay title (optional)"
+							placeholder="Give your essay a descriptive title (optional)"
 						/>
 					</div>
 
 					<div class="space-y-2">
-						<Label for="prompt" class="text-sm font-medium">Prompt</Label>
+						<Label for="prompt" class="text-sm font-medium">Essay Prompt</Label>
 						<Textarea
 							id="prompt"
 							name="prompt"
 							bind:value={newEssayForm.prompt}
-							placeholder="Enter essay prompt (optional)"
+							placeholder="If you have your prompt, paste it here (optional)"
 							rows={3}
 						/>
 					</div>
 
 					<div class="space-y-2">
 						<Label for="dueDate" class="text-sm font-medium"
-							>Due Date (optional)</Label
+							>Due date (optional)</Label
 						>
+						<p class="pb-2 text-xs text-muted-foreground">
+							If you know your school's due date, you can add it here.
+						</p>
 						<Input
 							id="dueDate"
 							name="dueDate"
@@ -558,43 +569,6 @@
 
 	.banner-link:hover {
 		text-decoration: none;
-	}
-
-	/* Empty State */
-	.empty-state {
-		display: flex;
-		min-height: 400px;
-		align-items: center;
-		justify-content: center;
-		padding: 2rem;
-	}
-
-	.empty-content {
-		max-width: 384px;
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		text-align: center;
-	}
-
-	/* .empty-icon {
-		width: 4rem;
-		height: 4rem;
-		color: hsl(var(--color-neutral-content));
-		margin: 0 auto;
-	} */
-
-	.empty-title {
-		font-size: 1.25rem;
-		font-weight: 600;
-		color: hsl(var(--color-base-content));
-		margin: 0;
-	}
-
-	.empty-description {
-		line-height: 1.6;
-		color: hsl(var(--color-neutral-content));
-		margin: 0;
 	}
 
 	/* Documents Grid */

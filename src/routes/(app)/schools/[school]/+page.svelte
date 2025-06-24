@@ -185,11 +185,13 @@
 	<!-- Documents Grid -->
 	{#if documents.length === 0}
 		<!-- Empty State -->
-		<div class="empty-state">
-			<div class="empty-content">
-				<FileText class="empty-icon" />
-				<h3 class="empty-title">No {school} essays yet</h3>
-				<p class="empty-description">
+		<div class="flex min-h-96 items-center justify-center p-8">
+			<div class="flex max-w-sm flex-col gap-4 text-center">
+				<FileText class="text-neutral-content mx-auto h-16 w-16" />
+				<h3 class="text-base-content m-0 text-xl font-semibold">
+					No {school} essays yet
+				</h3>
+				<p class="text-neutral-content m-0 leading-relaxed">
 					Get started by creating your first essay for {school}. Click the "New {school}
 					Essay" button above to begin writing.
 				</p>
@@ -340,43 +342,6 @@
 		font-size: 0.875rem;
 		line-height: 1.6;
 		color: hsl(var(--color-base-content));
-		margin: 0;
-	}
-
-	/* Empty State */
-	.empty-state {
-		display: flex;
-		min-height: 400px;
-		align-items: center;
-		justify-content: center;
-		padding: 2rem;
-	}
-
-	.empty-content {
-		max-width: 384px;
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		text-align: center;
-	}
-
-	/* .empty-icon {
-		width: 4rem;
-		height: 4rem;
-		color: hsl(var(--color-neutral-content));
-		margin: 0 auto;
-	} */
-
-	.empty-title {
-		font-size: 1.25rem;
-		font-weight: 600;
-		color: hsl(var(--color-base-content));
-		margin: 0;
-	}
-
-	.empty-description {
-		line-height: 1.6;
-		color: hsl(var(--color-neutral-content));
 		margin: 0;
 	}
 
