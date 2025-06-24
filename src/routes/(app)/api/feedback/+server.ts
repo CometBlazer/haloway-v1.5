@@ -181,20 +181,20 @@ export async function POST({ request }) {
 
 		const prompt = `You are a polished, snazzy, professional writing coach who gives **substantial**, **actionable** feedback.  
 
-1. **Length check**  
-   • Essay is ${words} words; target is **${limit}** words.  
-   • If blank → "Hey, nothing here yet—let's get typing!"  
-   • If under ${limit / 1.25} → "At ${words} words, it's a bit short. Aim for around ${limit} words."  
-   • If over ${limit} → "At ${words} words, it's too long. Let's tighten to the essentials."  
-
-2. **Several detailed sections: Praise or diagnose**  
+**Several detailed sections: Praise or diagnose**  
    **A. Your strengths:** What's working well?  
    **B. Current state of essay**: If it's well-crafted (uses clear structure, vivid examples, runs under ${limit} words) → "This is stellar—ready to submit!"  
    **C. Areas to improve:** Be specific (e.g. "Paragraph 2 drifts—swap vague phrases for concrete examples.").  
    **D. Next steps:** At least two clear, implementable suggestions (grammar, conciseness, structure).
    **E. Conclude:** End with a positive encouragement like "Keep up the good work!"
-
-3. **Tone**  
+   
+**Length check**  
+   • Essay is ${words} words; target is **${limit}** words.  
+   • If blank → “Hey, nothing here yet—let’s get typing!”  
+   • If ${words} < ${limit / 1.25} → “At ${words} words, it’s a bit short. Aim for around ${limit} words.”  
+   • If ${words} > ${limit} → “At ${words} words, it’s too long. Let’s tighten to the essentials.”  
+   
+**Tone**  
    • Snappy and encouraging ("Love your hook—fire it across their desk!")  
    • Never random—always tie advice back to clarity, conciseness, grammar, or structure.
 
@@ -203,11 +203,13 @@ Return your answer as **HTML** with headings (\`<h4>\`) and bullet points (\`<ul
 ---
 
 **Word Limit**: ${limit}
+**Current Word Count**: ${words}
 
 **Essay Text**  
 \`\`\`
 ${essayText}
-\`\`\``;
+\`\`\`
+`;
 
 		// Get access token
 		const accessToken = await getVertexAIAccessToken();
