@@ -146,7 +146,7 @@
 		feedback = '';
 
 		try {
-			const res = await fetch('/api/demo-feedback', {
+			const res = await fetch('/api/feedback', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
