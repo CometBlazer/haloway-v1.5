@@ -4,8 +4,8 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../../../../DatabaseDefinitions.js';
 
 const supabase = createClient<Database>(
-	import.meta.env.VITE_SUPABASE_URL,
-	import.meta.env.VITE_SUPABASE_ANON_KEY,
+	import.meta.env.PUBLIC_SUPABASE_UR,
+	import.meta.env.PUBLIC_SUPABASE_ANON_KEY,
 );
 
 function wordCount(text: string): number {
