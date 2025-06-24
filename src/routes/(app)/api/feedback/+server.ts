@@ -1,12 +1,157 @@
-// src/routes/api/feedback/+server.ts - WORKING VERSION
+// src/routes/api/feedback/+server.ts - SERVER-ONLY CREDENTIALS
 import { json, error } from '@sveltejs/kit';
 import { supabase } from '$lib/supabase';
+import { env } from '$env/dynamic/private';
 
 function wordCount(text: string): number {
 	return text
 		.trim()
 		.split(/\s+/)
 		.filter((word) => word.length > 0).length;
+}
+
+async function getVertexAIAccessToken(): Promise<string> {
+	const credentialsString = env.GOOGLE_APPLICATION_CREDENTIALS;
+
+	if (!credentialsString) {
+		throw new Error(
+			'GOOGLE_APPLICATION_CREDENTIALS environment variable is not set',
+		);
+	}
+
+	let credentials: ServiceAccountCredentials;
+	try {
+		credentials = JSON.parse(credentialsString) as ServiceAccountCredentials;
+	} catch {
+		throw new Error('Invalid JSON in GOOGLE_APPLICATION_CREDENTIALS');
+	}
+
+	// Create JWT payload
+	const now = Math.floor(Date.now() / 1000);
+	const payload: JWTPayload = {
+		iss: credentials.client_email,
+		scope: 'https://www.googleapis.com/auth/cloud-platform',
+		aud: 'https://oauth2.googleapis.com/token',
+		exp: now + 3600,
+		iat: now,
+	};
+
+	// Create the JWT
+	const jwt = await createJWT(credentials, payload);
+
+	// Exchange JWT for access token
+	const response = await fetch('https://oauth2.googleapis.com/token', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+		},
+		body: new URLSearchParams({
+			grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+			assertion: jwt,
+		}),
+	});
+
+	if (!response.ok) {
+		const errorText = await response.text();
+		console.error('Token request failed:', errorText);
+		throw new Error(`Authentication failed: ${response.statusText}`);
+	}
+
+	const tokenData = await response.json();
+	return tokenData.access_token;
+}
+
+interface ServiceAccountCredentials {
+	client_email: string;
+	private_key: string;
+	private_key_id: string;
+	project_id: string;
+	type: string;
+}
+
+interface JWTPayload {
+	iss: string;
+	scope: string;
+	aud: string;
+	exp: number;
+	iat: number;
+}
+
+interface JWTHeader {
+	alg: string;
+	typ: string;
+	kid: string;
+}
+
+async function createJWT(
+	credentials: ServiceAccountCredentials,
+	payload: JWTPayload,
+): Promise<string> {
+	// Create header
+	const header: JWTHeader = {
+		alg: 'RS256',
+		typ: 'JWT',
+		kid: credentials.private_key_id,
+	};
+
+	// Base64URL encode header and payload
+	const encodedHeader = base64URLEncode(JSON.stringify(header));
+	const encodedPayload = base64URLEncode(JSON.stringify(payload));
+
+	// Create signature input
+	const signatureInput = `${encodedHeader}.${encodedPayload}`;
+
+	// Import the private key
+	const privateKey = await importPrivateKey(credentials.private_key);
+
+	// Sign the JWT
+	const signature = await crypto.subtle.sign(
+		'RSASSA-PKCS1-v1_5',
+		privateKey,
+		new TextEncoder().encode(signatureInput),
+	);
+
+	// Encode signature
+	const encodedSignature = base64URLEncode(signature);
+
+	return `${signatureInput}.${encodedSignature}`;
+}
+
+function base64URLEncode(data: string | ArrayBuffer): string {
+	let base64: string;
+
+	if (typeof data === 'string') {
+		base64 = btoa(data);
+	} else {
+		base64 = btoa(String.fromCharCode(...new Uint8Array(data)));
+	}
+
+	return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+}
+
+async function importPrivateKey(privateKeyPem: string): Promise<CryptoKey> {
+	// Remove PEM header/footer and whitespace
+	const privateKeyData = privateKeyPem
+		.replace(/-----BEGIN PRIVATE KEY-----/, '')
+		.replace(/-----END PRIVATE KEY-----/, '')
+		.replace(/\s/g, '');
+
+	// Convert base64 to ArrayBuffer
+	const binaryKey = Uint8Array.from(atob(privateKeyData), (c) =>
+		c.charCodeAt(0),
+	);
+
+	// Import the key
+	return await crypto.subtle.importKey(
+		'pkcs8',
+		binaryKey.buffer,
+		{
+			name: 'RSASSA-PKCS1-v1_5',
+			hash: 'SHA-256',
+		},
+		false,
+		['sign'],
+	);
 }
 
 export async function POST({ request }) {
@@ -34,93 +179,105 @@ export async function POST({ request }) {
 		// Use provided currentWordCount or calculate from text as fallback
 		const words = currentWordCount ?? wordCount(essayText);
 
-		// For now, let's use a smart mock that gives realistic feedback
-		// This way you can test the component integration immediately
-		let feedback = '';
+		const prompt = `You are a polished, snazzy, professional writing coach who gives **substantial**, **actionable** feedback.  
 
-		if (words === 0) {
-			feedback =
-				"<h4>Length Check</h4><p>Hey, nothing here yet—let's get typing!</p>";
-		} else if (words < limit / 1.25) {
-			feedback = `<h4>Length Check</h4>
-<p>At ${words} words, it's a bit short. Aim for around ${limit} words.</p>
+1. **Length check**  
+   • Essay is ${words} words; target is **${limit}** words.  
+   • If blank → "Hey, nothing here yet—let's get typing!"  
+   • If under ${limit / 1.25} → "At ${words} words, it's a bit short. Aim for around ${limit} words."  
+   • If over ${limit} → "At ${words} words, it's too long. Let's tighten to the essentials."  
 
-<h4>Strengths</h4>
-<ul>
-<li><strong>Strong foundation:</strong> You've got some solid ideas to work with here!</li>
-<li><strong>Clear expression:</strong> Your writing style is engaging and easy to follow.</li>
-</ul>
+2. **Several detailed sections: Praise or diagnose**  
+   **A. Strengths:** What's working well?  
+   **B. Polishedness**: If it's well-crafted (uses clear structure, vivid examples, runs under ${limit} words) → "This is stellar—ready to submit!"  
+   **C Areas to improve:** Be specific (e.g. "Paragraph 2 drifts—swap vague phrases for concrete examples.").  
+   **D. Next steps:** At least two clear, implementable suggestions (grammar, conciseness, structure).
+   **E. Conclude:** End with a positive encouragement like "Keep up the good work!"
 
-<h4>Areas to Improve</h4>
-<ul>
-<li><strong>Expand key points:</strong> Your main ideas could use more detailed examples and evidence.</li>
-<li><strong>Add depth:</strong> Consider including specific anecdotes or data to support your arguments.</li>
-</ul>
+3. **Tone**  
+   • Snappy and encouraging ("Love your hook—fire it across their desk!")  
+   • Never random—always tie advice back to clarity, conciseness, grammar, or structure.
 
-<h4>Next Steps</h4>
-<ul>
-<li><strong>Develop your examples:</strong> Take your strongest points and elaborate with concrete details.</li>
-<li><strong>Connect the dots:</strong> Add transitions that help readers follow your reasoning.</li>
-</ul>
+Return your answer as **HTML** with headings (\`<h4>\`) and bullet points (\`<ul><li>…</li></ul>\`), **no extra chatter**.
 
-<h4>Conclusion</h4>
-<p>You're on the right track! Keep building on these ideas and you'll hit your target. Keep up the good work!</p>`;
-		} else if (words > limit) {
-			feedback = `<h4>Length Check</h4>
-<p>At ${words} words, it's too long. Let's tighten to the essentials.</p>
+---
 
-<h4>Strengths</h4>
-<ul>
-<li><strong>Comprehensive coverage:</strong> You've clearly done your research and have lots to say!</li>
-<li><strong>Rich detail:</strong> Your examples and explanations show deep understanding.</li>
-</ul>
+**Word Limit**: ${limit}
 
-<h4>Areas to Improve</h4>
-<ul>
-<li><strong>Prioritize impact:</strong> Some excellent points are getting lost in the length—let your best ideas shine.</li>
-<li><strong>Streamline sentences:</strong> Look for opportunities to say more with fewer words.</li>
-</ul>
+**Essay Text**  
+\`\`\`
+${essayText}
+\`\`\``;
 
-<h4>Next Steps</h4>
-<ul>
-<li><strong>Ruthless editing:</strong> Cut redundant phrases and combine related ideas.</li>
-<li><strong>Focus on your strongest arguments:</strong> Keep the most compelling points and trim the rest.</li>
-</ul>
+		// Get access token
+		const accessToken = await getVertexAIAccessToken();
 
-<h4>Conclusion</h4>
-<p>Great depth of knowledge! Now let's make every word count for maximum impact. Keep up the excellent work!</p>`;
-		} else {
-			feedback = `<h4>Length Check</h4>
-<p>At ${words} words, you're good to go in terms of length.</p>
+		// Call Vertex AI REST API
+		const PROJECT_ID = env.VITE_GCP_PROJECT_ID || 'snappi-v1';
+		const LOCATION = 'us-central1';
+		const MODEL = 'gemini-2.0-flash-exp';
 
-<h4>Strengths</h4>
-<ul>
-<li><strong>Excellent pacing:</strong> Your essay flows naturally from introduction to conclusion.</li>
-<li><strong>Compelling voice:</strong> Your personality comes through while staying professional.</li>
-<li><strong>Strong structure:</strong> Each paragraph builds logically on the previous one.</li>
-</ul>
+		const url = `https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/publishers/google/models/${MODEL}:generateContent`;
 
-<h4>Polishedness</h4>
-<p>This is stellar—ready to submit!</p>
+		console.log('Calling Vertex AI at:', url);
 
-<h4>Areas to Improve</h4>
-<ul>
-<li><strong>Final polish:</strong> One last proofread to catch any tiny typos or awkward phrases.</li>
-<li><strong>Power conclusion:</strong> Make sure your ending leaves readers wanting to know more about you.</li>
-</ul>
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				Authorization: `Bearer ${accessToken}`,
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				contents: [
+					{
+						role: 'user',
+						parts: [
+							{
+								text: prompt,
+							},
+						],
+					},
+				],
+				generationConfig: {
+					temperature: 0.7,
+					topK: 40,
+					topP: 0.95,
+					maxOutputTokens: 2048,
+				},
+			}),
+		});
 
-<h4>Next Steps</h4>
-<ul>
-<li><strong>Read aloud:</strong> Listen for any sentences that don't flow smoothly.</li>
-<li><strong>Trust your voice:</strong> You've crafted something authentic and engaging!</li>
-</ul>
+		if (!response.ok) {
+			const errorText = await response.text();
+			console.error('Vertex AI error:', response.status, errorText);
 
-<h4>Conclusion</h4>
-<p>Outstanding work! You've hit all the marks with style and substance. Keep up the excellent work!</p>`;
+			if (response.status === 429) {
+				throw error(429, 'Too many requests. Please try again in a moment.');
+			} else if (response.status === 401 || response.status === 403) {
+				throw error(
+					500,
+					'AI service authentication failed. Check your service account permissions.',
+				);
+			} else {
+				throw error(
+					502,
+					`AI service error: ${response.status} ${response.statusText}`,
+				);
+			}
 		}
 
-		// Simulate realistic API delay
-		await new Promise((resolve) => setTimeout(resolve, 2000));
+		const data = await response.json();
+		console.log('Vertex AI response received');
+
+		const feedback = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+		if (!feedback || feedback.trim().length === 0) {
+			console.error(
+				'Empty response from Vertex AI:',
+				JSON.stringify(data, null, 2),
+			);
+			throw error(502, 'AI service returned empty response');
+		}
 
 		// Store in database if versionId provided
 		if (versionId) {
@@ -147,6 +304,14 @@ export async function POST({ request }) {
 
 		if (e && typeof e === 'object' && 'status' in e) {
 			throw e;
+		}
+
+		// Check if it's an authentication error
+		if (e instanceof Error && e.message.includes('Authentication failed')) {
+			throw error(
+				500,
+				'Service account authentication failed. Check your credentials.',
+			);
 		}
 
 		throw error(502, 'Service temporarily unavailable');

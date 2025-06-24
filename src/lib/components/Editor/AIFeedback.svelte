@@ -58,6 +58,32 @@
 			// Simple regex-based sanitization for our controlled content
 			let sanitizedHtml = html;
 
+			// Remove markdown code fences (```html, ```, etc.)
+			sanitizedHtml = sanitizedHtml.replace(/^```[\w]*\n?/gm, '');
+			sanitizedHtml = sanitizedHtml.replace(/\n?```$/gm, '');
+			sanitizedHtml = sanitizedHtml.replace(/```$/gm, '');
+
+			// Convert markdown formatting to HTML
+			// Bold: **text** or __text__ -> <strong>text</strong>
+			sanitizedHtml = sanitizedHtml.replace(
+				/\*\*(.*?)\*\*/g,
+				'<strong>$1</strong>',
+			);
+			sanitizedHtml = sanitizedHtml.replace(
+				/__(.*?)__/g,
+				'<strong>$1</strong>',
+			);
+
+			// Italic: *text* or _text_ -> <em>text</em> (but avoid conflicts with bold)
+			sanitizedHtml = sanitizedHtml.replace(
+				/(?<!\*)\*(?!\*)([^*]+?)\*(?!\*)/g,
+				'<em>$1</em>',
+			);
+			sanitizedHtml = sanitizedHtml.replace(
+				/(?<!_)_(?!_)([^_]+?)_(?!_)/g,
+				'<em>$1</em>',
+			);
+
 			// Remove any script tags (just in case)
 			sanitizedHtml = sanitizedHtml.replace(
 				/<script[^>]*>.*?<\/script>/gis,
@@ -74,14 +100,17 @@
 			// Convert \n to actual line breaks for better parsing
 			sanitizedHtml = sanitizedHtml.replace(/\\n/g, '\n');
 
-			// Basic check - if it contains our expected tags, treat as HTML
+			// Basic check - if it contains our expected tags OR converted markdown, treat as HTML
 			const containsExpectedTags = allowedTags.some(
 				(tag) =>
 					sanitizedHtml.includes(`<${tag}>`) ||
 					sanitizedHtml.includes(`<${tag} `),
 			);
 
-			if (containsExpectedTags) {
+			const containsConvertedMarkdown =
+				sanitizedHtml.includes('<strong>') || sanitizedHtml.includes('<em>');
+
+			if (containsExpectedTags || containsConvertedMarkdown) {
 				console.log('Sanitized HTML:', sanitizedHtml); // Debug log
 				return {
 					type: 'html',
@@ -89,7 +118,7 @@
 				};
 			} else {
 				// If no HTML tags found, treat as plain text
-				return { type: 'text', content: html };
+				return { type: 'text', content: sanitizedHtml };
 			}
 		} catch (error) {
 			console.warn('HTML sanitization failed, returning as text:', error);
@@ -107,7 +136,7 @@
 		feedback = '';
 
 		try {
-			const res = await fetch('/api/demo-feedback', {
+			const res = await fetch('/api/feedback', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
