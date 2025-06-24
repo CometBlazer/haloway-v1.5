@@ -21,6 +21,7 @@
 	import { WebsiteName } from '../../../../../../../config';
 	import { Download, FileText, Text, Save } from 'lucide-svelte';
 	import type { Status } from '$lib/components/Editor/StatusDropdown.svelte';
+	import AIFeedback from '$lib/components/Editor/AIFeedback.svelte';
 
 	// Import modular systems
 	import { AutoSaveManager, getStatusDisplay } from '$lib/autosave';
@@ -161,6 +162,29 @@
 	);
 
 	$: initialStatus = (data.document.status as Status) || 'not-started';
+
+	// Add feedback-related state
+	let currentFeedback = data.currentVersion.latest_ai_response || null;
+
+	// Add feedback handler
+	function handleFeedbackReceived(
+		event: CustomEvent<{ feedback: string; wordCount: number }>,
+	) {
+		currentFeedback = event.detail.feedback;
+
+		// Update the current version data optimistically
+		if (data.currentVersion) {
+			data.currentVersion.latest_ai_response = event.detail.feedback;
+		}
+
+		// The feedback is automatically saved to the database via the API
+		console.log('Feedback received and saved');
+	}
+
+	// Watch for version changes and update feedback
+	$: if (data.currentVersion?.latest_ai_response !== currentFeedback) {
+		currentFeedback = data.currentVersion?.latest_ai_response || null;
+	}
 
 	// Initialize editor with existing content
 	function handleEditorReady() {
@@ -1004,14 +1028,16 @@
 
 	<!-- AI Feedback section -->
 	<Section.Root anchor="feedback">
-		<div class="mb-4 mt-8 flex w-full justify-between">
-			<h2 class="text-2xl font-semibold">AI Feedback: coming soon!</h2>
-			<Button
-				on:click={() =>
-					alert("This doesn't do anything yet, I'm still working on it trust")}
-			>
-				Get New Feedback
-			</Button>
+		<div class="feedback-section">
+			<AIFeedback
+				essayText={content}
+				{wordCountLimit}
+				{currentWordCount}
+				versionId={$page.params.versionId}
+				existingFeedback={currentFeedback}
+				disabled={!editorReady}
+				on:feedbackReceived={handleFeedbackReceived}
+			/>
 		</div>
 	</Section.Root>
 
@@ -1221,6 +1247,20 @@
 	@keyframes spin {
 		to {
 			transform: rotate(360deg);
+		}
+	}
+
+	/* Add feedback section styling */
+	.feedback-section {
+		margin-top: 2rem;
+		margin-bottom: 2rem;
+	}
+
+	/* Ensure feedback section is properly spaced on mobile */
+	@media (max-width: 768px) {
+		.feedback-section {
+			margin-top: 1.5rem;
+			margin-bottom: 1.5rem;
 		}
 	}
 

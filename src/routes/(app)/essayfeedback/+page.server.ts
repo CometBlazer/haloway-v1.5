@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	const { data: document, error: documentError } = await supabase
 		.from('documents')
 		.insert({
-			title: 'Essay with AI Feedback',
+			title: 'New Essay with AI Feedback',
 			user_id: session.user.id,
 			school: 'Uncategorized',
 		})
