@@ -64,7 +64,7 @@
 	<Card.Root class="mx-auto max-w-sm">
 		<Card.Header>
 			<Card.Title tag="h1" class="text-2xl">
-				Create an account <span class="sr-only">on {WebsiteName}</span>
+				Create an account today <span class="sr-only">on {WebsiteName}</span>
 			</Card.Title>
 		</Card.Header>
 		<Card.Content class="flex flex-col gap-4">

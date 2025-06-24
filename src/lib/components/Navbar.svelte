@@ -14,10 +14,9 @@
 	export let user;
 
 	const menuItems = {
-		'/': 'Home',
 		'/#features': 'Features',
 		'/#security': 'Security',
-		'/essayfeedback': 'AI Feedback',
+		'/essayfeedback': 'AI Essay Feedback',
 		'/contact': 'Contact',
 	};
 

@@ -39,7 +39,7 @@
 							variant="link"
 							class="h-auto p-0 text-sm text-muted-foreground hover:text-foreground"
 						>
-							dashboard
+							Dashboard
 						</Button>
 					</li>
 				</ul>

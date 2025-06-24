@@ -52,7 +52,7 @@
 <Card.Root class="mx-auto max-w-sm">
 	<Card.Header>
 		<Card.Title tag="h1" class="text-2xl">
-			Log in <span class="sr-only">to {WebsiteName}</span>
+			Log in to continue <span class="sr-only">to {WebsiteName}</span>
 		</Card.Title>
 	</Card.Header>
 	<Card.Content class="flex flex-col gap-4">
