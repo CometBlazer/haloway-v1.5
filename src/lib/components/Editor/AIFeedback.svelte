@@ -28,6 +28,9 @@
 	let loading = false;
 	let lastFeedbackTime: Date | null = null;
 
+	// Store the essay text that was used for the current feedback
+	// let feedbackEssayText = '';
+
 	// Update feedback when existingFeedback prop changes
 	$: if (existingFeedback !== feedback) {
 		feedback = existingFeedback || '';
@@ -132,17 +135,24 @@
 	async function getFeedback() {
 		if (!canGetFeedback) return;
 
+		// Capture the current essay text at the moment of clicking
+		const currentEssayText = essayText.trim();
+		const currentWordCountSnapshot = currentWordCount;
+
+		// Store it so we know what text this feedback is for
+		// feedbackEssayText = currentEssayText;
+
 		loading = true;
 		feedback = '';
 
 		try {
-			const res = await fetch('/api/feedback', {
+			const res = await fetch('/api/demo-feedback', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					essayText: essayText.trim(),
+					essayText: currentEssayText, // Use the captured text
 					limit: wordCountLimit,
-					currentWordCount: currentWordCount,
+					currentWordCount: currentWordCountSnapshot, // Use captured word count
 					versionId: versionId,
 				}),
 			});
@@ -151,12 +161,16 @@
 				throw new Error(`HTTP ${res.status}: ${res.statusText}`);
 			}
 
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			const { feedback: fb, wordCount } = await res.json();
 			feedback = fb;
 			lastFeedbackTime = new Date();
 
-			// Dispatch event to parent
-			dispatch('feedbackReceived', { feedback: fb, wordCount });
+			// Dispatch event to parent with the captured word count
+			dispatch('feedbackReceived', {
+				feedback: fb,
+				wordCount: currentWordCountSnapshot,
+			});
 
 			toastStore.show('✨ Your essay has been reviewed!', 'success');
 		} catch (error) {

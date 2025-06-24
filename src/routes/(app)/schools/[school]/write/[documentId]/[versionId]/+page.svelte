@@ -1,4 +1,4 @@
-<!-- src/routes/(app)/dashboard/write/[documentId]/[versionId]/+page.svelte -->
+<!-- src/routes/(app)/schools/[school]/write/[documentId]/[versionId]/+page.svelte -->
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
