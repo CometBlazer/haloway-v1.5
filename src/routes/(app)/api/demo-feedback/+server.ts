@@ -1,4 +1,4 @@
-// src/routes/api/feedback/+server.ts - WORKING VERSION
+// src/routes/api/demo-feedback/+server.ts - WORKING VERSION, NO GEMINI CALLS
 import { json, error } from '@sveltejs/kit';
 import { supabase } from '$lib/supabase';
 

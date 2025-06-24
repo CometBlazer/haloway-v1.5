@@ -107,7 +107,7 @@
 		feedback = '';
 
 		try {
-			const res = await fetch('/api/feedback', {
+			const res = await fetch('/api/demo-feedback', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -181,7 +181,7 @@
 			>
 				{#if loading}
 					<RefreshCw class="animate-spin" size={16} />
-					<span>Analyzing...</span>
+					<span class="ml-2">Analyzing...</span>
 				{:else}
 					<Sparkles size={16} />
 					<span class="ml-2">Get Feedback</span>
