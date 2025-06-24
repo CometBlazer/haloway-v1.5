@@ -726,29 +726,13 @@ export const actions: Actions = {
 				throw error(403, "You don't have permission to edit this document");
 			}
 
-			// If deleting the current version, update document to point to most recent remaining version
+			// NEW CHECK: Prevent deleting the current version
 			if (documentData.current_version_id === versionId) {
-				const { data: remainingVersions } = await supabase
-					.from('document_versions')
-					.select('id, updated_at')
-					.eq('document_id', versionData.document_id)
-					.neq('id', versionId)
-					.order('updated_at', { ascending: false }) // Sort by updated_at instead of created_at
-					.limit(1);
-
-				if (remainingVersions && remainingVersions.length > 0) {
-					const { error: updateDocError } = await supabase
-						.from('documents')
-						.update({ current_version_id: remainingVersions[0].id })
-						.eq('id', versionData.document_id);
-
-					if (updateDocError) {
-						console.error(
-							'Failed to update current_version_id after delete:',
-							updateDocError,
-						);
-					}
-				}
+				console.error('Attempted to delete current version:', versionId);
+				throw error(
+					400,
+					'Cannot delete the current version. Please switch to a different version first.',
+				);
 			}
 
 			// Delete the version

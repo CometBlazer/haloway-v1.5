@@ -558,7 +558,10 @@
 			if (response.ok && result.type === 'success' && result.data?.version) {
 				const version = result.data.version;
 				toastStore.show('Checkpoint saved successfully', 'success');
-				await goto(`/dashboard/write/${$page.params.documentId}/${version.id}`);
+				// FIX: Use the correct school-based route
+				await goto(
+					`/schools/${$page.params.school}/write/${$page.params.documentId}/${version.id}`,
+				);
 			} else {
 				throw new Error('Failed to create checkpoint');
 			}
@@ -606,7 +609,10 @@
 				if (result.type === 'success' && result.data?.version) {
 					const version = result.data.version;
 					toastStore.show('Checkpoint created successfully', 'success');
-					goto(`/dashboard/write/${$page.params.documentId}/${version.id}`);
+					// FIX: Use the correct school-based route
+					goto(
+						`/schools/${$page.params.school}/write/${$page.params.documentId}/${version.id}`,
+					);
 				} else {
 					data.versions = data.versions.filter((v) => v.id !== tempId);
 					toastStore.show('Failed to create checkpoint', 'error');
@@ -699,7 +705,10 @@
 				if (result.type === 'success' && result.data?.version) {
 					const version = result.data.version;
 					toastStore.show('Checkpoint duplicated successfully', 'success');
-					goto(`/dashboard/write/${$page.params.documentId}/${version.id}`);
+					// FIX: Use the correct school-based route
+					goto(
+						`/schools/${$page.params.school}/write/${$page.params.documentId}/${version.id}`,
+					);
 				} else {
 					data.versions = data.versions.filter((v) => v.id !== tempId);
 					toastStore.show('Failed to duplicate checkpoint', 'error');
@@ -739,8 +748,9 @@
 									new Date(b.updated_at).getTime() -
 									new Date(a.updated_at).getTime(),
 							);
+							// FIX: Use the correct school-based route
 							goto(
-								`/dashboard/write/${$page.params.documentId}/${sortedRemaining[0].id}`,
+								`/schools/${$page.params.school}/write/${$page.params.documentId}/${sortedRemaining[0].id}`,
 							);
 						} else {
 							goto('/dashboard');
