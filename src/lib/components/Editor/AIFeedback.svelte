@@ -242,7 +242,7 @@
 		{:else if !hasContent}
 			<div class="empty-state" transition:fade={{ duration: 200 }}>
 				<Sparkles class="primary-color" size={48} />
-				<h3>Get AI feedback</h3>
+				<h3>To get started with AI feedback:</h3>
 				<p class="text-left">
 					1. Copy and paste your existing essay into the editor or start writing
 					your draft above. <br />

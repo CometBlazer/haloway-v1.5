@@ -64,6 +64,24 @@
 		isSaveInProgress: false,
 	};
 
+	function scrollToFeedback() {
+		if (!browser) return;
+
+		// Use requestAnimationFrame to ensure DOM is fully rendered
+		requestAnimationFrame(() => {
+			const feedbackElement = document.getElementById('feedback');
+			if (feedbackElement) {
+				feedbackElement.scrollIntoView({
+					behavior: 'smooth',
+					block: 'start',
+				});
+				console.log('Scrolled to feedback section');
+			} else {
+				console.log('Feedback element not found');
+			}
+		});
+	}
+
 	// Create autosave manager with callbacks
 	function createAutoSaveManager() {
 		autoSaveManager = new AutoSaveManager(
@@ -817,6 +835,16 @@
 				}
 			}, 30000);
 
+			const hash = window.location.hash;
+			console.log('Page mounted with hash:', hash);
+
+			if (hash === '#feedback') {
+				// Wait a bit longer to ensure everything is loaded
+				setTimeout(() => {
+					scrollToFeedback();
+				}, 500);
+			}
+
 			return () => {
 				clearInterval(connectivityInterval);
 				clearInterval(backupInterval);
@@ -843,6 +871,37 @@
 	// Watch for version changes and reload content
 	$: if (editorReady && data.currentVersion) {
 		loadVersionContent();
+	}
+
+	// Watch for hash changes during navigation
+	$: if (
+		browser &&
+		$page.url.hash === '#feedback' &&
+		editorReady &&
+		contentLoaded
+	) {
+		console.log(
+			'Hash changed to feedback, editor ready:',
+			editorReady,
+			'content loaded:',
+			contentLoaded,
+		);
+		setTimeout(() => {
+			scrollToFeedback();
+		}, 100);
+	}
+
+	// Also trigger when editor becomes ready (in case hash was there before editor loaded)
+	$: if (
+		browser &&
+		editorReady &&
+		contentLoaded &&
+		window.location.hash === '#feedback'
+	) {
+		console.log('Editor ready with feedback hash');
+		setTimeout(() => {
+			scrollToFeedback();
+		}, 200);
 	}
 
 	// Get current checkpoint name for display
@@ -1042,7 +1101,7 @@
 
 	<!-- AI Feedback section -->
 	<Section.Root anchor="feedback">
-		<div class="feedback-section">
+		<div id="feedback" class="feedback-section">
 			<AIFeedback
 				essayText={content}
 				{wordCountLimit}
