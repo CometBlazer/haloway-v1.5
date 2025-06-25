@@ -17,7 +17,14 @@
 		WebsiteSlogan,
 	} from './../../config';
 
-	import { PenLine, ArrowRight, Lock, Check, X } from 'lucide-svelte';
+	import {
+		PenLine,
+		ArrowUpRight,
+		BookText,
+		Lock,
+		Check,
+		X,
+	} from 'lucide-svelte';
 
 	import AuroraBackground from '$lib/components/AuroraBackground.svelte';
 	import { Button } from '$lib/components/ui/button';
@@ -621,7 +628,7 @@
 
 <!-- Schools Section -->
 <div class="min-h-[60vh] bg-color-base-100 py-12 sm:min-h-[70vh] sm:py-16">
-	<div class="px-4 pb-6 pt-12 sm:px-7 sm:pb-8 sm:pt-20">
+	<div class="px-4 py-6 sm:px-7 sm:py-8">
 		<div class="mx-auto max-w-7xl text-center">
 			<h1 class="px-2 text-4xl lg:text-5xl">
 				<span class="">Pick a school</span>
@@ -660,9 +667,11 @@
 								: 'bg-foreground'} btn-sm sm:btn-md w-full rounded-full text-sm sm:text-base lg:text-lg"
 						>
 							<span>
-								{school.name === 'And more' ? 'Choose another school' : 'Go'}
+								{school.name === 'And more'
+									? 'Choose another school'
+									: 'Start writing'}
 							</span>
-							<ArrowRight class="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+							<ArrowUpRight class="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
 						</Button>
 					</Card.Content>
 				</Card.Root>
@@ -697,9 +706,11 @@
 								: 'bg-foreground'} btn-sm sm:btn-md w-full rounded-full text-sm sm:text-base lg:text-lg"
 						>
 							<span>
-								{school.name === 'And more' ? 'Choose another school' : 'Go'}
+								{school.name === 'And more'
+									? 'Choose another school'
+									: 'Start writing'}
 							</span>
-							<ArrowRight class="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+							<ArrowUpRight class="ml-3 mt-0.5 h-4 w-4 sm:h-5 sm:w-5" />
 						</Button>
 					</Card.Content>
 				</Card.Root>
@@ -1177,19 +1188,7 @@
 						href="/legal/privacy"
 						class="flex items-center gap-2 font-bold text-gray-400 underline transition duration-300 hover:text-white"
 					>
-						<svg
-							class="h-4 w-4"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-							/>
-						</svg>
+						<BookText class="h-5 w-5" />
 						Read our Privacy Policy
 					</a>
 				</div>
@@ -1227,7 +1226,7 @@
 				class="text-base-content/80 mx-auto mb-8 max-w-3xl text-lg sm:mb-12 sm:text-xl md:text-2xl"
 			>
 				Experience a faster, more organized way to write your college essays. No
-				credit card required to try.
+				credit card required.
 			</p>
 
 			<div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
