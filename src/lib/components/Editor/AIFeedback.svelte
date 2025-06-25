@@ -342,7 +342,7 @@
 				>This AI feedback is a supplementary tool and should not replace human
 				guidance.</strong
 			>
-			We strongly recommend seeking feedback from experienced college counselors,
+			We strongly recommend seeking feedback from experienced guidance counselors,
 			English teachers, or professionals familiar with college admissions essays.
 			If such resources aren't available, this AI analysis can serve as a helpful
 			starting point.
@@ -350,9 +350,9 @@
 		<p class="disclaimer-text disclaimer-text-small">
 			AI-generated feedback may contain inaccuracies, biases, or miss nuanced
 			aspects of your writing. Always use your judgment and consider multiple
-			perspectives when revising your essay. Remember that admission officers
-			value authentic, personal narratives—ensure your voice remains central to
-			your essay.
+			perspectives when revising your essay. Remember not to pass AI generated
+			content as your own, and that admission officers value authentic, personal
+			narratives.
 		</p>
 	</div>
 </div>

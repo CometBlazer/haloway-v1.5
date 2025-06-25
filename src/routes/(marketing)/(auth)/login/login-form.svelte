@@ -9,13 +9,23 @@
 	} from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import LoaderCircle from '~icons/lucide/loader-circle';
+	import Eye from '~icons/lucide/eye';
+	import EyeOff from '~icons/lucide/eye-off';
 	import { formSchema, type FormSchema } from './schema';
+	import { Button } from '$lib/components/ui/button';
 
 	export let data: SuperValidated<Infer<FormSchema>>;
 
 	const form = superForm(data, {
 		validators: zodClient(formSchema),
 	});
+
+	// Add state for password visibility
+	let showPassword = false;
+
+	function togglePasswordVisibility() {
+		showPassword = !showPassword;
+	}
 
 	const { form: formData, enhance, submitting } = form;
 </script>
@@ -53,13 +63,30 @@
 					Forgot password?
 				</a>
 			</div>
-			<Input
-				{...attrs}
-				type="password"
-				placeholder="••••••••"
-				required
-				bind:value={$formData.password}
-			/>
+			<div class="relative">
+				<Input
+					{...attrs}
+					type={showPassword ? 'text' : 'password'}
+					placeholder="••••••••"
+					required
+					bind:value={$formData.password}
+					class="pr-10"
+				/>
+				<Button
+					type="button"
+					variant="ghost"
+					size="sm"
+					class="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+					on:click={togglePasswordVisibility}
+					aria-label={showPassword ? 'Hide password' : 'Show password'}
+				>
+					{#if showPassword}
+						<EyeOff class="h-4 w-4" />
+					{:else}
+						<Eye class="h-4 w-4" />
+					{/if}
+				</Button>
+			</div>
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
