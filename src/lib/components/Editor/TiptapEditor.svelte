@@ -179,7 +179,7 @@
 	// }
 
 	function updateBubbleMenu() {
-		if (!browser || !showBubbleMenu) return;
+		if (!browser || !editor) return;
 
 		// Completely disable bubble menu on iOS devices
 		// Only check for iOS in browser environment
