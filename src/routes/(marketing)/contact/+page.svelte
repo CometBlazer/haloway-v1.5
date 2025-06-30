@@ -1,12 +1,13 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card';
 	import ContactForm from './contact-form.svelte';
+	import { WebsiteName } from './../../../config';
 
 	export let data;
 </script>
 
 <svelte:head>
-	<title>Contact SaaS Kit</title>
+	<title>Contact {WebsiteName}</title>
 </svelte:head>
 
 <Card.Root class="mx-auto max-w-lg">

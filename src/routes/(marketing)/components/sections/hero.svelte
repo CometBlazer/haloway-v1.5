@@ -3,6 +3,7 @@
 	import { cn } from '$lib/utils';
 	import GitHubIcon from 'virtual:icons/lucide/github';
 	import HeroAnimation from '../HeroAnimation.svelte';
+	import { WebsiteName } from './../../../../config';
 </script>
 
 <div class="grid items-center gap-10 overflow-visible md:grid-cols-2">
@@ -14,7 +15,7 @@
 				'bg-gradient-to-r from-primary/20 via-primary to-primary/20 bg-clip-text text-transparent',
 			)}
 		>
-			SaaS Kit Demo
+			{WebsiteName} Demo
 		</h1>
 
 		<p

@@ -1189,7 +1189,7 @@
 						class="flex items-center gap-2 font-bold text-gray-400 underline transition duration-300 hover:text-white"
 					>
 						<BookText class="h-5 w-5" />
-						Read our Privacy Policy
+						Read Our Privacy Policy
 					</a>
 				</div>
 			</div>
