@@ -134,9 +134,9 @@
 
 	const featuresData = [
 		{
-			title: 'Integrated Editor & Export',
+			title: 'Minimal Editor & Easy Export ',
 			description:
-				"Write in a familiar writing environment but with rich text formatting, easy draft management, and a beautiful distraction-free interface to help you craft perfect essays. Copy-paste directly into Common App when you're ready to submit.",
+				"Write in a beautiful, powerfully simple editor where you can manage prompts, tags, and your drafts in a distraction-free writing environment. Copy-paste directly into Common App when you're ready to submit.",
 			image:
 				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png',
 			// "https://res.cloudinary.com/dqdasxxho/image/upload/v1750269497/editor_zj9qvi.png",
@@ -145,9 +145,9 @@
 			ctaLink: '/schools/uncategorized/write',
 		},
 		{
-			title: 'Essay Dashboard & Organization',
+			title: 'All In One Place',
 			description:
-				'Manage all your college essays in your essay dashboard. Track deadlines, organize by essay status, and never lose track of your application progress again.',
+				'Create and manage all your college essays in your essay dashboard. Reduce the number of tabs you have open, and easily find your past essays to reference. Track deadlines and never lose track of your application progress again.',
 			image:
 				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png',
 			imageAlt: 'Haloway dashboard showing organized essays',
@@ -155,9 +155,9 @@
 			ctaLink: '/dashboard',
 		},
 		{
-			title: 'Backups & Checkpoints',
+			title: 'Save Your Work Efficiently',
 			description:
-				'Download your essays to save a local copy or upload them to Google Docs. Use checkpoints to track your progress and restore any previous version with a single click.',
+				'Use checkpoints to track your progress and restore any previous version with a single click. Download your essays to save a local copy or upload them to Google Drive for backup.',
 			image:
 				// "https://res.cloudinary.com/dqdasxxho/image/upload/v1750269499/version-control-cropped_rry8jn.png",
 				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750286065/haloway_version_control_product_screenshot_fstidc.png',
@@ -167,6 +167,49 @@
 		},
 	];
 
+	// const featureCards = [
+	// 	{
+	// 		title: 'Rich Text Editing',
+	// 		icon: PenLine,
+	// 	},
+	// 	{
+	// 		title: 'Realtime Autosave',
+	// 		icon: ArrowUpRight,
+	// 	},
+	// 	{
+	// 		title: 'Draft Version Management',
+	// 		icon: BookText,
+	// 	},
+	// 	{
+	// 		title: 'AI Feedback',
+	// 		icon: Check,
+	// 	},
+	// 	{
+	// 		title: 'Customizable UI',
+	// 		icon: X,
+	// 	},
+	// 	{
+	// 		title: 'Prompt Management',
+	// 		icon: PenLine,
+	// 	},
+	// 	{
+	// 		title: 'Essay Dashboard',
+	// 		icon: BookText,
+	// 	},
+	// 	{
+	// 		title: 'Custom Checkpoints',
+	// 		icon: Check,
+	// 	},
+	// 	{
+	// 		title: 'Built-in Deadline Tracking',
+	// 		icon: Lock,
+	// 	},
+	// 	{
+	// 		title: 'Status Tracking',
+	// 		icon: Check,
+	// 	},
+	// ];
+
 	const comparisonFeatures = [
 		{
 			name: 'Rich-text Editing',
@@ -175,13 +218,13 @@
 			word: true,
 			googleDocs: true,
 		},
-		// {
-		//   name: "Realtime Autosave",
-		//   haloway: true,
-		//   notion: true,
-		//   word: true,
-		//   googleDocs: true,
-		// },
+		{
+			name: 'Realtime Autosave',
+			haloway: true,
+			notion: true,
+			word: true,
+			googleDocs: true,
+		},
 		// {
 		//   name: "Export to .DOC and .TXT",
 		//   haloway: true,
@@ -190,16 +233,44 @@
 		//   googleDocs: true,
 		// },
 		{
-			name: 'Draft Version Manager',
+			name: 'Draft Version Management',
 			haloway: true,
 			notion: false,
 			word: true,
 			googleDocs: true,
 		},
 		{
-			name: 'UI Customization',
+			name: 'AI Feedback',
 			haloway: true,
 			notion: true,
+			word: false,
+			googleDocs: false,
+		},
+		{
+			name: 'Customizable UI',
+			haloway: true,
+			notion: true,
+			word: false,
+			googleDocs: false,
+		},
+		{
+			name: 'Prompt Management',
+			haloway: true,
+			notion: false,
+			word: false,
+			googleDocs: false,
+		},
+		{
+			name: 'Essay Dashboard',
+			haloway: true,
+			notion: false,
+			word: false,
+			googleDocs: false,
+		},
+		{
+			name: 'Custom Checkpoints',
+			haloway: true,
+			notion: false,
 			word: false,
 			googleDocs: false,
 		},
@@ -237,7 +308,7 @@
 				class="hero-content-fade mb-4 mt-6 max-w-5xl px-4 sm:mb-6 sm:mt-10 md:mt-20"
 			>
 				<div
-					class="mb-3 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-sm font-semibold text-primary sm:mb-4 sm:px-3 sm:text-base"
+					class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-sm font-semibold text-primary sm:px-3 sm:text-base"
 				>
 					<div class="flex items-center gap-1"></div>
 					<svg
@@ -626,97 +697,11 @@
 	</div>
 </Section.Root>
 
-<!-- Schools Section -->
-<div class="min-h-[60vh] bg-color-base-100 py-12 sm:min-h-[70vh] sm:py-16">
-	<div class="px-4 py-6 sm:px-7 sm:py-8">
-		<div class="mx-auto max-w-7xl text-center">
-			<h1 class="px-2 text-4xl lg:text-5xl">
-				<span class="">Pick a school</span>
-			</h1>
-		</div>
-
-		<div
-			class="mx-auto mt-12 grid max-w-7xl grid-cols-1 gap-4 px-4 sm:mt-16 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8"
-		>
-			{#each schools.filter((school) => school.showOnMobile) as school (school.name)}
-				<Card.Root
-					class="mx-auto w-full max-w-sm overflow-hidden bg-color-base-200 shadow-xl transition-shadow hover:shadow-2xl sm:hidden"
-				>
-					<div class="relative aspect-square overflow-hidden">
-						<img
-							src={school.image}
-							alt={school.name}
-							class="h-full w-full object-cover"
-							loading="lazy"
-						/>
-					</div>
-
-					<Card.Content
-						class="flex flex-col items-center p-4 text-center sm:p-6"
-					>
-						<Card.Title
-							class="mb-3 text-lg sm:mb-4 sm:text-xl lg:mb-6 lg:text-2xl"
-						>
-							{school.name}
-						</Card.Title>
-						<!-- Replace with links to actual schools later (getUrlSafeName) -->
-						<Button
-							href="/schools"
-							class="{school.name === 'And more'
-								? 'bg-amber-500 hover:bg-amber-600'
-								: 'bg-foreground'} btn-sm sm:btn-md w-full rounded-full text-sm sm:text-base lg:text-lg"
-						>
-							<span>
-								{school.name === 'And more'
-									? 'Choose another school'
-									: 'Start writing'}
-							</span>
-							<ArrowUpRight class="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
-						</Button>
-					</Card.Content>
-				</Card.Root>
-			{/each}
-
-			{#each schools as school (school.name)}
-				<Card.Root
-					class="mx-auto hidden w-full max-w-sm overflow-hidden bg-color-base-200 shadow-xl transition-shadow hover:shadow-2xl sm:block"
-				>
-					<div class="relative aspect-square overflow-hidden">
-						<img
-							src={school.image}
-							alt={school.name}
-							class="h-full w-full object-cover"
-							loading="lazy"
-						/>
-					</div>
-
-					<Card.Content
-						class="flex flex-col items-center p-4 text-center sm:p-6"
-					>
-						<Card.Title
-							class="mb-3 text-lg sm:mb-4 sm:text-xl lg:mb-6 lg:text-2xl"
-						>
-							{school.name}
-						</Card.Title>
-						<!-- Replace with links to actual schools later (getUrlSafeName) -->
-						<Button
-							href="/schools"
-							class="{school.name === 'And more'
-								? 'bg-amber-500 hover:bg-amber-600'
-								: 'bg-foreground'} btn-sm sm:btn-md w-full rounded-full text-sm sm:text-base lg:text-lg"
-						>
-							<span>
-								{school.name === 'And more'
-									? 'Choose another school'
-									: 'Start writing'}
-							</span>
-							<ArrowUpRight class="ml-3 mt-0.5 h-4 w-4 sm:h-5 sm:w-5" />
-						</Button>
-					</Card.Content>
-				</Card.Root>
-			{/each}
-		</div>
-	</div>
+<!-- Features Cloud Section -->
+<div class="bg-base-100 mx-auto max-w-7xl pb-16 sm:pb-20 lg:pb-24">
+	<Section.Root>
+		<div class="justify-around"></div>
+	</Section.Root>
 </div>
 
 <!-- Stress Section -->
@@ -955,6 +940,99 @@
 	</div>
 </div>
 
+<!-- Schools Section -->
+<div class="min-h-[60vh] bg-color-base-100 py-12 sm:min-h-[70vh] sm:py-16">
+	<div class="px-4 py-6 sm:px-7 sm:py-8">
+		<div class="mx-auto max-w-7xl text-center">
+			<h1 class="px-2 text-4xl lg:text-5xl">
+				<span class="font-bold italic">Ready? </span>Pick a school
+			</h1>
+		</div>
+
+		<div
+			class="mx-auto mt-12 grid max-w-7xl grid-cols-1 gap-4 px-4 sm:mt-16 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8"
+		>
+			{#each schools.filter((school) => school.showOnMobile) as school (school.name)}
+				<Card.Root
+					class="mx-auto w-full max-w-sm overflow-hidden bg-color-base-200 shadow-xl transition-shadow hover:shadow-2xl sm:hidden"
+				>
+					<div class="relative aspect-square overflow-hidden">
+						<img
+							src={school.image}
+							alt={school.name}
+							class="h-full w-full object-cover"
+							loading="lazy"
+						/>
+					</div>
+
+					<Card.Content
+						class="flex flex-col items-center p-4 text-center sm:p-6"
+					>
+						<Card.Title
+							class="mb-3 text-lg sm:mb-4 sm:text-xl lg:mb-6 lg:text-2xl"
+						>
+							{school.name}
+						</Card.Title>
+						<!-- Replace with links to actual schools later (getUrlSafeName) -->
+						<Button
+							href="/schools"
+							class="{school.name === 'And more'
+								? 'bg-amber-500 hover:bg-amber-600'
+								: 'bg-foreground'} btn-sm sm:btn-md w-full rounded-full text-sm sm:text-base lg:text-lg"
+						>
+							<span>
+								{school.name === 'And more'
+									? 'Choose another school'
+									: 'Start writing'}
+							</span>
+							<ArrowUpRight class="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+						</Button>
+					</Card.Content>
+				</Card.Root>
+			{/each}
+
+			{#each schools as school (school.name)}
+				<Card.Root
+					class="mx-auto hidden w-full max-w-sm overflow-hidden bg-color-base-200 shadow-xl transition-shadow hover:shadow-2xl sm:block"
+				>
+					<div class="relative aspect-square overflow-hidden">
+						<img
+							src={school.image}
+							alt={school.name}
+							class="h-full w-full object-cover"
+							loading="lazy"
+						/>
+					</div>
+
+					<Card.Content
+						class="flex flex-col items-center p-4 text-center sm:p-6"
+					>
+						<Card.Title
+							class="mb-3 text-lg sm:mb-4 sm:text-xl lg:mb-6 lg:text-2xl"
+						>
+							{school.name}
+						</Card.Title>
+						<!-- Replace with links to actual schools later (getUrlSafeName) -->
+						<Button
+							href="/schools"
+							class="{school.name === 'And more'
+								? 'bg-amber-500 hover:bg-amber-600'
+								: 'bg-foreground'} btn-sm sm:btn-md w-full rounded-full text-sm sm:text-base lg:text-lg"
+						>
+							<span>
+								{school.name === 'And more'
+									? 'Choose another school'
+									: 'Start writing'}
+							</span>
+							<ArrowUpRight class="ml-3 mt-0.5 h-4 w-4 sm:h-5 sm:w-5" />
+						</Button>
+					</Card.Content>
+				</Card.Root>
+			{/each}
+		</div>
+	</div>
+</div>
+
 <!-- Privacy Section -->
 <Section.Root anchor="security">
 	<div
@@ -1028,7 +1106,7 @@
 			</h1> -->
 
 				<h2
-					class="mb-8 text-xl leading-tight text-gray-400 sm:mb-10 sm:text-2xl md:text-3xl"
+					class="mb-8 text-2xl font-bold leading-tight text-gray-400 sm:mb-10 sm:text-3xl md:text-4xl"
 				>
 					Built with security and privacy in mind.
 				</h2>
@@ -1186,7 +1264,7 @@
 			</div> -->
 					<a
 						href="/legal/privacy"
-						class="flex items-center gap-2 font-bold text-gray-400 underline transition duration-300 hover:text-white"
+						class="flex items-center gap-2 font-semibold text-gray-400 underline transition duration-300 hover:text-white"
 					>
 						<BookText class="h-5 w-5" />
 						Read Our Privacy Policy
