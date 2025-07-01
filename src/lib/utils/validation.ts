@@ -26,11 +26,11 @@ export function validateAndNormalizeSchool(
 }
 
 /**
- * Gets a default school value
- * @returns the default school value
+ * Gets a default school display name
+ * @returns the default school display name
  */
 export function getDefaultSchool(): string {
-	return 'uncategorized';
+	return 'Uncategorized';
 }
 
 /**

@@ -67,7 +67,12 @@
 
 	function handleTitleSubmit() {
 		const trimmedTitle = tempTitle.trim();
-		if (trimmedTitle && trimmedTitle !== originalTitle) {
+		if (!trimmedTitle) {
+			// If title is empty, set to default
+			const defaultTitle = `Untitled Essay`;
+			dispatch('updateTitle', defaultTitle);
+			originalTitle = defaultTitle;
+		} else if (trimmedTitle !== originalTitle) {
 			dispatch('updateTitle', trimmedTitle);
 			originalTitle = trimmedTitle;
 		}
@@ -118,6 +123,9 @@
 		dispatch('toggleSidebar');
 	}
 
+	// Check if title is the default untitled format
+	$: isDefaultTitle = documentTitle === `Untitled Essay`;
+
 	// Update temp values when props change
 	$: if (!isEditingTitle) {
 		tempTitle = documentTitle;
@@ -127,23 +135,50 @@
 		tempPrompt = documentPrompt;
 		originalPrompt = documentPrompt;
 	}
+
+	// Component sizes will be handled by CSS classes
 </script>
 
 <div class="document-header" class:zen-mode={zenMode}>
 	<!-- Unified Control Bar -->
 	<div class="control-bar">
-		<div class="control-group left">
-			<div class="control-item">
-				<DatePicker bind:selectedDate={picked} onSelect={handleDueDateChange} />
+		<!-- Primary Controls Row -->
+		<div class="control-row primary-row">
+			<div class="control-item date-picker-item">
+				<DatePicker
+					bind:selectedDate={picked}
+					onSelect={handleDueDateChange}
+					size="large"
+				/>
 			</div>
-			<div class="control-item">
+			<div class="control-item status-dropdown-item">
+				<StatusDropdown
+					bind:currentStatus={essayStatus}
+					on:statusChange={handleStatusChange}
+					size="lg"
+				/>
+			</div>
+			<div class="control-item word-count-item">
+				<WordCountEditor
+					{wordCount}
+					{wordCountLimit}
+					size="large"
+					on:updateWordCountLimit={handleWordCountLimitUpdate}
+				/>
+			</div>
+		</div>
+
+		<!-- Secondary Controls Row -->
+		<div class="control-row secondary-row">
+			<div class="control-item school-dropdown-item">
 				<SchoolDropdown
 					{currentSchool}
 					disabled={schoolChangeDisabled}
 					on:schoolChange={handleSchoolChange}
+					size="large"
 				/>
 			</div>
-			<div class="control-item">
+			<div class="control-item checkpoint-item">
 				<button
 					type="button"
 					class="control-btn checkpoint-btn"
@@ -158,23 +193,6 @@
 						</div>
 					{/if}
 				</button>
-			</div>
-		</div>
-
-		<div class="control-group right">
-			<div class="control-item">
-				<StatusDropdown
-					bind:currentStatus={essayStatus}
-					on:statusChange={handleStatusChange}
-				/>
-			</div>
-			<div class="control-item">
-				<WordCountEditor
-					{wordCount}
-					{wordCountLimit}
-					size="medium"
-					on:updateWordCountLimit={handleWordCountLimitUpdate}
-				/>
 			</div>
 		</div>
 	</div>
@@ -206,8 +224,8 @@
 					}}
 					on:keydown={(e) => e.key === 'Enter' && (isEditingTitle = true)}
 				>
-					<h1 class="document-title">
-						{documentTitle || 'Untitled Document'}
+					<h1 class="document-title" class:default-title={isDefaultTitle}>
+						{documentTitle || 'Untitled Essay'}
 					</h1>
 					<svg class="edit-icon" viewBox="0 0 20 20" fill="currentColor">
 						<path
@@ -305,11 +323,10 @@
 	/* Unified Control Bar */
 	.control-bar {
 		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		gap: 1rem;
+		flex-direction: column;
+		gap: 0.75rem;
 		margin-bottom: 1.5rem;
-		padding: 0.75rem 1rem;
+		padding: 1rem;
 		background: hsl(var(--color-base-100) / 0.8);
 		border: 1px solid hsl(var(--color-base-200));
 		border-radius: 0.875rem;
@@ -322,22 +339,24 @@
 		background: hsl(var(--color-base-100));
 		border-color: hsl(var(--color-base-300));
 		margin-bottom: 1rem;
-		padding: 0.5rem 0.75rem;
+		padding: 0.75rem;
 		overflow: visible;
 	}
 
-	.control-group {
+	.control-row {
 		display: flex;
 		align-items: center;
+		justify-content: space-between;
 		gap: 0.75rem;
+		width: 100%;
 	}
 
-	.control-group.left {
-		flex-shrink: 0;
+	.primary-row {
+		/* Most important controls */
 	}
 
-	.control-group.right {
-		flex-shrink: 0;
+	.secondary-row {
+		/* Less critical controls */
 	}
 
 	.control-item {
@@ -346,6 +365,7 @@
 		position: relative;
 		z-index: auto;
 		overflow: visible;
+		flex-shrink: 0;
 	}
 
 	/* Enhanced Control Button Styles */
@@ -473,6 +493,10 @@
 		color: hsl(var(--color-base-content));
 		margin: 0;
 		line-height: 1.2;
+	}
+
+	.document-title.default-title {
+		opacity: 0.6;
 	}
 
 	.edit-icon {
@@ -624,13 +648,15 @@
 	@container document-header (max-width: 1000px) {
 		.control-bar {
 			flex-direction: column;
-			gap: 0.75rem;
+			gap: 0.5rem;
 			align-items: stretch;
+			padding: 0.625rem 0.75rem;
 		}
 
 		.control-group {
 			justify-content: center;
 			flex-wrap: wrap;
+			gap: 0.5rem;
 		}
 
 		.control-group.left,
@@ -640,21 +666,19 @@
 		}
 
 		.control-group.left {
-			gap: 0.5rem;
+			gap: 0.375rem;
 		}
 
 		.control-btn {
 			flex: 1;
 			min-width: 0;
-			max-width: 180px;
+			max-width: 160px;
+			padding: 0.5rem 0.75rem;
+			font-size: 0.75rem;
 		}
 
 		.checkpoint-btn {
-			min-width: 100px;
-		}
-
-		:global(.school-dropdown) {
-			max-width: 160px;
+			min-width: 80px;
 		}
 
 		.btn-label {
@@ -663,7 +687,7 @@
 
 		.current-checkpoint {
 			font-size: 0.7rem;
-			max-width: 70px;
+			max-width: 60px;
 		}
 
 		.document-title {
@@ -679,23 +703,23 @@
 	/* Container query for small containers (mobile-like) */
 	@container document-header (max-width: 600px) {
 		.document-header {
-			padding: 1rem;
+			padding: 0.75rem;
 		}
 
 		.control-bar {
-			margin-bottom: 1rem;
-			padding: 0.5rem 0.75rem;
+			margin-bottom: 0.75rem;
+			padding: 0.5rem;
 		}
 
 		.control-group.left,
 		.control-group.right {
-			gap: 0.375rem;
+			gap: 0.25rem;
 		}
 
 		.control-btn {
-			padding: 0.5rem 0.75rem;
-			font-size: 0.75rem;
-			max-width: 120px;
+			padding: 0.375rem 0.5rem;
+			font-size: 0.7rem;
+			max-width: 100px;
 		}
 
 		.checkpoint-btn {
@@ -706,12 +730,28 @@
 			display: none;
 		}
 
-		:global(.school-dropdown) {
-			min-width: 110px;
+		.zen-mode .checkpoint-btn {
+			padding: 0.375rem;
 		}
 
-		.zen-mode .checkpoint-btn {
-			padding: 0.5rem;
+		.date-picker-item :global(.date-picker-btn) {
+			font-size: 0.75rem !important;
+			padding: 0.375rem 0.625rem !important;
+		}
+
+		.status-dropdown-item :global(.status-btn) {
+			font-size: 0.75rem !important;
+			padding: 0.375rem 0.625rem !important;
+		}
+
+		.word-count-item :global(.word-count-badge) {
+			font-size: 0.75rem !important;
+			padding: 0.375rem 0.625rem !important;
+		}
+
+		.school-dropdown-item :global(.school-button) {
+			font-size: 0.75rem !important;
+			padding: 0.375rem 0.625rem !important;
 		}
 
 		.document-title {
@@ -735,29 +775,48 @@
 
 	/* Container query for very small containers */
 	@container document-header (max-width: 400px) {
+		.document-header {
+			padding: 0.5rem;
+		}
+
 		.control-bar {
-			padding: 0.375rem 0.5rem;
+			padding: 0.375rem;
+			gap: 0.375rem;
 		}
 
 		.control-group.left,
 		.control-group.right {
-			gap: 0.25rem;
+			gap: 0.2rem;
 		}
 
 		.control-btn {
-			padding: 0.375rem 0.5rem;
-			font-size: 0.7rem;
+			padding: 0.25rem 0.375rem;
+			font-size: 0.65rem;
 			min-width: 0;
 			flex: 1;
-			max-width: 100px;
+			max-width: 80px;
 		}
 
 		.checkpoint-btn {
 			min-width: 0;
 		}
 
-		:global(.school-dropdown) {
-			min-width: 90px;
+		.document-title {
+			font-size: 1.25rem;
+		}
+
+		.title-input {
+			font-size: 1.25rem;
+			padding: 0.375rem 0.5rem;
+		}
+
+		.prompt-button {
+			padding: 0.5rem;
+		}
+
+		.prompt-textarea {
+			padding: 0.5rem;
+			min-height: 60px;
 		}
 	}
 
@@ -766,13 +825,15 @@
 		@media (max-width: 1000px) {
 			.control-bar {
 				flex-direction: column;
-				gap: 0.75rem;
+				gap: 0.5rem;
 				align-items: stretch;
+				padding: 0.625rem 0.75rem;
 			}
 
 			.control-group {
 				justify-content: center;
 				flex-wrap: wrap;
+				gap: 0.5rem;
 			}
 
 			.control-group.left,
@@ -782,21 +843,19 @@
 			}
 
 			.control-group.left {
-				gap: 0.5rem;
+				gap: 0.375rem;
 			}
 
 			.control-btn {
 				flex: 1;
 				min-width: 0;
-				max-width: 180px;
+				max-width: 160px;
+				padding: 0.5rem 0.75rem;
+				font-size: 0.75rem;
 			}
 
 			.checkpoint-btn {
-				min-width: 100px;
-			}
-
-			:global(.school-dropdown) {
-				max-width: 160px;
+				min-width: 80px;
 			}
 
 			.document-title {
@@ -811,23 +870,23 @@
 
 		@media (max-width: 600px) {
 			.document-header {
-				padding: 1rem;
+				padding: 0.75rem;
 			}
 
 			.control-bar {
-				margin-bottom: 1rem;
-				padding: 0.5rem 0.75rem;
+				margin-bottom: 0.75rem;
+				padding: 0.5rem;
 			}
 
 			.control-group.left,
 			.control-group.right {
-				gap: 0.375rem;
+				gap: 0.25rem;
 			}
 
 			.control-btn {
-				padding: 0.5rem 0.75rem;
-				font-size: 0.75rem;
-				max-width: 120px;
+				padding: 0.375rem 0.5rem;
+				font-size: 0.7rem;
+				max-width: 100px;
 			}
 
 			.checkpoint-btn {
@@ -838,12 +897,8 @@
 				display: none;
 			}
 
-			:global(.school-dropdown) {
-				min-width: 110px;
-			}
-
 			.zen-mode .checkpoint-btn {
-				padding: 0.5rem;
+				padding: 0.375rem;
 			}
 
 			.document-title {
@@ -866,29 +921,30 @@
 		}
 
 		@media (max-width: 400px) {
+			.document-header {
+				padding: 0.5rem;
+			}
+
 			.control-bar {
-				padding: 0.375rem 0.5rem;
+				padding: 0.375rem;
+				gap: 0.375rem;
 			}
 
 			.control-group.left,
 			.control-group.right {
-				gap: 0.25rem;
+				gap: 0.2rem;
 			}
 
 			.control-btn {
-				padding: 0.375rem 0.5rem;
-				font-size: 0.7rem;
+				padding: 0.25rem 0.375rem;
+				font-size: 0.65rem;
 				min-width: 0;
 				flex: 1;
-				max-width: 100px;
+				max-width: 80px;
 			}
 
 			.checkpoint-btn {
 				min-width: 0;
-			}
-
-			:global(.school-dropdown) {
-				min-width: 90px;
 			}
 
 			.document-title {
@@ -897,7 +953,16 @@
 
 			.title-input {
 				font-size: 1.25rem;
-				padding: 0.5rem 0.625rem;
+				padding: 0.375rem 0.5rem;
+			}
+
+			.prompt-button {
+				padding: 0.5rem;
+			}
+
+			.prompt-textarea {
+				padding: 0.5rem;
+				min-height: 60px;
 			}
 		}
 	}

@@ -9,6 +9,7 @@
 
 	export let selectedDate: Date | null = null;
 	export let onSelect: (date: Date) => void = () => {};
+	export const size: 'small' | 'medium' | 'large' = 'medium';
 
 	let picker: Pikaday;
 	let inputEl: HTMLInputElement;

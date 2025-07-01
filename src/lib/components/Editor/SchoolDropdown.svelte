@@ -7,6 +7,7 @@
 
 	export let currentSchool: string = '';
 	export let disabled: boolean = false;
+	export let size: 'small' | 'medium' | 'large' = 'medium';
 
 	const dispatch = createEventDispatcher<{
 		schoolChange: string;
@@ -96,7 +97,7 @@
 	});
 </script>
 
-<div class="school-dropdown" bind:this={dropdownContainer}>
+<div class="school-dropdown size-{size}" bind:this={dropdownContainer}>
 	<button
 		type="button"
 		class="school-button"
@@ -126,7 +127,7 @@
 			{/if}
 			<span class="school-name">{displayName}</span>
 		</div>
-		<ChevronDown size={16} class="chevron {isOpen ? 'rotated' : ''}" />
+		<ChevronDown class="chevron {isOpen ? 'rotated' : ''}" />
 	</button>
 
 	{#if isOpen}
@@ -182,6 +183,18 @@
 	.school-dropdown {
 		position: relative;
 		display: inline-block;
+	}
+
+	/* Size variants */
+	.size-small {
+		min-width: 120px;
+	}
+
+	.size-medium {
+		min-width: 160px;
+	}
+
+	.size-large {
 		min-width: 180px;
 	}
 
@@ -190,17 +203,30 @@
 		align-items: center;
 		justify-content: space-between;
 		width: 100%;
-		padding: 0.625rem 0.875rem;
 		background: hsl(var(--color-base-000));
 		border: 1px solid hsl(var(--color-base-300));
 		border-radius: 0.625rem;
 		cursor: pointer;
 		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-		font-size: 0.8125rem;
 		font-weight: 500;
 		color: hsl(var(--color-base-content));
 		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 		gap: 0.5rem;
+	}
+
+	.size-small .school-button {
+		padding: 0.25rem 0.5rem;
+		font-size: 0.7rem;
+	}
+
+	.size-medium .school-button {
+		padding: 0.375rem 0.75rem;
+		font-size: 0.8125rem;
+	}
+
+	.size-large .school-button {
+		padding: 0.625rem 0.875rem;
+		font-size: 0.8125rem;
 	}
 
 	.school-button:hover:not(.disabled) {
@@ -233,17 +259,32 @@
 		flex: 1;
 	}
 
+	.size-small .school-info {
+		gap: 0.25rem;
+	}
+
 	.school-logo {
-		width: 1.5rem;
-		height: 1.5rem;
 		border-radius: 0.25rem;
 		object-fit: cover;
 		flex-shrink: 0;
 	}
 
-	.school-logo-placeholder {
+	.size-small .school-logo {
+		width: 1rem;
+		height: 1rem;
+	}
+
+	.size-medium .school-logo {
+		width: 1.25rem;
+		height: 1.25rem;
+	}
+
+	.size-large .school-logo {
 		width: 1.5rem;
 		height: 1.5rem;
+	}
+
+	.school-logo-placeholder {
 		border-radius: 0.25rem;
 		background: hsl(var(--color-primary));
 		display: flex;
@@ -252,14 +293,39 @@
 		flex-shrink: 0;
 	}
 
+	.size-small .school-logo-placeholder {
+		width: 1rem;
+		height: 1rem;
+	}
+
+	.size-medium .school-logo-placeholder {
+		width: 1.25rem;
+		height: 1.25rem;
+	}
+
+	.size-large .school-logo-placeholder {
+		width: 1.5rem;
+		height: 1.5rem;
+	}
+
 	.school-initial {
 		color: white;
-		font-size: 0.75rem;
 		font-weight: 600;
 	}
 
+	.size-small .school-initial {
+		font-size: 0.5rem;
+	}
+
+	.size-medium .school-initial {
+		font-size: 0.625rem;
+	}
+
+	.size-large .school-initial {
+		font-size: 0.75rem;
+	}
+
 	.school-name {
-		font-size: 0.8125rem;
 		font-weight: 500;
 		white-space: nowrap;
 		overflow: hidden;
@@ -271,6 +337,21 @@
 		transition: transform 0.2s ease;
 		flex-shrink: 0;
 		color: hsl(var(--color-base-content));
+	}
+
+	.size-small :global(.chevron) {
+		width: 0.75rem;
+		height: 0.75rem;
+	}
+
+	.size-medium :global(.chevron) {
+		width: 0.875rem;
+		height: 0.875rem;
+	}
+
+	.size-large :global(.chevron) {
+		width: 1rem;
+		height: 1rem;
 	}
 
 	:global(.chevron.rotated) {
@@ -299,7 +380,6 @@
 		display: flex;
 		align-items: center;
 		width: 100%;
-		padding: 0.75rem;
 		background: transparent;
 		border: none;
 		border-radius: 0.5rem;
@@ -307,6 +387,20 @@
 		transition: all 0.15s ease;
 		text-align: left;
 		color: hsl(var(--color-base-content));
+	}
+
+	.size-small .dropdown-item {
+		padding: 0.375rem;
+		font-size: 0.7rem;
+	}
+
+	.size-medium .dropdown-item {
+		padding: 0.5rem;
+		font-size: 0.75rem;
+	}
+
+	.size-large .dropdown-item {
+		padding: 0.75rem;
 		font-size: 0.8125rem;
 	}
 
@@ -333,12 +427,25 @@
 	}
 
 	.loading-spinner {
-		width: 1rem;
-		height: 1rem;
 		border: 2px solid hsl(var(--color-base-300));
 		border-top: 2px solid hsl(var(--color-primary));
 		border-radius: 50%;
 		animation: spin 1s linear infinite;
+	}
+
+	.size-small .loading-spinner {
+		width: 0.75rem;
+		height: 0.75rem;
+	}
+
+	.size-medium .loading-spinner {
+		width: 0.875rem;
+		height: 0.875rem;
+	}
+
+	.size-large .loading-spinner {
+		width: 1rem;
+		height: 1rem;
 	}
 
 	@keyframes spin {
@@ -350,34 +457,5 @@
 		}
 	}
 
-	/* Mobile responsiveness */
-	@media (max-width: 600px) {
-		.school-dropdown {
-			min-width: 140px;
-		}
-
-		.school-button {
-			padding: 0.5rem 0.75rem;
-			font-size: 0.75rem;
-		}
-
-		.school-logo,
-		.school-logo-placeholder {
-			width: 1.25rem;
-			height: 1.25rem;
-		}
-
-		.school-initial {
-			font-size: 0.625rem;
-		}
-
-		.school-name {
-			font-size: 0.75rem;
-		}
-
-		.dropdown-item {
-			padding: 0.625rem;
-			font-size: 0.75rem;
-		}
-	}
+	/* Mobile responsiveness removed - size variants handle this */
 </style>
