@@ -11,5 +11,5 @@
 	href="/"
 >
 	<Logo />
-	<span>{WebsiteName}</span>
+	<span class="font-bold">{WebsiteName}</span>
 </Button>

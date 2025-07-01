@@ -86,7 +86,7 @@
 					<nav class="grid gap-6 text-lg font-medium">
 						<a
 							href="/"
-							class="flex items-center gap-2 px-2.5 text-xl font-semibold"
+							class="mb-2 flex items-center gap-2 px-2.5 text-xl font-bold"
 						>
 							<Logo />
 							<span class="ml-2">{WebsiteName}</span>
