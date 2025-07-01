@@ -317,7 +317,7 @@
 									clip-rule="evenodd"
 								/>
 							</svg>
-							<span>then copy paste your essay prompt here</span>
+							<span>Copy paste your essay prompt here</span>
 						</div>
 					{/if}
 					<svg class="edit-icon-small" viewBox="0 0 20 20" fill="currentColor">

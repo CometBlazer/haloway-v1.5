@@ -107,7 +107,7 @@
 				Underline,
 				Placeholder.configure({
 					placeholder:
-						'Then start drafting! AI feedback (when it becomes available) will be at the bottom.',
+						'Then start drafting! AI feedback is shown below this page.',
 				}),
 				HorizontalRule,
 				// We're using a modified version of StarterKit to exclude unwanted features
