@@ -6,6 +6,7 @@
 	import { Bookmark, X, History, Edit2, Copy, Trash2 } from 'lucide-svelte';
 	import type { ComponentVersion } from '../../../DatabaseDefinitions';
 	import { enhance } from '$app/forms';
+	import { Button } from '../ui/button';
 
 	export let documentId: string;
 	export let currentVersionId: string;
@@ -275,23 +276,22 @@
 				</div>
 
 				<div class="form-actions">
-					<button
+					<Button
 						type="submit"
-						class="primary-btn flex-1"
+						class="flex-1"
 						disabled={!newVersionName.trim() || isCreatingLoading}
 					>
 						{#if isCreatingLoading}
-							<div class="spinner spinner-sm"></div>
+							<div class="spinner spinner-sm mr-2"></div>
 							Creating…
 						{:else}
-							<Bookmark size={16} />
+							<Bookmark size={16} class="mr-2" />
 							Save Checkpoint
 						{/if}
-					</button>
+					</Button>
 
-					<button
-						type="button"
-						class="secondary-btn"
+					<Button
+						variant="outline"
 						on:click={() => {
 							isCreatingVersion = false;
 							newVersionName = '';
@@ -299,13 +299,12 @@
 						disabled={isCreatingLoading}
 					>
 						Cancel
-					</button>
+					</Button>
 				</div>
 			</form>
 		{:else}
-			<button
-				type="button"
-				class="primary-btn w-full"
+			<Button
+				class="w-full"
 				on:click={() => {
 					// generate your default timestamped name
 					const now = new Date();
@@ -314,9 +313,9 @@
 				}}
 				disabled={isCreatingLoading}
 			>
-				<Bookmark size={18} />
+				<Bookmark size={18} class="mr-2" />
 				Save Checkpoint
-			</button>
+			</Button>
 
 			<div class="create-hint">
 				Capture your current progress. You can always come back to this
@@ -358,28 +357,25 @@
 							</div>
 
 							<div class="form-actions">
-								<button
-									type="button"
-									class="primary-btn btn-sm"
+								<Button
 									on:click={handleRenameVersion}
 									disabled={!tempVersionName.trim() || isRenamingLoading}
 								>
 									{#if isRenamingLoading}
-										<div class="spinner spinner-xs"></div>
+										<div class="spinner spinner-xs mr-2"></div>
 										Saving...
 									{:else}
 										Save
 									{/if}
-								</button>
+								</Button>
 
-								<button
-									type="button"
-									class="secondary-btn btn-sm"
+								<Button
+									variant="outline"
 									on:click={cancelRename}
 									disabled={isRenamingLoading}
 								>
 									Cancel
-								</button>
+								</Button>
 							</div>
 						</div>
 					{:else}
@@ -682,81 +678,6 @@
 		gap: 0.5rem;
 	}
 
-	/* Buttons */
-	.primary-btn {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		padding: 0.75rem 1rem;
-		background: hsl(var(--color-primary));
-		color: hsl(var(--color-primary-content));
-		border: 1px solid hsl(var(--color-primary));
-		border-radius: 0.375rem;
-		font-size: 0.875rem;
-		font-weight: 500;
-		cursor: pointer;
-		transition: all 0.2s ease;
-		text-decoration: none;
-	}
-
-	.primary-btn:hover:not(:disabled) {
-		background: hsl(var(--color-primary) / 0.9);
-	}
-
-	.primary-btn:focus {
-		outline: 2px solid hsl(var(--color-primary));
-		outline-offset: 2px;
-	}
-
-	.primary-btn:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-
-	.secondary-btn {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		padding: 0.75rem 1rem;
-		background: transparent;
-		color: hsl(var(--color-base-content));
-		border: 1px solid hsl(var(--color-base-300));
-		border-radius: 0.375rem;
-		font-size: 0.875rem;
-		font-weight: 500;
-		cursor: pointer;
-		transition: all 0.2s ease;
-	}
-
-	.secondary-btn:hover:not(:disabled) {
-		background: hsl(var(--color-base-200));
-	}
-
-	.secondary-btn:focus {
-		outline: 2px solid hsl(var(--color-primary));
-		outline-offset: 2px;
-	}
-
-	.secondary-btn:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-
-	.btn-sm {
-		padding: 0.375rem 0.75rem;
-		font-size: 0.8125rem;
-	}
-
-	.w-full {
-		width: 100%;
-	}
-
-	.flex-1 {
-		flex: 1;
-	}
-
 	.create-hint {
 		margin-top: 0.75rem;
 		font-size: 0.8125rem;
@@ -1018,8 +939,6 @@
 	}
 
 	/* Touch handling */
-	.primary-btn,
-	.secondary-btn,
 	.action-btn,
 	.close-btn,
 	.checkpoint-main {
@@ -1044,11 +963,6 @@
 		.form-input {
 			border-width: 2px;
 		}
-
-		.primary-btn,
-		.secondary-btn {
-			border-width: 2px;
-		}
 	}
 
 	/* Reduced motion support */
@@ -1060,8 +974,6 @@
 	}
 
 	/* Focus visible for better accessibility */
-	.primary-btn:focus-visible,
-	.secondary-btn:focus-visible,
 	.action-btn:focus-visible,
 	.close-btn:focus-visible,
 	.checkpoint-main:focus-visible,

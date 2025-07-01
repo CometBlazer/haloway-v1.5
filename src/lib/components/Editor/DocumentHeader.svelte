@@ -295,7 +295,7 @@
 	}
 
 	.document-header.zen-mode {
-		background: hsl(var(--color-base-100));
+		background: hsl(var(--bg-background));
 		border-radius: 0;
 		padding: 0;
 		box-shadow: none;
