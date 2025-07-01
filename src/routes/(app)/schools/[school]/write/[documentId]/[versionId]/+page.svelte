@@ -1064,7 +1064,7 @@
 								<FileText size={16} />
 								<div class="flex flex-col">
 									<span class="font-medium">Word Document</span>
-									<span class="text-xs text-muted-foreground">.docx file</span>
+									<span class="text-xs text-muted-foreground">.doc file</span>
 								</div>
 							</DropdownMenu.Item>
 						</DropdownMenu.Content>
