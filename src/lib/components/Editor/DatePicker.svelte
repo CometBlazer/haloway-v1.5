@@ -1,6 +1,6 @@
 <!-- src/lib/components/Editor/DatePicker.svelte -->
 <script lang="ts">
-	import { CalendarIcon } from 'lucide-svelte';
+	import { AlarmClock } from 'lucide-svelte';
 	import {
 		DateFormatter,
 		type DateValue,
@@ -21,7 +21,6 @@
 	export let size: 'small' | 'medium' | 'large' = 'medium';
 	export let disabled: boolean = false;
 	export let clearable: boolean = true;
-	let dateStatus: 'default' | 'warning' | 'danger' | 'info' = 'default';
 
 	// Date formatter
 	const df = new DateFormatter('en-US', {
@@ -52,9 +51,10 @@
 		month: 'long',
 	});
 
+	const currentYear = new Date().getFullYear();
 	const yearOptions = Array.from({ length: 100 }, (_, i) => ({
-		label: String(new Date().getFullYear() - i + 50),
-		value: new Date().getFullYear() - i + 50,
+		label: String(currentYear - i + 50),
+		value: currentYear - i + 50,
 	}));
 
 	// Handle date selection from calendar
@@ -78,43 +78,79 @@
 		large: 'h-12 px-4 text-base',
 	};
 
-	// color variants
+	// Color variants - updated to use your CSS variables
 	const colorClasses = {
-		default: 'bg-color-primary text-white',
-		warning: 'bg-color-warning text-white',
-		danger: 'bg-color-error text-white',
-		info: 'bg-color-info text-white',
+		default: '', // Use default button styling
+		warning:
+			'bg-[hsl(var(--color-warning))] text-[hsl(var(--color-warning-content))] border-[hsl(var(--color-warning))]',
+		danger:
+			'bg-[hsl(var(--color-error))] text-[hsl(var(--color-error-content))] border-[hsl(var(--color-error))]',
+		info: 'bg-[hsl(var(--color-info))] text-[hsl(var(--color-info-content))] border-[hsl(var(--color-info))]',
+		future:
+			'bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-content))] border-[hsl(var(--color-primary))]',
 	};
 
-	// Get relative time text for better UX
+	// Get relative time text and determine status
+	function getDateStatus(
+		date: DateValue,
+	): 'default' | 'warning' | 'danger' | 'info' | 'future' {
+		const todayDate = new Date();
+		todayDate.setHours(0, 0, 0, 0); // Reset to start of day for accurate comparison
+
+		const selectedDateObj = date.toDate(getLocalTimeZone());
+		selectedDateObj.setHours(0, 0, 0, 0); // Reset to start of day
+
+		const diffTime = selectedDateObj.getTime() - todayDate.getTime();
+		const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+		if (diffDays < 0) {
+			return 'info'; // deadline past = info (blue)
+		}
+		if (diffDays === 0) {
+			return 'danger'; // Due today = danger (red)
+		}
+		if (diffDays === 1) {
+			return 'danger'; // Due tomorrow = danger (red)
+		}
+		if (diffDays === 2 || diffDays === 3) {
+			return 'danger'; // Very imminent (0-3 days) = danger (red)
+		}
+		if (diffDays >= 4 && diffDays <= 7) {
+			return 'warning'; // Upcoming = warning (yellow)
+		}
+
+		return 'future'; // Anything further in the future = future (purple)
+	}
+
 	function getRelativeTimeText(date: DateValue): string {
 		const todayDate = new Date();
+		todayDate.setHours(0, 0, 0, 0);
+
 		const selectedDateObj = date.toDate(getLocalTimeZone());
+		selectedDateObj.setHours(0, 0, 0, 0);
 
 		const diffTime = selectedDateObj.getTime() - todayDate.getTime();
 		const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
 		if (diffDays === 0) {
-			dateStatus = 'danger';
 			return 'Due Today';
 		}
 		if (diffDays === 1) {
-			dateStatus = 'warning';
 			return 'Due Tomorrow';
 		}
 		if (diffDays > 1 && diffDays <= 7) {
-			dateStatus = 'info';
 			return `Due in ${diffDays} days`;
 		}
 		if (diffDays < 0) {
-			dateStatus = 'danger';
-			return `Deadline Past`;
+			const pastDays = Math.abs(diffDays);
+			return pastDays === 1 ? 'Due yesterday' : `${pastDays} days overdue`;
 		}
 
-		return df.format(selectedDateObj);
+		return `Due on ${df.format(selectedDateObj)}`;
 	}
 
-	// Reactive display text
+	// Reactive values
+	$: dateStatus = selectedDate ? getDateStatus(selectedDate) : 'default';
 	$: displayText = selectedDate
 		? getRelativeTimeText(selectedDate)
 		: placeholder;
@@ -141,20 +177,20 @@
 			buttonVariants({ variant: 'outline' }),
 			sizeClasses[size],
 			colorClasses[dateStatus],
-			'justify-between rounded-full font-normal',
+			'justify-between rounded-full font-normal transition-colors',
 			disabled && 'cursor-not-allowed opacity-50',
 		)}
 		{disabled}
 	>
 		<div class="flex items-center gap-2">
-			<CalendarIcon class="h-4 w-4" />
+			<AlarmClock class="h-4 w-4" />
 			<span class="truncate">{displayText}</span>
 		</div>
 
 		{#if clearable && selectedDate && !disabled}
 			<button
 				type="button"
-				class="ml-2 flex h-4 w-4 items-center justify-center rounded-full bg-muted/40 text-muted-foreground transition-colors hover:bg-muted-foreground/20 hover:text-foreground"
+				class="ml-2 flex h-4 w-4 items-center justify-center rounded-full bg-black/20 text-current transition-colors hover:bg-black/30"
 				on:click={handleClear}
 				aria-label="Clear date"
 			>
@@ -210,12 +246,16 @@
 							calendarPlaceholder = calendarPlaceholder.set({ month: v.value });
 						}}
 					>
-						<Select.Trigger aria-label="Select month" class="w-[60%]">
-							<Select.Value placeholder="Select month" />
+						<Select.Trigger aria-label="Select month" class="w-[60%] min-w-0">
+							<Select.Value placeholder="Select month" class="truncate" />
 						</Select.Trigger>
 						<Select.Content class="max-h-[200px] overflow-y-auto">
 							{#each monthOptions as { value, label }}
-								<Select.Item {value} {label}>
+								<Select.Item
+									{value}
+									{label}
+									class="justify-start pl-2 pr-2 data-[highlighted]:bg-primary data-[selected]:bg-primary/20 data-[highlighted]:text-primary-foreground data-[selected]:text-primary-foreground [&>span:last-child]:hidden [&>span:last-child]:w-0"
+								>
 									{label}
 								</Select.Item>
 							{/each}
@@ -226,18 +266,37 @@
 					<Select.Root
 						selected={defaultYear}
 						items={yearOptions}
+						portal=".year-dropdown-portal"
 						onSelectedChange={(v) => {
 							if (!v || !calendarPlaceholder) return;
 							if (v.value === calendarPlaceholder?.year) return;
 							calendarPlaceholder = calendarPlaceholder.set({ year: v.value });
 						}}
+						onOpenChange={(open) => {
+							if (open) {
+								// Focus on current year when dropdown opens
+								setTimeout(() => {
+									const currentYearItem = document.querySelector(
+										`[data-value="${currentYear}"]`,
+									);
+									if (currentYearItem) {
+										currentYearItem.scrollIntoView({ block: 'center' });
+									}
+								}, 50);
+							}
+						}}
 					>
-						<Select.Trigger aria-label="Select year" class="w-[40%]">
-							<Select.Value placeholder="Select year" />
+						<Select.Trigger aria-label="Select year" class="w-[40%] min-w-0">
+							<Select.Value placeholder="Select year" class="truncate" />
 						</Select.Trigger>
 						<Select.Content class="max-h-[200px] overflow-y-auto">
 							{#each yearOptions as { value, label }}
-								<Select.Item {value} {label}>
+								<Select.Item
+									{value}
+									{label}
+									data-value={value}
+									class="justify-start pl-2 pr-2 data-[highlighted]:bg-primary data-[selected]:bg-primary/20 data-[highlighted]:text-primary-foreground data-[selected]:text-primary-foreground [&>span:last-child]:hidden [&>span:last-child]:w-0"
+								>
 									{label}
 								</Select.Item>
 							{/each}

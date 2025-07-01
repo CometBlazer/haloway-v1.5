@@ -479,8 +479,8 @@
 								class={cn(
 									buttonVariants({
 										variant: 'outline',
-										class: 'w-full justify-start text-left font-normal',
 									}),
+									'h-10 w-full justify-start text-left font-normal',
 									!dueDateValue && 'text-muted-foreground',
 								)}
 							>
@@ -490,7 +490,13 @@
 									: 'Select due date (optional)'}
 							</Popover.Trigger>
 							<Popover.Content class="w-auto p-0" align="start">
-								<Calendar type="single" bind:value={dueDateValue} />
+								<Calendar
+									bind:value={dueDateValue}
+									placeholder={dueDateValue}
+									onValueChange={(date) => {
+										dueDateValue = date;
+									}}
+								/>
 							</Popover.Content>
 						</Popover.Root>
 
@@ -498,33 +504,31 @@
 						<input type="hidden" name="dueDate" value={newEssayForm.dueDate} />
 					</div>
 
-					<input type="hidden" name="status" value="not-started" />
+					<Dialog.Footer class="mt-4 gap-2">
+						<Button
+							type="button"
+							variant="outline"
+							on:click={closeNewEssayModal}
+							class="w-full sm:w-auto"
+							disabled={isCreatingEssay}
+						>
+							Cancel
+						</Button>
+						<Button
+							type="submit"
+							disabled={!newEssayForm.school || isCreatingEssay}
+							class="w-full sm:w-auto"
+						>
+							{#if isCreatingEssay}
+								<Loader2 class="mr-2 h-4 w-4 animate-spin" />
+								Creating...
+							{:else}
+								<Plus class="mr-2 h-4 w-4" />
+								Finish Creating Essay
+							{/if}
+						</Button>
+					</Dialog.Footer>
 				</div>
-
-				<Dialog.Footer class="mt-4 gap-2">
-					<Button
-						type="button"
-						variant="outline"
-						on:click={closeNewEssayModal}
-						class="w-full sm:w-auto"
-						disabled={isCreatingEssay}
-					>
-						Cancel
-					</Button>
-					<Button
-						type="submit"
-						disabled={!newEssayForm.school || isCreatingEssay}
-						class="w-full sm:w-auto"
-					>
-						{#if isCreatingEssay}
-							<Loader2 class="mr-2 h-4 w-4 animate-spin" />
-							Creating...
-						{:else}
-							<Plus class="mr-2 h-4 w-4" />
-							Finish Creating Essay
-						{/if}
-					</Button>
-				</Dialog.Footer>
 			</form>
 		{/if}
 	</Dialog.Content>

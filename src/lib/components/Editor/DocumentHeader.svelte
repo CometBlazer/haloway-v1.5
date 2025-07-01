@@ -177,7 +177,7 @@
 					selectedDate={picked}
 					onSelect={handleDueDateChange}
 					size={componentSize}
-					placeholder="Set due date"
+					placeholder="Click to set due date"
 				/>
 			</div>
 			<div class="status-dropdown-item">
