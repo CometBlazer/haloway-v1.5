@@ -228,14 +228,14 @@
 	<div class="dashboard-header">
 		<div class="header-content">
 			<h1 class="header-title">All Essays</h1>
-			<p>View your drafts</p>
+			<!-- <p>View your drafts</p> -->
 			<p class="header-subtitle">
 				{documents.length} essay{documents.length !== 1 ? 's' : ''} total
 			</p>
 		</div>
 		<Button size="lg" on:click={createNewDocument}>
-			<Plus class="mr-2 h-5 w-5" />
-			New Essay
+			<Plus class="mr-1.5 h-5 w-5" />
+			Create / Import Essay
 		</Button>
 	</div>
 
@@ -244,7 +244,7 @@
 		<Section.Root anchor="schools">
 			<div class="schools-filter">
 				<div class="schools-filter-header">
-					<h2 class="schools-filter-title">Schools</h2>
+					<h2 class="schools-filter-title">Filter by school</h2>
 					<p class="schools-filter-subtitle">
 						{schools.length} school{schools.length !== 1 ? 's' : ''} with essays
 					</p>
@@ -412,6 +412,7 @@
 							currentSchool={newEssayForm.school}
 							on:schoolChange={handleSchoolChange}
 							disabled={false}
+							size="medium"
 						/>
 						<input type="hidden" name="school" value={newEssayForm.school} />
 					</div>
