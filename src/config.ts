@@ -4,6 +4,8 @@ export const WebsiteName: string = 'Haloway';
 export const WebsiteBaseUrl: string = 'https://haloway.co';
 export const WebsiteSlogan: string =
 	'The Ultimate College Essay Writing Platform';
+export const WebsiteKeywords: string =
+	'college essay writing, college essays, college essay help, college essay tips, college apps, college application, essay examples, essay writing service, essay writing platform, college application essays, college essay prompts, college essay examples, college essay tips and tricks, college essay brainstorming, college essay editing, college essay feedback';
 export const WebsiteDescription: string =
 	'Haloway is a college essay writing platform that helps students draft, organize, and finalize their essays with ease. With beautiful UI and draft-management features, Haloway aims to replace Google Docs as the go-to tool for college essay writing.';
 export const CreateProfileStep: boolean = true;
