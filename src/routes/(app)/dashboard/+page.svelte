@@ -609,7 +609,7 @@
 	}
 
 	.schools-filter-title {
-		font-size: 1.125rem;
+		font-size: 1.25rem;
 		font-weight: 600;
 		color: hsl(var(--color-base-content));
 		margin: 0;

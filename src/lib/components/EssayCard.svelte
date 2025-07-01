@@ -177,7 +177,7 @@
 				<div class="document-icon">
 					<FileText size={20} />
 				</div>
-				<div class="title-container h-12">
+				<div class="title-container h-14">
 					<h3 class="document-title">
 						{document.title && document.title.length > 50
 							? document.title.substring(0, 50) + '...'
@@ -336,7 +336,7 @@
 	}
 
 	.document-title {
-		font-size: 1rem;
+		font-size: 1.25rem;
 		font-weight: 600;
 		line-height: 1.4;
 		color: hsl(var(--color-base-content));
