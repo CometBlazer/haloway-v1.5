@@ -281,7 +281,7 @@
 				<div
 					class="mt-6 flex flex-col flex-wrap place-content-center gap-3 sm:mt-8 sm:flex-row sm:gap-4"
 				>
-					<a href="/dashboard">
+					<a href="/register">
 						<div class="glow-container">
 							<button class="glow-button">
 								Start writing for free
