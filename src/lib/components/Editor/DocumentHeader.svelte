@@ -2,6 +2,13 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { History } from 'lucide-svelte';
+	import {
+		// DateFormatter,
+		type DateValue,
+		getLocalTimeZone,
+		fromDate,
+		// toCalendarDate,
+	} from '@internationalized/date';
 	import WordCountEditor from './WordCountEditor.svelte';
 	import StatusDropdown, {
 		type Status,
@@ -25,7 +32,10 @@
 	export let currentSchool: string = '';
 	export let schoolChangeDisabled: boolean = false;
 
-	$: picked = initialDueDate;
+	// Convert Date to DateValue for the DatePicker
+	$: picked = initialDueDate
+		? fromDate(initialDueDate, getLocalTimeZone())
+		: undefined;
 
 	const dispatch = createEventDispatcher<{
 		updateTitle: string;
@@ -46,7 +56,6 @@
 	let innerWidth = 0;
 
 	let essayStatus: Status = initialStatus;
-	// let projectStatus: Status = "in-progress"
 
 	function handleStatusChange(
 		event: CustomEvent<{ status: Status; label: string }>,
@@ -56,9 +65,10 @@
 		dispatch('updateStatus', newStatus);
 	}
 
-	function handleDueDateChange(date: Date) {
-		picked = date;
-		dispatch('updateDueDate', date);
+	function handleDueDateChange(date: DateValue | undefined) {
+		// Convert DateValue back to Date for the parent component
+		const jsDate = date ? date.toDate(getLocalTimeZone()) : null;
+		dispatch('updateDueDate', jsDate);
 	}
 
 	function handleSchoolChange(event: CustomEvent<string>) {
@@ -164,9 +174,10 @@
 		<div class="flex flex-wrap items-center gap-3">
 			<div class="date-picker-item">
 				<DatePicker
-					bind:selectedDate={picked}
+					selectedDate={picked}
 					onSelect={handleDueDateChange}
 					size={componentSize}
+					placeholder="Set due date"
 				/>
 			</div>
 			<div class="status-dropdown-item">
