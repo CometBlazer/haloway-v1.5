@@ -21,6 +21,17 @@
 	import EssayCard from '$lib/components/EssayCard.svelte';
 	import SchoolChip from '$lib/components/SchoolChip.svelte';
 
+	import CalendarIcon from 'lucide-svelte/icons/calendar';
+	import {
+		DateFormatter,
+		type DateValue,
+		getLocalTimeZone,
+	} from '@internationalized/date';
+	import { cn } from '$lib/utils';
+	import { buttonVariants } from '$lib/components/ui/button';
+	import * as Popover from '$lib/components/ui/popover';
+	import { Calendar } from '$lib/components/ui/calendar';
+
 	export let data: PageData;
 	export let form: ActionData;
 
@@ -40,6 +51,21 @@
 		prompt: '',
 		dueDate: '',
 	};
+
+	// Date formatter for the date picker
+	const df = new DateFormatter('en-US', {
+		dateStyle: 'medium',
+	});
+
+	// Date picker state
+	let dueDateValue: DateValue | undefined = undefined;
+
+	// Update this reactive statement to sync date picker with form
+	$: if (dueDateValue) {
+		newEssayForm.dueDate = dueDateValue.toString();
+	} else {
+		newEssayForm.dueDate = '';
+	}
 
 	// Profile completion modal state
 	let showProfileModal = !data.profileComplete;
@@ -137,6 +163,8 @@
 			prompt: '',
 			dueDate: '',
 		};
+		// Reset due date value
+		dueDateValue = undefined;
 	}
 
 	function handleSchoolChange(event: CustomEvent<string>) {
@@ -445,13 +473,29 @@
 						<p class="pb-2 text-xs text-muted-foreground">
 							If you know your school's due date, you can add it here.
 						</p>
-						<Input
-							id="dueDate"
-							name="dueDate"
-							type="date"
-							bind:value={newEssayForm.dueDate}
-							placeholder="Select due date (optional)"
-						/>
+
+						<Popover.Root>
+							<Popover.Trigger
+								class={cn(
+									buttonVariants({
+										variant: 'outline',
+										class: 'w-full justify-start text-left font-normal',
+									}),
+									!dueDateValue && 'text-muted-foreground',
+								)}
+							>
+								<CalendarIcon class="mr-2 h-4 w-4" />
+								{dueDateValue
+									? df.format(dueDateValue.toDate(getLocalTimeZone()))
+									: 'Select due date (optional)'}
+							</Popover.Trigger>
+							<Popover.Content class="w-auto p-0" align="start">
+								<Calendar type="single" bind:value={dueDateValue} />
+							</Popover.Content>
+						</Popover.Root>
+
+						<!-- Keep the hidden input for form submission -->
+						<input type="hidden" name="dueDate" value={newEssayForm.dueDate} />
 					</div>
 
 					<input type="hidden" name="status" value="not-started" />
@@ -477,7 +521,7 @@
 							Creating...
 						{:else}
 							<Plus class="mr-2 h-4 w-4" />
-							Create Essay
+							Finish Creating Essay
 						{/if}
 					</Button>
 				</Dialog.Footer>
