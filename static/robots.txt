@@ -1,3 +1,15 @@
-User-agent: *
-Disallow:
+User-Agent: *
 
+# Disallow specific routes
+Disallow: /api/
+Disallow: /oauth
+Disallow: /dashboard/
+Disallow: /dashboard
+Disallow: /schools/
+Disallow: /schools
+Disallow: /login
+Disallow: /login?*
+Disallow: /register
+Disallow: /register?*
+
+Sitemap: https://haloway.co/sitemap.xml

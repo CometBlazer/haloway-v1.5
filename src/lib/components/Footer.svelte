@@ -72,20 +72,20 @@
 				<ul class="space-y-2">
 					<li>
 						<Button
-							href="/legal/privacy"
-							variant="link"
-							class="h-auto p-0 text-sm text-muted-foreground hover:text-foreground"
-						>
-							Privacy Policy
-						</Button>
-					</li>
-					<li>
-						<Button
 							href="/legal/terms"
 							variant="link"
 							class="h-auto p-0 text-sm text-muted-foreground hover:text-foreground"
 						>
 							Terms of Service
+						</Button>
+					</li>
+					<li>
+						<Button
+							href="/legal/privacy"
+							variant="link"
+							class="h-auto p-0 text-sm text-muted-foreground hover:text-foreground"
+						>
+							Privacy Policy
 						</Button>
 					</li>
 				</ul>
