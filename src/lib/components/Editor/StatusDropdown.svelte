@@ -26,15 +26,15 @@
 	let isOpen = false;
 	let dropdownElement: HTMLElement;
 
-	// Configuration for each status
+	// Configuration for each status using DatePicker color scheme
 	const statusConfig: Record<
 		Status,
 		{ label: string; colorClass: string; badgeClass: string }
 	> = {
 		'not-started': {
 			label: 'Not Started',
-			colorClass: 'status-not-started',
-			badgeClass: 'badge-not-started',
+			colorClass: 'status-default',
+			badgeClass: 'badge-default',
 		},
 		'in-progress': {
 			label: 'In Progress',
@@ -43,23 +43,23 @@
 		},
 		finished: {
 			label: 'Finished',
-			colorClass: 'status-success',
-			badgeClass: 'badge-success',
-		},
-		polished: {
-			label: 'Polished',
 			colorClass: 'status-info',
 			badgeClass: 'badge-info',
 		},
+		polished: {
+			label: 'Polished',
+			colorClass: 'status-future',
+			badgeClass: 'badge-future',
+		},
 		submitted: {
 			label: 'Submitted',
-			colorClass: 'status-primary',
-			badgeClass: 'badge-primary',
+			colorClass: 'status-success',
+			badgeClass: 'badge-success',
 		},
 		scrapped: {
 			label: 'Scrapped',
-			colorClass: 'status-error',
-			badgeClass: 'badge-error',
+			colorClass: 'status-danger',
+			badgeClass: 'badge-danger',
 		},
 	};
 
@@ -194,9 +194,7 @@
 		align-items: center;
 		gap: 0.5rem;
 		border-radius: 9999px;
-		border: 1px solid hsl(var(--color-base-300));
-		background: hsl(var(--color-base-000));
-		color: hsl(var(--color-base-content));
+		border: 1px solid;
 		font-weight: 500;
 		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 		cursor: pointer;
@@ -207,8 +205,6 @@
 	}
 
 	.status-btn:hover {
-		background: hsl(var(--color-base-100));
-		border-color: hsl(var(--color-base-400));
 		transform: translateY(-1px);
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 	}
@@ -259,41 +255,41 @@
 		}
 	}
 
-	/* Status color variations */
-	.status-not-started {
-		background: hsl(var(--color-base-000));
-		color: hsl(var(--color-base-content));
-		border-color: hsl(var(--color-base-300));
+	/* Status color variations using DatePicker color scheme */
+	.status-default {
+		background: hsl(var(--background));
+		color: hsl(var(--foreground));
+		border-color: hsl(var(--border));
 	}
 
 	.status-warning {
 		background: hsl(var(--color-warning));
-		color: hsl(var(--color-warning-content));
+		color: white;
 		border-color: hsl(var(--color-warning));
+	}
+
+	.status-danger {
+		background: hsl(var(--color-error));
+		color: white;
+		border-color: hsl(var(--color-error));
+	}
+
+	.status-info {
+		background: hsl(var(--color-info));
+		color: white;
+		border-color: hsl(var(--color-info));
+	}
+
+	.status-future {
+		background: hsl(var(--color-primary));
+		color: white;
+		border-color: hsl(var(--color-primary));
 	}
 
 	.status-success {
 		background: hsl(var(--color-success));
 		color: hsl(var(--color-success-content));
 		border-color: hsl(var(--color-success));
-	}
-
-	.status-info {
-		background: hsl(var(--color-info));
-		color: hsl(var(--color-info-content));
-		border-color: hsl(var(--color-info));
-	}
-
-	.status-primary {
-		background: hsl(var(--color-primary));
-		color: hsl(var(--color-primary-content));
-		border-color: hsl(var(--color-primary));
-	}
-
-	.status-error {
-		background: hsl(var(--color-error));
-		color: hsl(var(--color-error-content));
-		border-color: hsl(var(--color-error));
 	}
 
 	/* Status badges */
@@ -312,33 +308,33 @@
 		font-size: 0.625rem;
 	}
 
-	.badge-not-started {
-		background: hsl(var(--color-neutral));
-		color: hsl(var(--color-neutral-content));
+	.badge-default {
+		background: hsl(var(--muted));
+		color: hsl(var(--muted-foreground));
 	}
 
 	.badge-warning {
-		background: hsl(var(--color-warning) / 0.2);
+		background: hsl(var(--color-warning-content));
 		color: hsl(var(--color-warning));
 	}
 
 	.badge-success {
-		background: hsl(var(--color-success) / 0.2);
+		background: hsl(var(--color-success-content));
 		color: hsl(var(--color-success));
 	}
 
 	.badge-info {
-		background: hsl(var(--color-info) / 0.2);
+		background: hsl(var(--color-info-content));
 		color: hsl(var(--color-info));
 	}
 
-	.badge-primary {
-		background: hsl(var(--color-primary) / 0.2);
+	.badge-future {
+		background: white;
 		color: hsl(var(--color-primary));
 	}
 
-	.badge-error {
-		background: hsl(var(--color-error) / 0.2);
+	.badge-danger {
+		background: hsl(var(--color-error-content));
 		color: hsl(var(--color-error));
 	}
 
@@ -396,8 +392,8 @@
 		z-index: 50;
 		margin-top: 0.5rem;
 		width: 11rem;
-		background: hsl(var(--color-base-100));
-		border: 1px solid hsl(var(--color-base-300));
+		background: hsl(var(--popover));
+		border: 1px solid hsl(var(--border));
 		border-radius: 0.75rem;
 		padding: 0.25rem;
 		box-shadow:
@@ -423,7 +419,7 @@
 		font-size: 0.875rem;
 		background: transparent;
 		border: none;
-		color: hsl(var(--color-base-content));
+		color: hsl(var(--popover-foreground));
 		transition: all 0.2s ease;
 		cursor: pointer;
 		text-align: left;
@@ -440,11 +436,13 @@
 	}
 
 	.dropdown-item:hover {
-		background: hsl(var(--color-base-200));
+		background: hsl(var(--accent));
+		color: hsl(var(--accent-foreground));
 	}
 
 	.dropdown-item.active {
-		background: hsl(var(--color-base-200));
+		background: hsl(var(--accent));
+		color: hsl(var(--accent-foreground));
 		font-weight: 600;
 	}
 

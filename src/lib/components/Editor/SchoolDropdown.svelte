@@ -131,7 +131,7 @@
 	</button>
 
 	{#if isOpen}
-		<div class="dropdown-menu" role="listbox" aria-label="School options">
+		<div class="dropdown-menu mt-2" role="listbox" aria-label="School options">
 			{#if loading}
 				<div class="dropdown-item loading">
 					<div class="loading-spinner"></div>
@@ -363,7 +363,6 @@
 		top: 100%;
 		left: 0;
 		right: 0;
-		margin-top: 0.25rem;
 		background: hsl(var(--color-base-000));
 		border: 1px solid hsl(var(--color-base-300));
 		border-radius: 0.625rem;
