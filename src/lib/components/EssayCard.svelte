@@ -2,7 +2,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { getSchoolUrlSafeName } from '$lib/utils/validation';
+	import { getSchoolUrlSafeNameStrict } from '$lib/utils/validation';
 	import {
 		FileText,
 		Calendar,
@@ -63,18 +63,22 @@
 
 	async function handleSchoolClick(event: Event) {
 		event.stopPropagation();
+		// alert(document.school); //RETURNS DISPLAY NAME
 		try {
-			const urlSafeSchool = await getSchoolUrlSafeName(document.school);
+			const urlSafeSchool = await getSchoolUrlSafeNameStrict(document.school);
 			goto(`/schools/${urlSafeSchool}`);
 		} catch (error) {
 			console.error('Error navigating to school page:', error);
+			alert(
+				'Error navigating to school page. If the problem persists, please contact support.',
+			);
 			// Fallback to basic slug conversion if the validation function fails
-			const fallbackSlug = document.school
-				.toLowerCase()
-				.replace(/[^a-z0-9-]/g, '-')
-				.replace(/-+/g, '-')
-				.replace(/^-+|-+$/g, '');
-			goto(`/schools/${fallbackSlug}`);
+			// const fallbackSlug = document.school
+			// 	.toLowerCase()
+			// 	.replace(/[^a-z0-9-]/g, '-')
+			// 	.replace(/-+/g, '-')
+			// 	.replace(/^-+|-+$/g, '');
+			// goto(`/schools/${fallbackSlug}`);
 		}
 	}
 

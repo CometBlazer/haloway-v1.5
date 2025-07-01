@@ -2,8 +2,8 @@ import { error, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { supabase } from '$lib/supabase';
 import {
-	getSchoolDisplayName,
-	getSchoolUrlSafeName,
+	getSchoolDisplayNameStrict,
+	getSchoolUrlSafeNameStrict,
 } from '$lib/utils/validation';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		if (!school || typeof school !== 'string' || school.trim().length === 0) {
 			throw error(400, 'School parameter is required');
 		}
-		schoolDisplayName = await getSchoolDisplayName(school.trim());
+		schoolDisplayName = await getSchoolDisplayNameStrict(school.trim());
 	} catch (err) {
 		console.error('Failed to resolve school display name:', err);
 		throw error(400, 'Invalid school parameter');
@@ -43,7 +43,7 @@ export const actions = {
 			if (!school || typeof school !== 'string' || school.trim().length === 0) {
 				throw error(400, 'School parameter is required');
 			}
-			schoolDisplayName = await getSchoolDisplayName(school.trim());
+			schoolDisplayName = await getSchoolDisplayNameStrict(school.trim());
 		} catch (err) {
 			console.error('Failed to resolve school display name:', err);
 			throw error(400, 'Invalid school parameter');
@@ -96,7 +96,7 @@ export const actions = {
 		}
 
 		// Redirect to the new document (convert school name to URL-safe format)
-		const schoolSlug = await getSchoolUrlSafeName(schoolDisplayName);
+		const schoolSlug = await getSchoolUrlSafeNameStrict(schoolDisplayName);
 		throw redirect(
 			303,
 			`/schools/${schoolSlug}/write/${document.id}/${version.id}`,

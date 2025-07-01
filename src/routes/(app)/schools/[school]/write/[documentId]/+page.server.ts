@@ -2,8 +2,8 @@ import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { supabase } from '$lib/supabase';
 import {
-	getSchoolDisplayName,
-	getSchoolUrlSafeName,
+	getSchoolDisplayNameStrict,
+	getSchoolUrlSafeNameStrict,
 } from '$lib/utils/validation';
 
 export const load: PageServerLoad = async ({ params, locals }) => {
@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		if (!school || typeof school !== 'string' || school.trim().length === 0) {
 			throw error(400, 'School parameter is required');
 		}
-		schoolDisplayName = await getSchoolDisplayName(school.trim());
+		schoolDisplayName = await getSchoolDisplayNameStrict(school.trim());
 	} catch (err) {
 		console.error('Failed to resolve school display name:', err);
 		throw error(400, 'Invalid school parameter');
@@ -78,7 +78,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		}
 
 		// Get the URL-safe name for redirect
-		const schoolUrlSafeName = await getSchoolUrlSafeName(schoolDisplayName);
+		const schoolUrlSafeName =
+			await getSchoolUrlSafeNameStrict(schoolDisplayName);
 
 		// Redirect to the new version
 		throw redirect(
@@ -88,7 +89,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	}
 
 	// Get the URL-safe name for redirect
-	const schoolUrlSafeName = await getSchoolUrlSafeName(schoolDisplayName);
+	const schoolUrlSafeName = await getSchoolUrlSafeNameStrict(schoolDisplayName);
 
 	// Redirect to the current version
 	throw redirect(

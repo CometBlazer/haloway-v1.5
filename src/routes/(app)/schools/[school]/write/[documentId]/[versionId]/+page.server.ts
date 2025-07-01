@@ -12,7 +12,7 @@ import type { PostgrestError } from '@supabase/supabase-js';
 import {
 	validateAndNormalizeSchool,
 	getSchoolDisplayNameStrict,
-	getSchoolUrlSafeNameStrict,
+	// getSchoolUrlSafeNameStrict,
 } from '$lib/utils/validation';
 
 type DocumentVersion = Database['public']['Tables']['document_versions']['Row'];
@@ -40,10 +40,12 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	let schoolDisplayName: string;
 	let schoolUrlSafeName: string;
 	try {
-		// Get the display name for the school from the URL-safe name
-		schoolDisplayName = await getSchoolDisplayNameStrict(school.trim());
 		// Get the proper URL-safe name from the database
-		schoolUrlSafeName = await getSchoolUrlSafeNameStrict(schoolDisplayName);
+		schoolUrlSafeName = school.trim().toLowerCase();
+		// schoolUrlSafeName = await getSchoolUrlSafeNameStrict(schoolDisplayName);
+
+		// Get the display name for the school from the URL-safe name
+		schoolDisplayName = await getSchoolDisplayNameStrict(schoolUrlSafeName);
 	} catch {
 		console.error('School not found in database:', school.trim());
 		throw error(404, `School "${school.trim()}" not found`);
