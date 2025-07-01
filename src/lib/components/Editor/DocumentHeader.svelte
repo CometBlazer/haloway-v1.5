@@ -43,6 +43,7 @@
 	let tempPrompt = documentPrompt;
 	let originalTitle = documentTitle;
 	let originalPrompt = documentPrompt;
+	let innerWidth = 0;
 
 	let essayStatus: Status = initialStatus;
 	// let projectStatus: Status = "in-progress"
@@ -136,46 +137,51 @@
 		originalPrompt = documentPrompt;
 	}
 
-	// Component sizes will be handled by CSS classes
+	// Reactive size based on screen width
+	$: componentSize =
+		innerWidth >= 1024
+			? ('large' as const)
+			: innerWidth >= 768
+				? ('medium' as const)
+				: ('small' as const);
+	$: dropdownSize =
+		innerWidth >= 1024
+			? ('lg' as const)
+			: innerWidth >= 768
+				? ('md' as const)
+				: innerWidth >= 640
+					? ('sm' as const)
+					: ('xs' as const);
 </script>
 
+<svelte:window bind:innerWidth />
 <div class="document-header" class:zen-mode={zenMode}>
 	<!-- Unified Control Bar -->
-	<div class="control-bar">
-		<!-- Primary Controls Row -->
-		<div class="control-row primary-row">
-			<div class="control-item date-picker-item">
+	<div
+		class="control-bar flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
+	>
+		<!-- Left side controls -->
+		<div class="flex flex-wrap items-center gap-3">
+			<div class="date-picker-item">
 				<DatePicker
 					bind:selectedDate={picked}
 					onSelect={handleDueDateChange}
-					size="large"
+					size={componentSize}
 				/>
 			</div>
-			<div class="control-item status-dropdown-item">
+			<div class="status-dropdown-item">
 				<StatusDropdown
 					bind:currentStatus={essayStatus}
 					on:statusChange={handleStatusChange}
-					size="lg"
+					size={dropdownSize}
 				/>
 			</div>
-			<div class="control-item word-count-item">
-				<WordCountEditor
-					{wordCount}
-					{wordCountLimit}
-					size="large"
-					on:updateWordCountLimit={handleWordCountLimitUpdate}
-				/>
-			</div>
-		</div>
-
-		<!-- Secondary Controls Row -->
-		<div class="control-row secondary-row">
-			<div class="control-item school-dropdown-item">
+			<div class="school-dropdown-item">
 				<SchoolDropdown
 					{currentSchool}
 					disabled={schoolChangeDisabled}
 					on:schoolChange={handleSchoolChange}
-					size="large"
+					size={componentSize}
 				/>
 			</div>
 			<div class="control-item checkpoint-item">
@@ -194,6 +200,24 @@
 					{/if}
 				</button>
 			</div>
+			<div class="word-count-item block lg:hidden">
+				<WordCountEditor
+					{wordCount}
+					{wordCountLimit}
+					size={componentSize}
+					on:updateWordCountLimit={handleWordCountLimitUpdate}
+				/>
+			</div>
+		</div>
+
+		<!-- Right side control -->
+		<div class="word-count-item hidden lg:block">
+			<WordCountEditor
+				{wordCount}
+				{wordCountLimit}
+				size={componentSize}
+				on:updateWordCountLimit={handleWordCountLimitUpdate}
+			/>
 		</div>
 	</div>
 
@@ -322,9 +346,6 @@
 
 	/* Unified Control Bar */
 	.control-bar {
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
 		margin-bottom: 1.5rem;
 		padding: 1rem;
 		background: hsl(var(--color-base-100) / 0.8);
@@ -335,6 +356,7 @@
 		z-index: 10;
 	}
 
+	/* Keep zen-mode and other non-layout styles */
 	.zen-mode .control-bar {
 		background: hsl(var(--color-base-100));
 		border-color: hsl(var(--color-base-300));
@@ -343,21 +365,13 @@
 		overflow: visible;
 	}
 
-	.control-row {
+	/* .control-row {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
+		justify-content: normal;
 		gap: 0.75rem;
 		width: 100%;
-	}
-
-	.primary-row {
-		/* Most important controls */
-	}
-
-	.secondary-row {
-		/* Less critical controls */
-	}
+	} */
 
 	.control-item {
 		display: flex;
@@ -717,7 +731,7 @@
 		}
 
 		.control-btn {
-			padding: 0.375rem 0.5rem;
+			padding: 0.375rem 0.6rem;
 			font-size: 0.7rem;
 			max-width: 100px;
 		}
@@ -731,7 +745,7 @@
 		}
 
 		.zen-mode .checkpoint-btn {
-			padding: 0.375rem;
+			padding: 0.5rem;
 		}
 
 		.date-picker-item :global(.date-picker-btn) {
@@ -790,7 +804,7 @@
 		}
 
 		.control-btn {
-			padding: 0.25rem 0.375rem;
+			padding: 0.375rem 0.6rem;
 			font-size: 0.65rem;
 			min-width: 0;
 			flex: 1;
@@ -898,7 +912,7 @@
 			}
 
 			.zen-mode .checkpoint-btn {
-				padding: 0.375rem;
+				padding: 0.5rem;
 			}
 
 			.document-title {
