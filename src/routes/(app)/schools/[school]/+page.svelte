@@ -269,7 +269,7 @@
 		gap: 1rem;
 	}
 
-	@media (min-width: 640px) {
+	@media (min-width: 1000px) {
 		.school-header {
 			flex-direction: row;
 			align-items: flex-start;
