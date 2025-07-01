@@ -21,6 +21,7 @@
 	export let size: 'small' | 'medium' | 'large' = 'medium';
 	export let disabled: boolean = false;
 	export let clearable: boolean = true;
+	let dateStatus: 'default' | 'warning' | 'danger' | 'info' = 'default';
 
 	// Date formatter
 	const df = new DateFormatter('en-US', {
@@ -73,8 +74,16 @@
 	// Size variants
 	const sizeClasses = {
 		small: 'h-8 px-2 text-xs',
-		medium: 'h-9 px-3 text-sm',
-		large: 'h-10 px-4 text-base',
+		medium: 'h-10 px-3 text-sm',
+		large: 'h-12 px-4 text-base',
+	};
+
+	// color variants
+	const colorClasses = {
+		default: 'bg-color-primary text-white',
+		warning: 'bg-color-warning text-white',
+		danger: 'bg-color-error text-white',
+		info: 'bg-color-info text-white',
 	};
 
 	// Get relative time text for better UX
@@ -85,12 +94,22 @@
 		const diffTime = selectedDateObj.getTime() - todayDate.getTime();
 		const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-		if (diffDays === 0) return 'Today';
-		if (diffDays === 1) return 'Tomorrow';
-		if (diffDays === -1) return 'Yesterday';
-		if (diffDays > 1 && diffDays <= 7) return `In ${diffDays} days`;
-		if (diffDays < -1 && diffDays >= -7)
-			return `${Math.abs(diffDays)} days ago`;
+		if (diffDays === 0) {
+			dateStatus = 'danger';
+			return 'Due Today';
+		}
+		if (diffDays === 1) {
+			dateStatus = 'warning';
+			return 'Due Tomorrow';
+		}
+		if (diffDays > 1 && diffDays <= 7) {
+			dateStatus = 'info';
+			return `Due in ${diffDays} days`;
+		}
+		if (diffDays < 0) {
+			dateStatus = 'danger';
+			return `Deadline Past`;
+		}
 
 		return df.format(selectedDateObj);
 	}
@@ -121,8 +140,8 @@
 		class={cn(
 			buttonVariants({ variant: 'outline' }),
 			sizeClasses[size],
-			'justify-between font-normal',
-			!selectedDate && 'text-muted-foreground',
+			colorClasses[dateStatus],
+			'justify-between rounded-full font-normal',
 			disabled && 'cursor-not-allowed opacity-50',
 		)}
 		{disabled}
@@ -135,7 +154,7 @@
 		{#if clearable && selectedDate && !disabled}
 			<button
 				type="button"
-				class="ml-2 flex h-4 w-4 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-muted-foreground/20 hover:text-foreground"
+				class="ml-2 flex h-4 w-4 items-center justify-center rounded-full bg-muted/40 text-muted-foreground transition-colors hover:bg-muted-foreground/20 hover:text-foreground"
 				on:click={handleClear}
 				aria-label="Clear date"
 			>
@@ -152,10 +171,10 @@
 		{/if}
 	</Popover.Trigger>
 
-	<Popover.Content class="w-auto p-0" align="start">
+	<Popover.Content class="mt-2 w-auto p-0" align="start">
 		<CalendarPrimitive.Root
 			weekdayFormat="short"
-			class="rounded-md border p-3"
+			class="rounded-md border p-6"
 			bind:value={selectedDate}
 			bind:placeholder={calendarPlaceholder}
 			on:keydown
