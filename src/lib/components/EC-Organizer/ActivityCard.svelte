@@ -18,7 +18,6 @@
 	import type { Activity } from '$lib/types/activity';
 
 	export let activity: Activity;
-	export let isDragging: boolean = false;
 
 	const dispatch = createEventDispatcher<{
 		delete: { id: string };
@@ -72,7 +71,7 @@
 	}
 </script>
 
-<div class="group mb-6 w-full" class:opacity-50={isDragging}>
+<div class="sortable-item group mb-6 w-full" data-id={activity.id}>
 	<Card class="w-full transition-shadow duration-200 hover:shadow-lg">
 		<CardHeader class="pb-4">
 			<div class="flex items-center justify-between">
@@ -88,13 +87,17 @@
 						size="sm"
 						class="h-8 w-8 p-0 text-destructive opacity-0 transition-opacity hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
 						on:click={handleDelete}
-						data-no-drag="true"
+						type="button"
 					>
 						<Trash2 class="h-4 w-4" />
 					</Button>
+					<!-- Improved drag handle with better styling and functionality -->
 					<div
-						class="cursor-grab p-1 active:cursor-grabbing"
-						data-drag-handle="true"
+						class="sortable-handle flex cursor-grab items-center justify-center rounded p-2 transition-colors duration-200 hover:bg-muted/60 active:cursor-grabbing"
+						role="button"
+						tabindex="0"
+						aria-label="Drag to reorder activity"
+						title="Drag to reorder"
 					>
 						<GripVertical class="h-5 w-5 text-muted-foreground" />
 					</div>
@@ -102,10 +105,7 @@
 			</div>
 		</CardHeader>
 
-		<CardContent
-			class="grid grid-cols-1 gap-6 lg:grid-cols-2"
-			data-no-drag="true"
-		>
+		<CardContent class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 			<!-- Left Column -->
 			<div class="space-y-4">
 				<!-- Activity Type -->
@@ -149,6 +149,7 @@
 									size="sm"
 									class="h-6 w-6 p-0"
 									on:click={() => copyToClipboard(activity.organizationName)}
+									type="button"
 								>
 									<Copy class="h-3 w-3" />
 								</Button>
@@ -182,6 +183,7 @@
 									size="sm"
 									class="h-6 w-6 p-0"
 									on:click={() => copyToClipboard(activity.activityDescription)}
+									type="button"
 								>
 									<Copy class="h-3 w-3" />
 								</Button>
