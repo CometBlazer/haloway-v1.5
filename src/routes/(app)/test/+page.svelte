@@ -6,7 +6,7 @@
 </script>
 
 <div
-	class="fixed inset-0 mx-auto mt-20 flex max-w-6xl items-center justify-center bg-background p-4"
+	class="max-w-8xl mx-auto mt-20 flex items-center justify-center bg-background p-4"
 >
 	<KanbanBoard />
 	<!-- <form method="POST" use:enhance class="flex flex-col items-center gap-4">
