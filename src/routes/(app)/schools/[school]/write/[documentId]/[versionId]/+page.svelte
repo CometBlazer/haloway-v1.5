@@ -28,6 +28,7 @@
 	import type { SaveState } from '$lib/autosave';
 	import { DocumentExporter } from '$lib/export';
 	import type { DocumentMetadata } from '$lib/export';
+	import TopToolbar from '$lib/components/Editor/TopToolbar.svelte';
 
 	export let data: PageData;
 
@@ -928,324 +929,335 @@
 </svelte:head>
 
 <div class="container">
-	<!-- Header with document controls -->
-	<header class:zen-mode={editorZenMode} class="mb-8 lg:mb-12">
-		<div class="w-full">
-			<!-- Enhanced toolbar integrated into header -->
-			<div class="enhanced-toolbar">
-				<!-- Status Section -->
-				<div class="status-section">
-					<div
-						class="status-indicator"
-						class:status-saved={statusDisplay.class === 'saved'}
-						class:status-saving={statusDisplay.class === 'saving' ||
-							statusDisplay.class === 'retrying'}
-						class:status-unsaved={statusDisplay.class === 'unsaved' ||
-							statusDisplay.class === 'pending'}
-						class:status-error={statusDisplay.class === 'error'}
-						class:status-offline={statusDisplay.class === 'offline'}
-						class:animate-pulse={saveState.status === 'error'}
-					>
-						<!-- Status Icon -->
-						<div class="status-icon">
-							{#if statusDisplay.icon === 'saved'}
-								<svg
-									class="h-4 w-4"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-								>
-									<path d="M20 6L9 17l-5-5" />
-								</svg>
-							{:else if statusDisplay.icon === 'saving'}
-								<div class="loading-spinner"></div>
-							{:else if statusDisplay.icon === 'unsaved' || statusDisplay.icon === 'pending'}
-								<svg
-									class="h-4 w-4"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-								>
-									<circle cx="12" cy="12" r="10" />
-									<polyline points="12,6 12,12 16,14" />
-								</svg>
-							{:else if statusDisplay.icon === 'error'}
-								<svg
-									class="h-4 w-4"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-								>
-									<circle cx="12" cy="12" r="10" />
-									<line x1="15" y1="9" x2="9" y2="15" />
-									<line x1="9" y1="9" x2="15" y2="15" />
-								</svg>
-							{:else if statusDisplay.icon === 'offline'}
-								<svg
-									class="h-4 w-4"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
-								>
-									<path d="M3 12h18m-9-9v18" />
-									<path d="M3 12L21 12" />
-								</svg>
-							{/if}
+	<header>
+		<!-- Header with document controls -->
+		<TopToolbar
+			documentTitle={documentTitle || ''}
+			{documentPrompt}
+			{wordCount}
+			{wordCountLimit}
+			{currentVersionName}
+			zenMode={editorZenMode}
+			{initialStatus}
+			initialDueDate={data.document.due_date
+				? new Date(data.document.due_date)
+				: null}
+			currentSchool={data.document.school || ''}
+			schoolChangeDisabled={false}
+			on:updateTitle={handleTitleUpdate}
+			on:updatePrompt={handlePromptUpdate}
+			on:updateWordCountLimit={handleWordCountLimitUpdate}
+			on:toggleSidebar={toggleSidebar}
+			on:updateStatus={handleStatusUpdate}
+			on:updateDueDate={handleDueDateUpdate}
+			on:updateSchool={handleSchoolUpdate}
+		/>
+	</header>
+	<div class="editor-container">
+		<header class:zen-mode={editorZenMode} class="mb-8 lg:mb-12">
+			<div class="w-full">
+				<!-- Enhanced toolbar integrated into header -->
+				<div class="enhanced-toolbar">
+					<!-- Status Section -->
+					<div class="status-section">
+						<div
+							class="status-indicator"
+							class:status-saved={statusDisplay.class === 'saved'}
+							class:status-saving={statusDisplay.class === 'saving' ||
+								statusDisplay.class === 'retrying'}
+							class:status-unsaved={statusDisplay.class === 'unsaved' ||
+								statusDisplay.class === 'pending'}
+							class:status-error={statusDisplay.class === 'error'}
+							class:status-offline={statusDisplay.class === 'offline'}
+							class:animate-pulse={saveState.status === 'error'}
+						>
+							<!-- Status Icon -->
+							<div class="status-icon">
+								{#if statusDisplay.icon === 'saved'}
+									<svg
+										class="h-4 w-4"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+									>
+										<path d="M20 6L9 17l-5-5" />
+									</svg>
+								{:else if statusDisplay.icon === 'saving'}
+									<div class="loading-spinner"></div>
+								{:else if statusDisplay.icon === 'unsaved' || statusDisplay.icon === 'pending'}
+									<svg
+										class="h-4 w-4"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+									>
+										<circle cx="12" cy="12" r="10" />
+										<polyline points="12,6 12,12 16,14" />
+									</svg>
+								{:else if statusDisplay.icon === 'error'}
+									<svg
+										class="h-4 w-4"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+									>
+										<circle cx="12" cy="12" r="10" />
+										<line x1="15" y1="9" x2="9" y2="15" />
+										<line x1="9" y1="9" x2="15" y2="15" />
+									</svg>
+								{:else if statusDisplay.icon === 'offline'}
+									<svg
+										class="h-4 w-4"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+									>
+										<path d="M3 12h18m-9-9v18" />
+										<path d="M3 12L21 12" />
+									</svg>
+								{/if}
+							</div>
+
+							<!-- Status Text -->
+							<span class="status-text">{statusDisplay.text}</span>
 						</div>
 
-						<!-- Status Text -->
-						<span class="status-text">{statusDisplay.text}</span>
-					</div>
-
-					<!-- Manual Save Button (conditional) -->
-					{#if saveState.status === 'error' || saveState.status === 'offline' || (saveState.hasUnsavedChanges && !saveState.isOnline)}
-						<button
-							on:click={() => saveContent(false)}
-							class="save-button"
-							class:save-error={saveState.status === 'error'}
-							class:save-offline={saveState.status === 'offline'}
-							disabled={saveState.status === 'saving' ||
-								saveState.status === 'retrying'}
-							title={saveState.status === 'error'
-								? 'Auto-save failed - click to retry'
-								: saveState.status === 'offline'
-									? 'Currently offline'
-									: 'Save changes manually'}
-						>
-							<Save size={16} />
-							<span class="save-text">
-								{#if saveState.status === 'error'}
-									Retry Save
-								{:else if saveState.status === 'offline'}
-									Save When Online
-								{:else}
-									Save Now
-								{/if}
-							</span>
-						</button>
-					{/if}
-				</div>
-
-				<!-- Actions Section -->
-				<div class="actions-section">
-					<!-- Export Dropdown using shadcn-svelte -->
-					<DropdownMenu.Root>
-						<DropdownMenu.Trigger asChild let:builder>
-							<Button
-								builders={[builder]}
-								variant="outline"
-								size="sm"
-								class="gap-2"
+						<!-- Manual Save Button (conditional) -->
+						{#if saveState.status === 'error' || saveState.status === 'offline' || (saveState.hasUnsavedChanges && !saveState.isOnline)}
+							<button
+								on:click={() => saveContent(false)}
+								class="save-button"
+								class:save-error={saveState.status === 'error'}
+								class:save-offline={saveState.status === 'offline'}
+								disabled={saveState.status === 'saving' ||
+									saveState.status === 'retrying'}
+								title={saveState.status === 'error'
+									? 'Auto-save failed - click to retry'
+									: saveState.status === 'offline'
+										? 'Currently offline'
+										: 'Save changes manually'}
 							>
-								<Download size={18} />
-								<span class="action-text">Export</span>
-								<svg
-									class="dropdown-arrow h-4 w-4"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="2"
+								<Save size={16} />
+								<span class="save-text">
+									{#if saveState.status === 'error'}
+										Retry Save
+									{:else if saveState.status === 'offline'}
+										Save When Online
+									{:else}
+										Save Now
+									{/if}
+								</span>
+							</button>
+						{/if}
+					</div>
+
+					<!-- Actions Section -->
+					<div class="actions-section">
+						<!-- Export Dropdown using shadcn-svelte -->
+						<DropdownMenu.Root>
+							<DropdownMenu.Trigger asChild let:builder>
+								<Button
+									builders={[builder]}
+									variant="outline"
+									size="sm"
+									class="gap-2"
 								>
-									<polyline points="6,9 12,15 18,9" />
-								</svg>
-							</Button>
-						</DropdownMenu.Trigger>
-						<DropdownMenu.Content align="end" class="w-56">
-							<DropdownMenu.Item on:click={downloadAsTxt} class="gap-3">
-								<Text size={16} />
-								<div class="flex flex-col">
-									<span class="font-medium">Plain Text</span>
-									<span class="text-xs text-muted-foreground">.txt file</span>
-								</div>
-							</DropdownMenu.Item>
-							<DropdownMenu.Item on:click={downloadAsDoc} class="gap-3">
-								<FileText size={16} />
-								<div class="flex flex-col">
-									<span class="font-medium">Word Document</span>
-									<span class="text-xs text-muted-foreground">.doc file</span>
-								</div>
-							</DropdownMenu.Item>
-						</DropdownMenu.Content>
-					</DropdownMenu.Root>
-				</div>
-			</div>
-
-			<DocumentHeader
-				documentTitle={documentTitle || ''}
-				{documentPrompt}
-				{wordCount}
-				{wordCountLimit}
-				{currentVersionName}
-				zenMode={editorZenMode}
-				{initialStatus}
-				initialDueDate={data.document.due_date
-					? new Date(data.document.due_date)
-					: null}
-				currentSchool={data.document.school || ''}
-				schoolChangeDisabled={false}
-				on:updateTitle={handleTitleUpdate}
-				on:updatePrompt={handlePromptUpdate}
-				on:updateWordCountLimit={handleWordCountLimitUpdate}
-				on:toggleSidebar={toggleSidebar}
-				on:updateStatus={handleStatusUpdate}
-				on:updateDueDate={handleDueDateUpdate}
-				on:updateSchool={handleSchoolUpdate}
-			/>
-		</div>
-	</header>
-
-	<!-- Editor container -->
-	<div class="min-h-[600px] rounded-xl">
-		<TiptapEditor
-			bind:editor
-			bind:body={content}
-			bind:zenMode={editorZenMode}
-			bind:wordCountLimit
-			bind:wordCount={currentWordCount}
-			on:update={handleContentUpdate}
-			on:wordCount={handleWordCountUpdate}
-		/>
-	</div>
-
-	<!-- AI Feedback section -->
-	<Section.Root anchor="feedback">
-		<div id="feedback" class="feedback-section">
-			<AIFeedback
-				essayText={content}
-				{wordCountLimit}
-				{currentWordCount}
-				versionId={$page.params.versionId}
-				existingFeedback={currentFeedback}
-				disabled={!editorReady || !contentLoaded}
-				on:feedbackReceived={handleFeedbackReceived}
-			/>
-		</div>
-	</Section.Root>
-
-	<!-- Checkpoint sidebar -->
-	{#if isSidebarOpen}
-		<div
-			class="fixed inset-0 z-40 bg-black/50"
-			transition:fade={{ duration: 200 }}
-			on:click={() => (isSidebarOpen = false)}
-			role="button"
-			tabindex="0"
-			on:keydown={(e) => e.key === 'Escape' && (isSidebarOpen = false)}
-		></div>
-		<div
-			class="fixed right-0 top-0 z-50 h-screen"
-			transition:slide={{ duration: 300, axis: 'x' }}
-		>
-			<VersionSidebar
-				documentId={$page.params.documentId}
-				currentVersionId={$page.params.versionId}
-				versions={data.versions}
-				schoolUrlSafeName={data.schoolUrlSafeName}
-				on:createVersion={handleVersionCreate}
-				on:renameVersion={handleVersionRename}
-				on:duplicateVersion={handleVersionDuplicate}
-				on:deleteVersion={handleVersionDelete}
-				on:closeSidebar={closeSidebar}
-			/>
-		</div>
-	{/if}
-
-	<!-- Checkpoint Modal -->
-	{#if showCheckpointModal}
-		<dialog
-			class="modal modal-open"
-			transition:fade={{ duration: 200 }}
-			open
-			aria-label="Save checkpoint modal"
-		>
-			<!-- Use a button as a backdrop for proper accessibility -->
-			<button
-				class="modal-backdrop absolute inset-0 h-full w-full cursor-default bg-transparent"
-				on:click={closeCheckpointModal}
-				on:keydown={(e) => e.key === 'Escape' && closeCheckpointModal()}
-				aria-label="Close modal"
-			></button>
-			<div class="modal-box" role="document">
-				<div class="mb-4 flex items-center justify-between">
-					<h3 class="text-lg font-semibold">Save Checkpoint</h3>
-					<button
-						type="button"
-						class="btn btn-sm btn-circle btn-ghost"
-						on:click={closeCheckpointModal}
-						aria-label="Close modal"
-					>
-						<svg
-							class="h-5 w-5"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M6 18L18 6M6 6l12 12"
-							/>
-						</svg>
-					</button>
-				</div>
-
-				<div class="space-y-4">
-					<p class="text-base-content/70 text-sm">
-						Give this checkpoint a meaningful name to help you remember what
-						progress you've made.
-					</p>
-
-					<div class="form-control">
-						<label for="checkpoint-name-modal" class="label">
-							<span class="label-text">Checkpoint Name</span>
-						</label>
-						<input
-							id="checkpoint-name-modal"
-							type="text"
-							bind:value={checkpointModalName}
-							on:keydown={(e) => {
-								if (e.key === 'Enter') handleSaveNamedCheckpoint();
-								if (e.key === 'Escape') closeCheckpointModal();
-							}}
-							class="input input-bordered"
-							placeholder="e.g., First draft complete, Added conclusion, Final revision"
-							disabled={isCreatingCheckpoint}
-						/>
+									<Download size={18} />
+									<span class="action-text">Export</span>
+									<svg
+										class="dropdown-arrow h-4 w-4"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+									>
+										<polyline points="6,9 12,15 18,9" />
+									</svg>
+								</Button>
+							</DropdownMenu.Trigger>
+							<DropdownMenu.Content align="end" class="w-56">
+								<DropdownMenu.Item on:click={downloadAsTxt} class="gap-3">
+									<Text size={16} />
+									<div class="flex flex-col">
+										<span class="font-medium">Plain Text</span>
+										<span class="text-xs text-muted-foreground">.txt file</span>
+									</div>
+								</DropdownMenu.Item>
+								<DropdownMenu.Item on:click={downloadAsDoc} class="gap-3">
+									<FileText size={16} />
+									<div class="flex flex-col">
+										<span class="font-medium">Word Document</span>
+										<span class="text-xs text-muted-foreground">.doc file</span>
+									</div>
+								</DropdownMenu.Item>
+							</DropdownMenu.Content>
+						</DropdownMenu.Root>
 					</div>
 				</div>
 
-				<div class="modal-action">
-					<button
-						type="button"
-						class="btn btn-ghost"
-						on:click={closeCheckpointModal}
-						disabled={isCreatingCheckpoint}
-					>
-						Cancel
-					</button>
-
-					<button
-						type="button"
-						class="btn btn-primary"
-						on:click={handleSaveNamedCheckpoint}
-						disabled={!checkpointModalName.trim() || isCreatingCheckpoint}
-					>
-						{#if isCreatingCheckpoint}
-							<span class="loading loading-spinner loading-sm"></span>
-							Saving...
-						{:else}
-							Save Checkpoint
-						{/if}
-					</button>
-				</div>
+				<DocumentHeader
+					documentTitle={documentTitle || ''}
+					{documentPrompt}
+					zenMode={editorZenMode}
+					on:updateTitle={handleTitleUpdate}
+					on:updatePrompt={handlePromptUpdate}
+				/>
 			</div>
-		</dialog>
-	{/if}
+		</header>
+
+		<!-- Editor container -->
+		<div class="min-h-[600px] rounded-xl" class:px-4={editorZenMode}>
+			<TiptapEditor
+				bind:editor
+				bind:body={content}
+				bind:zenMode={editorZenMode}
+				bind:wordCountLimit
+				bind:wordCount={currentWordCount}
+				on:update={handleContentUpdate}
+				on:wordCount={handleWordCountUpdate}
+			/>
+		</div>
+
+		<!-- AI Feedback section -->
+		<Section.Root anchor="feedback">
+			<div id="feedback" class="feedback-section">
+				<AIFeedback
+					essayText={content}
+					{wordCountLimit}
+					{currentWordCount}
+					versionId={$page.params.versionId}
+					existingFeedback={currentFeedback}
+					disabled={!editorReady || !contentLoaded}
+					on:feedbackReceived={handleFeedbackReceived}
+				/>
+			</div>
+		</Section.Root>
+
+		<!-- Checkpoint sidebar -->
+		{#if isSidebarOpen}
+			<div
+				class="fixed inset-0 z-40 bg-black/50"
+				transition:fade={{ duration: 200 }}
+				on:click={() => (isSidebarOpen = false)}
+				role="button"
+				tabindex="0"
+				on:keydown={(e) => e.key === 'Escape' && (isSidebarOpen = false)}
+			></div>
+			<div
+				class="fixed right-0 top-0 z-50 h-screen"
+				transition:slide={{ duration: 300, axis: 'x' }}
+			>
+				<VersionSidebar
+					documentId={$page.params.documentId}
+					currentVersionId={$page.params.versionId}
+					versions={data.versions}
+					schoolUrlSafeName={data.schoolUrlSafeName}
+					on:createVersion={handleVersionCreate}
+					on:renameVersion={handleVersionRename}
+					on:duplicateVersion={handleVersionDuplicate}
+					on:deleteVersion={handleVersionDelete}
+					on:closeSidebar={closeSidebar}
+				/>
+			</div>
+		{/if}
+
+		<!-- Checkpoint Modal -->
+		{#if showCheckpointModal}
+			<dialog
+				class="modal modal-open"
+				transition:fade={{ duration: 200 }}
+				open
+				aria-label="Save checkpoint modal"
+			>
+				<!-- Use a button as a backdrop for proper accessibility -->
+				<button
+					class="modal-backdrop absolute inset-0 h-full w-full cursor-default bg-transparent"
+					on:click={closeCheckpointModal}
+					on:keydown={(e) => e.key === 'Escape' && closeCheckpointModal()}
+					aria-label="Close modal"
+				></button>
+				<div class="modal-box" role="document">
+					<div class="mb-4 flex items-center justify-between">
+						<h3 class="text-lg font-semibold">Save Checkpoint</h3>
+						<button
+							type="button"
+							class="btn btn-sm btn-circle btn-ghost"
+							on:click={closeCheckpointModal}
+							aria-label="Close modal"
+						>
+							<svg
+								class="h-5 w-5"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								/>
+							</svg>
+						</button>
+					</div>
+
+					<div class="space-y-4">
+						<p class="text-base-content/70 text-sm">
+							Give this checkpoint a meaningful name to help you remember what
+							progress you've made.
+						</p>
+
+						<div class="form-control">
+							<label for="checkpoint-name-modal" class="label">
+								<span class="label-text">Checkpoint Name</span>
+							</label>
+							<input
+								id="checkpoint-name-modal"
+								type="text"
+								bind:value={checkpointModalName}
+								on:keydown={(e) => {
+									if (e.key === 'Enter') handleSaveNamedCheckpoint();
+									if (e.key === 'Escape') closeCheckpointModal();
+								}}
+								class="input input-bordered"
+								placeholder="e.g., First draft complete, Added conclusion, Final revision"
+								disabled={isCreatingCheckpoint}
+							/>
+						</div>
+					</div>
+
+					<div class="modal-action">
+						<button
+							type="button"
+							class="btn btn-ghost"
+							on:click={closeCheckpointModal}
+							disabled={isCreatingCheckpoint}
+						>
+							Cancel
+						</button>
+
+						<button
+							type="button"
+							class="btn btn-primary"
+							on:click={handleSaveNamedCheckpoint}
+							disabled={!checkpointModalName.trim() || isCreatingCheckpoint}
+						>
+							{#if isCreatingCheckpoint}
+								<span class="loading loading-spinner loading-sm"></span>
+								Saving...
+							{:else}
+								Save Checkpoint
+							{/if}
+						</button>
+					</div>
+				</div>
+			</dialog>
+		{/if}
+	</div>
 </div>
 
 <style>
@@ -1484,11 +1496,17 @@
 	}
 
 	.container {
-		max-width: 1400px;
+		max-width: none;
 		margin: 0 auto;
 		padding: 1.5rem 2rem;
 		min-height: 100vh;
 		/* background: var(--color-base-300); */
+	}
+
+	.editor-container {
+		max-width: 1400px;
+		margin: 0 auto;
+		min-height: 100vh;
 	}
 
 	header {
