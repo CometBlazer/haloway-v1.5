@@ -3,7 +3,7 @@
 	import Home from '~icons/lucide/home';
 	import PanelLeft from '~icons/lucide/panel-left';
 	import Settings from '~icons/lucide/settings';
-	import { Plus, Loader2 } from 'lucide-svelte';
+	import { Plus, PenLine, Loader2 } from 'lucide-svelte';
 
 	import Logo from '$lib/components/Logo.svelte';
 	import PersonalMenu from '$lib/components/personal-menu.svelte';
@@ -120,9 +120,9 @@
 			<!-- Create Essay Button -->
 			<button
 				on:click={handleCreateEssay}
-				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
 			>
-				<Plus class="h-5 w-5" />
+				<PenLine class="h-5 w-5" />
 				<span class="text-center text-xs font-medium">Create Essay</span>
 			</button>
 
@@ -195,7 +195,7 @@
 							on:click={handleCreateEssay}
 							class="flex items-center gap-4 px-2.5 text-left text-muted-foreground hover:text-foreground"
 						>
-							<Plus class="h-5 w-5" />
+							<PenLine class="h-5 w-5" />
 							Create Essay
 						</button>
 
@@ -229,7 +229,7 @@
 	<Dialog.Root bind:open={showNewEssayModal}>
 		<Dialog.Content class="sm:max-w-lg">
 			<Dialog.Header>
-				<Dialog.Title>Add a New Essay</Dialog.Title>
+				<Dialog.Title class="mb-2">Add a New Essay</Dialog.Title>
 				<Dialog.Description>
 					Fill in as much information as you can — you can always edit it later.
 				</Dialog.Description>
