@@ -265,7 +265,7 @@
 		</div>
 	{:else}
 		<!-- Documents Grid -->
-		<h3 class="text-lg font-semibold">Last Updated</h3>
+		<h3 class="text-md font-bold">Last Updated</h3>
 		<div class="documents-grid">
 			{#each documents as document (document.id)}
 				<EssayCard
