@@ -932,8 +932,6 @@
 	<header>
 		<!-- Header with document controls -->
 		<TopToolbar
-			documentTitle={documentTitle || ''}
-			{documentPrompt}
 			{wordCount}
 			{wordCountLimit}
 			{currentVersionName}
@@ -944,8 +942,6 @@
 				: null}
 			currentSchool={data.document.school || ''}
 			schoolChangeDisabled={false}
-			on:updateTitle={handleTitleUpdate}
-			on:updatePrompt={handlePromptUpdate}
 			on:updateWordCountLimit={handleWordCountLimitUpdate}
 			on:toggleSidebar={toggleSidebar}
 			on:updateStatus={handleStatusUpdate}
@@ -1110,32 +1106,34 @@
 		</header>
 
 		<!-- Editor container -->
-		<div class="min-h-[600px] rounded-xl" class:px-4={editorZenMode}>
-			<TiptapEditor
-				bind:editor
-				bind:body={content}
-				bind:zenMode={editorZenMode}
-				bind:wordCountLimit
-				bind:wordCount={currentWordCount}
-				on:update={handleContentUpdate}
-				on:wordCount={handleWordCountUpdate}
-			/>
-		</div>
-
-		<!-- AI Feedback section -->
-		<Section.Root anchor="feedback">
-			<div id="feedback" class="feedback-section">
-				<AIFeedback
-					essayText={content}
-					{wordCountLimit}
-					{currentWordCount}
-					versionId={$page.params.versionId}
-					existingFeedback={currentFeedback}
-					disabled={!editorReady || !contentLoaded}
-					on:feedbackReceived={handleFeedbackReceived}
+		<div class:px-4={editorZenMode}>
+			<div class="min-h-[600px] rounded-xl">
+				<TiptapEditor
+					bind:editor
+					bind:body={content}
+					bind:zenMode={editorZenMode}
+					bind:wordCountLimit
+					bind:wordCount={currentWordCount}
+					on:update={handleContentUpdate}
+					on:wordCount={handleWordCountUpdate}
 				/>
 			</div>
-		</Section.Root>
+
+			<!-- AI Feedback section -->
+			<Section.Root anchor="feedback">
+				<div id="feedback" class="feedback-section">
+					<AIFeedback
+						essayText={content}
+						{wordCountLimit}
+						{currentWordCount}
+						versionId={$page.params.versionId}
+						existingFeedback={currentFeedback}
+						disabled={!editorReady || !contentLoaded}
+						on:feedbackReceived={handleFeedbackReceived}
+					/>
+				</div>
+			</Section.Root>
+		</div>
 
 		<!-- Checkpoint sidebar -->
 		{#if isSidebarOpen}
