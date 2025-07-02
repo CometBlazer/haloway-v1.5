@@ -1,7 +1,11 @@
 <!-- src/lib/components/Editor/SchoolDropdown.svelte -->
 <script lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
-	import { ChevronDown } from 'lucide-svelte';
+	import { createEventDispatcher, onMount, tick } from 'svelte';
+	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
+	import * as Command from '$lib/components/ui/command';
+	import * as Popover from '$lib/components/ui/popover';
+	import { Button } from '$lib/components/ui/button';
+	import { cn } from '$lib/utils.js';
 	import type { School } from '$lib/../DatabaseDefinitions';
 	import { supabase } from '$lib/supabase';
 
@@ -14,8 +18,7 @@
 	}>();
 
 	let schools: School[] = [];
-	let isOpen = false;
-	let dropdownContainer: HTMLDivElement;
+	let open = false;
 	let loading = true;
 	let error: string | null = null;
 
@@ -53,408 +56,161 @@
 		if (schoolName !== currentSchool) {
 			dispatch('schoolChange', schoolName);
 		}
-		isOpen = false;
-	}
-
-	// Handle clicks outside dropdown
-	function handleClickOutside(event: MouseEvent) {
-		if (
-			dropdownContainer &&
-			!dropdownContainer.contains(event.target as Node)
-		) {
-			isOpen = false;
-		}
-	}
-
-	// Handle keyboard navigation
-	function handleKeydown(event: KeyboardEvent) {
-		if (disabled) return;
-
-		if (event.key === 'Escape') {
-			isOpen = false;
-		} else if (event.key === 'Enter' || event.key === ' ') {
-			event.preventDefault();
-			isOpen = !isOpen;
-		} else if (event.key === 'ArrowDown' && !isOpen) {
-			event.preventDefault();
-			isOpen = true;
-		}
 	}
 
 	// Get current school display info
 	$: currentSchoolData = getSchoolByName(currentSchool);
-	$: displayName = currentSchoolData?.name || currentSchool || 'Select School';
+	$: selectedValue = currentSchoolData?.name || 'Select School';
+
+	// Size-based styling classes
+	$: buttonSizeClass = {
+		small: 'h-8 px-2 text-xs min-w-[120px]',
+		medium: 'h-9 px-3 text-sm min-w-[160px]',
+		large: 'h-10 px-4 text-sm min-w-[180px]',
+	}[size];
+
+	$: logoSizeClass = {
+		small: 'w-4 h-4',
+		medium: 'w-5 h-5',
+		large: 'w-6 h-6',
+	}[size];
+
+	$: popoverWidthClass = {
+		small: 'w-[120px]',
+		medium: 'w-[160px]',
+		large: 'w-[180px]',
+	}[size];
+
+	// Handle school selection and focus management
+	function handleSchoolSelect(schoolName: string, triggerId: string) {
+		selectSchool(schoolName);
+		closeAndFocusTrigger(triggerId);
+	}
+
+	// We want to refocus the trigger button when the user selects
+	// an item from the list so users can continue navigating the
+	// rest of the form with the keyboard.
+	function closeAndFocusTrigger(triggerId: string) {
+		open = false;
+		tick().then(() => {
+			document.getElementById(triggerId)?.focus();
+		});
+	}
 
 	onMount(() => {
 		loadSchools();
-
-		// Add click outside listener
-		document.addEventListener('click', handleClickOutside);
-
-		return () => {
-			document.removeEventListener('click', handleClickOutside);
-		};
 	});
 </script>
 
-<div class="school-dropdown size-{size}" bind:this={dropdownContainer}>
-	<button
-		type="button"
-		class="school-button"
-		class:disabled
-		class:open={isOpen}
-		on:click={() => !disabled && (isOpen = !isOpen)}
-		on:keydown={handleKeydown}
-		aria-label="Select school"
-		aria-expanded={isOpen}
-		aria-haspopup="listbox"
-		{disabled}
-	>
-		<div class="school-info">
-			{#if currentSchoolData?.image_url}
-				<img
-					src={currentSchoolData.image_url}
-					alt={currentSchoolData.name}
-					class="school-logo"
-					loading="lazy"
-				/>
-			{:else}
-				<div class="school-logo-placeholder">
-					<span class="school-initial"
-						>{displayName.charAt(0).toUpperCase()}</span
-					>
-				</div>
-			{/if}
-			<span class="school-name">{displayName}</span>
-		</div>
-		<ChevronDown class="chevron {isOpen ? 'rotated' : ''}" />
-	</button>
-
-	{#if isOpen}
-		<div class="dropdown-menu mt-2" role="listbox" aria-label="School options">
-			{#if loading}
-				<div class="dropdown-item loading">
-					<div class="loading-spinner"></div>
-					<span>Loading schools...</span>
-				</div>
-			{:else if error}
-				<div class="dropdown-item error">
-					<span>{error}</span>
-				</div>
-			{:else if schools.length === 0}
-				<div class="dropdown-item empty">
-					<span>No schools available</span>
-				</div>
-			{:else}
-				{#each schools as school (school.id)}
-					<button
-						type="button"
-						class="dropdown-item"
-						class:selected={school.name === currentSchool}
-						on:click={() => selectSchool(school.name)}
-						role="option"
-						aria-selected={school.name === currentSchool}
-					>
-						<div class="school-info">
-							{#if school.image_url}
-								<img
-									src={school.image_url}
-									alt={school.name}
-									class="school-logo"
-									loading="lazy"
-								/>
-							{:else}
-								<div class="school-logo-placeholder">
-									<span class="school-initial"
-										>{school.name.charAt(0).toUpperCase()}</span
-									>
-								</div>
-							{/if}
-							<span class="school-name">{school.name}</span>
+<div class="school-dropdown">
+	<Popover.Root bind:open let:ids>
+		<Popover.Trigger asChild let:builder>
+			<Button
+				builders={[builder]}
+				variant="outline"
+				role="combobox"
+				aria-expanded={open}
+				class={cn('justify-between', buttonSizeClass)}
+				{disabled}
+			>
+				<div class="flex min-w-0 flex-1 items-center gap-2">
+					{#if currentSchoolData?.image_url}
+						<img
+							src={currentSchoolData.image_url}
+							alt={currentSchoolData.name}
+							class={cn('flex-shrink-0 rounded object-cover', logoSizeClass)}
+							loading="lazy"
+						/>
+					{:else if currentSchoolData}
+						<div
+							class={cn(
+								'flex flex-shrink-0 items-center justify-center rounded bg-primary',
+								logoSizeClass,
+							)}
+						>
+							<span class="text-xs font-semibold text-primary-foreground">
+								{currentSchoolData.name.charAt(0).toUpperCase()}
+							</span>
 						</div>
-					</button>
-				{/each}
-			{/if}
-		</div>
-	{/if}
+					{/if}
+					<span class="truncate font-medium">{selectedValue}</span>
+				</div>
+				<ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+			</Button>
+		</Popover.Trigger>
+		<Popover.Content class={cn('p-0', popoverWidthClass)}>
+			<Command.Root>
+				<Command.Input placeholder="Search schools..." />
+				{#if loading}
+					<div
+						class="flex items-center justify-center gap-2 p-4 text-sm text-muted-foreground"
+					>
+						<div
+							class="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"
+						></div>
+						<span>Loading schools...</span>
+					</div>
+				{:else if error}
+					<div
+						class="flex items-center justify-center p-4 text-sm text-destructive"
+					>
+						<span>{error}</span>
+					</div>
+				{:else if schools.length === 0}
+					<Command.Empty>No schools available.</Command.Empty>
+				{:else}
+					<Command.Empty>No school found.</Command.Empty>
+					<Command.Group>
+						{#each schools as school (school.id)}
+							<Command.Item
+								value={school.name}
+								onSelect={(currentValue) =>
+									handleSchoolSelect(currentValue, ids.trigger)}
+								class={cn(
+									'cursor-pointer',
+									currentSchool === school.name &&
+										'border-l-2 border-l-primary bg-primary/10 text-primary',
+								)}
+							>
+								<div class="flex min-w-0 flex-1 items-center gap-2">
+									{#if school.image_url}
+										<img
+											src={school.image_url}
+											alt={school.name}
+											class={cn(
+												'flex-shrink-0 rounded object-cover',
+												logoSizeClass,
+											)}
+											loading="lazy"
+										/>
+									{:else}
+										<div
+											class={cn(
+												'flex flex-shrink-0 items-center justify-center rounded',
+												logoSizeClass,
+												currentSchool === school.name
+													? 'bg-primary text-primary-foreground'
+													: 'bg-muted text-muted-foreground',
+											)}
+										>
+											<span class="text-xs font-semibold">
+												{school.name.charAt(0).toUpperCase()}
+											</span>
+										</div>
+									{/if}
+									<span class="truncate">{school.name}</span>
+								</div>
+							</Command.Item>
+						{/each}
+					</Command.Group>
+				{/if}
+			</Command.Root>
+		</Popover.Content>
+	</Popover.Root>
 </div>
 
 <style>
 	.school-dropdown {
-		position: relative;
 		display: inline-block;
 	}
-
-	/* Size variants */
-	.size-small {
-		min-width: 120px;
-	}
-
-	.size-medium {
-		min-width: 160px;
-	}
-
-	.size-large {
-		min-width: 180px;
-	}
-
-	.school-button {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		width: 100%;
-		background: hsl(var(--color-base-000));
-		border: 1px solid hsl(var(--color-base-300));
-		border-radius: 0.625rem;
-		cursor: pointer;
-		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-		font-weight: 500;
-		color: hsl(var(--color-base-content));
-		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-		gap: 0.5rem;
-	}
-
-	.size-small .school-button {
-		padding: 0.25rem 0.5rem;
-		font-size: 0.7rem;
-	}
-
-	.size-medium .school-button {
-		padding: 0.375rem 0.75rem;
-		font-size: 0.8125rem;
-	}
-
-	.size-large .school-button {
-		padding: 0.625rem 0.875rem;
-		font-size: 0.8125rem;
-	}
-
-	.school-button:hover:not(.disabled) {
-		background: hsl(var(--color-base-100));
-		border-color: hsl(var(--color-primary));
-		transform: translateY(-1px);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-	}
-
-	.school-button:focus {
-		outline: 2px solid hsl(var(--color-primary));
-		outline-offset: 2px;
-	}
-
-	.school-button.disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
-
-	.school-button.open {
-		border-color: hsl(var(--color-primary));
-		background: hsl(var(--color-base-100));
-	}
-
-	.school-info {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		min-width: 0;
-		flex: 1;
-	}
-
-	.size-small .school-info {
-		gap: 0.25rem;
-	}
-
-	.school-logo {
-		border-radius: 0.25rem;
-		object-fit: cover;
-		flex-shrink: 0;
-	}
-
-	.size-small .school-logo {
-		width: 1rem;
-		height: 1rem;
-	}
-
-	.size-medium .school-logo {
-		width: 1.25rem;
-		height: 1.25rem;
-	}
-
-	.size-large .school-logo {
-		width: 1.5rem;
-		height: 1.5rem;
-	}
-
-	.school-logo-placeholder {
-		border-radius: 0.25rem;
-		background: hsl(var(--color-primary));
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-shrink: 0;
-	}
-
-	.size-small .school-logo-placeholder {
-		width: 1rem;
-		height: 1rem;
-	}
-
-	.size-medium .school-logo-placeholder {
-		width: 1.25rem;
-		height: 1.25rem;
-	}
-
-	.size-large .school-logo-placeholder {
-		width: 1.5rem;
-		height: 1.5rem;
-	}
-
-	.school-initial {
-		color: white;
-		font-weight: 600;
-	}
-
-	.size-small .school-initial {
-		font-size: 0.5rem;
-	}
-
-	.size-medium .school-initial {
-		font-size: 0.625rem;
-	}
-
-	.size-large .school-initial {
-		font-size: 0.75rem;
-	}
-
-	.school-name {
-		font-weight: 500;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		min-width: 0;
-	}
-
-	:global(.chevron) {
-		transition: transform 0.2s ease;
-		flex-shrink: 0;
-		color: hsl(var(--color-base-content));
-	}
-
-	.size-small :global(.chevron) {
-		width: 0.75rem;
-		height: 0.75rem;
-	}
-
-	.size-medium :global(.chevron) {
-		width: 0.875rem;
-		height: 0.875rem;
-	}
-
-	.size-large :global(.chevron) {
-		width: 1rem;
-		height: 1rem;
-	}
-
-	:global(.chevron.rotated) {
-		transform: rotate(180deg);
-	}
-
-	.dropdown-menu {
-		position: absolute;
-		top: 100%;
-		left: 0;
-		right: 0;
-		background: hsl(var(--color-base-000));
-		border: 1px solid hsl(var(--color-base-300));
-		border-radius: 0.625rem;
-		box-shadow:
-			0 10px 25px -3px rgba(0, 0, 0, 0.1),
-			0 4px 6px -4px rgba(0, 0, 0, 0.1);
-		z-index: 50;
-		max-height: 300px;
-		overflow-y: auto;
-		padding: 0.25rem;
-	}
-
-	.dropdown-item {
-		display: flex;
-		align-items: center;
-		width: 100%;
-		background: transparent;
-		border: none;
-		border-radius: 0.5rem;
-		cursor: pointer;
-		transition: all 0.15s ease;
-		text-align: left;
-		color: hsl(var(--color-base-content));
-	}
-
-	.size-small .dropdown-item {
-		padding: 0.375rem;
-		font-size: 0.7rem;
-	}
-
-	.size-medium .dropdown-item {
-		padding: 0.5rem;
-		font-size: 0.75rem;
-	}
-
-	.size-large .dropdown-item {
-		padding: 0.75rem;
-		font-size: 0.8125rem;
-	}
-
-	.dropdown-item:hover:not(.loading):not(.error):not(.empty) {
-		background: hsl(var(--color-base-100));
-	}
-
-	.dropdown-item.selected {
-		background: hsl(var(--color-primary) / 0.1);
-		color: hsl(var(--color-primary));
-	}
-
-	.dropdown-item.loading,
-	.dropdown-item.error,
-	.dropdown-item.empty {
-		cursor: default;
-		color: hsl(var(--color-base-400));
-		justify-content: center;
-		gap: 0.5rem;
-	}
-
-	.dropdown-item.error {
-		color: hsl(var(--color-error));
-	}
-
-	.loading-spinner {
-		border: 2px solid hsl(var(--color-base-300));
-		border-top: 2px solid hsl(var(--color-primary));
-		border-radius: 50%;
-		animation: spin 1s linear infinite;
-	}
-
-	.size-small .loading-spinner {
-		width: 0.75rem;
-		height: 0.75rem;
-	}
-
-	.size-medium .loading-spinner {
-		width: 0.875rem;
-		height: 0.875rem;
-	}
-
-	.size-large .loading-spinner {
-		width: 1rem;
-		height: 1rem;
-	}
-
-	@keyframes spin {
-		0% {
-			transform: rotate(0deg);
-		}
-		100% {
-			transform: rotate(360deg);
-		}
-	}
-
-	/* Mobile responsiveness removed - size variants handle this */
 </style>
