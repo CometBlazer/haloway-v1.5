@@ -7,8 +7,6 @@
 	import { browser } from '$app/environment';
 	import { onMount, onDestroy } from 'svelte';
 	import { fade, slide } from 'svelte/transition';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
-	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Section from '$lib/components/landing/section';
 	import DocumentHeader from '../../../../../../../lib/components/Editor/DocumentHeader.svelte';
 	import VersionSidebar from '../../../../../../../lib/components/Editor/VersionSidebar.svelte';
@@ -19,7 +17,6 @@
 	import type { Editor } from '@tiptap/core';
 	import type { ComponentVersion } from '../../../../../../../DatabaseDefinitions';
 	import { WebsiteName } from '../../../../../../../config';
-	import { Download, FileText, Text, Save } from 'lucide-svelte';
 	import type { Status } from '$lib/components/Editor/StatusDropdown.svelte';
 	import AIFeedback from '$lib/components/Editor/AIFeedback.svelte';
 
@@ -811,6 +808,11 @@
 		}
 	}
 
+	function handleSaveContent(event: { detail: boolean }) {
+		const fromKeyboard = event.detail;
+		saveContent(fromKeyboard);
+	}
+
 	// Lifecycle management
 	onMount(() => {
 		if (browser) {
@@ -942,159 +944,21 @@
 				: null}
 			currentSchool={data.document.school || ''}
 			schoolChangeDisabled={false}
+			{saveState}
+			{statusDisplay}
 			on:updateWordCountLimit={handleWordCountLimitUpdate}
 			on:toggleSidebar={toggleSidebar}
 			on:updateStatus={handleStatusUpdate}
 			on:updateDueDate={handleDueDateUpdate}
 			on:updateSchool={handleSchoolUpdate}
+			on:saveContent={handleSaveContent}
+			on:downloadAsTxt={downloadAsTxt}
+			on:downloadAsDoc={downloadAsDoc}
 		/>
 	</header>
 	<div class="editor-container">
 		<header class:zen-mode={editorZenMode} class="mb-8 lg:mb-12">
 			<div class="w-full">
-				<!-- Enhanced toolbar integrated into header -->
-				<div class="enhanced-toolbar">
-					<!-- Status Section -->
-					<div class="status-section">
-						<div
-							class="status-indicator"
-							class:status-saved={statusDisplay.class === 'saved'}
-							class:status-saving={statusDisplay.class === 'saving' ||
-								statusDisplay.class === 'retrying'}
-							class:status-unsaved={statusDisplay.class === 'unsaved' ||
-								statusDisplay.class === 'pending'}
-							class:status-error={statusDisplay.class === 'error'}
-							class:status-offline={statusDisplay.class === 'offline'}
-							class:animate-pulse={saveState.status === 'error'}
-						>
-							<!-- Status Icon -->
-							<div class="status-icon">
-								{#if statusDisplay.icon === 'saved'}
-									<svg
-										class="h-4 w-4"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="2"
-									>
-										<path d="M20 6L9 17l-5-5" />
-									</svg>
-								{:else if statusDisplay.icon === 'saving'}
-									<div class="loading-spinner"></div>
-								{:else if statusDisplay.icon === 'unsaved' || statusDisplay.icon === 'pending'}
-									<svg
-										class="h-4 w-4"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="2"
-									>
-										<circle cx="12" cy="12" r="10" />
-										<polyline points="12,6 12,12 16,14" />
-									</svg>
-								{:else if statusDisplay.icon === 'error'}
-									<svg
-										class="h-4 w-4"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="2"
-									>
-										<circle cx="12" cy="12" r="10" />
-										<line x1="15" y1="9" x2="9" y2="15" />
-										<line x1="9" y1="9" x2="15" y2="15" />
-									</svg>
-								{:else if statusDisplay.icon === 'offline'}
-									<svg
-										class="h-4 w-4"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="2"
-									>
-										<path d="M3 12h18m-9-9v18" />
-										<path d="M3 12L21 12" />
-									</svg>
-								{/if}
-							</div>
-
-							<!-- Status Text -->
-							<span class="status-text">{statusDisplay.text}</span>
-						</div>
-
-						<!-- Manual Save Button (conditional) -->
-						{#if saveState.status === 'error' || saveState.status === 'offline' || (saveState.hasUnsavedChanges && !saveState.isOnline)}
-							<button
-								on:click={() => saveContent(false)}
-								class="save-button"
-								class:save-error={saveState.status === 'error'}
-								class:save-offline={saveState.status === 'offline'}
-								disabled={saveState.status === 'saving' ||
-									saveState.status === 'retrying'}
-								title={saveState.status === 'error'
-									? 'Auto-save failed - click to retry'
-									: saveState.status === 'offline'
-										? 'Currently offline'
-										: 'Save changes manually'}
-							>
-								<Save size={16} />
-								<span class="save-text">
-									{#if saveState.status === 'error'}
-										Retry Save
-									{:else if saveState.status === 'offline'}
-										Save When Online
-									{:else}
-										Save Now
-									{/if}
-								</span>
-							</button>
-						{/if}
-					</div>
-
-					<!-- Actions Section -->
-					<div class="actions-section">
-						<!-- Export Dropdown using shadcn-svelte -->
-						<DropdownMenu.Root>
-							<DropdownMenu.Trigger asChild let:builder>
-								<Button
-									builders={[builder]}
-									variant="outline"
-									size="sm"
-									class="gap-2"
-								>
-									<Download size={18} />
-									<span class="action-text">Export</span>
-									<svg
-										class="dropdown-arrow h-4 w-4"
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="2"
-									>
-										<polyline points="6,9 12,15 18,9" />
-									</svg>
-								</Button>
-							</DropdownMenu.Trigger>
-							<DropdownMenu.Content align="end" class="w-56">
-								<DropdownMenu.Item on:click={downloadAsTxt} class="gap-3">
-									<Text size={16} />
-									<div class="flex flex-col">
-										<span class="font-medium">Plain Text</span>
-										<span class="text-xs text-muted-foreground">.txt file</span>
-									</div>
-								</DropdownMenu.Item>
-								<DropdownMenu.Item on:click={downloadAsDoc} class="gap-3">
-									<FileText size={16} />
-									<div class="flex flex-col">
-										<span class="font-medium">Word Document</span>
-										<span class="text-xs text-muted-foreground">.doc file</span>
-									</div>
-								</DropdownMenu.Item>
-							</DropdownMenu.Content>
-						</DropdownMenu.Root>
-					</div>
-				</div>
-
 				<DocumentHeader
 					documentTitle={documentTitle || ''}
 					{documentPrompt}
@@ -1259,76 +1123,6 @@
 </div>
 
 <style>
-	.enhanced-toolbar {
-		display: flex;
-		align-items: center;
-		justify-content: flex-end;
-		gap: 1.5rem;
-		border-radius: 1rem;
-		margin-bottom: 1.5rem;
-		flex-wrap: nowrap;
-	}
-
-	/* Status Section */
-	.status-section {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-	}
-
-	.status-indicator {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.5rem 0.75rem;
-		border-radius: 9999px;
-		font-size: 0.875rem;
-		font-weight: 500;
-		transition: all 0.2s ease;
-	}
-
-	.status-icon {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-shrink: 0;
-	}
-
-	.status-text {
-		white-space: nowrap;
-	}
-
-	/* Status variants */
-	.status-saved {
-		background: hsl(var(--color-success) / 0.1);
-		color: hsl(var(--color-success));
-		border: 1px solid hsl(var(--color-success) / 0.2);
-	}
-
-	.status-saving {
-		background: hsl(var(--color-info) / 0.1);
-		color: hsl(var(--color-info));
-		border: 1px solid hsl(var(--color-info) / 0.2);
-	}
-
-	.status-unsaved {
-		background: hsl(var(--color-warning) / 0.1);
-		color: hsl(var(--color-warning));
-		border: 1px solid hsl(var(--color-warning) / 0.2);
-	}
-
-	.status-error {
-		background: hsl(var(--color-error) / 0.1);
-		color: hsl(var(--color-error));
-		border: 1px solid hsl(var(--color-error) / 0.2);
-	}
-
-	.status-offline {
-		background: hsl(var(--color-base-300) / 0.5);
-		color: hsl(var(--color-base-content) / 0.7);
-		border: 1px solid hsl(var(--color-base-300));
-	}
-
 	/* Loading spinner */
 	.loading-spinner {
 		width: 16px;
@@ -1356,132 +1150,6 @@
 		.feedback-section {
 			margin-top: 1.5rem;
 			margin-bottom: 1.5rem;
-		}
-	}
-
-	/* Save Button */
-	.save-button {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.5rem 1rem;
-		background: hsl(var(--color-primary));
-		color: white;
-		border: none;
-		border-radius: 0.5rem;
-		font-size: 0.875rem;
-		font-weight: 500;
-		cursor: pointer;
-		transition: all 0.2s ease;
-	}
-
-	.save-button:hover:not(:disabled) {
-		background: hsl(var(--color-primary) / 0.9);
-		transform: translateY(-1px);
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	}
-
-	.save-button:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-		transform: none;
-	}
-
-	.save-button.save-error {
-		background: hsl(var(--color-error));
-	}
-
-	.save-button.save-error:hover:not(:disabled) {
-		background: hsl(var(--color-error) / 0.9);
-	}
-
-	.save-button.save-offline {
-		background: hsl(var(--color-warning));
-	}
-
-	.save-button.save-offline:hover:not(:disabled) {
-		background: hsl(var(--color-warning) / 0.9);
-	}
-
-	/* Actions Section */
-	.actions-section {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-	}
-
-	.dropdown-arrow {
-		width: 16px;
-		height: 16px;
-		transition: transform 0.2s ease;
-	}
-
-	/* You can style the dropdown trigger state if needed */
-	:global([data-state='open']) .dropdown-arrow {
-		transform: rotate(180deg);
-	}
-
-	/* Mobile Responsive */
-	@media (max-width: 768px) {
-		.enhanced-toolbar {
-			display: flex;
-			justify-content: right;
-			gap: 1.5rem;
-			margin-bottom: 1.5rem;
-		}
-
-		.status-section {
-			width: 100%;
-			justify-content: center;
-		}
-
-		.actions-section {
-			width: 100%;
-			justify-content: center;
-		}
-
-		.action-text,
-		.save-text {
-			display: none;
-		}
-
-		.status-text {
-			font-size: 0.8rem;
-		}
-	}
-
-	@media (max-width: 480px) {
-		/* .enhanced-toolbar {
-			padding: 0.75rem;
-		} */
-
-		.status-indicator {
-			padding: 0.375rem 0.5rem;
-			font-size: 0.75rem;
-		}
-
-		.save-button {
-			padding: 0.375rem 0.75rem;
-			font-size: 0.75rem;
-		}
-	}
-
-	/* Dark mode support */
-	@media (prefers-color-scheme: dark) {
-		.enhanced-toolbar {
-			background: hsl(var(--color-base-800));
-			border-color: hsl(var(--color-base-600));
-		}
-	}
-
-	/* High contrast mode */
-	@media (prefers-contrast: high) {
-		.enhanced-toolbar {
-			border-width: 2px;
-		}
-
-		.status-indicator {
-			border-width: 2px;
 		}
 	}
 
@@ -1515,25 +1183,6 @@
 		box-shadow: none;
 	}
 
-	/* .document-header-wrapper {
-    width: 100%;
-  }
-
-  .integrated-toolbar {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--color-base-200);
-  }
-
-  .save-section {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  } */
 	/* TipTap editor responsive styling */
 	:global(.tiptap) {
 		min-height: 800px;
