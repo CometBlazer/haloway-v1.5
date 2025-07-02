@@ -205,48 +205,48 @@
 
 <div class="dashboard-container">
 	<!-- Header -->
-	<div class="dashboard-header">
+	<div class="dashboard-header mx-auto mb-10">
 		<div class="header-content">
 			<h1 class="header-title">All Essays</h1>
 			<p class="header-subtitle">
 				{documents.length} essay{documents.length !== 1 ? 's' : ''} total
 			</p>
 		</div>
+
+		<!-- Info Banner -->
+		<Alert.Root class="info-banner">
+			<Alert.Description class="text-center">
+				<p class="banner-text">
+					We're working on sorting, searching, due date notifications, AI
+					feedback, and more. Love what you see? <strong
+						>Share <a href={WebsiteBaseUrl} class="banner-link" target="_blank"
+							>{WebsiteBaseUrl}</a
+						>
+						with your friends</strong
+					> and help us grow!
+				</p>
+			</Alert.Description>
+		</Alert.Root>
+
+		<!-- Schools Filter -->
+		{#if schools.length > 0}
+			<Section.Root anchor="schools">
+				<div class="schools-filter">
+					<div class="schools-filter-header">
+						<h2 class="schools-filter-title">Filter by school</h2>
+						<p class="schools-filter-subtitle">
+							{schools.length} school{schools.length !== 1 ? 's' : ''} with essays
+						</p>
+					</div>
+					<div class="schools-chips">
+						{#each schools as school (school.urlSafeName)}
+							<SchoolChip {school} variant="outline" size="md" />
+						{/each}
+					</div>
+				</div>
+			</Section.Root>
+		{/if}
 	</div>
-
-	<!-- Schools Filter -->
-	{#if schools.length > 0}
-		<Section.Root anchor="schools">
-			<div class="schools-filter">
-				<div class="schools-filter-header">
-					<h2 class="schools-filter-title">Filter by school</h2>
-					<p class="schools-filter-subtitle">
-						{schools.length} school{schools.length !== 1 ? 's' : ''} with essays
-					</p>
-				</div>
-				<div class="schools-chips">
-					{#each schools as school (school.urlSafeName)}
-						<SchoolChip {school} variant="outline" size="md" />
-					{/each}
-				</div>
-			</div>
-		</Section.Root>
-	{/if}
-
-	<!-- Info Banner -->
-	<Alert.Root class="info-banner">
-		<Alert.Description class="text-center">
-			<p class="banner-text">
-				We're working on sorting, searching, due date notifications, AI
-				feedback, and more. Love what you see? <strong
-					>Share <a href={WebsiteBaseUrl} class="banner-link" target="_blank"
-						>{WebsiteBaseUrl}</a
-					>
-					with your friends</strong
-				> and help us grow!
-			</p>
-		</Alert.Description>
-	</Alert.Root>
 
 	<!-- Documents Grid -->
 	{#if documents.length === 0}
@@ -265,6 +265,7 @@
 		</div>
 	{:else}
 		<!-- Documents Grid -->
+		<h3 class="text-lg font-semibold">Last Updated</h3>
 		<div class="documents-grid">
 			{#each documents as document (document.id)}
 				<EssayCard
@@ -326,9 +327,9 @@
 <style>
 	/* Dashboard Container */
 	.dashboard-container {
-		max-width: 1280px;
+		max-width: 1680px;
 		margin: 0 auto;
-		padding: 1.5rem;
+		padding: 2rem;
 		display: flex;
 		flex-direction: column;
 		gap: 1.5rem;
@@ -336,6 +337,7 @@
 
 	/* Header Styles */
 	.dashboard-header {
+		max-width: 1080px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -416,6 +418,10 @@
 		background: hsl(var(--color-base-100));
 		border: 1px solid hsl(var(--color-base-300));
 		border-radius: 0.75rem;
+		width: 100%;
+		max-width: 1080px;
+		margin: 0 auto;
+		box-sizing: border-box;
 	}
 
 	.schools-filter-header {

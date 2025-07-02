@@ -293,15 +293,24 @@
 								size="medium"
 							/>
 							<input type="hidden" name="school" value={newEssayForm.school} />
+							<p class="pb-2 text-xs text-muted-foreground">
+								*You can also select "Uncategorized" to create an uncategorized
+								essay for essays that don't belong to a specific school, like
+								your Common App personal statement.
+							</p>
 						</div>
 
 						<div class="space-y-2">
 							<Label for="title" class="text-sm font-medium">Essay Title</Label>
+							<p class="pb-2 text-xs text-muted-foreground">
+								Give your essay a descriptive title to help you find it later.
+								This is optional, but recommended.
+							</p>
 							<Input
 								id="title"
 								name="title"
 								bind:value={newEssayForm.title}
-								placeholder="Give your essay a descriptive title (optional)"
+								placeholder="Eg. Harvard Supp #1, Personal Statement, etc. (optional)"
 							/>
 						</div>
 
