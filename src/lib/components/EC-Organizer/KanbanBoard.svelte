@@ -76,24 +76,44 @@
 		try {
 			sortableInstance = Sortable.create(sortableContainer, {
 				handle: '.sortable-handle',
-				animation: 300,
+				animation: 300, // Sortable's built-in animation
+				easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)', // Material design easing
 				ghostClass: 'sortable-ghost',
 				chosenClass: 'sortable-chosen',
 				dragClass: 'sortable-drag',
-				forceFallback: false, // Changed to false for better browser support
+				forceFallback: false,
 				fallbackClass: 'sortable-fallback',
 				fallbackOnBody: true,
-				swapThreshold: 0.65,
+				swapThreshold: 0.8,
 				scroll: true,
 				scrollSensitivity: 30,
 				scrollSpeed: 10,
 				bubbleScroll: true,
+				// Key settings for smooth transitions
+				removeCloneOnHide: false,
+				revertOnSpill: false,
+				// Enable smooth dragging
+				dragoverBubble: false,
+				dropBubble: false,
+				preventOnFilter: false,
 				onStart: () => {
 					document.body.classList.add('is-dragging');
+					// Disable transitions during active drag
+					if (sortableContainer) {
+						sortableContainer.classList.add('dragging-active');
+					}
 					console.log('Drag started');
 				},
 				onEnd: (evt) => {
 					document.body.classList.remove('is-dragging');
+
+					// Re-enable transitions after a short delay
+					setTimeout(() => {
+						if (sortableContainer) {
+							sortableContainer.classList.remove('dragging-active');
+						}
+					}, 50);
+
 					console.log('Drag ended', evt);
 
 					const { oldIndex, newIndex } = evt;
@@ -267,7 +287,7 @@
 					</Button>
 				</div>
 			{:else}
-				<div bind:this={sortableContainer} class="sortable-container space-y-6">
+				<div bind:this={sortableContainer} class="sortable-container">
 					{#each activities as activity (activity.id)}
 						<ActivityCard
 							{activity}
@@ -282,30 +302,24 @@
 </div>
 
 <style>
-	/* SortableJS styling */
+	/* Sortable.js styling - clean and minimal */
 	:global(.sortable-ghost) {
 		opacity: 0.4;
-		transform: rotate(2deg);
+		/* transform: scale(1.02); */
 	}
 
 	:global(.sortable-chosen) {
 		cursor: grabbing !important;
+		z-index: 1000;
+		/* transform: scale(1.03); */
+		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 	}
 
 	:global(.sortable-drag) {
-		transform: rotate(5deg);
-		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-		opacity: 1;
-	}
-
-	:global(.sortable-fallback) {
-		display: block !important;
-		transform: rotate(5deg);
-		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-		background: hsl(var(--background));
-		border-radius: 8px;
-		opacity: 0.9;
-		cursor: grabbing !important;
+		opacity: 0.8 !important;
+		transform: scale(1.05) !important;
+		box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2) !important;
+		z-index: 1001;
 	}
 
 	/* Prevent text selection during drag */
@@ -316,37 +330,79 @@
 		-ms-user-select: none;
 	}
 
-	/* Smooth transitions when not dragging */
-	.sortable-container :global(.sortable-item) {
+	/* Default smooth transitions for all items when NOT dragging */
+	.sortable-container:not(.dragging-active) :global(.sortable-item) {
 		transition:
-			transform 0.2s ease,
-			box-shadow 0.2s ease;
+			transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+			margin 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+			box-shadow 0.3s ease;
 	}
 
-	/* Disable transitions during drag */
-	:global(.is-dragging) .sortable-container :global(.sortable-item) {
-		transition: none !important;
+	/* Disable ALL transitions during active dragging to let Sortable.js handle it */
+
+	/* Re-enable transitions after drag */
+	.sortable-container :global(.sortable-item) {
+		transform-origin: center center;
+		will-change: transform;
+	}
+
+	/* Simple hover effect - just slight lift */
+	.sortable-container:not(.dragging-active) :global(.sortable-item:hover) {
+		transform: scale(1.01);
+		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 	}
 
 	/* Handle styling */
 	:global(.sortable-handle) {
 		touch-action: none;
 		cursor: grab;
-		border-radius: 4px;
-		transition: background-color 0.2s ease;
+		border-radius: 6px;
+		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+		padding: 8px;
+		margin: -8px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	:global(.sortable-handle:hover) {
 		background-color: hsl(var(--muted));
+		transform: scale(1.1);
 	}
 
 	:global(.sortable-handle:active) {
 		cursor: grabbing;
+		transform: scale(0.95);
 	}
 
-	/* Ensure the sortable container has proper styling */
+	/* Container setup for smooth animations */
 	.sortable-container {
 		min-height: 100px;
 		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	/* Ensure proper spacing without margin conflicts */
+	.sortable-container > :global(.sortable-item) {
+		margin: 0 !important;
+		position: relative;
+	}
+
+	/* Simple entry animation for new items */
+	.sortable-container :global(.sortable-item) {
+		/* animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); */
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: scale(0.95);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
 	}
 </style>
