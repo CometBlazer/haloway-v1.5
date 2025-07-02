@@ -132,20 +132,39 @@
 			'for school:',
 			school,
 		);
-		// Use the already computed school URL-safe name from the server data
-		const schoolData = schools.find((s) => s.name === school);
-		const schoolSlug =
-			schoolData?.urlSafeName ||
-			school
-				.toLowerCase()
-				.replace(/[^a-z0-9-]/g, '-')
-				.replace(/-+/g, '-')
-				.replace(/^-+|-+$/g, '');
 
-		if (currentVersion?.id) {
-			goto(`/schools/${schoolSlug}/write/${documentId}/${currentVersion.id}`);
-		} else {
-			goto(`/schools/${schoolSlug}/write/${documentId}`);
+		// Validate inputs
+		if (!documentId) {
+			console.error('Document ID is required');
+			return;
+		}
+
+		if (!school) {
+			console.error('School name is required');
+			return;
+		}
+
+		// Find school data
+		const schoolData = schools.find((s) => s.name === school);
+
+		if (!schoolData || !schoolData.urlSafeName) {
+			console.error(`School "${school}" not found or has no URL-safe name`);
+			return;
+		}
+
+		const schoolSlug = schoolData.urlSafeName;
+
+		try {
+			if (currentVersion?.id) {
+				await goto(
+					`/schools/${schoolSlug}/write/${documentId}/${currentVersion.id}`,
+				);
+			} else {
+				await goto(`/schools/${schoolSlug}/write/${documentId}`);
+			}
+		} catch (error) {
+			console.error('Navigation error:', error);
+			// Handle navigation error appropriately
 		}
 	}
 
