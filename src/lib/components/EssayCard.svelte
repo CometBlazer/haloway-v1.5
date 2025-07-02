@@ -3,14 +3,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { getSchoolUrlSafeNameStrict } from '$lib/utils/validation';
-	import {
-		FileText,
-		Calendar,
-		Edit3,
-		Trash,
-		Clock,
-		GraduationCap,
-	} from 'lucide-svelte';
+	import { Calendar, Edit3, Trash, Clock, ArrowUpRight } from 'lucide-svelte';
 	import type { Status } from '$lib/components/Editor/StatusDropdown.svelte';
 	import dayjs from 'dayjs';
 
@@ -72,13 +65,6 @@
 			alert(
 				'Error navigating to school page. If the problem persists, please contact support.',
 			);
-			// Fallback to basic slug conversion if the validation function fails
-			// const fallbackSlug = document.school
-			// 	.toLowerCase()
-			// 	.replace(/[^a-z0-9-]/g, '-')
-			// 	.replace(/-+/g, '-')
-			// 	.replace(/^-+|-+$/g, '');
-			// goto(`/schools/${fallbackSlug}`);
 		}
 	}
 
@@ -177,18 +163,19 @@
 	>
 		<!-- Card Header -->
 		<div class="card-header">
-			<div class="header-main">
-				<div class="document-icon">
-					<FileText size={20} />
+			<!-- School Info -->
+			{#if document.school}
+				<div class="school-info">
+					<button
+						class="school-name"
+						on:click={handleSchoolClick}
+						aria-label="Go to {document.school} essays"
+					>
+						{document.school}
+					</button>
+					<ArrowUpRight size={14} class="school-icon" />
 				</div>
-				<div class="title-container h-14">
-					<h3 class="document-title">
-						{document.title && document.title.length > 50
-							? document.title.substring(0, 50) + '...'
-							: document.title || 'Untitled Essay'}
-					</h3>
-				</div>
-			</div>
+			{/if}
 			<button
 				class="delete-btn"
 				on:click={handleDeleteClick}
@@ -197,19 +184,6 @@
 				<Trash size={16} />
 			</button>
 		</div>
-		<!-- School Info -->
-		{#if document.school}
-			<div class="school-info">
-				<GraduationCap size={14} class="school-icon" />
-				<button
-					class="school-name"
-					on:click={handleSchoolClick}
-					aria-label="Go to {document.school} essays"
-				>
-					{document.school}
-				</button>
-			</div>
-		{/if}
 
 		<!-- Card Body -->
 		<div class="card-body">
@@ -236,7 +210,19 @@
 		</div>
 
 		<!-- Card Footer -->
-		<div class="card-footer mt-2">
+		<div class="card-footer mt-4">
+			<div class="header-main">
+				<!-- <div class="document-icon">
+					<FileText size={20} />
+				</div> -->
+				<div class="title-container h-14">
+					<h3 class="document-title">
+						{document.title && document.title.length > 50
+							? document.title.substring(0, 50) + '...'
+							: document.title || 'Untitled Essay'}
+					</h3>
+				</div>
+			</div>
 			<div class="meta-info">
 				<div class="date-info">
 					<div class="date-item">
@@ -387,8 +373,6 @@
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
-		padding: 0 1.25rem;
-		margin-bottom: 0.75rem;
 	}
 
 	.school-icon {
