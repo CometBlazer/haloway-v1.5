@@ -58,7 +58,7 @@
 	}
 
 	function handleTimingChange(
-		timing: 'school_year' | 'school_break' | 'all_year',
+		timing: 'schoolYear' | 'schoolBreak' | 'allYear',
 		checked: boolean,
 	) {
 		const timings = { ...activity.timingOfParticipation };
@@ -112,8 +112,12 @@
 				<div class="space-y-2">
 					<Label for="activityType-{activity.id}">Activity Type</Label>
 					<Select
-						value={activity.activityType}
-						onValueChange={(value) => handleUpdate('activityType', value || '')}
+						selected={{
+							value: activity.activityType,
+							label: activity.activityType,
+						}}
+						onSelectedChange={(selected) =>
+							handleUpdate('activityType', selected?.value || '')}
 					>
 						<SelectTrigger id="activityType-{activity.id}">
 							<SelectValue placeholder="Select activity type..." />
@@ -199,22 +203,50 @@
 				<div class="space-y-3">
 					<Label>Participation Levels (Grade)</Label>
 					<div class="grid grid-cols-2 gap-3">
-						{#each ['9', '10', '11', '12'] as grade}
-							<div class="flex items-center space-x-2">
-								<Checkbox
-									id="grade-{grade}-{activity.id}"
-									checked={activity.participationLevels?.[grade] || false}
-									onCheckedChange={(checked) =>
-										handleParticipationLevelChange(grade, checked)}
-								/>
-								<Label
-									for="grade-{grade}-{activity.id}"
-									class="text-sm font-normal"
-								>
-									Grade {grade}
-								</Label>
-							</div>
-						{/each}
+						<div class="flex items-center space-x-2">
+							<Checkbox
+								id="grade-9-{activity.id}"
+								checked={activity.participationLevels?.['9'] || false}
+								onCheckedChange={(checked) =>
+									handleParticipationLevelChange('9', !!checked)}
+							/>
+							<Label for="grade-9-{activity.id}" class="text-sm font-normal">
+								Grade 9
+							</Label>
+						</div>
+						<div class="flex items-center space-x-2">
+							<Checkbox
+								id="grade-10-{activity.id}"
+								checked={activity.participationLevels?.['10'] || false}
+								onCheckedChange={(checked) =>
+									handleParticipationLevelChange('10', !!checked)}
+							/>
+							<Label for="grade-10-{activity.id}" class="text-sm font-normal">
+								Grade 10
+							</Label>
+						</div>
+						<div class="flex items-center space-x-2">
+							<Checkbox
+								id="grade-11-{activity.id}"
+								checked={activity.participationLevels?.['11'] || false}
+								onCheckedChange={(checked) =>
+									handleParticipationLevelChange('11', !!checked)}
+							/>
+							<Label for="grade-11-{activity.id}" class="text-sm font-normal">
+								Grade 11
+							</Label>
+						</div>
+						<div class="flex items-center space-x-2">
+							<Checkbox
+								id="grade-12-{activity.id}"
+								checked={activity.participationLevels?.['12'] || false}
+								onCheckedChange={(checked) =>
+									handleParticipationLevelChange('12', !!checked)}
+							/>
+							<Label for="grade-12-{activity.id}" class="text-sm font-normal">
+								Grade 12
+							</Label>
+						</div>
 					</div>
 				</div>
 
@@ -222,23 +254,48 @@
 				<div class="space-y-3">
 					<Label>Timing of Participation</Label>
 					<div class="space-y-2">
-						{#each [{ key: 'school_year', label: 'During school year' }, { key: 'school_break', label: 'During school break' }, { key: 'all_year', label: 'All year' }] as timing}
-							<div class="flex items-center space-x-2">
-								<Checkbox
-									id="timing-{timing.key}-{activity.id}"
-									checked={activity.timingOfParticipation?.[timing.key] ||
-										false}
-									onCheckedChange={(checked) =>
-										handleTimingChange(timing.key, checked)}
-								/>
-								<Label
-									for="timing-{timing.key}-{activity.id}"
-									class="text-sm font-normal"
-								>
-									{timing.label}
-								</Label>
-							</div>
-						{/each}
+						<div class="flex items-center space-x-2">
+							<Checkbox
+								id="timing-schoolYear-{activity.id}"
+								checked={activity.timingOfParticipation?.schoolYear || false}
+								onCheckedChange={(checked) =>
+									handleTimingChange('schoolYear', !!checked)}
+							/>
+							<Label
+								for="timing-schoolYear-{activity.id}"
+								class="text-sm font-normal"
+							>
+								During school year
+							</Label>
+						</div>
+						<div class="flex items-center space-x-2">
+							<Checkbox
+								id="timing-schoolBreak-{activity.id}"
+								checked={activity.timingOfParticipation?.schoolBreak || false}
+								onCheckedChange={(checked) =>
+									handleTimingChange('schoolBreak', !!checked)}
+							/>
+							<Label
+								for="timing-schoolBreak-{activity.id}"
+								class="text-sm font-normal"
+							>
+								During school break
+							</Label>
+						</div>
+						<div class="flex items-center space-x-2">
+							<Checkbox
+								id="timing-allYear-{activity.id}"
+								checked={activity.timingOfParticipation?.allYear || false}
+								onCheckedChange={(checked) =>
+									handleTimingChange('allYear', !!checked)}
+							/>
+							<Label
+								for="timing-allYear-{activity.id}"
+								class="text-sm font-normal"
+							>
+								All year
+							</Label>
+						</div>
 					</div>
 				</div>
 
