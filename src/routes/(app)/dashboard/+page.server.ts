@@ -1,3 +1,4 @@
+// src/routes/(app)/dashboard/+page.server.ts
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { supabase } from '$lib/supabase';

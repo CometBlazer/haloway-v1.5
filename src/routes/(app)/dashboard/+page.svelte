@@ -1,7 +1,7 @@
 <!-- src/routes/(app)/dashboard/+page.svelte -->
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { FileText, Plus, Trash, Loader2 } from 'lucide-svelte';
+	import { FileText, Trash, Loader2 } from 'lucide-svelte';
 	import type { PageData, ActionData } from './$types';
 	import { WebsiteBaseUrl, WebsiteName } from '../../../config';
 	import { toastStore } from '$lib/stores/toast';
@@ -13,24 +13,9 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Alert from '$lib/components/ui/alert';
 	import * as Section from '$lib/components/landing/section';
-	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
-	import { Textarea } from '$lib/components/ui/textarea';
 	import CompleteProfileModal from '$lib/components/CompleteProfileModal.svelte';
-	import SchoolDropdown from '$lib/components/Editor/SchoolDropdown.svelte';
 	import EssayCard from '$lib/components/EssayCard.svelte';
 	import SchoolChip from '$lib/components/SchoolChip.svelte';
-
-	import CalendarIcon from 'lucide-svelte/icons/calendar';
-	import {
-		DateFormatter,
-		type DateValue,
-		getLocalTimeZone,
-	} from '@internationalized/date';
-	import { cn } from '$lib/utils';
-	import { buttonVariants } from '$lib/components/ui/button';
-	import * as Popover from '$lib/components/ui/popover';
-	import { Calendar } from '$lib/components/ui/calendar';
 
 	export let data: PageData;
 	export let form: ActionData;
@@ -39,33 +24,6 @@
 	let showDeleteModal = false;
 	let isDeleting = false;
 	let documentToDelete: { id: string; title: string } | null = null;
-
-	// New essay modal state
-	let showNewEssayModal = false;
-	let isCreatingEssay = false;
-
-	// New essay form data
-	let newEssayForm = {
-		school: '',
-		title: '',
-		prompt: '',
-		dueDate: '',
-	};
-
-	// Date formatter for the date picker
-	const df = new DateFormatter('en-US', {
-		dateStyle: 'medium',
-	});
-
-	// Date picker state
-	let dueDateValue: DateValue | undefined = undefined;
-
-	// Update this reactive statement to sync date picker with form
-	$: if (dueDateValue) {
-		newEssayForm.dueDate = dueDateValue.toString();
-	} else {
-		newEssayForm.dueDate = '';
-	}
 
 	// Profile completion modal state
 	let showProfileModal = !data.profileComplete;
@@ -110,9 +68,6 @@
 	function handleKeydown(event: KeyboardEvent): void {
 		if (event.key === 'Escape' && showDeleteModal && !isDeleting) {
 			closeDeleteModal();
-		}
-		if (event.key === 'Escape' && showNewEssayModal && !isCreatingEssay) {
-			closeNewEssayModal();
 		}
 	}
 
@@ -166,28 +121,6 @@
 			console.error('Navigation error:', error);
 			// Handle navigation error appropriately
 		}
-	}
-
-	function createNewDocument(): void {
-		showNewEssayModal = true;
-	}
-
-	function closeNewEssayModal(): void {
-		if (isCreatingEssay) return;
-		showNewEssayModal = false;
-		// Reset form
-		newEssayForm = {
-			school: '',
-			title: '',
-			prompt: '',
-			dueDate: '',
-		};
-		// Reset due date value
-		dueDateValue = undefined;
-	}
-
-	function handleSchoolChange(event: CustomEvent<string>) {
-		newEssayForm.school = event.detail;
 	}
 
 	// Handle card events
@@ -275,15 +208,10 @@
 	<div class="dashboard-header">
 		<div class="header-content">
 			<h1 class="header-title">All Essays</h1>
-			<!-- <p>View your drafts</p> -->
 			<p class="header-subtitle">
 				{documents.length} essay{documents.length !== 1 ? 's' : ''} total
 			</p>
 		</div>
-		<Button size="lg" on:click={createNewDocument}>
-			<Plus class="mr-1.5 h-5 w-5" />
-			Create / Import Essay
-		</Button>
 	</div>
 
 	<!-- Schools Filter -->
@@ -330,13 +258,9 @@
 					No essays yet
 				</h3>
 				<p class="text-neutral-content m-0 leading-relaxed">
-					Get started by creating your first essay. Click the "New Essay" button
-					above to begin writing.
+					Get started by creating your first essay. Use the "Create Essay"
+					button in the sidebar to begin writing.
 				</p>
-				<Button size="lg" on:click={createNewDocument}>
-					<Plus class="mr-2 h-5 w-5" />
-					Create Your First Essay
-				</Button>
 			</div>
 		</div>
 	{:else}
@@ -399,160 +323,6 @@
 	/>
 {/if}
 
-<!-- New Essay Modal -->
-<Dialog.Root bind:open={showNewEssayModal}>
-	<Dialog.Content class="sm:max-w-lg">
-		<Dialog.Header>
-			<Dialog.Title>Add a New Essay</Dialog.Title>
-			<Dialog.Description>
-				Fill in as much information as you can — you can always edit it later.
-			</Dialog.Description>
-		</Dialog.Header>
-
-		{#if isCreatingEssay}
-			<div class="flex flex-col items-center justify-center space-y-4 py-8">
-				<Loader2 class="h-8 w-8 animate-spin text-primary" />
-				<p class="text-center text-muted-foreground">Creating essay...</p>
-			</div>
-		{:else}
-			<form
-				method="POST"
-				action="?/createDocument"
-				use:enhance={() => {
-					isCreatingEssay = true;
-					return async ({ result, update }) => {
-						// Always reset loading state for non-redirect results
-						if (result.type !== 'redirect') {
-							isCreatingEssay = false;
-							if (
-								result.type === 'failure' &&
-								result.data?.error &&
-								typeof result.data.error === 'object' &&
-								'message' in result.data.error
-							) {
-								toastStore.show(String(result.data.error.message), 'error');
-							} else if (result.type === 'failure') {
-								toastStore.show('Failed to create essay', 'error');
-							}
-						} else {
-							// For redirects, show success but don't reset loading
-							toastStore.show('Essay created successfully', 'success');
-							closeNewEssayModal();
-						}
-						// Let SvelteKit handle all result types naturally
-						await update();
-					};
-				}}
-			>
-				<div class="space-y-4">
-					<div class="space-y-2">
-						<Label for="school" class="text-sm font-medium">
-							Choose a school to assign this essay <span
-								class="text-destructive">*</span
-							>
-						</Label>
-						<p class="pb-2 text-xs text-muted-foreground">
-							We're constantly adding new schools — if you can't find your
-							school, please let us know and we'll add it as soon as possible.
-						</p>
-						<SchoolDropdown
-							currentSchool={newEssayForm.school}
-							on:schoolChange={handleSchoolChange}
-							disabled={false}
-							size="medium"
-						/>
-						<input type="hidden" name="school" value={newEssayForm.school} />
-					</div>
-
-					<div class="space-y-2">
-						<Label for="title" class="text-sm font-medium">Essay Title</Label>
-						<Input
-							id="title"
-							name="title"
-							bind:value={newEssayForm.title}
-							placeholder="Give your essay a descriptive title (optional)"
-						/>
-					</div>
-
-					<div class="space-y-2">
-						<Label for="prompt" class="text-sm font-medium">Essay Prompt</Label>
-						<Textarea
-							id="prompt"
-							name="prompt"
-							bind:value={newEssayForm.prompt}
-							placeholder="If you have your prompt, paste it here (optional)"
-							rows={3}
-						/>
-					</div>
-
-					<div class="space-y-2">
-						<Label for="dueDate" class="text-sm font-medium"
-							>Due date (optional)</Label
-						>
-						<p class="pb-2 text-xs text-muted-foreground">
-							If you know your school's due date, you can add it here.
-						</p>
-
-						<Popover.Root>
-							<Popover.Trigger
-								class={cn(
-									buttonVariants({
-										variant: 'outline',
-									}),
-									'h-10 w-full justify-start text-left font-normal',
-									!dueDateValue && 'text-muted-foreground',
-								)}
-							>
-								<CalendarIcon class="mr-2 h-4 w-4" />
-								{dueDateValue
-									? df.format(dueDateValue.toDate(getLocalTimeZone()))
-									: 'Select due date (optional)'}
-							</Popover.Trigger>
-							<Popover.Content class="w-auto p-0" align="start">
-								<Calendar
-									bind:value={dueDateValue}
-									placeholder={dueDateValue}
-									onValueChange={(date) => {
-										dueDateValue = date;
-									}}
-								/>
-							</Popover.Content>
-						</Popover.Root>
-
-						<!-- Keep the hidden input for form submission -->
-						<input type="hidden" name="dueDate" value={newEssayForm.dueDate} />
-					</div>
-
-					<Dialog.Footer class="mt-4 gap-2">
-						<Button
-							type="button"
-							variant="outline"
-							on:click={closeNewEssayModal}
-							class="w-full sm:w-auto"
-							disabled={isCreatingEssay}
-						>
-							Cancel
-						</Button>
-						<Button
-							type="submit"
-							disabled={!newEssayForm.school || isCreatingEssay}
-							class="w-full sm:w-auto"
-						>
-							{#if isCreatingEssay}
-								<Loader2 class="mr-2 h-4 w-4 animate-spin" />
-								Creating...
-							{:else}
-								<Plus class="mr-2 h-4 w-4" />
-								Finish Creating Essay
-							{/if}
-						</Button>
-					</Dialog.Footer>
-				</div>
-			</form>
-		{/if}
-	</Dialog.Content>
-</Dialog.Root>
-
 <style>
 	/* Dashboard Container */
 	.dashboard-container {
@@ -568,21 +338,16 @@
 	.dashboard-header {
 		display: flex;
 		flex-direction: column;
+		align-items: center;
+		text-align: center;
 		gap: 1rem;
-	}
-
-	@media (min-width: 640px) {
-		.dashboard-header {
-			flex-direction: row;
-			align-items: flex-start;
-			justify-content: space-between;
-		}
 	}
 
 	.header-content {
 		display: flex;
 		flex-direction: column;
 		gap: 0.25rem;
+		align-items: center;
 	}
 
 	.header-title {
@@ -593,17 +358,6 @@
 		letter-spacing: -0.025em;
 	}
 
-	/* .header-link {
-		font-size: 0.875rem;
-		color: hsl(var(--color-neutral-content));
-		text-decoration: none;
-		transition: text-decoration 0.2s ease;
-	}
-
-	.header-link:hover {
-		text-decoration: underline;
-	} */
-
 	.header-subtitle {
 		font-size: 1.125rem;
 		color: hsl(var(--color-neutral-content));
@@ -611,17 +365,6 @@
 	}
 
 	/* Banner Styles */
-	/* .info-banner {
-		border: 1px solid hsl(var(--color-info) / 0.3);
-		background: linear-gradient(
-			to right,
-			hsl(var(--color-info) / 0.05),
-			hsl(var(--color-primary) / 0.05)
-		);
-		border-radius: 0.75rem;
-		padding: 1rem;
-	} */
-
 	.banner-text {
 		font-size: 0.875rem;
 		line-height: 1.6;
@@ -655,6 +398,12 @@
 	@media (min-width: 1024px) {
 		.documents-grid {
 			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	@media (min-width: 1280px) {
+		.documents-grid {
+			grid-template-columns: repeat(4, 1fr);
 		}
 	}
 
@@ -712,16 +461,9 @@
 		}
 
 		.header-title {
-			font-size: 1.5rem;
+			font-size: 2rem;
 		}
 	}
-
-	/* High contrast mode support */
-	/* @media (prefers-contrast: high) {
-		.info-banner {
-			border-width: 2px;
-		}
-	} */
 
 	/* Reduced motion support */
 	@media (prefers-reduced-motion: reduce) {
