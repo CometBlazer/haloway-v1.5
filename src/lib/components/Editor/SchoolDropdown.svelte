@@ -64,9 +64,9 @@
 
 	// Size-based styling classes
 	$: buttonSizeClass = {
-		small: 'h-8 px-2 text-xs min-w-[180px]',
-		medium: 'h-10 px-3 text-sm min-w-[200px]',
-		large: 'h-12 px-4 text-sm min-w-[240px]',
+		small: 'h-8 px-2 text-xs w-[180px]',
+		medium: 'h-10 px-3 text-sm w-[200px]',
+		large: 'h-12 px-4 text-sm w-[240px]',
 	}[size];
 
 	$: logoSizeClass = {
@@ -76,9 +76,9 @@
 	}[size];
 
 	$: popoverWidthClass = {
-		small: 'w-[200px]',
-		medium: 'w-[220px]',
-		large: 'w-[260px]',
+		small: 'min-w-[200px]',
+		medium: 'min-w-[220px]',
+		large: 'min-w-[260px]',
 	}[size];
 
 	// Handle school selection and focus management

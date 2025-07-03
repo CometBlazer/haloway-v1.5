@@ -108,7 +108,7 @@
 		innerWidth >= 1024
 			? ('medium' as const)
 			: innerWidth >= 768
-				? ('small' as const)
+				? ('medium' as const)
 				: ('small' as const);
 	$: dropdownSize =
 		innerWidth >= 1024
@@ -140,7 +140,7 @@
 	<Menubar.Root class="h-auto border-none bg-transparent p-0">
 		<div class="flex w-full items-center justify-between gap-1">
 			<!-- Left section: Status and Save -->
-			<div class="flex items-center gap-3">
+			<div class="flex items-center gap-2">
 				<!-- Save State Display -->
 				<div class="flex items-center gap-2">
 					<div
@@ -206,7 +206,7 @@
 						</div>
 
 						<!-- Status Text -->
-						<span class="status-text hidden text-sm sm:inline"
+						<span class="status-text text-xs sm:text-sm"
 							>{statusDisplay.text}</span
 						>
 					</div>
@@ -247,7 +247,7 @@
 							class="h-8 gap-1 rounded-xl px-3 text-sm md:h-10"
 						>
 							<Download class="h-4 w-4" />
-							<span class="hidden sm:inline">Export</span>
+							<!-- <span class="hidden sm:inline">Export</span> -->
 						</Button>
 					</DropdownMenu.Trigger>
 					<DropdownMenu.Content align="start" class="w-48">
@@ -270,7 +270,7 @@
 			</div>
 
 			<!-- Center section: Main controls (hidden on mobile, shown in dropdown) -->
-			<div class="hidden items-center gap-3 xl:flex">
+			<div class="hidden items-center gap-2 lg:flex">
 				<DatePicker
 					selectedDate={picked}
 					onSelect={handleDueDateChange}
@@ -304,7 +304,7 @@
 					class="h-8 gap-2 rounded-xl px-3 text-xs md:h-10"
 				>
 					<History class="h-3 w-3" />
-					<span>Checkpoints</span>
+					<!-- <span>Checkpoints</span> -->
 					<span class="max-w-20 truncate text-xs text-muted-foreground">
 						{currentVersionName}
 					</span>
@@ -324,7 +324,7 @@
 				</div>
 
 				<!-- Mobile dropdown menu -->
-				<div class="xl:hidden">
+				<div class="lg:hidden">
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger asChild let:builder>
 							<Button

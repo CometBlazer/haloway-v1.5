@@ -20,6 +20,7 @@
 	export let currentStatus: Status = 'not-started';
 	export let disabled = false;
 	export let size: 'xs' | 'sm' | 'md' | 'lg' = 'md';
+	export let showText = false;
 
 	// Configuration for each status
 	const statusConfig: Record<Status, { label: string; badgeClass: string }> = {
@@ -98,7 +99,9 @@
 			<div class="status-badge {currentConfig.badgeClass}">
 				<div class="status-dot"></div>
 			</div>
-			<span class="status-label">{currentConfig.label}</span>
+			<span class="status-label" class:visible={showText}
+				>{currentConfig.label}</span
+			>
 		</div>
 	</Select.Trigger>
 	<Select.Content class="status-content">
@@ -270,9 +273,13 @@
 		text-align: left;
 	}
 
-	/* 1280px = xl breakpoint */
+	.status-label.visible {
+		display: inline;
+	}
+
+	/* 1280px = xl breakpoint - show text by default on large screens unless explicitly hidden */
 	@media (min-width: 1280px) {
-		.status-label {
+		.status-label:not(.visible) {
 			display: inline;
 		}
 	}
