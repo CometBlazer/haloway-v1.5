@@ -190,18 +190,23 @@
 	async function handleFeedbackReceived(
 		event: CustomEvent<{ feedback: string; wordCount: number }>,
 	) {
-		currentFeedback = event.detail.feedback;
+		const newFeedback = event.detail.feedback;
+		currentFeedback = newFeedback;
 
-		// Update the current version data optimistically
+		// Safe to update AI fields - won't trigger content reload
 		if (data.currentVersion) {
-			data.currentVersion.latest_ai_response = event.detail.feedback;
+			data.currentVersion.latest_ai_response = newFeedback;
+			// Future: Add more AI fields here without breaking anything
+			// data.currentVersion.ai_suggestions = suggestions;
+			// data.currentVersion.ai_score = score;
+			// data.currentVersion.ai_analysis = analysis;
 		}
 
 		// Save feedback to database using server action
 		if ($page.params.versionId) {
 			try {
 				const formData = new FormData();
-				formData.append('feedback', event.detail.feedback); // Fixed: use event.detail.feedback instead of responseData.feedback
+				formData.append('feedback', newFeedback);
 
 				const saveResponse = await fetch('?/saveFeedback', {
 					method: 'POST',
@@ -210,7 +215,6 @@
 
 				if (!saveResponse.ok) {
 					console.error('Failed to save feedback to database');
-					// Don't fail the request if saving fails, but maybe show a warning
 					toastStore.show(
 						'Feedback generated but not saved. Please try again.',
 						'error',
@@ -220,7 +224,6 @@
 				}
 			} catch (error) {
 				console.error('Error saving feedback to database:', error);
-				// Don't fail the request if saving fails
 			}
 		}
 
@@ -930,9 +933,34 @@
 		handleEditorReady();
 	}
 
+	let lastLoadedVersionId = data.currentVersion?.id;
+	let lastLoadedVersionContent = data.currentVersion?.content;
+
 	// Watch for version changes and reload content
-	$: if (editorReady && data.currentVersion) {
-		loadVersionContent();
+	$: {
+		const shouldLoadContent =
+			editorReady &&
+			data.currentVersion &&
+			(data.currentVersion.id !== lastLoadedVersionId ||
+				JSON.stringify(data.currentVersion.content) !==
+					JSON.stringify(lastLoadedVersionContent));
+
+		if (shouldLoadContent) {
+			console.log('Loading content due to version/content change');
+			console.log(
+				'Version ID changed:',
+				data.currentVersion.id !== lastLoadedVersionId,
+			);
+			console.log(
+				'Content changed:',
+				JSON.stringify(data.currentVersion.content) !==
+					JSON.stringify(lastLoadedVersionContent),
+			);
+
+			loadVersionContent();
+			lastLoadedVersionId = data.currentVersion.id;
+			lastLoadedVersionContent = data.currentVersion.content;
+		}
 	}
 
 	// Watch for hash changes during navigation
