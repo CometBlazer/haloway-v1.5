@@ -60,13 +60,13 @@
 
 	// Get current school display info
 	$: currentSchoolData = getSchoolByName(currentSchool);
-	$: selectedValue = currentSchoolData?.name || 'Select School';
+	$: selectedValue = currentSchool || 'Select School';
 
 	// Size-based styling classes
 	$: buttonSizeClass = {
-		small: 'h-8 px-2 text-xs min-w-[120px]',
-		medium: 'h-9 px-3 text-sm min-w-[160px]',
-		large: 'h-10 px-4 text-sm min-w-[180px]',
+		small: 'h-8 px-2 text-xs min-w-[180px]',
+		medium: 'h-10 px-3 text-sm min-w-[200px]',
+		large: 'h-12 px-4 text-sm min-w-[240px]',
 	}[size];
 
 	$: logoSizeClass = {
@@ -76,9 +76,9 @@
 	}[size];
 
 	$: popoverWidthClass = {
-		small: 'w-[120px]',
-		medium: 'w-[160px]',
-		large: 'w-[180px]',
+		small: 'w-[200px]',
+		medium: 'w-[220px]',
+		large: 'w-[260px]',
 	}[size];
 
 	// Handle school selection and focus management
@@ -110,7 +110,7 @@
 				variant="outline"
 				role="combobox"
 				aria-expanded={open}
-				class={cn('justify-between', buttonSizeClass)}
+				class={cn('justify-between rounded-xl', buttonSizeClass)}
 				{disabled}
 			>
 				<div class="flex min-w-0 flex-1 items-center gap-2">
@@ -121,7 +121,7 @@
 							class={cn('flex-shrink-0 rounded object-cover', logoSizeClass)}
 							loading="lazy"
 						/>
-					{:else if currentSchoolData}
+					{:else if currentSchool}
 						<div
 							class={cn(
 								'flex flex-shrink-0 items-center justify-center rounded bg-primary',
@@ -129,7 +129,7 @@
 							)}
 						>
 							<span class="text-xs font-semibold text-primary-foreground">
-								{currentSchoolData.name.charAt(0).toUpperCase()}
+								{currentSchool.charAt(0).toUpperCase()}
 							</span>
 						</div>
 					{/if}
@@ -138,7 +138,7 @@
 				<ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
 			</Button>
 		</Popover.Trigger>
-		<Popover.Content class={cn('p-0', popoverWidthClass)}>
+		<Popover.Content class={cn('mt-2 p-0', popoverWidthClass)}>
 			<Command.Root>
 				<Command.Input placeholder="Search schools..." />
 				{#if loading}
@@ -160,49 +160,51 @@
 					<Command.Empty>No schools available.</Command.Empty>
 				{:else}
 					<Command.Empty>No school found.</Command.Empty>
-					<Command.Group>
-						{#each schools as school (school.id)}
-							<Command.Item
-								value={school.name}
-								onSelect={(currentValue) =>
-									handleSchoolSelect(currentValue, ids.trigger)}
-								class={cn(
-									'cursor-pointer',
-									currentSchool === school.name &&
-										'border-l-2 border-l-primary bg-primary/10 text-primary',
-								)}
-							>
-								<div class="flex min-w-0 flex-1 items-center gap-2">
-									{#if school.image_url}
-										<img
-											src={school.image_url}
-											alt={school.name}
-											class={cn(
-												'flex-shrink-0 rounded object-cover',
-												logoSizeClass,
-											)}
-											loading="lazy"
-										/>
-									{:else}
-										<div
-											class={cn(
-												'flex flex-shrink-0 items-center justify-center rounded',
-												logoSizeClass,
-												currentSchool === school.name
-													? 'bg-primary text-primary-foreground'
-													: 'bg-muted text-muted-foreground',
-											)}
-										>
-											<span class="text-xs font-semibold">
-												{school.name.charAt(0).toUpperCase()}
-											</span>
-										</div>
-									{/if}
-									<span class="truncate">{school.name}</span>
-								</div>
-							</Command.Item>
-						{/each}
-					</Command.Group>
+					<div class="max-h-[500px] overflow-y-auto">
+						<Command.Group>
+							{#each schools as school (school.id)}
+								<Command.Item
+									value={school.name}
+									onSelect={(currentValue) =>
+										handleSchoolSelect(currentValue, ids.trigger)}
+									class={cn(
+										'cursor-pointer',
+										currentSchool === school.name &&
+											'border-l-2 border-l-primary bg-primary/10 text-primary',
+									)}
+								>
+									<div class="flex min-w-0 flex-1 items-center gap-2">
+										{#if school.image_url}
+											<img
+												src={school.image_url}
+												alt={school.name}
+												class={cn(
+													'flex-shrink-0 rounded object-cover',
+													logoSizeClass,
+												)}
+												loading="lazy"
+											/>
+										{:else}
+											<div
+												class={cn(
+													'flex flex-shrink-0 items-center justify-center rounded',
+													logoSizeClass,
+													currentSchool === school.name
+														? 'bg-primary text-primary-foreground'
+														: 'bg-muted text-muted-foreground',
+												)}
+											>
+												<span class="text-xs font-semibold">
+													{school.name.charAt(0).toUpperCase()}
+												</span>
+											</div>
+										{/if}
+										<span class="truncate">{school.name}</span>
+									</div>
+								</Command.Item>
+							{/each}
+						</Command.Group>
+					</div>
 				{/if}
 			</Command.Root>
 		</Popover.Content>

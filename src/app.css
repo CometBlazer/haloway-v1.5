@@ -48,7 +48,7 @@
 		--color-secondary: 266 100% 85%; /* #cbb7ff */
 		--color-secondary-content: 19 8% 16%; /* #292524 */
 		--color-accent: 337 79% 59%; /* #e64c91 */
-		--color-accent-content: 0 0% 100%; /* #ffffff */
+		--color-accent-content: 0 0% 100%; /* #111111 */
 		--color-neutral: 240 5% 91%; /* #e4e4e7 */
 		--color-neutral-content: 0 0% 27%; /* #444444 */
 		--color-base-000: 0 0% 100%; /* #ffffff */
@@ -63,7 +63,7 @@
 		--color-info-content: 204 100% 97%; /* #f0f9ff */
 		--color-success: 158 64% 52%; /* #34d399 */
 		--color-success-content: 154 100% 95%; /* #ecfdf5 */
-		--color-warning: 32 100% 52%; /* #ff9408 */
+		--color-warning: 32 100% 52%; /* ##ffd373 */
 		--color-warning-content: 48 96% 89%; /* #fef3c7 */
 		--color-error: 0 77% 70%; /* #f87171 */
 		--color-error-content: 0 86% 97%; /* #fef2f2 */
@@ -117,7 +117,7 @@
 		--color-base-premium: 0 0% 16%; /* #2a2a2a */
 		--color-info: 213 94% 68%; /* #60a5fa */
 		--color-success: 142 76% 56%; /* #4ade80 */
-		--color-warning: 32 95% 53%; /* #fa9715 */
+		--color-warning: 32 95% 53%; /* ##ffcd5e */
 		--color-error: 347 77% 70%; /* #fb7185 */
 	}
 }

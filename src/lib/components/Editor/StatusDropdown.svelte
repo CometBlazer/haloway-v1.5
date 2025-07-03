@@ -193,7 +193,7 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 0.5rem;
-		border-radius: 9999px;
+		border-radius: 12px;
 		border: 1px solid;
 		font-weight: 500;
 		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -201,12 +201,12 @@
 		-webkit-tap-highlight-color: transparent;
 		touch-action: manipulation;
 		white-space: nowrap;
-		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 	}
 
 	.status-btn:hover {
-		transform: translateY(-1px);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		background-color: hsl(var(--accent));
+		/* transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
 	}
 
 	.status-btn:focus {
@@ -232,12 +232,14 @@
 	}
 
 	.btn-sm {
+		height: 2rem;
 		padding: 0.375rem 0.875rem;
 		font-size: 0.875rem;
 		width: 5rem;
 	}
 
 	.btn-md {
+		height: 2.5rem;
 		padding: 0.5rem 1rem;
 		font-size: 0.875rem;
 		width: 5rem;

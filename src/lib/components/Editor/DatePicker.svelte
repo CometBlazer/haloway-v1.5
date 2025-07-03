@@ -177,7 +177,7 @@
 			buttonVariants({ variant: 'outline' }),
 			sizeClasses[size],
 			colorClasses[dateStatus],
-			'justify-between rounded-full font-normal transition-colors',
+			'justify-between rounded-xl font-normal transition-colors',
 			disabled && 'cursor-not-allowed opacity-50',
 		)}
 		{disabled}
@@ -190,7 +190,7 @@
 		{#if clearable && selectedDate && !disabled}
 			<button
 				type="button"
-				class="ml-2 flex h-4 w-4 items-center justify-center rounded-full bg-black/20 text-current transition-colors hover:bg-black/30"
+				class="ml-4 flex h-4 w-4 items-center justify-center rounded-full bg-black/20 text-current transition-colors hover:bg-accent"
 				on:click={handleClear}
 				aria-label="Clear date"
 			>
