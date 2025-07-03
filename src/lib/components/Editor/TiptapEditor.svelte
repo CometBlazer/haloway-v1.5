@@ -498,201 +498,403 @@
 	{#if !zenMode}
 		<div class="control-group mb-4">
 			<div
-				class="menu-container modern-toolbar flex items-center justify-start"
+				class="menu-container modern-toolbar flex items-center justify-between"
 			>
-				<!-- Basic formatting - Always visible -->
-				<div class="toolbar-group flex items-center gap-0.5">
-					<button
-						on:click={() => editor.chain().focus().toggleBold().run()}
-						disabled={!editor.can().chain().focus().toggleBold().run()}
-						class="{standardButtonClasses} editor-btn"
-						class:active={editor.isActive('bold')}
-						class:active-highlight={editor.isActive('bold')}
-						title="Bold (Ctrl+B)"
-					>
-						<strong class="text-xl font-bold">B</strong>
-					</button>
-					<button
-						on:click={() => editor.chain().focus().toggleItalic().run()}
-						disabled={!editor.can().chain().focus().toggleItalic().run()}
-						class="{standardButtonClasses} editor-btn"
-						class:active={editor.isActive('italic')}
-						class:active-highlight={editor.isActive('italic')}
-						title="Italic (Ctrl+I)"
-					>
-						<em class="text-xl italic">I</em>
-					</button>
-					<button
-						on:click={() => editor.chain().focus().toggleUnderline().run()}
-						disabled={!editor.can().chain().focus().toggleUnderline().run()}
-						class="{standardButtonClasses} editor-btn"
-						class:active={editor.isActive('underline')}
-						class:active-highlight={editor.isActive('underline')}
-						title="Underline (Ctrl+U)"
-					>
-						<u class="text-xl underline">U</u>
-					</button>
-				</div>
-
-				<div class="menu-separator"></div>
-
-				<!-- Undo/Redo buttons - Always visible -->
-				<div class="toolbar-group flex items-center gap-0.5">
-					<button
-						on:click={() => editor.chain().focus().undo().run()}
-						disabled={!editor.can().chain().focus().undo().run()}
-						class="{standardButtonClasses} editor-btn"
-						title="Undo (Ctrl+Z)"
-					>
-						<Undo2 size={iconSize} />
-					</button>
-					<button
-						on:click={() => editor.chain().focus().redo().run()}
-						disabled={!editor.can().chain().focus().redo().run()}
-						class="{standardButtonClasses} editor-btn"
-						title="Redo (Ctrl+Y)"
-					>
-						<Redo2 size={iconSize} />
-					</button>
-				</div>
-
-				<!-- MD+ TIER: Show "Turn into" dropdown and Horizontal Rule -->
-				<div class="hidden md:flex md:items-center">
-					<div class="menu-separator"></div>
-					<div class="turn-into-container relative">
+				<div class="flex items-center gap-2">
+					<!-- Basic formatting - Always visible -->
+					<div class="toolbar-group flex items-center gap-0.5">
 						<button
-							class="{textButtonClasses} editor-btn"
-							on:click={() => (showMainDropdown = !showMainDropdown)}
-							title="Turn into H1, H2, H3, or Paragraph"
+							on:click={() => editor.chain().focus().toggleBold().run()}
+							disabled={!editor.can().chain().focus().toggleBold().run()}
+							class="{standardButtonClasses} editor-btn"
+							class:active={editor.isActive('bold')}
+							class:active-highlight={editor.isActive('bold')}
+							title="Bold (Ctrl+B)"
 						>
-							<span class="transform-icon w-5 text-center font-semibold">⟲</span
+							<strong class="text-xl font-bold">B</strong>
+						</button>
+						<button
+							on:click={() => editor.chain().focus().toggleItalic().run()}
+							disabled={!editor.can().chain().focus().toggleItalic().run()}
+							class="{standardButtonClasses} editor-btn"
+							class:active={editor.isActive('italic')}
+							class:active-highlight={editor.isActive('italic')}
+							title="Italic (Ctrl+I)"
+						>
+							<em class="text-xl italic">I</em>
+						</button>
+						<button
+							on:click={() => editor.chain().focus().toggleUnderline().run()}
+							disabled={!editor.can().chain().focus().toggleUnderline().run()}
+							class="{standardButtonClasses} editor-btn"
+							class:active={editor.isActive('underline')}
+							class:active-highlight={editor.isActive('underline')}
+							title="Underline (Ctrl+U)"
+						>
+							<u class="text-xl underline">U</u>
+						</button>
+					</div>
+
+					<div class="menu-separator"></div>
+
+					<!-- Undo/Redo buttons - Always visible -->
+					<div class="toolbar-group flex items-center gap-0.5">
+						<button
+							on:click={() => editor.chain().focus().undo().run()}
+							disabled={!editor.can().chain().focus().undo().run()}
+							class="{standardButtonClasses} editor-btn"
+							title="Undo (Ctrl+Z)"
+						>
+							<Undo2 size={iconSize} />
+						</button>
+						<button
+							on:click={() => editor.chain().focus().redo().run()}
+							disabled={!editor.can().chain().focus().redo().run()}
+							class="{standardButtonClasses} editor-btn"
+							title="Redo (Ctrl+Y)"
+						>
+							<Redo2 size={iconSize} />
+						</button>
+					</div>
+
+					<!-- MD+ TIER: Show "Turn into" dropdown and Horizontal Rule -->
+					<div class="hidden md:flex md:items-center">
+						<div class="menu-separator"></div>
+						<div class="turn-into-container relative">
+							<button
+								class="{textButtonClasses} editor-btn"
+								on:click={() => (showMainDropdown = !showMainDropdown)}
+								title="Turn into H1, H2, H3, or Paragraph"
 							>
-							<span class="hidden lg:inline">Turn into</span>
+								<span class="transform-icon w-5 text-center font-semibold"
+									>⟲</span
+								>
+								<span class="hidden lg:inline">Turn into</span>
+							</button>
+							{#if showMainDropdown}
+								<div class="dropdown-container">
+									<button
+										class="{dropdownOptionClasses} dropdown-item w-full"
+										class:active={editor.isActive('paragraph')}
+										class:active-highlight={editor.isActive('paragraph')}
+										on:click={() => {
+											editor.chain().focus().setParagraph().run();
+											showMainDropdown = false;
+										}}
+									>
+										<span class="option-icon w-6 text-center font-semibold"
+											>¶</span
+										>
+										<span class="option-label flex-1">Paragraph</span>
+									</button>
+									<button
+										class="{dropdownOptionClasses} dropdown-item w-full"
+										class:active={editor.isActive('heading', { level: 1 })}
+										class:active-highlight={editor.isActive('heading', {
+											level: 1,
+										})}
+										on:click={() => {
+											editor.chain().focus().toggleHeading({ level: 1 }).run();
+											showMainDropdown = false;
+										}}
+									>
+										<span class="option-icon w-6 text-center font-semibold"
+											>H1</span
+										>
+										<span class="option-label flex-1">Heading 1</span>
+									</button>
+									<button
+										class="{dropdownOptionClasses} dropdown-item w-full"
+										class:active={editor.isActive('heading', { level: 2 })}
+										class:active-highlight={editor.isActive('heading', {
+											level: 2,
+										})}
+										on:click={() => {
+											editor.chain().focus().toggleHeading({ level: 2 }).run();
+											showMainDropdown = false;
+										}}
+									>
+										<span class="option-icon w-6 text-center font-semibold"
+											>H2</span
+										>
+										<span class="option-label flex-1">Heading 2</span>
+									</button>
+									<button
+										class="{dropdownOptionClasses} dropdown-item w-full"
+										class:active={editor.isActive('heading', { level: 3 })}
+										class:active-highlight={editor.isActive('heading', {
+											level: 3,
+										})}
+										on:click={() => {
+											editor.chain().focus().toggleHeading({ level: 3 }).run();
+											showMainDropdown = false;
+										}}
+									>
+										<span class="option-icon w-6 text-center font-semibold"
+											>H3</span
+										>
+										<span class="option-label flex-1">Heading 3</span>
+									</button>
+								</div>
+							{/if}
+						</div>
+
+						<div class="menu-separator"></div>
+						<button
+							on:click={() => editor.chain().focus().setHorizontalRule().run()}
+							class="{standardButtonClasses} editor-btn"
+							title="Insert horizontal rule"
+						>
+							<span class="text-xl">—</span>
 						</button>
-						{#if showMainDropdown}
-							<div class="dropdown-container">
-								<button
-									class="{dropdownOptionClasses} dropdown-item w-full"
-									class:active={editor.isActive('paragraph')}
-									class:active-highlight={editor.isActive('paragraph')}
-									on:click={() => {
-										editor.chain().focus().setParagraph().run();
-										showMainDropdown = false;
-									}}
-								>
-									<span class="option-icon w-6 text-center font-semibold"
-										>¶</span
-									>
-									<span class="option-label flex-1">Paragraph</span>
-								</button>
-								<button
-									class="{dropdownOptionClasses} dropdown-item w-full"
-									class:active={editor.isActive('heading', { level: 1 })}
-									class:active-highlight={editor.isActive('heading', {
-										level: 1,
-									})}
-									on:click={() => {
-										editor.chain().focus().toggleHeading({ level: 1 }).run();
-										showMainDropdown = false;
-									}}
-								>
-									<span class="option-icon w-6 text-center font-semibold"
-										>H1</span
-									>
-									<span class="option-label flex-1">Heading 1</span>
-								</button>
-								<button
-									class="{dropdownOptionClasses} dropdown-item w-full"
-									class:active={editor.isActive('heading', { level: 2 })}
-									class:active-highlight={editor.isActive('heading', {
-										level: 2,
-									})}
-									on:click={() => {
-										editor.chain().focus().toggleHeading({ level: 2 }).run();
-										showMainDropdown = false;
-									}}
-								>
-									<span class="option-icon w-6 text-center font-semibold"
-										>H2</span
-									>
-									<span class="option-label flex-1">Heading 2</span>
-								</button>
-								<button
-									class="{dropdownOptionClasses} dropdown-item w-full"
-									class:active={editor.isActive('heading', { level: 3 })}
-									class:active-highlight={editor.isActive('heading', {
-										level: 3,
-									})}
-									on:click={() => {
-										editor.chain().focus().toggleHeading({ level: 3 }).run();
-										showMainDropdown = false;
-									}}
-								>
-									<span class="option-icon w-6 text-center font-semibold"
-										>H3</span
-									>
-									<span class="option-label flex-1">Heading 3</span>
-								</button>
-							</div>
-						{/if}
 					</div>
 
-					<div class="menu-separator"></div>
-					<button
-						on:click={() => editor.chain().focus().setHorizontalRule().run()}
-						class="{standardButtonClasses} editor-btn"
-						title="Insert horizontal rule"
-					>
-						<span class="text-xl">—</span>
-					</button>
-				</div>
+					<!-- LG+ TIER: Show Link buttons -->
+					<div class="hidden md:flex md:items-center">
+						<div class="menu-separator"></div>
+						<div class="flex items-center gap-1">
+							<button
+								on:click={setLink}
+								class="{textButtonClasses} editor-btn"
+								class:active={editor.isActive('link')}
+								class:active-highlight={editor.isActive('link')}
+								title="Add link"
+							>
+								<span class="hidden xl:inline">Add Link</span>
+								<Link2 size={iconSize - 4} />
+							</button>
+							<button
+								on:click={openLink}
+								disabled={!editor.isActive('link')}
+								class="{textButtonClasses} editor-btn"
+								title="Open link"
+							>
+								<span class="hidden xl:inline">Open Link</span>
+								<ExternalLink size={iconSize - 4} />
+							</button>
+							<button
+								on:click={() => editor.chain().focus().unsetLink().run()}
+								disabled={!editor.isActive('link')}
+								class="{textButtonClasses} editor-btn"
+								title="Remove link"
+							>
+								<span class="hidden xl:inline">Remove Link</span>
+								<Link2Off size={iconSize - 4} />
+							</button>
+						</div>
+					</div>
 
-				<!-- LG+ TIER: Show Link buttons -->
-				<div class="hidden md:flex md:items-center">
-					<div class="menu-separator"></div>
-					<div class="flex items-center gap-1">
+					<!-- XL+ TIER: Show Clear Formatting -->
+					<div class="hidden md:flex md:items-center">
+						<div class="menu-separator"></div>
 						<button
-							on:click={setLink}
-							class="{textButtonClasses} editor-btn"
-							class:active={editor.isActive('link')}
-							class:active-highlight={editor.isActive('link')}
-							title="Add link"
-						>
-							<span class="hidden xl:inline">Add Link</span>
-							<Link2 size={iconSize - 4} />
-						</button>
-						<button
-							on:click={openLink}
-							disabled={!editor.isActive('link')}
-							class="{textButtonClasses} editor-btn"
-							title="Open link"
-						>
-							<span class="hidden xl:inline">Open Link</span>
-							<ExternalLink size={iconSize - 4} />
-						</button>
-						<button
-							on:click={() => editor.chain().focus().unsetLink().run()}
-							disabled={!editor.isActive('link')}
-							class="{textButtonClasses} editor-btn"
-							title="Remove link"
-						>
-							<span class="hidden xl:inline">Remove Link</span>
-							<Link2Off size={iconSize - 4} />
+							class="{textButtonClasses} editor-btn clear-btn"
+							on:click={() =>
+								editor.chain().focus().unsetAllMarks().clearNodes().run()}
+							title="Clear formatting"
+							><span class="hidden xl:inline">Clear Formatting</span>
+							<X size={iconSize - 4} />
 						</button>
 					</div>
-				</div>
 
-				<!-- XL+ TIER: Show Clear Formatting -->
-				<div class="hidden md:flex md:items-center">
-					<div class="menu-separator"></div>
-					<button
-						class="{textButtonClasses} editor-btn clear-btn"
-						on:click={() =>
-							editor.chain().focus().unsetAllMarks().clearNodes().run()}
-						title="Clear formatting"
-						><span class="hidden xl:inline">Clear Formatting</span>
-						<X size={iconSize - 4} />
-					</button>
+					<!-- Mobile Three Dots Menu (Visible only on small screens) -->
+					<div class="flex items-center md:hidden">
+						<div class="menu-separator"></div>
+						<div class="mobile-menu-container relative">
+							<button
+								class="{standardButtonClasses} mobile-menu-button editor-btn"
+								on:click={toggleMobileMenu}
+								class:active={showMobileMenu}
+								class:active-highlight={showMobileMenu}
+								title="More options"
+							>
+								<span class="dots-icon">⋯</span>
+							</button>
+
+							{#if showMobileMenu}
+								<div class="mobile-dropdown-container dropdown-container">
+									<!-- Text Style Options -->
+									<div class="mobile-menu-section">
+										<span class="mobile-menu-section-title">Text Style</span>
+										<button
+											class="{dropdownOptionClasses} dropdown-item"
+											class:active={editor.isActive('paragraph')}
+											class:active-highlight={editor.isActive('paragraph')}
+											on:click={() => {
+												editor.chain().focus().setParagraph().run();
+												showMobileMenu = false;
+											}}
+										>
+											<span class="option-icon w-6 text-center font-semibold"
+												>¶</span
+											>
+											<span class="option-label flex-1">Paragraph</span>
+										</button>
+										<button
+											class="{dropdownOptionClasses} dropdown-item"
+											class:active={editor.isActive('heading', { level: 1 })}
+											class:active-highlight={editor.isActive('heading', {
+												level: 1,
+											})}
+											on:click={() => {
+												editor
+													.chain()
+													.focus()
+													.toggleHeading({ level: 1 })
+													.run();
+												showMobileMenu = false;
+											}}
+										>
+											<span class="option-icon w-6 text-center font-semibold"
+												>H1</span
+											>
+											<span class="option-label flex-1">Heading 1</span>
+										</button>
+										<button
+											class="{dropdownOptionClasses} dropdown-item"
+											class:active={editor.isActive('heading', { level: 2 })}
+											class:active-highlight={editor.isActive('heading', {
+												level: 2,
+											})}
+											on:click={() => {
+												editor
+													.chain()
+													.focus()
+													.toggleHeading({ level: 2 })
+													.run();
+												showMobileMenu = false;
+											}}
+										>
+											<span class="option-icon w-6 text-center font-semibold"
+												>H2</span
+											>
+											<span class="option-label flex-1">Heading 2</span>
+										</button>
+										<button
+											class="{dropdownOptionClasses} dropdown-item"
+											class:active={editor.isActive('heading', { level: 3 })}
+											class:active-highlight={editor.isActive('heading', {
+												level: 3,
+											})}
+											on:click={() => {
+												editor
+													.chain()
+													.focus()
+													.toggleHeading({ level: 3 })
+													.run();
+												showMobileMenu = false;
+											}}
+										>
+											<span class="option-icon w-6 text-center font-semibold"
+												>H3</span
+											>
+											<span class="option-label flex-1">Heading 3</span>
+										</button>
+									</div>
+
+									<div class="mobile-menu-section">
+										<span class="mobile-menu-section-title">Insert</span>
+										<button
+											class="{dropdownOptionClasses} dropdown-item"
+											on:click={() => {
+												editor.chain().focus().setHorizontalRule().run();
+												showMobileMenu = false;
+											}}
+										>
+											<span class="option-icon w-5 text-center font-semibold"
+												>—</span
+											>
+											<span class="option-label flex-1">Horizontal Rule</span>
+										</button>
+									</div>
+
+									<div class="mobile-menu-section">
+										<span class="mobile-menu-section-title">Links</span>
+										<button
+											class="{dropdownOptionClasses} dropdown-item"
+											class:active={editor.isActive('link')}
+											class:active-highlight={editor.isActive('link')}
+											on:click={() => {
+												setLink();
+												showMobileMenu = false;
+											}}
+										>
+											<span class="option-icon w-5 text-center font-semibold">
+												<Link2 size={iconSize - 4} />
+											</span>
+											<span class="option-label flex-1">Add Link</span>
+										</button>
+										<button
+											on:click={() => {
+												openLink();
+												showMobileMenu = false;
+											}}
+											disabled={!editor.isActive('link')}
+											class="{dropdownOptionClasses} dropdown-item"
+											title="Open link"
+										>
+											<span class="option-icon w-5 text-center font-semibold">
+												<ExternalLink size={iconSize - 4} />
+											</span>
+											<span class="option-label flex-1">Open Link</span>
+										</button>
+										<button
+											class="{dropdownOptionClasses} dropdown-item"
+											disabled={!editor.isActive('link')}
+											on:click={() => {
+												editor.chain().focus().unsetLink().run();
+												showMobileMenu = false;
+											}}
+										>
+											<span class="option-icon w-5 text-center font-semibold">
+												<Link2Off size={iconSize - 4} />
+											</span>
+											<span class="option-label flex-1">Remove Link</span>
+										</button>
+									</div>
+
+									<div class="mobile-menu-section">
+										<span class="mobile-menu-section-title">Formatting</span>
+										<button
+											class="{dropdownOptionClasses} dropdown-item"
+											on:click={() => {
+												editor
+													.chain()
+													.focus()
+													.unsetAllMarks()
+													.clearNodes()
+													.run();
+												showMobileMenu = false;
+											}}
+										>
+											<span class="option-icon w-5 text-center font-semibold"
+												><X size={iconSize - 4} /></span
+											>
+											<span class="option-label flex-1">Clear Formatting</span>
+										</button>
+										<button
+											class="{dropdownOptionClasses} dropdown-item"
+											on:click={() => {
+												copyAllText();
+												showMobileMenu = false;
+											}}
+										>
+											<span class="option-icon w-5 text-center font-semibold">
+												{#if copySuccess}
+													<Check size={iconSize - 4} class="text-green-500" />
+												{:else}
+													<Copy size={iconSize - 4} />
+												{/if}
+											</span>
+											<span class="option-label flex-1">Copy All Text</span>
+										</button>
+									</div>
+								</div>
+							{/if}
+						</div>
+					</div>
+				</div>
+				<div class="flex items-center gap-2">
 					<button
 						class="copy-all-button {textButtonClasses} editor-btn"
 						class:copy-success={copySuccess}
@@ -707,186 +909,6 @@
 							<span class="copy-button-text hidden xl:inline">Copy All</span>
 						{/if}
 					</button>
-				</div>
-
-				<!-- Mobile Three Dots Menu (Visible only on small screens) -->
-				<div class="flex items-center md:hidden">
-					<div class="menu-separator"></div>
-					<div class="mobile-menu-container relative">
-						<button
-							class="{standardButtonClasses} mobile-menu-button editor-btn"
-							on:click={toggleMobileMenu}
-							class:active={showMobileMenu}
-							class:active-highlight={showMobileMenu}
-							title="More options"
-						>
-							<span class="dots-icon">⋯</span>
-						</button>
-
-						{#if showMobileMenu}
-							<div class="mobile-dropdown-container dropdown-container">
-								<!-- Text Style Options -->
-								<div class="mobile-menu-section">
-									<span class="mobile-menu-section-title">Text Style</span>
-									<button
-										class="{dropdownOptionClasses} dropdown-item"
-										class:active={editor.isActive('paragraph')}
-										class:active-highlight={editor.isActive('paragraph')}
-										on:click={() => {
-											editor.chain().focus().setParagraph().run();
-											showMobileMenu = false;
-										}}
-									>
-										<span class="option-icon w-6 text-center font-semibold"
-											>¶</span
-										>
-										<span class="option-label flex-1">Paragraph</span>
-									</button>
-									<button
-										class="{dropdownOptionClasses} dropdown-item"
-										class:active={editor.isActive('heading', { level: 1 })}
-										class:active-highlight={editor.isActive('heading', {
-											level: 1,
-										})}
-										on:click={() => {
-											editor.chain().focus().toggleHeading({ level: 1 }).run();
-											showMobileMenu = false;
-										}}
-									>
-										<span class="option-icon w-6 text-center font-semibold"
-											>H1</span
-										>
-										<span class="option-label flex-1">Heading 1</span>
-									</button>
-									<button
-										class="{dropdownOptionClasses} dropdown-item"
-										class:active={editor.isActive('heading', { level: 2 })}
-										class:active-highlight={editor.isActive('heading', {
-											level: 2,
-										})}
-										on:click={() => {
-											editor.chain().focus().toggleHeading({ level: 2 }).run();
-											showMobileMenu = false;
-										}}
-									>
-										<span class="option-icon w-6 text-center font-semibold"
-											>H2</span
-										>
-										<span class="option-label flex-1">Heading 2</span>
-									</button>
-									<button
-										class="{dropdownOptionClasses} dropdown-item"
-										class:active={editor.isActive('heading', { level: 3 })}
-										class:active-highlight={editor.isActive('heading', {
-											level: 3,
-										})}
-										on:click={() => {
-											editor.chain().focus().toggleHeading({ level: 3 }).run();
-											showMobileMenu = false;
-										}}
-									>
-										<span class="option-icon w-6 text-center font-semibold"
-											>H3</span
-										>
-										<span class="option-label flex-1">Heading 3</span>
-									</button>
-								</div>
-
-								<div class="mobile-menu-section">
-									<span class="mobile-menu-section-title">Insert</span>
-									<button
-										class="{dropdownOptionClasses} dropdown-item"
-										on:click={() => {
-											editor.chain().focus().setHorizontalRule().run();
-											showMobileMenu = false;
-										}}
-									>
-										<span class="option-icon w-5 text-center font-semibold"
-											>—</span
-										>
-										<span class="option-label flex-1">Horizontal Rule</span>
-									</button>
-								</div>
-
-								<div class="mobile-menu-section">
-									<span class="mobile-menu-section-title">Links</span>
-									<button
-										class="{dropdownOptionClasses} dropdown-item"
-										class:active={editor.isActive('link')}
-										class:active-highlight={editor.isActive('link')}
-										on:click={() => {
-											setLink();
-											showMobileMenu = false;
-										}}
-									>
-										<span class="option-icon w-5 text-center font-semibold">
-											<Link2 size={iconSize - 4} />
-										</span>
-										<span class="option-label flex-1">Add Link</span>
-									</button>
-									<button
-										on:click={() => {
-											openLink();
-											showMobileMenu = false;
-										}}
-										disabled={!editor.isActive('link')}
-										class="{dropdownOptionClasses} dropdown-item"
-										title="Open link"
-									>
-										<span class="option-icon w-5 text-center font-semibold">
-											<ExternalLink size={iconSize - 4} />
-										</span>
-										<span class="option-label flex-1">Open Link</span>
-									</button>
-									<button
-										class="{dropdownOptionClasses} dropdown-item"
-										disabled={!editor.isActive('link')}
-										on:click={() => {
-											editor.chain().focus().unsetLink().run();
-											showMobileMenu = false;
-										}}
-									>
-										<span class="option-icon w-5 text-center font-semibold">
-											<Link2Off size={iconSize - 4} />
-										</span>
-										<span class="option-label flex-1">Remove Link</span>
-									</button>
-								</div>
-
-								<div class="mobile-menu-section">
-									<span class="mobile-menu-section-title">Formatting</span>
-									<button
-										class="{dropdownOptionClasses} dropdown-item"
-										on:click={() => {
-											editor.chain().focus().unsetAllMarks().clearNodes().run();
-											showMobileMenu = false;
-										}}
-									>
-										<span class="option-icon w-5 text-center font-semibold"
-											><X size={iconSize - 4} /></span
-										>
-										<span class="option-label flex-1">Clear Formatting</span>
-									</button>
-									<button
-										class="{dropdownOptionClasses} dropdown-item"
-										on:click={() => {
-											copyAllText();
-											showMobileMenu = false;
-										}}
-									>
-										<span class="option-icon w-5 text-center font-semibold">
-											{#if copySuccess}
-												<Check size={iconSize - 4} class="text-green-500" />
-											{:else}
-												<Copy size={iconSize - 4} />
-											{/if}
-										</span>
-										<span class="option-label flex-1">Copy All Text</span>
-									</button>
-								</div>
-							</div>
-						{/if}
-					</div>
 				</div>
 			</div>
 		</div>
