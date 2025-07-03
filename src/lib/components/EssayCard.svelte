@@ -86,15 +86,15 @@
 		},
 		finished: {
 			label: 'Finished',
-			colorClass: 'status-success',
+			colorClass: 'status-info',
 		},
 		polished: {
 			label: 'Polished',
-			colorClass: 'status-info',
+			colorClass: 'status-primary',
 		},
 		submitted: {
 			label: 'Submitted',
-			colorClass: 'status-primary',
+			colorClass: 'status-success',
 		},
 		scrapped: {
 			label: 'Scrapped',

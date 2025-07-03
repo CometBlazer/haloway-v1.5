@@ -179,12 +179,14 @@
 
 	/* Content sizing */
 	:global(.status-content) {
-		width: 11rem;
+		width: 11rem !important;
+		min-width: 11rem !important;
 	}
 
 	@media (min-width: 768px) {
 		:global(.status-content) {
-			width: 13rem;
+			width: 13rem !important;
+			min-width: 13rem !important;
 		}
 	}
 
