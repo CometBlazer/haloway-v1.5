@@ -113,7 +113,7 @@
 				class={cn('justify-between rounded-xl', buttonSizeClass)}
 				{disabled}
 			>
-				<div class="flex min-w-0 flex-1 items-center gap-2">
+				<div class="flex min-w-0 flex-1 items-center gap-2 pl-1">
 					{#if currentSchoolData?.image_url}
 						<img
 							src={currentSchoolData.image_url}

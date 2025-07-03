@@ -244,9 +244,9 @@
 							builders={[builder]}
 							variant="ghost"
 							size="sm"
-							class="h-8 gap-1 px-3 text-xs"
+							class="h-8 gap-1 rounded-xl px-3 text-sm md:h-10"
 						>
-							<Download class="h-3 w-3" />
+							<Download class="h-4 w-4" />
 							<span class="hidden sm:inline">Export</span>
 						</Button>
 					</DropdownMenu.Trigger>
@@ -361,7 +361,7 @@
 									<StatusDropdown
 										bind:currentStatus={essayStatus}
 										on:statusChange={handleStatusChange}
-										size="md"
+										size="sm"
 									/>
 								</div>
 
