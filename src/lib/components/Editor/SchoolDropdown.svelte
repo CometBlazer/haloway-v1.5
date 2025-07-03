@@ -66,7 +66,7 @@
 	$: buttonSizeClass = {
 		small: 'h-8 px-2 text-xs w-[180px]',
 		medium: 'h-10 px-3 text-sm w-[200px]',
-		large: 'h-12 px-4 text-sm w-[240px]',
+		large: 'h-10 px-4 text-sm min-w-[240px]',
 	}[size];
 
 	$: logoSizeClass = {

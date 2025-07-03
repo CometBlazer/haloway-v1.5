@@ -75,7 +75,7 @@
 	const sizeClasses = {
 		small: 'h-8 px-2 text-xs',
 		medium: 'h-10 px-3 text-sm',
-		large: 'h-12 px-4 text-base',
+		large: 'h-10 px-4 text-sm',
 	};
 
 	// Color variants - updated to use your CSS variables
@@ -176,14 +176,14 @@
 			buttonVariants({ variant: 'outline' }),
 			sizeClasses[size],
 			colorClasses[dateStatus],
-			'justify-between rounded-xl font-normal transition-colors',
+			'justify-between rounded-xl border-border font-normal transition-colors',
 			disabled && 'cursor-not-allowed opacity-50',
 		)}
 		{disabled}
 	>
 		<div class="flex items-center gap-2">
 			<AlarmClock class="h-4 w-4" />
-			<span class="truncate">{displayText}</span>
+			<span class="truncate font-semibold">{displayText}</span>
 		</div>
 
 		{#if clearable && selectedDate && !disabled}
@@ -222,7 +222,7 @@
 				>
 					<!-- Previous Month Button -->
 					<Calendar.PrevButton
-						class="inline-flex h-7 w-7 items-center justify-center whitespace-nowrap rounded-md border border-input bg-background text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+						class="inline-flex h-7 w-7 items-center justify-center whitespace-nowrap rounded-md border-border bg-background text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
 					>
 						<svg
 							class="h-4 w-4"
@@ -253,7 +253,7 @@
 								<Select.Item
 									{value}
 									{label}
-									class="justify-start pl-2 pr-2 data-[highlighted]:bg-primary data-[selected]:bg-primary/20 data-[highlighted]:text-primary-foreground data-[selected]:text-primary-foreground [&>span:last-child]:hidden [&>span:last-child]:w-0"
+									class="justify-start pl-2 pr-2 data-[highlighted]:bg-primary data-[selected]:bg-primary/20 data-[highlighted]:text-primary-foreground [&>span:last-child]:hidden [&>span:last-child]:w-0"
 								>
 									{label}
 								</Select.Item>
@@ -294,7 +294,7 @@
 									{value}
 									{label}
 									data-value={value}
-									class="justify-start pl-2 pr-2 data-[highlighted]:bg-primary data-[selected]:bg-primary/20 data-[highlighted]:text-primary-foreground data-[selected]:text-primary-foreground [&>span:last-child]:hidden [&>span:last-child]:w-0"
+									class="justify-start pl-2 pr-2 data-[highlighted]:bg-primary data-[selected]:bg-primary/20 data-[highlighted]:text-primary-foreground [&>span:last-child]:hidden [&>span:last-child]:w-0"
 								>
 									{label}
 								</Select.Item>
@@ -304,7 +304,7 @@
 
 					<!-- Next Month Button -->
 					<Calendar.NextButton
-						class="inline-flex h-7 w-7 items-center justify-center whitespace-nowrap rounded-md border border-input bg-background text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+						class="inline-flex h-7 w-7 items-center justify-center whitespace-nowrap rounded-md border-border bg-background text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
 					>
 						<svg
 							class="h-4 w-4"

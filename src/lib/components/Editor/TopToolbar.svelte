@@ -106,9 +106,9 @@
 
 	// Reactive size based on screen width
 	$: componentSize =
-		innerWidth >= 1024
-			? ('medium' as const)
-			: innerWidth >= 768
+		innerWidth >= 1700
+			? ('large' as const)
+			: innerWidth >= 1024
 				? ('medium' as const)
 				: ('small' as const);
 	$: dropdownSize =
