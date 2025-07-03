@@ -199,7 +199,7 @@
 												</span>
 											</div>
 										{/if}
-										<span class="truncate">{school.name}</span>
+										<span class="">{school.name}</span>
 									</div>
 								</Command.Item>
 							{/each}

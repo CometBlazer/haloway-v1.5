@@ -84,6 +84,9 @@
 		value: currentStatus,
 		label: currentConfig.label,
 	};
+
+	// Determine if text should be displayed (either showText prop or large screen)
+	$: shouldShowText = showText;
 </script>
 
 <Select.Root
@@ -93,7 +96,9 @@
 	{disabled}
 >
 	<Select.Trigger
-		class="status-trigger {triggerClasses} rounded-xl hover:bg-accent"
+		class="status-trigger {triggerClasses} {shouldShowText
+			? 'status-with-text'
+			: 'status-no-text'} rounded-xl hover:bg-accent"
 	>
 		<div class="status-display">
 			<div class="status-badge {currentConfig.badgeClass}">
@@ -138,39 +143,38 @@
 		cursor: pointer;
 	}
 
+	/* Width classes based on text visibility */
+	:global(.status-with-text) {
+		width: 11rem;
+	}
+
+	:global(.status-no-text) {
+		width: 5rem;
+	}
+
 	/* Trigger size classes */
 	:global(.status-select-xs) {
-		width: 5rem;
 		height: auto;
 		padding: 0.25rem 0.75rem;
 		font-size: 0.75rem;
 	}
 
 	:global(.status-select-sm) {
-		width: 11rem;
 		height: 2rem;
 		padding: 0.375rem 0.875rem;
 		font-size: 0.875rem;
 	}
 
 	:global(.status-select-md) {
-		width: 11rem;
 		height: 2.5rem;
 		padding: 0.5rem 1rem;
 		font-size: 0.875rem;
 	}
 
 	:global(.status-select-lg) {
-		width: 11.25rem;
 		height: auto;
 		padding: 0.625rem 1.25rem;
 		font-size: 1rem;
-	}
-
-	@media (min-width: 768px) {
-		:global(.status-select-md) {
-			width: 11.25rem;
-		}
 	}
 
 	/* Content sizing */
@@ -277,12 +281,17 @@
 		display: inline;
 	}
 
-	/* 1280px = xl breakpoint - show text by default on large screens unless explicitly hidden */
-	@media (min-width: 1280px) {
-		.status-label:not(.visible) {
+	/* 1280px = xl breakpoint */
+	/* @media (min-width: 1280px) {
+		/* .status-label:not(.visible) {
 			display: inline;
+		} 
+
+		/* Override width on large screens to always show text width
+		:global(.status-no-text) {
+			width: 11rem;
 		}
-	}
+	} */
 
 	/* Item label */
 	.item-label {

@@ -119,6 +119,9 @@
 					? ('sm' as const)
 					: ('xs' as const);
 
+	// Determine if we should show text in StatusDropdown (only on xl+ screens)
+	$: showStatusText = innerWidth >= 1600;
+
 	// Status icon component
 	// function getStatusIcon(icon: string) {
 	// 	switch (icon) {
@@ -246,7 +249,7 @@
 							size="sm"
 							class="h-8 gap-1 rounded-xl px-3 text-sm md:h-10"
 						>
-							<Download class="h-4 w-4" />
+							<Download class="h-5 w-5" />
 							<!-- <span class="hidden sm:inline">Export</span> -->
 						</Button>
 					</DropdownMenu.Trigger>
@@ -270,7 +273,7 @@
 			</div>
 
 			<!-- Center section: Main controls (hidden on mobile, shown in dropdown) -->
-			<div class="hidden items-center gap-2 lg:flex">
+			<div class="hidden items-center gap-2 xl:flex">
 				<DatePicker
 					selectedDate={picked}
 					onSelect={handleDueDateChange}
@@ -284,6 +287,7 @@
 					bind:currentStatus={essayStatus}
 					on:statusChange={handleStatusChange}
 					size={dropdownSize}
+					showText={showStatusText}
 				/>
 
 				<Separator orientation="vertical" class="h-6" />
@@ -303,11 +307,13 @@
 					on:click={handleToggleSidebar}
 					class="h-8 gap-2 rounded-xl px-3 text-xs md:h-10"
 				>
-					<History class="h-3 w-3" />
-					<!-- <span>Checkpoints</span> -->
-					<span class="max-w-20 truncate text-xs text-muted-foreground">
-						{currentVersionName}
-					</span>
+					<History class="h-5 w-5" />
+					<!-- Only show version name on xl+ screens -->
+					{#if innerWidth >= 1280}
+						<span class="max-w-20 truncate text-xs text-muted-foreground">
+							{currentVersionName}
+						</span>
+					{/if}
 				</Button>
 			</div>
 
@@ -324,7 +330,7 @@
 				</div>
 
 				<!-- Mobile dropdown menu -->
-				<div class="lg:hidden">
+				<div class="xl:hidden">
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger asChild let:builder>
 							<Button
@@ -362,6 +368,7 @@
 										bind:currentStatus={essayStatus}
 										on:statusChange={handleStatusChange}
 										size="sm"
+										showText={true}
 									/>
 								</div>
 

@@ -1164,7 +1164,7 @@
 	.container {
 		max-width: none;
 		margin: 0 auto;
-		padding: 1.5rem 2rem;
+		padding: 1rem 0rem;
 		min-height: 100vh;
 		/* background: var(--color-base-300); */
 	}
