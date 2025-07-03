@@ -10,6 +10,7 @@
 	import XIcon from 'virtual:icons/lucide/x';
 	import HomeButton from '../../routes/(marketing)/components/HomeButton.svelte';
 	import ThemeSwitchButton from '../../routes/(marketing)/components/ThemeSwitchButton.svelte';
+	import { ArrowRight } from 'lucide-svelte';
 
 	export let user;
 
@@ -35,7 +36,7 @@
 			<ul class="hidden flex-wrap px-1 text-lg font-bold lg:flex">
 				{#each Object.entries(menuItems) as [href, text]}
 					<li class="lg:mx-2">
-						<Button variant="ghost" {href} class="text-base text-foreground">
+						<Button variant="ghost" {href} class="text-lg text-foreground">
 							{text}
 						</Button>
 					</li>
@@ -44,11 +45,16 @@
 		</nav>
 		<div class="hidden justify-self-end lg:flex lg:gap-4">
 			{#if user}
-				<Button href="/dashboard">Dashboard</Button>
+				<Button variant="default" href="/dashboard">Dashboard</Button>
 				<PersonalMenu {user} />
 			{:else}
 				<PersonalMenu {user} />
-				<Button href="/login">Start writing →</Button>
+				<Button
+					variant="outline"
+					class="h-10 border-color-primary text-lg hover:bg-accent hover:text-accent-foreground"
+					href="/login"
+					>Start writing <ArrowRight class="ml-1 h-4 w-4" /></Button
+				>
 			{/if}
 		</div>
 
