@@ -11,9 +11,8 @@
 </script>
 
 <script lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
-	import { slide } from 'svelte/transition';
-	import { ChevronDown } from 'lucide-svelte';
+	import { createEventDispatcher } from 'svelte';
+	import * as Select from '$lib/components/ui/select/index.js';
 
 	const dispatch = createEventDispatcher();
 
@@ -22,276 +21,178 @@
 	export let disabled = false;
 	export let size: 'xs' | 'sm' | 'md' | 'lg' = 'md';
 
-	// State for controlling dropdown visibility
-	let isOpen = false;
-	let dropdownElement: HTMLElement;
-
-	// Configuration for each status using DatePicker color scheme
-	const statusConfig: Record<
-		Status,
-		{ label: string; colorClass: string; badgeClass: string }
-	> = {
+	// Configuration for each status
+	const statusConfig: Record<Status, { label: string; badgeClass: string }> = {
 		'not-started': {
 			label: 'Not Started',
-			colorClass: 'status-default',
 			badgeClass: 'badge-default',
 		},
 		'in-progress': {
 			label: 'In Progress',
-			colorClass: 'status-warning',
 			badgeClass: 'badge-warning',
 		},
 		finished: {
 			label: 'Finished',
-			colorClass: 'status-info',
 			badgeClass: 'badge-info',
 		},
 		polished: {
 			label: 'Polished',
-			colorClass: 'status-future',
 			badgeClass: 'badge-future',
 		},
 		submitted: {
 			label: 'Submitted',
-			colorClass: 'status-success',
 			badgeClass: 'badge-success',
 		},
 		scrapped: {
 			label: 'Scrapped',
-			colorClass: 'status-danger',
 			badgeClass: 'badge-danger',
 		},
 	};
 
-	// All possible status keys
-	const statusOptions = Object.keys(statusConfig) as Status[];
+	// All possible status options for the select
+	const statusOptions = Object.entries(statusConfig).map(([value, config]) => ({
+		value: value as Status,
+		label: config.label,
+		badgeClass: config.badgeClass,
+	}));
 
 	// Map size prop to size classes
 	const sizeClasses = {
-		xs: 'btn-xs',
-		sm: 'btn-sm',
-		md: 'btn-md',
-		lg: 'btn-lg',
+		xs: 'status-select-xs',
+		sm: 'status-select-sm',
+		md: 'status-select-md',
+		lg: 'status-select-lg',
 	};
 
-	function toggleDropdown(event: Event) {
-		event.preventDefault();
-		event.stopPropagation();
-		if (disabled) return;
-		isOpen = !isOpen;
-	}
-
-	function handleStatusChange(newStatus: Status, event: Event) {
-		event.preventDefault();
-		event.stopPropagation();
-		if (newStatus !== currentStatus) {
-			currentStatus = newStatus;
+	function handleValueChange(value: Status | undefined) {
+		if (value && value !== currentStatus) {
+			currentStatus = value;
 			dispatch('statusChange', {
-				status: newStatus,
-				label: statusConfig[newStatus].label,
+				status: value,
+				label: statusConfig[value].label,
 			});
 		}
-		isOpen = false; // Close dropdown after selection
 	}
-
-	function handleClickOutside(event: Event) {
-		if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
-			isOpen = false;
-		}
-	}
-
-	function handleKeydown(event: KeyboardEvent) {
-		if (event.key === 'Escape') {
-			isOpen = false;
-		}
-	}
-
-	// Setup click outside listener
-	onMount(() => {
-		const handleClick = (event: Event) => handleClickOutside(event);
-		const handleKey = (event: KeyboardEvent) => handleKeydown(event);
-
-		document.addEventListener('click', handleClick, true);
-		document.addEventListener('touchstart', handleClick, true);
-		document.addEventListener('keydown', handleKey);
-
-		return () => {
-			document.removeEventListener('click', handleClick, true);
-			document.removeEventListener('touchstart', handleClick, true);
-			document.removeEventListener('keydown', handleKey);
-		};
-	});
 
 	// Reactive values
 	$: currentConfig = statusConfig[currentStatus];
-	$: buttonClasses = `${currentConfig.colorClass} ${sizeClasses[size]}`;
+	$: triggerClasses = sizeClasses[size];
+
+	// Create the selected value object for the Select component
+	$: selectedValue = {
+		value: currentStatus,
+		label: currentConfig.label,
+	};
 </script>
 
-<div class="relative" bind:this={dropdownElement}>
-	<!-- Trigger button -->
-	<button
-		type="button"
-		class="status-btn {buttonClasses}"
-		{disabled}
-		on:click={toggleDropdown}
-		on:touchstart={toggleDropdown}
-		tabindex="0"
-		aria-haspopup="true"
-		aria-expanded={isOpen}
-		title={currentConfig.label}
+<Select.Root
+	portal={null}
+	selected={selectedValue}
+	onSelectedChange={(v) => handleValueChange(v?.value)}
+	{disabled}
+>
+	<Select.Trigger
+		class="status-trigger {triggerClasses} rounded-xl hover:bg-accent"
 	>
-		<div class="status-badge {currentConfig.badgeClass}">
-			<div class="status-dot"></div>
+		<div class="status-display">
+			<div class="status-badge {currentConfig.badgeClass}">
+				<div class="status-dot"></div>
+			</div>
+			<span class="status-label">{currentConfig.label}</span>
 		</div>
-		<span class="status-label">{currentConfig.label}</span>
-		<div class="chevron" class:rotate-180={isOpen}>
-			<ChevronDown size={16} class="opacity-60" />
-		</div>
-	</button>
-
-	<!-- Dropdown menu -->
-	{#if isOpen}
-		<div
-			class="dropdown-menu"
-			in:slide={{ duration: 200 }}
-			out:slide={{ duration: 200 }}
-			role="menu"
-		>
+	</Select.Trigger>
+	<Select.Content class="status-content">
+		<Select.Group>
 			{#each statusOptions as status}
-				{@const cfg = statusConfig[status]}
-				<button
-					type="button"
-					class="dropdown-item {status === currentStatus ? 'active' : ''}"
-					on:click={(e) => handleStatusChange(status, e)}
-					on:touchstart={(e) => handleStatusChange(status, e)}
-					{disabled}
-					role="menuitem"
+				<Select.Item
+					value={status.value}
+					label={status.label}
+					class="status-item"
 				>
-					<div class="status-badge {cfg.badgeClass} badge-small">
-						<div class="status-dot status-dot-small"></div>
+					<div class="status-item-content">
+						<div class="status-badge {status.badgeClass} badge-small">
+							<div class="status-dot status-dot-small"></div>
+						</div>
+						<span class="item-label">{status.label}</span>
 					</div>
-					<span class="item-label">{cfg.label}</span>
-					{#if status === currentStatus}
-						<svg class="check-icon" fill="currentColor" viewBox="0 0 20 20">
-							<path
-								fill-rule="evenodd"
-								d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0
-                   011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-								clip-rule="evenodd"
-							/>
-						</svg>
-					{/if}
-				</button>
+				</Select.Item>
 			{/each}
-		</div>
-	{/if}
-</div>
+		</Select.Group>
+	</Select.Content>
+	<Select.Input name="status" />
+</Select.Root>
 
 <style>
-	/* Base button styles */
-	.status-btn {
-		display: inline-flex;
+	/* Status display in trigger */
+	.status-display {
+		display: flex;
 		align-items: center;
 		gap: 0.5rem;
-		border-radius: 12px;
-		border: 1px solid;
-		font-weight: 500;
-		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+		width: 100%;
+	}
+
+	.status-display:hover {
 		cursor: pointer;
-		-webkit-tap-highlight-color: transparent;
-		touch-action: manipulation;
-		white-space: nowrap;
 	}
 
-	.status-btn:hover {
-		background-color: hsl(var(--accent));
-		/* transform: translateY(-1px);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
-	}
-
-	.status-btn:focus {
-		outline: 2px solid hsl(var(--color-primary));
-		outline-offset: 2px;
-	}
-
-	.status-btn:active {
-		transform: translateY(0);
-	}
-
-	.status-btn:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-		transform: none;
-	}
-
-	/* Button sizes */
-	.btn-xs {
+	/* Trigger size classes */
+	:global(.status-select-xs) {
+		width: 5rem;
+		height: auto;
 		padding: 0.25rem 0.75rem;
 		font-size: 0.75rem;
-		width: 4rem;
 	}
 
-	.btn-sm {
+	:global(.status-select-sm) {
+		width: 11rem;
 		height: 2rem;
 		padding: 0.375rem 0.875rem;
 		font-size: 0.875rem;
-		width: 5rem;
 	}
 
-	.btn-md {
+	:global(.status-select-md) {
+		width: 11rem;
 		height: 2.5rem;
 		padding: 0.5rem 1rem;
 		font-size: 0.875rem;
-		width: 5rem;
 	}
 
-	.btn-lg {
+	:global(.status-select-lg) {
+		width: 11.25rem;
+		height: auto;
 		padding: 0.625rem 1.25rem;
 		font-size: 1rem;
-		width: 11.25rem;
 	}
 
 	@media (min-width: 768px) {
-		.btn-md {
+		:global(.status-select-md) {
 			width: 11.25rem;
 		}
 	}
 
-	/* Status color variations using DatePicker color scheme */
-	.status-default {
-		background: hsl(var(--background));
-		color: hsl(var(--foreground));
-		border-color: hsl(var(--border));
+	/* Content sizing */
+	:global(.status-content) {
+		width: 11rem;
 	}
 
-	.status-warning {
-		background: hsl(var(--color-warning));
-		color: white;
-		border-color: hsl(var(--color-warning));
+	@media (min-width: 768px) {
+		:global(.status-content) {
+			width: 13rem;
+		}
 	}
 
-	.status-danger {
-		background: hsl(var(--color-error));
-		color: white;
-		border-color: hsl(var(--color-error));
+	/* Status item content */
+	.status-item-content {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		width: 100%;
 	}
 
-	.status-info {
-		background: hsl(var(--color-info));
-		color: white;
-		border-color: hsl(var(--color-info));
-	}
-
-	.status-future {
-		background: hsl(var(--color-primary));
-		color: white;
-		border-color: hsl(var(--color-primary));
-	}
-
-	.status-success {
-		background: hsl(var(--color-success));
-		color: hsl(var(--color-success-content));
-		border-color: hsl(var(--color-success));
+	@media (min-width: 768px) {
+		.status-item-content {
+			gap: 0.75rem;
+		}
 	}
 
 	/* Status badges */
@@ -316,27 +217,27 @@
 	}
 
 	.badge-warning {
-		background: hsl(var(--color-warning-content));
+		background-color: hsl(var(--color-warning) / 0.3);
 		color: hsl(var(--color-warning));
 	}
 
 	.badge-success {
-		background: hsl(var(--color-success-content));
+		background-color: hsl(var(--color-success) / 0.3);
 		color: hsl(var(--color-success));
 	}
 
 	.badge-info {
-		background: hsl(var(--color-info-content));
+		background-color: hsl(var(--color-info) / 0.3);
 		color: hsl(var(--color-info));
 	}
 
 	.badge-future {
-		background: white;
+		background: hsl(var(--color-primary) / 0.3);
 		color: hsl(var(--color-primary));
 	}
 
 	.badge-danger {
-		background: hsl(var(--color-error-content));
+		background: hsl(var(--color-error) / 0.3);
 		color: hsl(var(--color-error));
 	}
 
@@ -369,119 +270,16 @@
 		text-align: left;
 	}
 
-	@media (min-width: 768px) {
+	/* 1280px = xl breakpoint */
+	@media (min-width: 1280px) {
 		.status-label {
 			display: inline;
 		}
-	}
-
-	/* Chevron animation */
-	.chevron {
-		transition: transform 0.2s ease;
-		display: flex;
-		align-items: center;
-	}
-
-	.rotate-180 {
-		transform: rotate(180deg);
-	}
-
-	/* Dropdown menu */
-	.dropdown-menu {
-		position: absolute;
-		left: 0;
-		top: 100%;
-		z-index: 50;
-		margin-top: 0.5rem;
-		width: 11rem;
-		background: hsl(var(--popover));
-		border: 1px solid hsl(var(--border));
-		border-radius: 0.75rem;
-		padding: 0.25rem;
-		box-shadow:
-			0 10px 15px -3px rgba(0, 0, 0, 0.1),
-			0 4px 6px -2px rgba(0, 0, 0, 0.05);
-	}
-
-	@media (min-width: 768px) {
-		.dropdown-menu {
-			width: 13rem;
-			padding: 0.5rem;
-		}
-	}
-
-	/* Dropdown items */
-	.dropdown-item {
-		display: flex;
-		width: 100%;
-		align-items: center;
-		gap: 0.5rem;
-		border-radius: 0.5rem;
-		padding: 0.5rem;
-		font-size: 0.875rem;
-		background: transparent;
-		border: none;
-		color: hsl(var(--popover-foreground));
-		transition: all 0.2s ease;
-		cursor: pointer;
-		text-align: left;
-		-webkit-tap-highlight-color: transparent;
-		touch-action: manipulation;
-	}
-
-	@media (min-width: 768px) {
-		.dropdown-item {
-			gap: 0.75rem;
-			padding: 0.75rem;
-			font-size: 1rem;
-		}
-	}
-
-	.dropdown-item:hover {
-		background: hsl(var(--accent));
-		color: hsl(var(--accent-foreground));
-	}
-
-	.dropdown-item.active {
-		background: hsl(var(--accent));
-		color: hsl(var(--accent-foreground));
-		font-weight: 600;
-	}
-
-	.dropdown-item:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
 	}
 
 	/* Item label */
 	.item-label {
 		flex: 1;
 		text-align: left;
-	}
-
-	/* Check icon */
-	.check-icon {
-		height: 0.75rem;
-		width: 0.75rem;
-		color: hsl(var(--color-success));
-	}
-
-	@media (min-width: 768px) {
-		.check-icon {
-			height: 1rem;
-			width: 1rem;
-		}
-	}
-
-	/* Ensure proper touch handling on mobile */
-	@media (hover: hover) {
-		.status-btn:hover {
-			transform: translateY(-1px);
-		}
-	}
-
-	/* Ensure the dropdown appears above other elements */
-	.relative {
-		position: relative;
 	}
 </style>

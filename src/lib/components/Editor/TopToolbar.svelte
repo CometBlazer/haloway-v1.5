@@ -270,7 +270,7 @@
 			</div>
 
 			<!-- Center section: Main controls (hidden on mobile, shown in dropdown) -->
-			<div class="hidden items-center gap-3 lg:flex">
+			<div class="hidden items-center gap-3 xl:flex">
 				<DatePicker
 					selectedDate={picked}
 					onSelect={handleDueDateChange}
@@ -324,7 +324,7 @@
 				</div>
 
 				<!-- Mobile dropdown menu -->
-				<div class="lg:hidden">
+				<div class="xl:hidden">
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger asChild let:builder>
 							<Button
