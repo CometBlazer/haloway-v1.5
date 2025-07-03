@@ -301,6 +301,117 @@ export const actions: Actions = {
 		return { success: true };
 	},
 
+	saveFeedback: async ({ request, locals, params }) => {
+		try {
+			const { session } = await locals.safeGetSession();
+			if (!session?.user?.id) {
+				throw error(401, 'Unauthorized');
+			}
+
+			const formData = await request.formData();
+			const feedback = formData.get('feedback') as string;
+			const versionId = params.versionId;
+
+			console.log('=== saveFeedback Debug Info ===');
+			console.log('versionId:', versionId);
+			console.log('feedback length:', feedback?.length || 0);
+
+			// Validate inputs
+			if (!versionId) {
+				console.error('Missing versionId');
+				throw error(400, 'Version ID is required');
+			}
+
+			if (!feedback) {
+				console.error('Missing feedback');
+				throw error(400, 'Feedback is required');
+			}
+
+			// First, check if version exists and get document info
+			console.log('Checking version existence...');
+			const { data: versionData, error: versionError } = await supabase
+				.from('document_versions')
+				.select('id, document_id')
+				.eq('id', versionId)
+				.single();
+
+			if (versionError || !versionData) {
+				console.error('Version not found:', versionError);
+				throw error(404, 'Version not found');
+			}
+
+			console.log('Version found:', versionData);
+
+			// Check if user owns the document
+			console.log('Checking document ownership...');
+			if (!versionData.document_id) {
+				throw error(400, 'Invalid document ID');
+			}
+
+			const { data: documentData, error: documentError } = await supabase
+				.from('documents')
+				.select('id, user_id')
+				.eq('id', versionData.document_id)
+				.single();
+
+			if (documentError || !documentData) {
+				console.error('Document not found:', documentError);
+				throw error(404, 'Document not found');
+			}
+
+			if (documentData.user_id !== session.user.id) {
+				console.error("User doesn't own document");
+				throw error(
+					403,
+					"You don't have permission to save feedback for this document",
+				);
+			}
+
+			console.log('Permission check passed');
+
+			// Save feedback to the version
+			console.log('Saving feedback...');
+			const { error: updateError } = await supabase
+				.from('document_versions')
+				.update({
+					latest_ai_response: feedback,
+					updated_at: new Date(),
+				})
+				.eq('id', versionId);
+
+			if (updateError) {
+				console.error('Save feedback failed:', updateError);
+				throw error(500, `Failed to save feedback: ${updateError.message}`);
+			}
+
+			console.log('Feedback saved successfully!');
+			return {
+				success: true,
+				message: 'Feedback saved successfully',
+				feedback,
+			};
+		} catch (err) {
+			console.error('=== saveFeedback Error ===');
+			console.error('Error type:', typeof err);
+			console.error('Error:', err);
+			console.error(
+				'Stack:',
+				err instanceof Error ? err.stack : 'No stack trace available',
+			);
+
+			// If it's already a SvelteKit error, re-throw it
+			if (err && typeof err === 'object' && 'status' in err) {
+				throw err;
+			}
+
+			// Otherwise, create a generic server error
+			throw error(
+				500,
+				`Server error: ${err instanceof Error ? err.message : 'Unknown error'}`,
+			);
+		}
+	},
+
 	createVersion: async ({ request, locals, params }) => {
 		const { session } = await locals.safeGetSession();
 		if (!session?.user?.id) {

@@ -1,6 +1,5 @@
 // src/routes/api/feedback/+server.ts - SERVER-ONLY CREDENTIALS
 import { json, error } from '@sveltejs/kit';
-import { supabase } from '$lib/supabase';
 import { env } from '$env/dynamic/private';
 
 function wordCount(text: string): number {
@@ -160,7 +159,7 @@ export async function POST({ request }) {
 			essayText,
 			limit = 250,
 			currentWordCount,
-			versionId,
+			// versionId,
 			documentPrompt,
 		} = await request.json();
 
@@ -192,9 +191,9 @@ export async function POST({ request }) {
    
 **Length check**  
    • Essay is ${words} words; target is **${limit}** words.  
-   • If blank → “Hey, nothing here yet—let’s get typing!”  
-   • If ${words} < ${limit / 1.25} → “At ${words} words, it’s a bit short. Aim for around ${limit} words.”  
-   • If ${words} > ${limit} → “At ${words} words, it’s too long. Let’s tighten to the essentials.”  
+   • If blank → "Hey, nothing here yet—let's get typing!"  
+   • If ${words} < ${limit / 1.25} → "At ${words} words, it's a bit short. Aim for around ${limit} words."  
+   • If ${words} > ${limit} → "At ${words} words, it's too long. Let's tighten to the essentials."  
    
 **Tone**  
    • Snappy and encouraging ("Love your hook!")  
@@ -285,21 +284,21 @@ ${essayText}
 			throw error(502, 'AI service returned empty response');
 		}
 
-		// Store in database if versionId provided
-		if (versionId) {
-			const { error: supabaseError } = await supabase
-				.from('document_versions')
-				.update({
-					latest_ai_response: feedback,
-					updated_at: new Date(),
-				})
-				.eq('id', versionId);
+		// Return just the feedback and word count - no database operations
+		// if (versionId) {
+		// 	const { error: supabaseError } = await supabase
+		// 		.from('document_versions')
+		// 		.update({
+		// 			latest_ai_response: feedback,
+		// 			updated_at: new Date(),
+		// 		})
+		// 		.eq('id', versionId);
 
-			if (supabaseError) {
-				console.error('Supabase error:', supabaseError);
-				// Don't fail the request if storage fails
-			}
-		}
+		// 	if (supabaseError) {
+		// 		console.error('Supabase error:', supabaseError);
+		// 		// Don't fail the request if storage fails
+		// 	}
+		// }
 
 		return json({
 			feedback,

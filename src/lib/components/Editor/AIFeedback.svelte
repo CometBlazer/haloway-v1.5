@@ -2,6 +2,7 @@
 <script lang="ts">
 	import { createEventDispatcher, onDestroy } from 'svelte';
 	import { fade, slide } from 'svelte/transition';
+	// import { enhance } from '$app/forms';
 	import {
 		Sparkles,
 		RefreshCw,
@@ -14,11 +15,12 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { toastStore } from '$lib/stores/toast';
 	import type { Editor } from '@tiptap/core';
+	// import type { ActionResult } from '@sveltejs/kit';
 
 	export let essayText: string = '';
 	export let wordCountLimit: number = 250;
 	export let currentWordCount: number = 0;
-	export let versionId: string | null = null;
+	// export let versionId: string | null = null;
 	export let existingFeedback: string | null = null;
 	export let disabled: boolean = false;
 	export let documentPrompt: string = '';
@@ -243,11 +245,11 @@
 	async function saveBeforeFeedback(): Promise<boolean> {
 		try {
 			dispatch('saveRequired', {});
-			// await new Promise((resolve) => setTimeout(resolve, 1000)); // Give more time for save
+			// await new Promise((resolve) => setTimeout(resolve, 1000));
 			return true;
 		} catch (error) {
 			console.error('Failed to save before feedback:', error);
-			toastStore.show('Failed to get response. Please try again.', 'error');
+			toastStore.show('Failed to save content. Please try again.', 'error');
 			return false;
 		}
 	}
@@ -295,7 +297,6 @@
 
 		// Step 5: Generate feedback
 		loading = true;
-		// Don't clear feedback here, let it be reactive to the API response
 
 		try {
 			const res = await fetch('/api/demo-feedback', {
@@ -305,7 +306,6 @@
 					essayText: capturedContent,
 					limit: wordCountLimit,
 					currentWordCount: capturedWordCount,
-					versionId: versionId,
 					documentPrompt: trimmedPrompt,
 				}),
 			});
@@ -324,6 +324,7 @@
 			// Update lastFeedbackTime when we receive new feedback
 			lastFeedbackTime = new Date();
 
+			// Dispatch feedback to parent - parent will handle saving to database
 			dispatch('feedbackReceived', {
 				feedback: responseData.feedback,
 				wordCount: capturedWordCount,
@@ -363,15 +364,6 @@
 			dispatch('contentLocked', { locked: false });
 		}
 	}
-
-	// Emergency unlock function
-	// function unlockContent() {
-	// 	contentLocked = false;
-	// 	loading = false;
-	// 	unlockEditor();
-	// 	dispatch('contentLocked', { locked: false });
-	// 	toastStore.show('Content unlocked. You can now edit your essay.', 'info');
-	// }
 
 	function formatLastUpdated(date: Date): string {
 		const now = new Date();
@@ -600,12 +592,6 @@
 		margin-left: 0.5rem;
 	}
 
-	/* .button-group {
-		display: flex;
-		gap: 0.5rem;
-		align-items: center;
-	} */
-
 	.content-lock-warning {
 		background: hsl(var(--color-warning) / 0.1);
 		border: 1px solid hsl(var(--color-warning) / 0.3);
@@ -797,11 +783,6 @@
 		gap: 0.5rem;
 		margin-bottom: 0.75rem;
 	}
-
-	/* .disclaimer-icon {
-		color: hsl(var(--color-info));
-		flex-shrink: 0;
-	} */
 
 	.disclaimer-title {
 		font-weight: 600;

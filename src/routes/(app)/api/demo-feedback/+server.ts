@@ -1,6 +1,5 @@
 // src/routes/api/demo-feedback/+server.ts - WORKING VERSION, NO GEMINI CALLS
 import { json, error } from '@sveltejs/kit';
-import { supabase } from '$lib/supabase';
 
 function wordCount(text: string): number {
 	return text
@@ -15,7 +14,8 @@ export async function POST({ request }) {
 			essayText,
 			limit = 250,
 			currentWordCount,
-			versionId,
+			// versionId, // eslint-disable-line @typescript-eslint/no-unused-vars
+			documentPrompt,
 		} = await request.json();
 
 		// Validation
@@ -119,27 +119,33 @@ export async function POST({ request }) {
 <p>Outstanding work! You've hit all the marks with style and substance. Keep up the excellent work!</p>`;
 		}
 
-		feedback += `<h4>Note: This is a Demo Feedback</h4>`;
-
-		// Simulate realistic API delay
-		await new Promise((resolve) => setTimeout(resolve, 5000));
-
-		// Store in database if versionId provided
-		if (versionId) {
-			const { error: supabaseError } = await supabase
-				.from('document_versions')
-				.update({
-					latest_ai_response: feedback,
-					updated_at: new Date(),
-				})
-				.eq('id', versionId);
-
-			if (supabaseError) {
-				console.error('Supabase error:', supabaseError);
-				// Don't fail the request if storage fails
-			}
+		// Add demo note and prompt feedback if available
+		if (documentPrompt && documentPrompt.trim()) {
+			feedback += `<h4>Prompt Alignment</h4>
+<p>Your essay addresses the prompt: "${documentPrompt}". This is a solid approach that shows you understand what's being asked.</p>`;
 		}
 
+		feedback += `<h4>Note: This is a Demo Feedback</h4>
+<p>This is demonstration feedback to show the interface. For real AI analysis, use the production feedback system.</p>`;
+
+		// Simulate realistic API delay
+		await new Promise((resolve) => setTimeout(resolve, 3000));
+
+		// Return just the feedback and word count - no database operations
+		// if (versionId) {
+		// 	const { error: supabaseError } = await supabase
+		// 		.from('document_versions')
+		// 		.update({
+		// 			latest_ai_response: feedback,
+		// 			updated_at: new Date(),
+		// 		})
+		// 		.eq('id', versionId);
+
+		// 	if (supabaseError) {
+		// 		console.error('Supabase error:', supabaseError);
+		// 		// Don't fail the request if storage fails
+		// 	}
+		// }
 		return json({
 			feedback,
 			wordCount: words,

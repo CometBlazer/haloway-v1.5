@@ -187,7 +187,7 @@
 	let currentFeedback = data.currentVersion.latest_ai_response || null;
 
 	// Add feedback handler
-	function handleFeedbackReceived(
+	async function handleFeedbackReceived(
 		event: CustomEvent<{ feedback: string; wordCount: number }>,
 	) {
 		currentFeedback = event.detail.feedback;
@@ -197,8 +197,34 @@
 			data.currentVersion.latest_ai_response = event.detail.feedback;
 		}
 
-		// The feedback is automatically saved to the database via the API
-		console.log('Feedback received and saved');
+		// Save feedback to database using server action
+		if ($page.params.versionId) {
+			try {
+				const formData = new FormData();
+				formData.append('feedback', event.detail.feedback); // Fixed: use event.detail.feedback instead of responseData.feedback
+
+				const saveResponse = await fetch('?/saveFeedback', {
+					method: 'POST',
+					body: formData,
+				});
+
+				if (!saveResponse.ok) {
+					console.error('Failed to save feedback to database');
+					// Don't fail the request if saving fails, but maybe show a warning
+					toastStore.show(
+						'Feedback generated but not saved. Please try again.',
+						'error',
+					);
+				} else {
+					console.log('Feedback saved successfully to database');
+				}
+			} catch (error) {
+				console.error('Error saving feedback to database:', error);
+				// Don't fail the request if saving fails
+			}
+		}
+
+		console.log('Feedback received and processed');
 	}
 
 	// Watch for version changes and update feedback
@@ -1011,7 +1037,6 @@
 						essayText={content}
 						{wordCountLimit}
 						{currentWordCount}
-						versionId={$page.params.versionId}
 						existingFeedback={currentFeedback}
 						disabled={!editorReady || !contentLoaded}
 						{documentPrompt}
