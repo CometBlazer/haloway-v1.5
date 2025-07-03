@@ -64,6 +64,7 @@
 
 	let innerWidth = 0;
 	let essayStatus: Status = initialStatus;
+	let mobileDropdownOpen = false;
 
 	function handleStatusChange(
 		event: CustomEvent<{ status: Status; label: string }>,
@@ -121,6 +122,11 @@
 
 	// Determine if we should show text in StatusDropdown (only on xl+ screens)
 	$: showStatusText = innerWidth >= 1600;
+
+	// Auto-close mobile dropdown when screen becomes lg or larger
+	$: if (innerWidth >= 1280 && mobileDropdownOpen) {
+		mobileDropdownOpen = false;
+	}
 
 	// Status icon component
 	// function getStatusIcon(icon: string) {
@@ -331,7 +337,7 @@
 
 				<!-- Mobile dropdown menu -->
 				<div class="xl:hidden">
-					<DropdownMenu.Root>
+					<DropdownMenu.Root bind:open={mobileDropdownOpen}>
 						<DropdownMenu.Trigger asChild let:builder>
 							<Button
 								builders={[builder]}
