@@ -16,6 +16,7 @@
 	import CompleteProfileModal from '$lib/components/CompleteProfileModal.svelte';
 	import EssayCard from '$lib/components/EssayCard.svelte';
 	import SchoolChip from '$lib/components/SchoolChip.svelte';
+	import { getSchoolUrlSafeNameStrict } from '$lib/utils/validation';
 
 	export let data: PageData;
 	export let form: ActionData;
@@ -107,7 +108,10 @@
 			return;
 		}
 
-		const schoolSlug = schoolData.urlSafeName;
+		// const schoolSlug = schoolData.urlSafeName;
+		// caching has some issues
+		const schoolSlug = await getSchoolUrlSafeNameStrict(school);
+		// alert(schoolSlug);
 
 		try {
 			if (currentVersion?.id) {
@@ -119,7 +123,9 @@
 			}
 		} catch (error) {
 			console.error('Navigation error:', error);
-			// Handle navigation error appropriately
+			alert(
+				'Error navigating to school page. If the problem persists, please contact support.',
+			);
 		}
 	}
 
