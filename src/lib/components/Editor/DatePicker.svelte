@@ -85,7 +85,7 @@
 		danger:
 			'bg-[hsl(var(--color-error))] text-[hsl(var(--color-error-content))] border-[hsl(var(--color-error))]',
 		info: 'border-[hsl(var(--color-info))]',
-		future: 'border-[hsl(var(--accent))]',
+		future: 'border-[hsl(var(--border))]',
 	};
 
 	// Get relative time text and determine status
@@ -176,7 +176,7 @@
 			buttonVariants({ variant: 'outline' }),
 			sizeClasses[size],
 			colorClasses[dateStatus],
-			'justify-between rounded-xl border-border font-normal transition-colors',
+			'justify-between rounded-xl font-normal transition-colors',
 			disabled && 'cursor-not-allowed opacity-50',
 		)}
 		{disabled}
