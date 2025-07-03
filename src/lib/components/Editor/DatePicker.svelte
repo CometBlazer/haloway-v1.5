@@ -81,13 +81,11 @@
 	// Color variants - updated to use your CSS variables
 	const colorClasses = {
 		default: '', // Use default button styling
-		warning:
-			'bg-[hsl(var(--color-warning))] text-[hsl(var(--color-warning-content))] border-[hsl(var(--color-warning))]',
+		warning: 'border-[hsl(var(--color-warning))]',
 		danger:
 			'bg-[hsl(var(--color-error))] text-[hsl(var(--color-error-content))] border-[hsl(var(--color-error))]',
-		info: 'bg-[hsl(var(--color-info))] text-[hsl(var(--color-info-content))] border-[hsl(var(--color-info))]',
-		future:
-			'bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-content))] border-[hsl(var(--color-primary))]',
+		info: 'border-[hsl(var(--color-info))]',
+		future: 'border-[hsl(var(--accent))]',
 	};
 
 	// Get relative time text and determine status
@@ -142,8 +140,9 @@
 			return `Due in ${diffDays} days`;
 		}
 		if (diffDays < 0) {
-			const pastDays = Math.abs(diffDays);
-			return pastDays === 1 ? 'Due yesterday' : `${pastDays} days overdue`;
+			// const pastDays = Math.abs(diffDays);
+			// return pastDays === 1 ? 'Due yesterday' : `${pastDays} days overdue`;
+			return 'Deadline past';
 		}
 
 		return `Due on ${df.format(selectedDateObj)}`;

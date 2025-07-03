@@ -324,7 +324,7 @@
 				</div>
 
 				<!-- Mobile dropdown menu -->
-				<div class="md:hidden">
+				<div class="lg:hidden">
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger asChild let:builder>
 							<Button
