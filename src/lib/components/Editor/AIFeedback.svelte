@@ -236,11 +236,11 @@
 				class="feedback-button"
 			>
 				{#if loading}
+					<span class="mr-2">Analyzing...</span>
 					<RefreshCw class="animate-spin" size={16} />
-					<span class="ml-2">Analyzing...</span>
 				{:else}
+					<span class="mr-2">Get Feedback</span>
 					<Sparkles size={16} />
-					<span class="ml-2">Get Feedback</span>
 				{/if}
 			</Button>
 		</div>
@@ -370,7 +370,7 @@
 		background: linear-gradient(
 			135deg,
 			hsl(var(--color-primary)) 0%,
-			hsl(var(--color-primary) / 0.8) 100%
+			hsl(var(--color-accent) / 0.8) 100%
 		);
 		color: hsl(var(--color-primary-content));
 		padding: 1.5rem;

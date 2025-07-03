@@ -173,7 +173,7 @@
 					>
 						{document.school}
 					</button>
-					<ArrowUpRight size={14} class="school-icon" />
+					<ArrowUpRight size={16} class="school-icon" />
 				</div>
 			{/if}
 			<button
