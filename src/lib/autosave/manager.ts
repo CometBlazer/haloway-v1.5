@@ -156,7 +156,7 @@ export class AutoSaveManager {
 		this.updateState((state) => ({ ...state, isOnline }));
 
 		if (isOnline && this.getCurrentState().hasUnsavedChanges) {
-			this.onToast('Back online - resuming auto-save', 'info');
+			this.onToast('Autosaving...', 'info');
 			this.debouncedAutoSave();
 		} else if (!isOnline) {
 			this.updateState((state) => ({ ...state, status: 'offline' }));

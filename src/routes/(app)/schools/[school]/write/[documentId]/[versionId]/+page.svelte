@@ -35,6 +35,8 @@
 	let editorReady = false;
 
 	let contentLoaded = false;
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	let contentLocked = false;
 
 	// Document state
 	let documentTitle = data.document.title || '';
@@ -813,6 +815,25 @@
 		saveContent(fromKeyboard);
 	}
 
+	function handleContentLocked(event: CustomEvent<{ locked: boolean }>) {
+		const { locked } = event.detail;
+		// Just log the state change, AIFeedback handles the editor directly
+		console.log('Content lock state changed:', locked);
+	}
+
+	async function handleSaveRequired() {
+		try {
+			if (autoSaveManager) {
+				await autoSaveManager.manualSave(false);
+				console.log('Content saved before feedback generation');
+			}
+		} catch (error) {
+			console.error('Failed to save content before feedback:', error);
+			toastStore.show('Failed to save content. Please try again.', 'error');
+			throw error;
+		}
+	}
+
 	// Lifecycle management
 	onMount(() => {
 		if (browser) {
@@ -993,7 +1014,11 @@
 						versionId={$page.params.versionId}
 						existingFeedback={currentFeedback}
 						disabled={!editorReady || !contentLoaded}
+						{documentPrompt}
+						{editor}
 						on:feedbackReceived={handleFeedbackReceived}
+						on:contentLocked={handleContentLocked}
+						on:saveRequired={handleSaveRequired}
 					/>
 				</div>
 			</Section.Root>

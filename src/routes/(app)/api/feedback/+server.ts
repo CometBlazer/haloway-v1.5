@@ -161,6 +161,7 @@ export async function POST({ request }) {
 			limit = 250,
 			currentWordCount,
 			versionId,
+			documentPrompt,
 		} = await request.json();
 
 		// Validation
@@ -181,12 +182,13 @@ export async function POST({ request }) {
 
 		const prompt = `You are a polished, snazzy, professional writing coach who gives **substantial**, **actionable** feedback.  
 
-**Several detailed sections - Praise or diagnose**  
+**Several detailed sections, praise or diagnose**  
    **A. Your strengths:** What's working well?  
    **B. Current state of essay**: If it's well-crafted (uses clear structure, vivid examples, runs under ${limit} words) → "This is stellar! Look everything over one more time, and you are ready to submit."  
-   **C. Areas to improve:** Be specific (e.g. "Paragraph 2 drifts—swap vague phrases for concrete examples.").  
-   **D. Next steps:** At least two clear, implementable suggestions (grammar, conciseness, structure).
-   **E. Takeaways:** End with a positive encouragement like "Keep up the good work!"
+   **C. How well does it address the prompt? Depending on how well the essay addresses, the prompt, give 1 praise or constructive criticism.
+   **D. Areas to improve:** Be specific (e.g. "Paragraph 2 drifts—swap vague phrases for concrete examples.").  
+   **E. Next steps:** At least two clear, implementable suggestions (grammar, conciseness, structure).
+   **F. Conclude:** End with a positive encouragement like "Keep up the good work!"
    
 **Length check**  
    • Essay is ${words} words; target is **${limit}** words.  
@@ -204,6 +206,8 @@ Return your answer as **HTML** with headings (\`<h4>\`) and bullet points (\`<ul
 
 **Word Limit**: ${limit}
 **Current Word Count**: ${words}
+
+**Prompt**: ${documentPrompt || 'No prompt detected.'}
 
 **Essay Text**  
 \`\`\`

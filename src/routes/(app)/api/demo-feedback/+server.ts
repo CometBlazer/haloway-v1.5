@@ -119,8 +119,10 @@ export async function POST({ request }) {
 <p>Outstanding work! You've hit all the marks with style and substance. Keep up the excellent work!</p>`;
 		}
 
+		feedback += `<h4>Note: This is a Demo Feedback</h4>`;
+
 		// Simulate realistic API delay
-		await new Promise((resolve) => setTimeout(resolve, 2000));
+		await new Promise((resolve) => setTimeout(resolve, 5000));
 
 		// Store in database if versionId provided
 		if (versionId) {

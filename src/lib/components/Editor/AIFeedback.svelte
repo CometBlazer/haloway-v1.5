@@ -1,6 +1,6 @@
 <!-- src/lib/components/Editor/AIFeedback.svelte -->
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onDestroy } from 'svelte';
 	import { fade, slide } from 'svelte/transition';
 	import {
 		Sparkles,
@@ -9,9 +9,11 @@
 		AlertCircle,
 		CheckCircle,
 		Info,
+		Lock,
 	} from 'lucide-svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { toastStore } from '$lib/stores/toast';
+	import type { Editor } from '@tiptap/core';
 
 	export let essayText: string = '';
 	export let wordCountLimit: number = 250;
@@ -19,27 +21,72 @@
 	export let versionId: string | null = null;
 	export let existingFeedback: string | null = null;
 	export let disabled: boolean = false;
+	export let documentPrompt: string = '';
+	export let editor: Editor | null = null;
 
 	const dispatch = createEventDispatcher<{
 		feedbackReceived: { feedback: string; wordCount: number };
+		contentLocked: { locked: boolean };
+		saveRequired: Record<string, never>;
 	}>();
 
-	let feedback = existingFeedback || '';
+	// Make feedback reactive to existingFeedback changes
+	$: feedback = existingFeedback || '';
+
 	let loading = false;
 	let lastFeedbackTime: Date | null = null;
+	let contentLocked = false;
+	let capturedContent = '';
+	let capturedWordCount = 0;
+	let editorContentSnapshot = '';
 
-	// Store the essay text that was used for the current feedback
-	// let feedbackEssayText = '';
-
-	// Update feedback when existingFeedback prop changes
-	$: if (existingFeedback !== feedback) {
-		feedback = existingFeedback || '';
-	}
+	// Track editor state to prevent unwanted reloads
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	let editorLockState = false;
+	let currentEditorInstance: Editor | null = null;
 
 	// Calculate states
 	$: hasContent = essayText.trim().length > 0;
 	$: hasFeedback = feedback && feedback.trim().length > 0;
-	$: canGetFeedback = hasContent && !loading && !disabled;
+	$: canGetFeedback = hasContent && !loading && !disabled && !contentLocked;
+
+	// Handle editor instance changes more carefully
+	function handleEditorChange(newEditor: Editor | null) {
+		if (newEditor && newEditor !== currentEditorInstance) {
+			currentEditorInstance = newEditor;
+			// Apply current lock state to new editor instance
+			if (contentLocked && newEditor.isEditable) {
+				newEditor.setEditable(false);
+			}
+		}
+	}
+
+	// Watch editor prop changes without causing reactivity issues
+	$: handleEditorChange(editor);
+
+	// Manual editor lock/unlock functions to avoid reactive loops
+	function lockEditor() {
+		if (currentEditorInstance && currentEditorInstance.isEditable) {
+			// Capture current content before locking
+			editorContentSnapshot = currentEditorInstance.getHTML();
+			currentEditorInstance.setEditable(false);
+			editorLockState = true;
+			console.log('Editor locked, content preserved');
+		}
+	}
+
+	function unlockEditor() {
+		if (currentEditorInstance && !currentEditorInstance.isEditable) {
+			currentEditorInstance.setEditable(true);
+			// Restore content if it was lost
+			if (editorContentSnapshot && currentEditorInstance.isEmpty) {
+				currentEditorInstance.commands.setContent(editorContentSnapshot);
+				console.log('Editor content restored after unlock');
+			}
+			editorLockState = false;
+			console.log('Editor unlocked');
+		}
+	}
 
 	// Define types for sanitization
 	type SanitizedContent = {
@@ -142,59 +189,189 @@
 		}
 	}
 
-	// Process feedback for safe rendering
+	// Process feedback for safe rendering - also reactive
 	$: processedFeedback = sanitizeAndParseHtml(feedback);
 
+	// Reactive last updated time - updates when feedback changes
+	$: if (feedback && feedback !== '' && !loading) {
+		// Only update time if feedback actually changed and we're not currently loading
+		const currentTime = new Date();
+		if (
+			!lastFeedbackTime ||
+			Math.abs(currentTime.getTime() - lastFeedbackTime.getTime()) > 5000
+		) {
+			lastFeedbackTime = currentTime;
+		}
+	}
+
+	// Enhanced content capture with validation
+	function captureCurrentContent(): {
+		content: string;
+		wordCount: number;
+		isValid: boolean;
+	} {
+		// Get content directly from editor if available, fallback to essayText
+		let currentContent = '';
+		if (currentEditorInstance && !currentEditorInstance.isEmpty) {
+			currentContent = currentEditorInstance.getText().trim();
+		} else {
+			currentContent = essayText.trim();
+		}
+
+		const currentWords = currentWordCount;
+		const isValid = currentContent.length > 0 && currentWords > 0;
+
+		if (!isValid) {
+			console.warn('Content validation failed:', {
+				contentLength: currentContent.length,
+				wordCount: currentWords,
+				editorEmpty: currentEditorInstance?.isEmpty,
+			});
+		}
+
+		// Log content capture for debugging
+		console.log('Captured content:', {
+			content: currentContent,
+			wordCount: currentWords,
+			isValid,
+		});
+
+		return { content: currentContent, wordCount: currentWords, isValid };
+	}
+
+	// Force save before feedback
+	async function saveBeforeFeedback(): Promise<boolean> {
+		try {
+			dispatch('saveRequired', {});
+			// await new Promise((resolve) => setTimeout(resolve, 1000)); // Give more time for save
+			return true;
+		} catch (error) {
+			console.error('Failed to save before feedback:', error);
+			toastStore.show('Failed to get response. Please try again.', 'error');
+			return false;
+		}
+	}
+
+	// Enhanced feedback function with content locking
 	async function getFeedback() {
-		if (!canGetFeedback) return;
+		if (!canGetFeedback) {
+			console.warn('Cannot get feedback - preconditions not met');
+			return;
+		}
 
-		// Capture the current essay text at the moment of clicking
-		const currentEssayText = essayText.trim();
-		const currentWordCountSnapshot = currentWordCount;
+		// Step 1: Capture and validate content
+		const { content, wordCount, isValid } = captureCurrentContent();
 
-		// Store it so we know what text this feedback is for
-		// feedbackEssayText = currentEssayText;
+		if (!isValid) {
+			toastStore.show(
+				'Please write some content before requesting feedback.',
+				'error',
+			);
+			return;
+		}
 
+		// Step 2: Check for required fields
+		const trimmedPrompt = documentPrompt.trim();
+
+		// Step 3: Lock content and preserve state
+		contentLocked = true;
+		capturedContent = content;
+		capturedWordCount = wordCount;
+
+		// Lock the editor manually to prevent content loss
+		lockEditor();
+
+		// Dispatch lock state
+		dispatch('contentLocked', { locked: true });
+
+		// Step 4: Save to database
+		const saveSuccess = await saveBeforeFeedback();
+		if (!saveSuccess) {
+			contentLocked = false;
+			unlockEditor();
+			dispatch('contentLocked', { locked: false });
+			return;
+		}
+
+		// Step 5: Generate feedback
 		loading = true;
-		feedback = '';
+		// Don't clear feedback here, let it be reactive to the API response
 
 		try {
-			const res = await fetch('/api/feedback', {
+			const res = await fetch('/api/demo-feedback', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					essayText: currentEssayText, // Use the captured text
+					essayText: capturedContent,
 					limit: wordCountLimit,
-					currentWordCount: currentWordCountSnapshot, // Use captured word count
+					currentWordCount: capturedWordCount,
 					versionId: versionId,
+					documentPrompt: trimmedPrompt,
 				}),
 			});
 
 			if (!res.ok) {
-				throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+				const errorText = await res.text().catch(() => 'Unknown error');
+				throw new Error(`HTTP ${res.status}: ${errorText}`);
 			}
 
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const { feedback: fb, wordCount } = await res.json();
-			feedback = fb;
+			const responseData = await res.json();
+
+			if (!responseData.feedback) {
+				throw new Error('No feedback received from server');
+			}
+
+			// Update lastFeedbackTime when we receive new feedback
 			lastFeedbackTime = new Date();
 
-			// Dispatch event to parent with the captured word count
 			dispatch('feedbackReceived', {
-				feedback: fb,
-				wordCount: currentWordCountSnapshot,
+				feedback: responseData.feedback,
+				wordCount: capturedWordCount,
 			});
 
 			toastStore.show('✨ Your essay has been reviewed!', 'success');
 		} catch (error) {
 			console.error('Feedback error:', error);
-			feedback =
+
+			let errorMessage =
 				'Sorry, I encountered an error while analyzing your essay. Please try again in a moment.';
+
+			if (error instanceof Error) {
+				if (error.message.includes('404')) {
+					errorMessage =
+						'Feedback service is temporarily unavailable. Please try again later.';
+				} else if (error.message.includes('400')) {
+					errorMessage =
+						'Invalid request. Please ensure your essay has content and try again.';
+				} else if (error.message.includes('500')) {
+					errorMessage =
+						'Server error occurred. Please try again in a few minutes.';
+				}
+			}
+
+			// Dispatch error feedback so it gets updated reactively
+			dispatch('feedbackReceived', {
+				feedback: errorMessage,
+				wordCount: capturedWordCount,
+			});
+
 			toastStore.show('Failed to get feedback. Please try again.', 'error');
 		} finally {
 			loading = false;
+			contentLocked = false;
+			unlockEditor();
+			dispatch('contentLocked', { locked: false });
 		}
 	}
+
+	// Emergency unlock function
+	// function unlockContent() {
+	// 	contentLocked = false;
+	// 	loading = false;
+	// 	unlockEditor();
+	// 	dispatch('contentLocked', { locked: false });
+	// 	toastStore.show('Content unlocked. You can now edit your essay.', 'info');
+	// }
 
 	function formatLastUpdated(date: Date): string {
 		const now = new Date();
@@ -211,6 +388,13 @@
 		const diffDays = Math.floor(diffHours / 24);
 		return `${diffDays}d ago`;
 	}
+
+	// Cleanup on destroy
+	onDestroy(() => {
+		if (contentLocked) {
+			unlockEditor();
+		}
+	});
 </script>
 
 <div class="ai-feedback-container">
@@ -244,6 +428,16 @@
 				{/if}
 			</Button>
 		</div>
+
+		<!-- Content Lock Warning -->
+		{#if contentLocked}
+			<div class="content-lock-warning" transition:slide={{ duration: 200 }}>
+				<div class="warning-content">
+					<Lock size={16} />
+					<span>Page is locked while generating feedback. Please wait...</span>
+				</div>
+			</div>
+		{/if}
 
 		<!-- Word count info -->
 		<div class="word-count-info">
@@ -404,6 +598,29 @@
 		font-size: 0.75rem;
 		color: hsl(var(--color-primary-content) / 0.8);
 		margin-left: 0.5rem;
+	}
+
+	/* .button-group {
+		display: flex;
+		gap: 0.5rem;
+		align-items: center;
+	} */
+
+	.content-lock-warning {
+		background: hsl(var(--color-warning) / 0.1);
+		border: 1px solid hsl(var(--color-warning) / 0.3);
+		border-radius: 0.5rem;
+		padding: 0.75rem;
+		margin-bottom: 1rem;
+	}
+
+	.warning-content {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: hsl(var(--color-primary-content));
+		font-size: 0.875rem;
+		font-weight: 500;
 	}
 
 	.word-count-info {
