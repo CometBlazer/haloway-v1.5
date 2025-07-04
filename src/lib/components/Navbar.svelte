@@ -17,6 +17,7 @@
 	const menuItems = {
 		'/#features': 'Features',
 		'/#security': 'Security',
+		'/extracurricular-organizer': 'EC Organizer',
 		'/essayfeedback': 'AI Essay Feedback',
 		'/contact': 'Contact',
 	};
@@ -51,7 +52,7 @@
 				<PersonalMenu {user} />
 				<Button
 					variant="outline"
-					class="h-10 border-color-primary text-lg hover:bg-accent hover:text-accent-foreground"
+					class="h-10 border-color-primary text-base hover:bg-accent hover:text-accent-foreground"
 					href="/login"
 					>Start writing <ArrowRight class="ml-1 h-4 w-4" /></Button
 				>

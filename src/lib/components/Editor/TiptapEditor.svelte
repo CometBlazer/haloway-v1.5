@@ -21,6 +21,8 @@
 		Check,
 	} from 'lucide-svelte';
 	import { browser } from '$app/environment';
+	import WordCounter from './WordCounter.svelte';
+	import { Switch } from '$lib/components/ui/switch';
 
 	// Create event dispatcher
 	const dispatch = createEventDispatcher();
@@ -68,10 +70,6 @@
 			dispatch('wordCount', wordCount);
 		}
 	}
-	$: percentage = Math.min(100, Math.round((100 / wordCountLimit) * wordCount));
-	$: isNearLimit = wordCount >= wordCountLimit * 0.8;
-	$: isAtLimit = wordCount == wordCountLimit;
-	$: isOverLimit = wordCount > wordCountLimit;
 
 	// Toggle read-only mode
 	function toggleZenMode() {
@@ -351,7 +349,7 @@
 
 	// Unified button classes
 	const buttonClasses =
-		'flex items-center justify-center border-none bg-transparent rounded-md cursor-pointer transition-all duration-150 ease-in-out';
+		'flex items-center justify-center border-none bg-transparent rounded-lg cursor-pointer transition-all duration-150 ease-in-out';
 
 	const standardButtonClasses = `${buttonClasses} w-8 h-8 font-medium text-sm`;
 
@@ -361,8 +359,20 @@
 
 	// Icon size for lucide icons, to match text B, I, U
 	const iconSize = 22; // Experiment with this size (20, 22, 24)
+
+	// Screen width tracking
+	let innerWidth = 0;
+
+	// Reactive size based on screen width
+	$: componentSize =
+		innerWidth >= 1080
+			? ('lg' as const)
+			: innerWidth >= 640
+				? ('md' as const)
+				: ('sm' as const);
 </script>
 
+<svelte:window bind:innerWidth />
 <!-- Bubble Menu - Only show when not in read-only mode -->
 {#if showBubbleMenu && editor}
 	<div
@@ -917,36 +927,15 @@
 	<!-- Editor Controls (Word Count and Zen/Focus Mode Toggle) -->
 	<div class="editor-controls mb-2 flex items-center justify-between">
 		<!-- Word Count Display -->
-		<div
-			class="word-count-display"
-			class:limit-near={isNearLimit}
-			class:limit-reached={isAtLimit}
-			class:limit-over={isOverLimit}
-		>
-			<svg height="20" width="20" viewBox="0 0 20 20">
-				<circle r="10" cx="10" cy="10" fill="hsl(var(--color-base-300))" />
-				<circle
-					r="5"
-					cx="10"
-					cy="10"
-					fill="transparent"
-					stroke="currentColor"
-					stroke-width="10"
-					stroke-dasharray="{(percentage * 31.4) / 100} 31.4"
-					transform="rotate(-90) translate(-20)"
-				/>
-				<circle r="6" cx="10" cy="10" fill="hsl(var(--color-base-100))" />
-			</svg>
-			<span class="word-count-text">
-				{wordCount} words {isOverLimit
-					? '(limit reached)'
-					: `/ ${wordCountLimit} limit`}
-			</span>
-		</div>
+		<WordCounter
+			currentWordCount={wordCount}
+			wordLimit={wordCountLimit}
+			size={componentSize}
+			showText={true}
+		/>
 
 		<!-- Zen/Focus Mode Toggle -->
 		<div class="toggle-container">
-			<!-- {#if zenMode} -->
 			<button
 				class="copy-all-button {textButtonClasses} editor-btn"
 				class:copy-success={copySuccess}
@@ -954,23 +943,26 @@
 				title="Copy all text to clipboard"
 			>
 				{#if copySuccess}
-					<Check size={16} class="text-green-500" />
+					<Check
+						size={componentSize === 'sm' ? 12 : 16}
+						class="text-green-500"
+					/>
 				{:else}
-					<Copy size={16} />
+					<Copy size={componentSize === 'sm' ? 12 : 16} />
 				{/if}
 			</button>
-			<!-- {/if} -->
-			<span class="toggle-label">{zenMode ? 'Zen Mode' : 'Focus Mode'}</span>
-			<label class="toggle-switch">
-				<input
-					type="checkbox"
-					class="toggle-input"
-					checked={!zenMode}
-					on:change={toggleZenMode}
-					aria-label={zenMode ? 'Switch to Focus Mode' : 'Switch to Zen Mode'}
-				/>
-				<span class="toggle-slider"></span>
-			</label>
+
+			<span class="toggle-label text-xs sm:text-sm"
+				>{zenMode ? 'Zen Mode' : 'Focus Mode'}</span
+			>
+
+			<!-- Shadcn Switch with custom styling -->
+			<Switch
+				checked={!zenMode}
+				onCheckedChange={toggleZenMode}
+				class="shadcn-switch"
+				aria-label={zenMode ? 'Switch to Focus Mode' : 'Switch to Zen Mode'}
+			/>
 		</div>
 	</div>
 {/if}
@@ -1122,31 +1114,6 @@
 		gap: 0.25rem;
 	}
 
-	/* Word Count Display */
-	.word-count-display {
-		align-items: center;
-		color: hsl(var(--color-neutral-content));
-		display: flex;
-		font-size: 0.75rem;
-		gap: 0.5rem;
-	}
-
-	.word-count-display svg {
-		color: hsl(var(--color-primary));
-	}
-
-	.word-count-display.limit-near svg {
-		color: hsl(var(--color-warning));
-	}
-
-	.word-count-display.limit-reached svg {
-		color: hsl(var(--color-info));
-	}
-
-	.word-count-display.limit-over svg {
-		color: hsl(var(--color-error));
-	}
-
 	/* Editor Controls */
 	.editor-controls {
 		padding: 0.5rem;
@@ -1162,58 +1129,45 @@
 	}
 
 	.toggle-label {
-		font-size: 0.875rem;
 		color: hsl(var(--color-base-content));
 	}
+	/* Custom shadcn switch styling to match your original colors */
+	:global(.shadcn-switch[data-state='unchecked']) {
+		background-color: hsl(var(--color-base-300));
+	}
 
-	.toggle-switch {
-		position: relative;
-		display: inline-block;
+	:global(.shadcn-switch[data-state='checked']) {
+		background-color: hsl(var(--color-primary));
+	}
+
+	:global(.shadcn-switch[data-state='unchecked'] span) {
+		background-color: hsl(var(--color-base-000));
+	}
+
+	:global(.shadcn-switch[data-state='checked'] span) {
+		background-color: hsl(var(--color-base-000));
+	}
+
+	/* Focus styles */
+	:global(.shadcn-switch:focus-visible) {
+		outline: 2px solid hsl(var(--color-primary));
+		outline-offset: 2px;
+	}
+
+	/* Ensure the switch maintains the same size as your original */
+	:global(.shadcn-switch) {
 		width: 44px;
 		height: 24px;
 	}
 
-	.toggle-input {
-		opacity: 0;
-		width: 0;
-		height: 0;
-	}
-
-	.toggle-slider {
-		position: absolute;
-		cursor: pointer;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background-color: hsl(var(--color-base-300));
-		transition: 0.3s;
-		border-radius: 24px;
-	}
-
-	.toggle-slider:before {
-		position: absolute;
-		content: '';
-		height: 18px;
+	:global(.shadcn-switch span) {
 		width: 18px;
-		left: 3px;
-		bottom: 3px;
-		background-color: hsl(var(--color-base-000));
-		transition: 0.3s;
-		border-radius: 50%;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+		height: 18px;
 	}
 
-	.toggle-input:checked + .toggle-slider {
-		background-color: hsl(var(--color-primary));
-	}
-
-	.toggle-input:focus + .toggle-slider {
-		box-shadow: 0 0 1px hsl(var(--color-primary));
-	}
-
-	.toggle-input:checked + .toggle-slider:before {
-		transform: translateX(20px);
+	/* Optional: Add hover effects */
+	:global(.shadcn-switch:hover) {
+		opacity: 0.9;
 	}
 
 	/* Editor Content Styles */
@@ -1353,13 +1307,6 @@
 			flex-wrap: wrap;
 		}
 
-		.word-count-display {
-			font-size: 0.7rem;
-			/* Ensure it doesn't shrink too much */
-			flex-shrink: 1;
-			min-width: 0;
-		}
-
 		.toggle-container {
 			/* Ensure it stays on the right */
 			flex-shrink: 0;
@@ -1376,14 +1323,9 @@
 	@media (max-width: 480px) {
 		.editor-controls {
 			/* Only stack on very small screens if needed */
-			flex-direction: column;
+			flex-direction: row;
 			gap: 0.5rem;
 			align-items: stretch;
-		}
-
-		.word-count-display {
-			justify-content: center;
-			font-size: 0.65rem;
 		}
 
 		.toggle-container {

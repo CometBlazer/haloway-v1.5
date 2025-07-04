@@ -2,12 +2,6 @@
 <script lang="ts">
 	import { onMount, afterUpdate, onDestroy, tick } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
-	import {
-		Card,
-		CardContent,
-		CardHeader,
-		CardTitle,
-	} from '$lib/components/ui/card';
 	import { Plus } from 'lucide-svelte';
 	import ActivityCard from './ActivityCard.svelte';
 	import type { Activity } from '$lib/types/activity';
@@ -222,44 +216,6 @@
 			<Plus class="mr-2 h-4 w-4" />
 			Add Activity
 		</Button>
-	</div>
-
-	<!-- Statistics -->
-	<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-		<Card>
-			<CardHeader class="pb-2">
-				<CardTitle class="text-sm font-medium">Total Activities</CardTitle>
-			</CardHeader>
-			<CardContent>
-				<div class="text-2xl font-bold">{activities.length}</div>
-			</CardContent>
-		</Card>
-
-		<Card>
-			<CardHeader class="pb-2">
-				<CardTitle class="text-sm font-medium">Total Hours/Week</CardTitle>
-			</CardHeader>
-			<CardContent>
-				<div class="text-2xl font-bold">
-					{activities.reduce(
-						(sum, activity) => sum + (activity.hoursPerWeek || 0),
-						0,
-					)}
-				</div>
-			</CardContent>
-		</Card>
-
-		<Card>
-			<CardHeader class="pb-2">
-				<CardTitle class="text-sm font-medium">College Continuing</CardTitle>
-			</CardHeader>
-			<CardContent>
-				<div class="text-2xl font-bold">
-					{activities.filter((activity) => activity.collegeParticipation)
-						.length}
-				</div>
-			</CardContent>
-		</Card>
 	</div>
 
 	<!-- Main Board -->
