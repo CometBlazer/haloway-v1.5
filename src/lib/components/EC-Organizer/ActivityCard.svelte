@@ -556,7 +556,7 @@
 								on:input={(e) =>
 									handleUpdate('organizationName', e.currentTarget.value)}
 								placeholder="Organization Name"
-								maxlength={150}
+								maxlength={110}
 								rows={2}
 								class="resize-none rounded-xl border-border/60 bg-background/80 focus:border-primary/60"
 							/>
@@ -674,7 +674,7 @@
 									handleUpdate('positionDescription', e.currentTarget.value);
 								}}
 								placeholder="Position/Leadership Role (e.g., President,...)"
-								maxlength={50}
+								maxlength={60}
 								class="h-9 rounded-xl border-border/60 bg-background/80 focus:border-primary/60"
 							/>
 						</div>
@@ -723,7 +723,7 @@
 								on:input={(e) =>
 									handleUpdate('activityDescription', e.currentTarget.value)}
 								placeholder="Activity Description - Describe your activity and achievements..."
-								maxlength={150}
+								maxlength={160}
 								rows={5}
 								class="resize-vertical rounded-xl border-border/60 bg-background/80 focus:border-primary/60"
 							/>

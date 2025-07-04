@@ -3,7 +3,7 @@
 	import Home from '~icons/lucide/home';
 	import PanelLeft from '~icons/lucide/panel-left';
 	import Settings from '~icons/lucide/settings';
-	import { Plus, PenLine, Loader2 } from 'lucide-svelte';
+	import { Plus, PenLine, Loader2, NotebookPen } from 'lucide-svelte';
 
 	import Logo from '$lib/components/Logo.svelte';
 	import PersonalMenu from '$lib/components/personal-menu.svelte';
@@ -108,6 +108,15 @@
 				<Logo />
 				<span class="text-xs font-medium text-muted-foreground">Home</span>
 			</a>
+
+			<!-- Create Essay Button -->
+			<button
+				on:click={handleCreateEssay}
+				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
+			>
+				<Plus class="h-5 w-5" />
+				<span class="text-center text-xs font-medium">Create Essay</span>
+			</button>
 			<NavLink
 				href="/dashboard"
 				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
@@ -116,15 +125,6 @@
 				<Home class="h-5 w-5" />
 				<span class="text-center text-xs font-medium">Dashboard</span>
 			</NavLink>
-
-			<!-- Create Essay Button -->
-			<button
-				on:click={handleCreateEssay}
-				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
-			>
-				<PenLine class="h-5 w-5" />
-				<span class="text-center text-xs font-medium">Create Essay</span>
-			</button>
 
 			<NavLink
 				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
@@ -135,6 +135,16 @@
 				<ExternalLink class="h-5 w-5" />
 				<span class="text-center text-xs font-medium text-muted-foreground"
 					>Common App Prompts</span
+				>
+			</NavLink>
+
+			<NavLink
+				href="/extracurricular-organizer"
+				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
+				activeClass="bg-accent text-accent-foreground"
+			>
+				<NotebookPen class="h-5 w-5" />
+				<span class="text-center text-xs font-medium">Activities Organizer</span
 				>
 			</NavLink>
 			<NavLink
@@ -195,7 +205,7 @@
 							on:click={handleCreateEssay}
 							class="flex items-center gap-4 px-2.5 text-left text-muted-foreground hover:text-foreground"
 						>
-							<PenLine class="h-5 w-5" />
+							<Plus class="h-5 w-5" />
 							Create Essay
 						</button>
 
@@ -207,12 +217,27 @@
 							<ExternalLink class="h-5 w-5" />
 							Common App Prompts
 						</a>
+
+						<a
+							href="/extracurricular-organizer"
+							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+						>
+							<NotebookPen class="h-5 w-5" />
+							Activities Organizer
+						</a>
 						<a
 							href="/essayfeedback"
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
 						>
 							<Sparkles class="h-5 w-5" />
 							AI Feedback
+						</a>
+						<a
+							href="/settings"
+							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+						>
+							<Settings class="h-5 w-5" />
+							Settings
 						</a>
 					</nav>
 				</Sheet.Content>
@@ -388,7 +413,7 @@
 									<Loader2 class="mr-2 h-4 w-4 animate-spin" />
 									Creating...
 								{:else}
-									<Plus class="mr-2 h-4 w-4" />
+									<PenLine class="mr-2 h-4 w-4" />
 									Finish Creating Essay
 								{/if}
 							</Button>
