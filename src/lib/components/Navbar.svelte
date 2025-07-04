@@ -34,10 +34,10 @@
 	>
 		<HomeButton />
 		<nav class="hidden lg:block">
-			<ul class="hidden flex-wrap px-1 text-lg font-bold lg:flex">
+			<ul class="hidden flex-wrap px-1 text-base font-bold lg:flex">
 				{#each Object.entries(menuItems) as [href, text]}
 					<li class="lg:mx-2">
-						<Button variant="ghost" {href} class="text-lg text-foreground">
+						<Button variant="ghost" {href} class="text-base text-foreground">
 							{text}
 						</Button>
 					</li>
