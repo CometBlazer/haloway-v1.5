@@ -24,6 +24,7 @@
 		Calendar,
 		Clock,
 		BookOpen,
+		Check,
 	} from 'lucide-svelte';
 	import WordCounter from '$lib/components/Editor/WordCounter.svelte';
 	import type { Activity } from '$lib/types/activity';
@@ -48,6 +49,11 @@
 	};
 
 	let isDeleting = false;
+	let copySuccess = {
+		organizationName: false,
+		positionDescription: false,
+		activityDescription: false,
+	};
 
 	function handleDelete() {
 		isDeleting = true;
@@ -67,9 +73,13 @@
 		});
 	}
 
-	function copyToClipboard(text: string) {
+	function copyToClipboard(text: string, field: keyof typeof copySuccess) {
 		navigator.clipboard.writeText(text).then(() => {
 			console.log('Copied to clipboard:', text);
+			copySuccess[field] = true;
+			setTimeout(() => {
+				copySuccess[field] = false;
+			}, 2000);
 		});
 	}
 
@@ -220,10 +230,19 @@
 									size="sm"
 									class="h-6 w-6 p-0"
 									on:click={() =>
-										copyToClipboard(activity.organizationName || '')}
+										copyToClipboard(
+											activity.organizationName || '',
+											'organizationName',
+										)}
 									type="button"
 								>
-									<Copy class="h-3 w-3" />
+									<span class="flex h-3 w-3 items-center justify-center">
+										{#if copySuccess.organizationName}
+											<Check class="h-3 w-3 text-green-500" />
+										{:else}
+											<Copy class="h-3 w-3" />
+										{/if}
+									</span>
 								</Button>
 							</div>
 						</div>
@@ -327,10 +346,19 @@
 									size="sm"
 									class="h-6 w-6 p-0"
 									on:click={() =>
-										copyToClipboard(activity.positionDescription || '')}
+										copyToClipboard(
+											activity.positionDescription || '',
+											'positionDescription',
+										)}
 									type="button"
 								>
-									<Copy class="h-3 w-3" />
+									<span class="flex h-3 w-3 items-center justify-center">
+										{#if copySuccess.positionDescription}
+											<Check class="h-3 w-3 text-green-500" />
+										{:else}
+											<Copy class="h-3 w-3" />
+										{/if}
+									</span>
 								</Button>
 							</div>
 						</div>
@@ -369,10 +397,19 @@
 									size="sm"
 									class="h-6 w-6 p-0"
 									on:click={() =>
-										copyToClipboard(activity.activityDescription || '')}
+										copyToClipboard(
+											activity.activityDescription || '',
+											'activityDescription',
+										)}
 									type="button"
 								>
-									<Copy class="h-3 w-3" />
+									<span class="flex h-3 w-3 items-center justify-center">
+										{#if copySuccess.activityDescription}
+											<Check class="h-3 w-3 text-green-500" />
+										{:else}
+											<Copy class="h-3 w-3" />
+										{/if}
+									</span>
 								</Button>
 							</div>
 						</div>
@@ -382,7 +419,7 @@
 								value={activity.activityDescription}
 								on:input={(e) =>
 									handleUpdate('activityDescription', e.currentTarget.value)}
-								placeholder="Describe your activity and achievements..."
+								placeholder="Activity Description - Describe your activity and achievements..."
 								maxlength={150}
 								rows={5}
 								class="resize-vertical rounded-xl border-border/60 bg-background/80 focus:border-primary/60"
