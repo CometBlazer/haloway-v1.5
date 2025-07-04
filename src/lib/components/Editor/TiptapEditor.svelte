@@ -952,9 +952,9 @@
 				{/if}
 			</button>
 
-			<span class="toggle-label text-xs sm:text-sm"
-				>{zenMode ? 'Zen Mode' : 'Focus Mode'}</span
-			>
+			<p class="toggle-label text-xs sm:text-sm">
+				{zenMode ? 'Zen Mode' : 'Focus Mode'}
+			</p>
 
 			<!-- Shadcn Switch with custom styling -->
 			<Switch

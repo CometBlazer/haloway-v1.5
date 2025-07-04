@@ -110,12 +110,12 @@
 
 		<hr class="mx-auto my-6 max-w-5xl border-2 border-t border-accent" />
 
-		<h3 class="mt-4 text-base text-muted-foreground">
+		<p class="mt-4 text-base text-muted-foreground">
 			Drag and drop to reorder. Prefilled with character limits and Common App
 			input requirements. Add and remove activities as needed.
-		</h3>
+		</p>
 		{#if !data.isAuthenticated}
-			<h3 class="mt-1 text-base text-muted-foreground">
+			<p class="mt-1 text-base text-muted-foreground">
 				To save your work,
 				<a
 					href="/register"
@@ -127,15 +127,15 @@
 					href="/login"
 					class="text-foreground underline hover:text-foreground/80">sign in</a
 				>.
-			</h3>
+			</p>
 		{/if}
-		<h3 class="mt-1 text-base text-muted-foreground">
+		<p class="mt-1 text-base text-muted-foreground">
 			Want another feature?
 			<a
 				href="/contact"
 				class="text-foreground underline hover:text-foreground/80">Request it</a
 			>.
-		</h3>
+		</p>
 	</div>
 
 	<KanbanBoard

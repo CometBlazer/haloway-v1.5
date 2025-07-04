@@ -24,6 +24,7 @@
 		Lock,
 		Check,
 		X,
+		ArrowRight,
 	} from 'lucide-svelte';
 
 	import AuroraBackground from '$lib/components/AuroraBackground.svelte';
@@ -307,7 +308,8 @@
 			<div
 				class="hero-content-fade mb-4 mt-6 max-w-5xl px-4 sm:mb-6 sm:mt-10 md:mt-20"
 			>
-				<div
+				<a
+					href="/extracurricular-organizer"
 					class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-sm font-semibold text-primary sm:px-3 sm:text-base"
 				>
 					<div class="flex items-center gap-1"></div>
@@ -328,8 +330,9 @@
 							d="M17 19h4"
 						/></svg
 					>
-					Now in beta
-				</div>
+					New! Try our free Extracurricular Activities Organizer
+					<ArrowRight class="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
+				</a>
 
 				<!-- <h1
 			class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold px-2 tracking-tight leading-tight"
@@ -1296,7 +1299,7 @@
 				</div>
 			</div>
 
-			<h1 class="mb-6 text-4xl font-bold sm:mb-8 md:text-5xl lg:text-6xl">
+			<h1 class="mb-6 text-4xl font-extrabold sm:mb-8 md:text-5xl lg:text-6xl">
 				Try {WebsiteName} for free today.
 			</h1>
 

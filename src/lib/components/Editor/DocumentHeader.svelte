@@ -158,11 +158,11 @@
 			>
 				<div class="prompt-content">
 					{#if documentPrompt}
-						<div class="prompt-text">
+						<p class="prompt-text">
 							{documentPrompt}
-						</div>
+						</p>
 					{:else}
-						<div class="prompt-placeholder">
+						<p class="prompt-placeholder">
 							<svg
 								class="placeholder-icon"
 								viewBox="0 0 20 20"
@@ -175,7 +175,7 @@
 								/>
 							</svg>
 							<span>Copy paste your essay prompt here</span>
-						</div>
+						</p>
 					{/if}
 					<svg class="edit-icon-small" viewBox="0 0 20 20" fill="currentColor">
 						<path
