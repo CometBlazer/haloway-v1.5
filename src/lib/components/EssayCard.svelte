@@ -215,7 +215,7 @@
 				<!-- <div class="document-icon">
 					<FileText size={20} />
 				</div> -->
-				<div class="title-container h-14">
+				<div class="title-container h-16">
 					<h3 class="document-title">
 						{document.title && document.title.length > 50
 							? document.title.substring(0, 50) + '...'

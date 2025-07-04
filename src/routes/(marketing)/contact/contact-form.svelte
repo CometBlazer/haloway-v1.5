@@ -28,7 +28,7 @@
 		<div class="flex flex-wrap gap-2">
 			<Form.Field class="flex-1" {form} name="name">
 				<Form.Control let:attrs>
-					<Form.Label>Name</Form.Label>
+					<Form.Label>Name <span class="text-destructive">*</span></Form.Label>
 					<Input
 						{...attrs}
 						type="text"
@@ -41,7 +41,9 @@
 			</Form.Field>
 			<Form.Field class="flex-1" {form} name="email">
 				<Form.Control let:attrs>
-					<Form.Label class="mb-2">Email</Form.Label>
+					<Form.Label class="mb-2"
+						>Email <span class="text-destructive">*</span></Form.Label
+					>
 					<Input
 						{...attrs}
 						type="email"
@@ -55,11 +57,13 @@
 		</div>
 		<Form.Field class="flex-1" {form} name="subject">
 			<Form.Control let:attrs>
-				<Form.Label class="mb-2">Subject</Form.Label>
+				<Form.Label class="mb-2"
+					>Subject <span class="text-destructive">*</span></Form.Label
+				>
 				<Input
 					{...attrs}
 					type="text"
-					placeholder="Collaboration request"
+					placeholder="Feature request, etc."
 					required
 					bind:value={$formData.subject}
 				/>
