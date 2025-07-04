@@ -11,6 +11,7 @@
 	import { browser } from '$app/environment';
 	import { Button } from '$lib/components/ui/button';
 	import { Plus, Download, Save, AlertCircle } from 'lucide-svelte';
+	import * as Dialog from '$lib/components/ui/dialog';
 	import ActivityCard from './ActivityCard.svelte';
 	import type { Activity } from '$lib/types/activity';
 	import Sortable from 'sortablejs';
@@ -30,6 +31,10 @@
 	let sortableContainer: HTMLElement;
 	let sortableInstance: Sortable | null = null;
 	let mounted = false;
+
+	// Delete confirmation modal state
+	let showDeleteModal = false;
+	let activityToDelete: Activity | null = null;
 
 	const STORAGE_KEY = 'college-extracurriculars';
 
@@ -273,14 +278,38 @@
 		reinitializeSortable();
 	}
 
-	async function handleDeleteActivity(event: CustomEvent<{ id: string }>) {
-		localActivities = localActivities.filter((a) => a.id !== event.detail.id);
-		updateActivitiesAndTrack();
-		await tick();
-
-		if (localActivities.length > 0) {
-			reinitializeSortable();
+	// Handle delete request - open confirmation modal (DON'T DELETE YET)
+	function handleDeleteActivity(event: CustomEvent<{ id: string }>) {
+		const activity = localActivities.find((a) => a.id === event.detail.id);
+		if (activity) {
+			activityToDelete = activity;
+			showDeleteModal = true;
 		}
+	}
+
+	// Actually delete the activity (called from modal)
+	async function confirmDelete() {
+		if (activityToDelete) {
+			localActivities = localActivities.filter(
+				(a) => a.id !== activityToDelete!.id,
+			);
+			updateActivitiesAndTrack();
+			await tick();
+
+			if (localActivities.length > 0) {
+				reinitializeSortable();
+			}
+		}
+
+		// Reset modal state
+		showDeleteModal = false;
+		activityToDelete = null;
+	}
+
+	// Cancel deletion
+	function cancelDelete() {
+		showDeleteModal = false;
+		activityToDelete = null;
 	}
 
 	function handleUpdateActivity(
@@ -300,30 +329,6 @@
 			}
 		});
 	}
-
-	// function downloadActivitiesJSON() {
-	// 	const currentActivities = localActivities;
-
-	// 	const jsonData = {
-	// 		exportDate: new Date().toISOString(),
-	// 		totalActivities: currentActivities.length,
-	// 		activities: currentActivities,
-	// 	};
-
-	// 	const jsonString = JSON.stringify(jsonData, null, 2);
-	// 	const blob = new Blob([jsonString], { type: 'application/json' });
-	// 	const url = URL.createObjectURL(blob);
-
-	// 	const link = document.createElement('a');
-	// 	link.href = url;
-	// 	link.download = `extracurricular-activities-${new Date().toISOString().split('T')[0]}.json`;
-
-	// 	document.body.appendChild(link);
-	// 	link.click();
-
-	// 	document.body.removeChild(link);
-	// 	URL.revokeObjectURL(url);
-	// }
 
 	function downloadActivitiesTXT() {
 		if (!localActivities.length) return;
@@ -518,6 +523,45 @@
 		</div>
 	</div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<Dialog.Root bind:open={showDeleteModal}>
+	<Dialog.Content class="sm:max-w-[425px]">
+		<Dialog.Header>
+			<Dialog.Title>Delete Activity</Dialog.Title>
+			<Dialog.Description>
+				Are you sure you want to delete this activity? This action cannot be
+				undone.
+			</Dialog.Description>
+		</Dialog.Header>
+
+		{#if activityToDelete}
+			<div class="py-4">
+				<div class="rounded-lg border bg-muted/30 p-3">
+					<p class="text-sm font-medium">
+						{activityToDelete.positionDescription ||
+							'Untitled Position/Leadership Role'}
+					</p>
+					{#if activityToDelete.organizationName}
+						<p class="text-sm font-medium">
+							{activityToDelete.organizationName}
+						</p>
+					{/if}
+					<p class="text-sm text-muted-foreground">
+						{activityToDelete.activityDescription || 'Untitled Activity'}
+					</p>
+				</div>
+			</div>
+		{/if}
+
+		<Dialog.Footer>
+			<Button variant="outline" on:click={cancelDelete}>Cancel</Button>
+			<Button variant="destructive" on:click={confirmDelete}>
+				Delete Activity
+			</Button>
+		</Dialog.Footer>
+	</Dialog.Content>
+</Dialog.Root>
 
 <style>
 	/* Status Section - Matching TopToolbar.svelte exactly */

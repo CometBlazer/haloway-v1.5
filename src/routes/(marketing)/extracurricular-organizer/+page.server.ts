@@ -1,3 +1,4 @@
+// src/routes/(marketing)/extracurricular-organizer/+page.server.ts
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import type {

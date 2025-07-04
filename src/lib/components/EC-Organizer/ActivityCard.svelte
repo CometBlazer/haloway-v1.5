@@ -289,7 +289,6 @@
 		},
 	};
 
-	let isDeleting = false;
 	let copySuccess = {
 		organizationName: false,
 		positionDescription: false,
@@ -297,12 +296,9 @@
 	};
 	let comboboxOpen = false;
 
+	// FIXED: Just dispatch the delete event - don't delete anything here
 	function handleDelete() {
-		isDeleting = true;
-		// Wait for animation to complete before dispatching delete
-		setTimeout(() => {
-			dispatch('delete', { id: activity.id });
-		}, 300);
+		dispatch('delete', { id: activity.id });
 	}
 
 	function handleUpdate(
@@ -329,7 +325,16 @@
 		grade: '9' | '10' | '11' | '12',
 		checked: boolean,
 	) {
-		const levels = { ...activity.participationLevels };
+		// Filter out undefined values when spreading
+		const levels: Record<string, boolean> = {};
+		if (activity.participationLevels) {
+			Object.entries(activity.participationLevels).forEach(([key, value]) => {
+				if (value === true) {
+					levels[key] = value;
+				}
+			});
+		}
+
 		if (checked) {
 			levels[grade] = true;
 		} else {
@@ -342,7 +347,16 @@
 		timing: 'schoolYear' | 'schoolBreak' | 'allYear',
 		checked: boolean,
 	) {
-		const timings = { ...activity.timingOfParticipation };
+		// Filter out undefined values when spreading
+		const timings: Record<string, boolean> = {};
+		if (activity.timingOfParticipation) {
+			Object.entries(activity.timingOfParticipation).forEach(([key, value]) => {
+				if (value === true) {
+					timings[key] = value;
+				}
+			});
+		}
+
 		if (checked) {
 			timings[timing] = true;
 		} else {
@@ -359,12 +373,7 @@
 	$: activityTypesList = Object.values(activityTypes);
 </script>
 
-<div
-	class="sortable-item group mb-6 w-full rounded-2xl {isDeleting
-		? 'animate-scale-out'
-		: ''}"
-	data-id={activity.id}
->
+<div class="sortable-item group mb-6 w-full rounded-2xl" data-id={activity.id}>
 	<Card
 		class="w-full rounded-2xl border-2 border-border/50 bg-card/50 shadow-sm backdrop-blur-sm"
 	>
@@ -874,20 +883,3 @@
 		</CardContent>
 	</Card>
 </div>
-
-<style>
-	@keyframes scale-out {
-		0% {
-			transform: scale(1);
-			opacity: 1;
-		}
-		100% {
-			transform: scale(0.8);
-			opacity: 0;
-		}
-	}
-
-	.animate-scale-out {
-		animation: scale-out 0.3s ease-in-out forwards;
-	}
-</style>
