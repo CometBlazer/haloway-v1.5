@@ -145,6 +145,7 @@
 			id: crypto.randomUUID(),
 			activityType: '',
 			organizationName: '',
+			positionDescription: '',
 			activityDescription: '',
 			participationLevels: {},
 			timingOfParticipation: {},

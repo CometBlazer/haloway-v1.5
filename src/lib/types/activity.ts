@@ -15,6 +15,7 @@ export interface TimingOfParticipation {
 export interface Activity {
 	id: string;
 	activityType: string;
+	positionDescription: string;
 	organizationName: string;
 	activityDescription: string;
 	participationLevels: ParticipationLevels;
