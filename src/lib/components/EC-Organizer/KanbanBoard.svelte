@@ -204,8 +204,10 @@
 
 <div class="min-h-screen space-y-6 bg-background p-4">
 	<!-- Header -->
-	<div class="flex flex-col items-start justify-between gap-4 sm:flex-row">
-		<div>
+	<div
+		class="flex w-full flex-col items-center justify-between gap-4 sm:flex-row"
+	>
+		<div class="w-full text-center sm:text-center">
 			<h1 class="text-3xl font-bold tracking-tight">
 				College Extracurriculars
 			</h1>
@@ -213,10 +215,12 @@
 				Organize your activities for Common App
 			</p>
 		</div>
-		<Button on:click={addNewActivity}>
-			<Plus class="mr-2 h-4 w-4" />
-			Add Activity
-		</Button>
+		<div class="sm:flex-shrink-0">
+			<Button on:click={addNewActivity}>
+				<Plus class="mr-2 h-4 w-4" />
+				Add Activity
+			</Button>
+		</div>
 	</div>
 
 	<!-- Main Board -->
@@ -306,7 +310,7 @@
 	/* Simple hover effect - just slight lift */
 	.sortable-container:not(.dragging-active) :global(.sortable-item:hover) {
 		transform: scale(1.01);
-		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+		/* box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); */
 	}
 
 	/* Handle styling */
