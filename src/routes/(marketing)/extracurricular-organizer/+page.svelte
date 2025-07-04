@@ -135,4 +135,12 @@
 		isAuthenticated={data.isAuthenticated}
 		on:saveActivities={handleSaveActivities}
 	/>
+	<div class="mb-10 px-6">
+		<p class="text-center text-sm text-muted-foreground">
+			Note: This tool is for organizational purposes only. To submit your
+			activities to the Common App, please copy individual elements from the
+			organizer and paste them into the Common App Activities Section. We're not
+			affiliated with the Common App or College Board.
+		</p>
+	</div>
 </div>

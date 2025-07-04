@@ -420,7 +420,7 @@
 			</div>
 		</div>
 	{:else}
-		<div class="flex w-full justify-end gap-2">
+		<div class="mb-4 flex w-full justify-end gap-2">
 			<Button on:click={addNewActivity} size="sm">
 				<Plus class="mr-2 h-4 w-4" />
 				Add Activity
@@ -436,7 +436,7 @@
 		</div>
 	{/if}
 
-	<div class="min-h-screen space-y-6 bg-background">
+	<div class="space-y-6 bg-background">
 		<!-- Main Board -->
 		<div class="w-full">
 			<div class="rounded-xl bg-muted/30 p-3 md:p-6">
@@ -445,7 +445,8 @@
 						Activities ({localActivities.length})
 					</h2>
 					{#if !isAuthenticated}
-						<div class="text-sm text-muted-foreground">
+						<div class="flex items-center text-sm text-muted-foreground">
+							<AlertCircle class="mr-2 h-4 w-4" />
 							Sign in to save your work
 						</div>
 					{/if}

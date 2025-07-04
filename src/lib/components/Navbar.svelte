@@ -17,7 +17,7 @@
 	const menuItems = {
 		'/#features': 'Features',
 		// '/#tools': 'Free Tools',
-		// '/extracurricular-organizer': 'EC Organizer',
+		'/extracurricular-organizer': 'Activities Organizer',
 		'/essayfeedback': 'AI Essay Feedback',
 		'/contact': 'Contact',
 	};
