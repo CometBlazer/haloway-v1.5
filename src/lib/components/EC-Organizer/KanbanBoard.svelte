@@ -203,18 +203,12 @@
 </script>
 
 <div class="min-h-screen space-y-6 bg-background p-4">
-	<!-- Header -->
-	<div class="w-full text-center sm:text-center">
-		<h1 class="text-3xl font-bold tracking-tight">College Extracurriculars</h1>
-		<p class="text-muted-foreground">Organize your activities for Common App</p>
-	</div>
 	<div class="flex w-full justify-end">
-		<Button on:click={addNewActivity}>
+		<Button on:click={addNewActivity} size="sm" class="mt-4">
 			<Plus class="mr-2 h-4 w-4" />
 			Add Activity
 		</Button>
 	</div>
-
 	<!-- Main Board -->
 	<div class="w-full">
 		<div class="rounded-lg bg-muted/30 p-6">
