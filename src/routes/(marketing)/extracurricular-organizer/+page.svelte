@@ -148,8 +148,10 @@
 		<p class="text-center text-sm text-muted-foreground">
 			Note: This tool is for organizational purposes only. To submit your
 			activities to the Common App, please copy individual elements from the
-			organizer and paste them into the Common App Activities Section. {WebsiteName}
-			is not affiliated with the Common App or College Board.
+			organizer and paste them into the Common App Activities Section. Common
+			App is a registered trademark of The Common Application, Inc. {WebsiteName}
+			is not endorsed by or affiliated with The Common Application, Inc. or the College
+			Board.
 		</p>
 	</div>
 </div>

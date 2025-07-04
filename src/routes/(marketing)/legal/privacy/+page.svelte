@@ -18,14 +18,15 @@
 		protect data when you use our platform.
 	</p>
 	<hr />
-	<h2>1. Information We Collect</h2>
+	<h2>1. Information We May Collect</h2>
 	<ul>
 		<li>
-			<strong>Account Information:</strong> Name, grade level, dream school, referral
-			source.
+			<strong>Account Information:</strong> Name, year graduating, dream school,
+			referral source.
 		</li>
 		<li>
-			<strong>User Content:</strong> Essays, drafts, and tags you create or save.
+			<strong>User Content:</strong> Essays, common app activities, drafts, and tags
+			you create or save.
 		</li>
 		<li>
 			<strong>Usage Data:</strong> Metadata such as timestamps, version history,
@@ -42,12 +43,12 @@
 			>not</strong
 		> sell or share personal data for advertising.
 	</p>
-	<h2>3. AI Features (Coming Soon)</h2>
+	<h2>3. AI Features</h2>
 	<p>
-		If enabled, optional AI-powered writing assistance will send portions of
-		text to Google Gemini or OpenAI for processing, depending on the model being
-		used. Please note that these AI services may store and use your data
-		according to their own privacy policies.
+		Optional AI-powered writing assistance will send portions of text to Google
+		Gemini or OpenAI for processing, depending on the model being used. Please
+		note that these AI services may store and use your data according to their
+		own privacy policies.
 	</p>
 	<h2>4. Data Security</h2>
 	<p>
@@ -62,10 +63,7 @@
 	<h2>6. Children’s Privacy</h2>
 	<p>Haloway is not intended for children under 13.</p>
 	<h2>7. Payments</h2>
-	<p>
-		Payment information is processed by third-party providers. We do not store
-		full payment details.
-	</p>
+	<p>Payment information is processed by third-party providers.</p>
 	<h2>8. Changes to This Policy</h2>
 	<p>
 		We may update this Privacy Policy from time to time, with or without notice.

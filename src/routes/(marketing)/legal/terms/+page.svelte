@@ -17,7 +17,8 @@
 		bound by these Terms of Service (“Terms”), our <a href="/legal/privacy"
 			>Privacy Policy</a
 		>, and all applicable laws. If you do not agree with any part of these
-		Terms, please do not use our service.
+		Terms, please do not use our service. We are not affiliated with or endorsed
+		by Common App, College Board, or any other organization.
 	</p>
 	<hr />
 	<h2>1. Eligibility</h2>
@@ -57,7 +58,7 @@
 		to operate the service. We reserve the right to remove content that violates
 		these Terms or is deemed harmful.
 	</p>
-	<h2>6. AI Assistance (Coming Soon)</h2>
+	<h2>6. AI Assistance</h2>
 	<p>
 		Haloway may offer optional AI features powered by third-party services like
 		OpenAI or Google Gemini. Use of AI tools is optional and subject to our
