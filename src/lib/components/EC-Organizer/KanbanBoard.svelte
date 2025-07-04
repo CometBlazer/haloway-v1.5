@@ -516,7 +516,7 @@
 						</p>
 						<Button on:click={addNewActivity}>
 							<Plus class="mr-2 h-4 w-4" />
-							Add Activity
+							Add First Activity
 						</Button>
 					</div>
 				{:else}

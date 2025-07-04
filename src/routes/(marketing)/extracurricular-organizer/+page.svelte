@@ -104,28 +104,33 @@
 		<h1 class="text-3xl font-bold tracking-tight md:text-4xl">
 			Free College Extracurricular Activities Organizer
 		</h1>
-		<h2 class="mt-4 text-lg text-muted-foreground md:text-xl">
+		<h2 class="mt-4 text-lg font-semibold text-foreground md:text-xl">
 			Modeled after the Common App Activities List
 		</h2>
 
+		<hr class="mx-auto my-6 max-w-5xl border-2 border-t border-accent" />
+
+		<h3 class="mt-4 text-base text-muted-foreground">
+			Drag and drop to reorder. Prefilled with character limits and Common App
+			input requirements. Add and remove activities as needed.
+		</h3>
 		{#if !data.isAuthenticated}
-			<h3 class="mt-4 text-base text-muted-foreground">
+			<h3 class="mt-1 text-base text-muted-foreground">
 				To save your work,
 				<a
 					href="/register"
 					class="text-foreground underline hover:text-foreground/80"
 					>create a free account</a
 				>
-				today or
+				or
 				<a
 					href="/login"
 					class="text-foreground underline hover:text-foreground/80">sign in</a
 				>.
 			</h3>
 		{/if}
-
 		<h3 class="mt-1 text-base text-muted-foreground">
-			Want a feature?
+			Want another feature?
 			<a
 				href="/contact"
 				class="text-foreground underline hover:text-foreground/80">Request it</a
