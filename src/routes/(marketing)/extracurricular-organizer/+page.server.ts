@@ -5,6 +5,7 @@ import type {
 	ParticipationLevels,
 	TimingOfParticipation,
 } from '$lib/types/activity';
+import type { Json } from '../../../DatabaseDefinitions';
 
 export const load: PageServerLoad = async ({
 	locals: { supabase, safeGetSession },
@@ -70,7 +71,7 @@ export const actions: Actions = {
 		let activities: Activity[];
 		try {
 			activities = JSON.parse(activitiesJson);
-		} catch (_error) {
+		} catch {
 			throw error(400, 'Invalid activities data format');
 		}
 
@@ -95,8 +96,9 @@ export const actions: Actions = {
 				organization_name: activity.organizationName || '',
 				position_description: activity.positionDescription || '',
 				activity_description: activity.activityDescription || '',
-				participation_levels: activity.participationLevels as any, // Cast to any for JSON field
-				timing_of_participation: activity.timingOfParticipation as any, // Cast to any for JSON field
+				participation_levels: activity.participationLevels as unknown as Json, // Cast to unknown first, then Json
+				timing_of_participation:
+					activity.timingOfParticipation as unknown as Json, // Cast to unknown first, then Json
 				hours_per_week: activity.hoursPerWeek || 0,
 				weeks_per_year: activity.weeksPerYear || 0,
 				college_participation: activity.collegeParticipation || false,

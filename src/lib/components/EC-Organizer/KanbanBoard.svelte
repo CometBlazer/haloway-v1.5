@@ -1,11 +1,27 @@
 <!-- src/lib/components/EC-Organizer/KanbanBoard.svelte -->
 <script lang="ts">
-	import { onMount, afterUpdate, onDestroy, tick } from 'svelte';
+	import {
+		onMount,
+		afterUpdate,
+		onDestroy,
+		tick,
+		createEventDispatcher,
+	} from 'svelte';
+	import { beforeNavigate } from '$app/navigation';
+	import { browser } from '$app/environment';
 	import { Button } from '$lib/components/ui/button';
-	import { Plus, Download } from 'lucide-svelte';
+	import { Plus, Download, Save, AlertCircle } from 'lucide-svelte';
 	import ActivityCard from './ActivityCard.svelte';
 	import type { Activity } from '$lib/types/activity';
 	import Sortable from 'sortablejs';
+	import {
+		activitiesChangeTracker,
+		getChangeStatusDisplay,
+	} from '$lib/stores/activitiesChangeTracker';
+
+	const dispatch = createEventDispatcher<{
+		saveActivities: { activities: Activity[] };
+	}>();
 
 	export let initialActivities: Activity[] = [];
 	export let isAuthenticated: boolean = false;
@@ -17,15 +33,20 @@
 
 	const STORAGE_KEY = 'college-extracurriculars';
 
+	// Subscribe to change tracker
+	$: changeState = $activitiesChangeTracker;
+	$: statusDisplay = getChangeStatusDisplay(changeState);
+
 	// Public method to get current activities (for parent component)
 	export function getCurrentActivities(): Activity[] {
-		return localActivities;
+		return activitiesChangeTracker.getCurrentActivities();
 	}
 
 	// Public method to load activities (for parent component)
 	export function loadActivities(activities: Activity[]) {
 		localActivities = activities;
 		saveToStorage();
+		activitiesChangeTracker.updateActivities(localActivities);
 		if (mounted) {
 			tick().then(() => {
 				reinitializeSortable();
@@ -36,40 +57,60 @@
 	onMount(async () => {
 		mounted = true;
 
-		if (isAuthenticated) {
-			// For authenticated users: ALWAYS prioritize server data
-			if (initialActivities && initialActivities.length > 0) {
-				localActivities = initialActivities;
-				saveToStorage(); // Sync sessionStorage with server data
-			} else {
-				// No server data exists yet, check if user has sessionStorage work to preserve
-				loadFromStorage();
-			}
+		// Initialize change tracker
+		activitiesChangeTracker.initialize(initialActivities, isAuthenticated);
+
+		// Load from server data first, then fallback to sessionStorage
+		if (initialActivities && initialActivities.length > 0) {
+			localActivities = initialActivities;
+			saveToStorage();
 		} else {
-			// For anonymous users: only use sessionStorage
 			loadFromStorage();
 		}
 
+		// Update tracker with current activities
+		activitiesChangeTracker.updateActivities(localActivities);
+
 		await tick();
 		initializeSortable();
-	});
 
-	// Watch for authentication changes
-	$: if (mounted && isAuthenticated && initialActivities.length > 0) {
-		// User just logged in and has server data - prioritize it
-		localActivities = initialActivities;
-		saveToStorage();
-		tick().then(() => {
-			reinitializeSortable();
-		});
-	}
+		// Handle browser navigation
+		if (browser) {
+			window.addEventListener('beforeunload', handleBeforeUnload);
+		}
+	});
 
 	onDestroy(() => {
 		if (sortableInstance) {
 			sortableInstance.destroy();
 			sortableInstance = null;
 		}
+
+		if (browser) {
+			window.removeEventListener('beforeunload', handleBeforeUnload);
+		}
 	});
+
+	// Navigation guard
+	beforeNavigate(({ cancel }) => {
+		if (activitiesChangeTracker.shouldWarnBeforeLeaving()) {
+			if (
+				!confirm('You have unsaved changes. Are you sure you want to leave?')
+			) {
+				cancel();
+			}
+		}
+	});
+
+	// Browser refresh/close guard
+	function handleBeforeUnload(event: BeforeUnloadEvent) {
+		if (activitiesChangeTracker.shouldWarnBeforeLeaving()) {
+			event.preventDefault();
+			event.returnValue =
+				'You have unsaved changes. Are you sure you want to leave?';
+			return event.returnValue;
+		}
+	}
 
 	afterUpdate(async () => {
 		if (mounted && sortableContainer && !sortableInstance) {
@@ -96,6 +137,13 @@
 		} catch (error) {
 			console.error('Failed to save to storage:', error);
 		}
+	}
+
+	function updateActivitiesAndTrack() {
+		// Update sessionStorage
+		saveToStorage();
+		// Update change tracker
+		activitiesChangeTracker.updateActivities(localActivities);
 	}
 
 	function reinitializeSortable() {
@@ -173,7 +221,7 @@
 						newActivities.splice(newIndex, 0, movedItem);
 
 						localActivities = newActivities;
-						saveToStorage();
+						updateActivitiesAndTrack();
 					}
 				},
 				onMove: () => {
@@ -204,14 +252,14 @@
 
 	async function addNewActivity() {
 		localActivities = [createNewActivity(), ...localActivities];
-		saveToStorage();
+		updateActivitiesAndTrack();
 		await tick();
 		reinitializeSortable();
 	}
 
 	async function handleDeleteActivity(event: CustomEvent<{ id: string }>) {
 		localActivities = localActivities.filter((a) => a.id !== event.detail.id);
-		saveToStorage();
+		updateActivitiesAndTrack();
 		await tick();
 
 		if (localActivities.length > 0) {
@@ -225,7 +273,7 @@
 		localActivities = localActivities.map((a) =>
 			a.id === event.detail.id ? { ...a, ...event.detail.activity } : a,
 		);
-		saveToStorage();
+		updateActivitiesAndTrack();
 	}
 
 	// Reactive statement to reinitialize sortable when activities change
@@ -260,24 +308,77 @@
 		document.body.removeChild(link);
 		URL.revokeObjectURL(url);
 	}
+
+	// Dispatch save event to parent
+	function handleSave() {
+		dispatch('saveActivities', { activities: localActivities });
+	}
 </script>
 
 <div class="min-h-screen space-y-6 bg-background p-4">
-	<div class="flex w-full justify-end gap-2">
-		<Button on:click={addNewActivity} size="sm" class="mt-4">
-			<Plus class="mr-2 h-4 w-4" />
-			Add Activity
-		</Button>
-		<Button
-			on:click={downloadActivitiesJSON}
-			variant="outline"
-			size="sm"
-			class="mt-4"
-			disabled={localActivities.length === 0}
-		>
-			<Download class="h-4 w-4" />
-		</Button>
-	</div>
+	<!-- Status Bar -->
+	{#if isAuthenticated}
+		<div class="flex w-full items-center justify-between">
+			<div class="flex items-center gap-3">
+				<!-- Status Display -->
+				<div class="flex items-center gap-2 text-sm {statusDisplay.class}">
+					{#if changeState.status === 'saving'}
+						<div class="loading-spinner h-4 w-4"></div>
+					{:else if changeState.hasUnsavedChanges}
+						<AlertCircle class="h-4 w-4" />
+					{:else}
+						<div class="h-2 w-2 rounded-full bg-green-500"></div>
+					{/if}
+					<span>{statusDisplay.text}</span>
+				</div>
+
+				<!-- Save Button -->
+				{#if statusDisplay.showSaveButton}
+					<Button
+						on:click={handleSave}
+						size="sm"
+						variant="outline"
+						disabled={changeState.status === 'saving'}
+					>
+						<Save class="mr-2 h-4 w-4" />
+						{changeState.status === 'saving' ? 'Saving...' : 'Save Changes'}
+					</Button>
+				{/if}
+			</div>
+
+			<div class="flex items-center gap-2">
+				<Button on:click={addNewActivity} size="sm" class="mt-4">
+					<Plus class="mr-2 h-4 w-4" />
+					Add Activity
+				</Button>
+				<Button
+					on:click={downloadActivitiesJSON}
+					variant="outline"
+					size="sm"
+					class="mt-4"
+					disabled={localActivities.length === 0}
+				>
+					<Download class="h-4 w-4" />
+				</Button>
+			</div>
+		</div>
+	{:else}
+		<div class="flex w-full justify-end gap-2">
+			<Button on:click={addNewActivity} size="sm" class="mt-4">
+				<Plus class="mr-2 h-4 w-4" />
+				Add Activity
+			</Button>
+			<Button
+				on:click={downloadActivitiesJSON}
+				variant="outline"
+				size="sm"
+				class="mt-4"
+				disabled={localActivities.length === 0}
+			>
+				<Download class="h-4 w-4" />
+			</Button>
+		</div>
+	{/if}
 
 	<!-- Main Board -->
 	<div class="w-full">
@@ -327,6 +428,20 @@
 </div>
 
 <style>
+	/* Loading spinner */
+	.loading-spinner {
+		border: 2px solid transparent;
+		border-top: 2px solid currentColor;
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
 	/* Sortable.js styling - clean and minimal */
 	:global(.sortable-ghost) {
 		opacity: 0.4;

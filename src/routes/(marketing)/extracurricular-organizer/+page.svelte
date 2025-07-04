@@ -4,14 +4,13 @@
 	import KanbanBoard from '$lib/components/EC-Organizer/KanbanBoard.svelte';
 	import { WebsiteName } from '../../../config';
 	import type { PageData } from './$types';
-	import { Button } from '$lib/components/ui/button';
-	import { Save, RefreshCw } from 'lucide-svelte';
 	import { toastStore } from '$lib/stores/toast';
+	import { activitiesChangeTracker } from '$lib/stores/activitiesChangeTracker';
+	import type { Activity } from '$lib/types/activity';
 
 	export let data: PageData;
 
 	let kanbanBoard: KanbanBoard;
-	let isSaving = false;
 
 	onMount(() => {
 		// Check if user has sessionStorage data when they're authenticated
@@ -29,32 +28,29 @@
 							'info',
 						);
 					}
-				} catch (_error) {
+				} catch {
 					// Ignore errors
 				}
 			}
 		}
 	});
 
-	async function handleSave() {
+	async function handleSaveActivities(
+		event: CustomEvent<{ activities: Activity[] }>,
+	) {
 		if (!data.isAuthenticated) {
 			toastStore.show('Please sign in to save your activities', 'error');
 			return;
 		}
 
-		if (!kanbanBoard) {
-			toastStore.show('Unable to access activities data', 'error');
-			return;
-		}
-
-		isSaving = true;
+		// Set saving state
+		activitiesChangeTracker.setSaving();
 
 		try {
-			// Get current activities from the KanbanBoard component
-			const currentActivities = kanbanBoard.getCurrentActivities();
+			const activities = event.detail.activities;
 
 			const formData = new FormData();
-			formData.append('activities', JSON.stringify(currentActivities));
+			formData.append('activities', JSON.stringify(activities));
 
 			const response = await fetch('?/saveActivities', {
 				method: 'POST',
@@ -62,28 +58,20 @@
 			});
 
 			if (response.ok) {
+				// Mark as saved
+				activitiesChangeTracker.setSaved();
 				toastStore.show('Activities saved successfully!', 'success');
 			} else {
 				const errorData = await response.text();
 				console.error('Save failed:', errorData);
+				activitiesChangeTracker.setError();
 				toastStore.show('Failed to save activities', 'error');
 			}
 		} catch (error) {
 			console.error('Save error:', error);
+			activitiesChangeTracker.setError();
 			toastStore.show('Failed to save activities', 'error');
-		} finally {
-			isSaving = false;
 		}
-	}
-
-	function handleRefresh() {
-		if (!data.isAuthenticated) {
-			toastStore.show('Please sign in to load saved activities', 'error');
-			return;
-		}
-
-		// Reload the page to get fresh data from server
-		window.location.reload();
 	}
 </script>
 
@@ -130,22 +118,6 @@
 				>
 				today.
 			</h3>
-		{:else}
-			<div class="mt-4 flex justify-center gap-2">
-				<Button on:click={handleSave} disabled={isSaving} size="sm">
-					<Save class="mr-2 h-4 w-4" />
-					{isSaving ? 'Saving...' : 'Save Activities'}
-				</Button>
-				<Button
-					on:click={handleRefresh}
-					variant="outline"
-					size="sm"
-					title="Refresh to load latest saved activities"
-				>
-					<RefreshCw class="mr-2 h-4 w-4" />
-					Refresh
-				</Button>
-			</div>
 		{/if}
 
 		<h3 class="mt-2 text-base text-muted-foreground">
@@ -161,5 +133,6 @@
 		bind:this={kanbanBoard}
 		initialActivities={data.activities}
 		isAuthenticated={data.isAuthenticated}
+		on:saveActivities={handleSaveActivities}
 	/>
 </div>
