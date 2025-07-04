@@ -36,7 +36,7 @@
 			Modeled after the Common App Activities List
 		</h2>
 		<h3 class="mt-4 text-base text-muted-foreground">
-			No account is necessary to try it out. To save your work,
+			To save your work,
 			<a
 				href="/register"
 				class="text-foreground underline hover:text-foreground/80"
