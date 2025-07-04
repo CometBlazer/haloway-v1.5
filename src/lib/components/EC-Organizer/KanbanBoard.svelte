@@ -290,6 +290,18 @@
 	// Actually delete the activity (called from modal)
 	async function confirmDelete() {
 		if (activityToDelete) {
+			// Find the activity card component and trigger animation
+			const activityElement = sortableContainer?.querySelector(
+				`[data-id="${activityToDelete.id}"]`,
+			);
+			if (activityElement) {
+				// Add the animation class directly
+				activityElement.classList.add('animate-scale-out');
+
+				// Wait for animation to complete before removing from array
+				await new Promise((resolve) => setTimeout(resolve, 300));
+			}
+
 			localActivities = localActivities.filter(
 				(a) => a.id !== activityToDelete!.id,
 			);

@@ -295,10 +295,16 @@
 		activityDescription: false,
 	};
 	let comboboxOpen = false;
+	let isDeleting = false; // Track when deletion is in progress
 
 	// FIXED: Just dispatch the delete event - don't delete anything here
 	function handleDelete() {
 		dispatch('delete', { id: activity.id });
+	}
+
+	// Public method to trigger deletion animation (called from parent)
+	export function startDeletionAnimation() {
+		isDeleting = true;
 	}
 
 	function handleUpdate(
@@ -373,7 +379,12 @@
 	$: activityTypesList = Object.values(activityTypes);
 </script>
 
-<div class="sortable-item group mb-6 w-full rounded-2xl" data-id={activity.id}>
+<div
+	class="sortable-item group mb-6 w-full rounded-2xl {isDeleting
+		? 'animate-scale-out'
+		: ''}"
+	data-id={activity.id}
+>
 	<Card
 		class="w-full rounded-2xl border-2 border-border/50 bg-card/50 shadow-sm backdrop-blur-sm"
 	>
@@ -883,3 +894,20 @@
 		</CardContent>
 	</Card>
 </div>
+
+<style>
+	@keyframes scale-out {
+		0% {
+			transform: scale(1);
+			opacity: 1;
+		}
+		100% {
+			transform: scale(0.8);
+			opacity: 0;
+		}
+	}
+
+	.animate-scale-out {
+		animation: scale-out 0.3s ease-in-out forwards;
+	}
+</style>
