@@ -200,14 +200,107 @@
 						</div>
 					</div>
 
+					<!-- Organization Name -->
+					<div class="space-y-2">
+						<div class="relative">
+							<Textarea
+								id="organizationName-{activity.id}"
+								value={activity.organizationName}
+								on:input={(e) =>
+									handleUpdate('organizationName', e.currentTarget.value)}
+								placeholder="Organization Name"
+								maxlength={150}
+								rows={2}
+								class="resize-none rounded-xl border-border/60 bg-background/80 focus:border-primary/60"
+							/>
+						</div>
+						<div class="flex items-center justify-end gap-2">
+							<WordCounter
+								currentWordCount={(activity.organizationName || '').length}
+								wordLimit={100}
+								size="sm"
+							/>
+							<Button
+								variant="ghost"
+								size="sm"
+								class="h-6 w-6 p-0"
+								on:click={() =>
+									copyToClipboard(activity.organizationName || '')}
+								type="button"
+							>
+								<Copy class="h-3 w-3" />
+							</Button>
+						</div>
+					</div>
+
+					<!-- Timing of Participation -->
+					<div class="space-y-3">
+						<Label
+							class="flex items-center gap-2 text-sm font-semibold text-foreground/80"
+						>
+							<Calendar class="h-4 w-4" />
+							When Active
+						</Label>
+						<div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
+							<div
+								class="flex items-center space-x-2 rounded-lg p-1.5 transition-colors hover:bg-muted/30"
+							>
+								<Checkbox
+									id="timing-schoolYear-{activity.id}"
+									checked={activity.timingOfParticipation?.schoolYear || false}
+									onCheckedChange={(checked) =>
+										handleTimingChange('schoolYear', !!checked)}
+									class="rounded-md"
+								/>
+								<Label
+									for="timing-schoolYear-{activity.id}"
+									class="cursor-pointer text-xs font-medium"
+								>
+									School Year
+								</Label>
+							</div>
+							<div
+								class="flex items-center space-x-2 rounded-lg p-1.5 transition-colors hover:bg-muted/30"
+							>
+								<Checkbox
+									id="timing-schoolBreak-{activity.id}"
+									checked={activity.timingOfParticipation?.schoolBreak || false}
+									onCheckedChange={(checked) =>
+										handleTimingChange('schoolBreak', !!checked)}
+									class="rounded-md"
+								/>
+								<Label
+									for="timing-schoolBreak-{activity.id}"
+									class="cursor-pointer text-xs font-medium"
+								>
+									School Breaks
+								</Label>
+							</div>
+							<div
+								class="flex items-center space-x-2 rounded-lg p-1.5 transition-colors hover:bg-muted/30"
+							>
+								<Checkbox
+									id="timing-allYear-{activity.id}"
+									checked={activity.timingOfParticipation?.allYear || false}
+									onCheckedChange={(checked) =>
+										handleTimingChange('allYear', !!checked)}
+									class="rounded-md"
+								/>
+								<Label
+									for="timing-allYear-{activity.id}"
+									class="cursor-pointer text-xs font-medium"
+								>
+									All Year Round
+								</Label>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Section 2: Activity Description & Time -->
+				<div class="space-y-4">
 					<!-- Position/Leadership Description -->
 					<div class="space-y-2">
-						<Label
-							for="position-{activity.id}"
-							class="text-sm font-semibold text-foreground/80"
-						>
-							Position/Leadership Role
-						</Label>
 						<div class="relative">
 							<Input
 								id="position-{activity.id}"
@@ -216,113 +309,66 @@
 								on:input={(e) => {
 									handleUpdate('positionDescription', e.currentTarget.value);
 								}}
-								placeholder="e.g., President, Captain, Volunteer..."
+								placeholder="Position/Leadership Role (e.g., President,...)"
 								maxlength={50}
-								class="h-9 rounded-xl border-border/60 bg-background/80 pr-20 focus:border-primary/60"
+								class="h-9 rounded-xl border-border/60 bg-background/80 focus:border-primary/60"
 							/>
-							<div class="absolute right-2 top-2 flex items-center gap-1">
-								<WordCounter
-									currentWordCount={(activity.positionDescription || '').length}
-									wordLimit={50}
-									size="sm"
-								/>
-								<Button
-									variant="ghost"
-									size="sm"
-									class="h-5 w-5 p-0"
-									on:click={() => copyToClipboard(activity.positionDescription)}
-									type="button"
-								>
-									<Copy class="h-3 w-3" />
-								</Button>
-							</div>
+						</div>
+						<div class="flex items-center justify-end gap-2">
+							<WordCounter
+								currentWordCount={(activity.positionDescription || '').length}
+								wordLimit={50}
+								size="sm"
+							/>
+							<Button
+								variant="ghost"
+								size="sm"
+								class="h-6 w-6 p-0"
+								on:click={() =>
+									copyToClipboard(activity.positionDescription || '')}
+								type="button"
+							>
+								<Copy class="h-3 w-3" />
+							</Button>
 						</div>
 					</div>
 
-					<!-- Organization Name -->
-					<div class="space-y-2">
-						<Label
-							for="organizationName-{activity.id}"
-							class="text-sm font-semibold text-foreground/80"
-						>
-							Organization Name
-						</Label>
-						<div class="relative">
-							<Textarea
-								id="organizationName-{activity.id}"
-								value={activity.organizationName}
-								on:input={(e) =>
-									handleUpdate('organizationName', e.currentTarget.value)}
-								placeholder="Enter organization name..."
-								maxlength={100}
-								rows={2}
-								class="resize-none rounded-xl border-border/60 bg-background/80 pr-20 focus:border-primary/60"
-							/>
-							<div class="absolute right-2 top-2 flex items-center gap-1">
-								<WordCounter
-									currentWordCount={(activity.organizationName || '').length}
-									wordLimit={100}
-									size="sm"
-								/>
-								{#if activity.organizationName}
-									<Button
-										variant="ghost"
-										size="sm"
-										class="h-5 w-5 p-0"
-										on:click={() => copyToClipboard(activity.organizationName)}
-										type="button"
-									>
-										<Copy class="h-3 w-3" />
-									</Button>
-								{/if}
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- Section 2: Activity Description & Time -->
-				<div class="space-y-4">
 					<!-- Activity Description -->
 					<div class="space-y-2">
-						<Label
-							for="activityDescription-{activity.id}"
-							class="text-sm font-semibold text-foreground/80"
-						>
-							Activity Description
-						</Label>
 						<div class="relative">
 							<Textarea
 								id="activityDescription-{activity.id}"
 								value={activity.activityDescription}
 								on:input={(e) =>
 									handleUpdate('activityDescription', e.currentTarget.value)}
-								placeholder="Describe your activity and achievements..."
+								placeholder="Activity Description - Describe your activity and achievements..."
 								maxlength={150}
-								rows={3}
-								class="resize-vertical rounded-xl border-border/60 bg-background/80 pr-20 focus:border-primary/60"
+								rows={5}
+								class="resize-vertical rounded-xl border-border/60 bg-background/80 focus:border-primary/60"
 							/>
-							<div class="absolute right-2 top-2 flex items-center gap-1">
-								<WordCounter
-									currentWordCount={(activity.activityDescription || '').length}
-									wordLimit={150}
-									size="sm"
-								/>
-								{#if activity.activityDescription}
-									<Button
-										variant="ghost"
-										size="sm"
-										class="h-5 w-5 p-0"
-										on:click={() =>
-											copyToClipboard(activity.activityDescription)}
-										type="button"
-									>
-										<Copy class="h-3 w-3" />
-									</Button>
-								{/if}
-							</div>
+						</div>
+						<div class="flex items-center justify-end gap-2">
+							<WordCounter
+								currentWordCount={(activity.activityDescription || '').length}
+								wordLimit={150}
+								size="sm"
+							/>
+							<Button
+								variant="ghost"
+								size="sm"
+								class="h-6 w-6 p-0"
+								on:click={() =>
+									copyToClipboard(activity.activityDescription || '')}
+								type="button"
+							>
+								<Copy class="h-3 w-3" />
+							</Button>
 						</div>
 					</div>
+				</div>
 
+				<!-- Section 3: Participation Details -->
+				<div class="space-y-4">
 					<!-- Time Commitment -->
 					<div class="space-y-3">
 						<Label
@@ -378,10 +424,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
 
-				<!-- Section 3: Participation Details -->
-				<div class="space-y-4">
 					<!-- Participation Levels -->
 					<div class="space-y-3">
 						<Label
@@ -403,7 +446,7 @@
 								/>
 								<Label
 									for="grade-9-{activity.id}"
-									class="cursor-pointer text-sm font-medium"
+									class="cursor-pointer text-xs font-medium"
 								>
 									Grade 9
 								</Label>
@@ -420,7 +463,7 @@
 								/>
 								<Label
 									for="grade-10-{activity.id}"
-									class="cursor-pointer text-sm font-medium"
+									class="cursor-pointer text-xs font-medium"
 								>
 									Grade 10
 								</Label>
@@ -437,7 +480,7 @@
 								/>
 								<Label
 									for="grade-11-{activity.id}"
-									class="cursor-pointer text-sm font-medium"
+									class="cursor-pointer text-xs font-medium"
 								>
 									Grade 11
 								</Label>
@@ -454,72 +497,9 @@
 								/>
 								<Label
 									for="grade-12-{activity.id}"
-									class="cursor-pointer text-sm font-medium"
+									class="cursor-pointer text-xs font-medium"
 								>
 									Grade 12
-								</Label>
-							</div>
-						</div>
-					</div>
-
-					<!-- Timing of Participation -->
-					<div class="space-y-3">
-						<Label
-							class="flex items-center gap-2 text-sm font-semibold text-foreground/80"
-						>
-							<Calendar class="h-4 w-4" />
-							When Active
-						</Label>
-						<div class="space-y-2">
-							<div
-								class="flex items-center space-x-2 rounded-lg p-1.5 transition-colors hover:bg-muted/30"
-							>
-								<Checkbox
-									id="timing-schoolYear-{activity.id}"
-									checked={activity.timingOfParticipation?.schoolYear || false}
-									onCheckedChange={(checked) =>
-										handleTimingChange('schoolYear', !!checked)}
-									class="rounded-md"
-								/>
-								<Label
-									for="timing-schoolYear-{activity.id}"
-									class="cursor-pointer text-sm font-medium"
-								>
-									School Year
-								</Label>
-							</div>
-							<div
-								class="flex items-center space-x-2 rounded-lg p-1.5 transition-colors hover:bg-muted/30"
-							>
-								<Checkbox
-									id="timing-schoolBreak-{activity.id}"
-									checked={activity.timingOfParticipation?.schoolBreak || false}
-									onCheckedChange={(checked) =>
-										handleTimingChange('schoolBreak', !!checked)}
-									class="rounded-md"
-								/>
-								<Label
-									for="timing-schoolBreak-{activity.id}"
-									class="cursor-pointer text-sm font-medium"
-								>
-									School Breaks
-								</Label>
-							</div>
-							<div
-								class="flex items-center space-x-2 rounded-lg p-1.5 transition-colors hover:bg-muted/30"
-							>
-								<Checkbox
-									id="timing-allYear-{activity.id}"
-									checked={activity.timingOfParticipation?.allYear || false}
-									onCheckedChange={(checked) =>
-										handleTimingChange('allYear', !!checked)}
-									class="rounded-md"
-								/>
-								<Label
-									for="timing-allYear-{activity.id}"
-									class="cursor-pointer text-sm font-medium"
-								>
-									All Year Round
 								</Label>
 							</div>
 						</div>
@@ -538,7 +518,7 @@
 								/>
 								<Label
 									for="college-{activity.id}"
-									class="cursor-pointer text-sm font-medium leading-relaxed"
+									class="cursor-pointer text-xs font-medium leading-relaxed"
 								>
 									I plan to continue this activity in college
 								</Label>
@@ -564,6 +544,6 @@
 	}
 
 	.animate-scale-out {
-		animation: scale-out 0.2s ease-in-out forwards;
+		animation: scale-out 0.3s ease-in-out forwards;
 	}
 </style>
