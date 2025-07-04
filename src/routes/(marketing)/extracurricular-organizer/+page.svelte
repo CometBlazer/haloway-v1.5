@@ -1,3 +1,4 @@
+<!-- src/routes/(marketing)/extracurricular-organizer/+page.svelte -->
 <script>
 	import KanbanBoard from '$lib/components/EC-Organizer/KanbanBoard.svelte';
 	import { WebsiteName } from '../../../config';

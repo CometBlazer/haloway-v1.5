@@ -1,4 +1,4 @@
-<!-- ActivityCard.svelte -->
+<!-- src/lib/components/EC-Organizer/ActivityCard.svelte -->
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';

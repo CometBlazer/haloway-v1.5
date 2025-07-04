@@ -1,4 +1,4 @@
-<!-- KanbanBoard.svelte -->
+<!-- src/lib/components/EC-Organizer/KanbanBoard.svelte -->
 <script lang="ts">
 	import { onMount, afterUpdate, onDestroy, tick } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
@@ -6,8 +6,10 @@
 	import ActivityCard from './ActivityCard.svelte';
 	import type { Activity } from '$lib/types/activity';
 	import Sortable from 'sortablejs';
+	import { Download } from 'lucide-svelte';
+	// import { activities } from '$lib/stores/activities';
 
-	let activities: Activity[] = [];
+	let localActivities: Activity[] = [];
 	let sortableContainer: HTMLElement;
 	let sortableInstance: Sortable | null = null;
 	let mounted = false;
@@ -39,7 +41,7 @@
 		try {
 			const stored = sessionStorage.getItem(STORAGE_KEY);
 			if (stored) {
-				activities = JSON.parse(stored);
+				localActivities = JSON.parse(stored);
 			}
 		} catch (error) {
 			console.error('Failed to load from storage:', error);
@@ -48,7 +50,7 @@
 
 	function saveToStorage() {
 		try {
-			sessionStorage.setItem(STORAGE_KEY, JSON.stringify(activities));
+			sessionStorage.setItem(STORAGE_KEY, JSON.stringify(localActivities));
 		} catch (error) {
 			console.error('Failed to save to storage:', error);
 		}
@@ -120,11 +122,11 @@
 						console.log(`Moving item from ${oldIndex} to ${newIndex}`);
 
 						// Reorder the activities array
-						const newActivities = [...activities];
+						const newActivities = [...localActivities];
 						const [movedItem] = newActivities.splice(oldIndex, 1);
 						newActivities.splice(newIndex, 0, movedItem);
 
-						activities = newActivities;
+						localActivities = newActivities;
 						saveToStorage();
 					}
 				},
@@ -156,7 +158,7 @@
 	}
 
 	async function addNewActivity() {
-		activities = [createNewActivity(), ...activities];
+		localActivities = [createNewActivity(), ...localActivities];
 		saveToStorage();
 		await tick(); // Wait for DOM update
 
@@ -169,12 +171,12 @@
 	}
 
 	async function handleDeleteActivity(event: CustomEvent<{ id: string }>) {
-		activities = activities.filter((a) => a.id !== event.detail.id);
+		localActivities = localActivities.filter((a) => a.id !== event.detail.id);
 		saveToStorage();
 		await tick(); // Wait for DOM update
 
 		// Reinitialize sortable after removing item
-		if (activities.length > 0) {
+		if (localActivities.length > 0) {
 			if (sortableInstance) {
 				sortableInstance.destroy();
 				sortableInstance = null;
@@ -186,37 +188,80 @@
 	function handleUpdateActivity(
 		event: CustomEvent<{ id: string; activity: Partial<Activity> }>,
 	) {
-		activities = activities.map((a) =>
+		localActivities = localActivities.map((a) =>
 			a.id === event.detail.id ? { ...a, ...event.detail.activity } : a,
 		);
 		saveToStorage();
 	}
 
 	// Reactive statement to reinitialize sortable when activities change
-	$: if (mounted && activities.length > 0 && sortableContainer) {
+	$: if (mounted && localActivities.length > 0 && sortableContainer) {
 		tick().then(() => {
 			if (!sortableInstance) {
 				initializeSortable();
 			}
 		});
 	}
+
+	function downloadActivitiesJSON() {
+		// Use localActivities instead of $activities
+		const currentActivities = localActivities;
+
+		// Create the JSON data
+		const jsonData = {
+			exportDate: new Date().toISOString(),
+			totalActivities: currentActivities.length,
+			activities: currentActivities,
+		};
+
+		// Convert to JSON string with pretty formatting
+		const jsonString = JSON.stringify(jsonData, null, 2);
+
+		// Create blob and download
+		const blob = new Blob([jsonString], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+
+		// Create temporary download link
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = `extracurricular-activities-${new Date().toISOString().split('T')[0]}.json`;
+
+		// Trigger download
+		document.body.appendChild(link);
+		link.click();
+
+		// Cleanup
+		document.body.removeChild(link);
+		URL.revokeObjectURL(url);
+	}
 </script>
 
 <div class="min-h-screen space-y-6 bg-background p-4">
-	<div class="flex w-full justify-end">
+	<div class="flex w-full justify-end gap-2">
 		<Button on:click={addNewActivity} size="sm" class="mt-4">
 			<Plus class="mr-2 h-4 w-4" />
 			Add Activity
+		</Button>
+		<Button
+			on:click={downloadActivitiesJSON}
+			variant="outline"
+			size="sm"
+			class="mt-4"
+			disabled={localActivities.length === 0}
+		>
+			<Download class="h-4 w-4" />
 		</Button>
 	</div>
 	<!-- Main Board -->
 	<div class="w-full">
 		<div class="rounded-lg bg-muted/30 p-6">
 			<div class="mb-6">
-				<h2 class="text-xl font-semibold">Activities ({activities.length})</h2>
+				<h2 class="text-xl font-semibold">
+					Activities ({localActivities.length})
+				</h2>
 			</div>
 
-			{#if activities.length === 0}
+			{#if localActivities.length === 0}
 				<div
 					class="flex flex-col items-center justify-center space-y-4 py-16 text-center"
 				>
@@ -235,7 +280,7 @@
 				</div>
 			{:else}
 				<div bind:this={sortableContainer} class="sortable-container">
-					{#each activities as activity, index (activity.id)}
+					{#each localActivities as activity, index (activity.id)}
 						<ActivityCard
 							{activity}
 							position={index + 1}
