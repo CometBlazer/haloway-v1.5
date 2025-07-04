@@ -15,7 +15,20 @@
 
 <div class="container mx-auto px-6">
 	<!-- Header -->
-	<div class="mt-6 w-full text-center sm:text-center">
+	<div class="mt-2 w-full text-center sm:text-center">
+		<div
+			class="relative mx-auto mb-6 w-[80px] sm:w-[100px] md:w-[100px] lg:w-[150px] xl:w-[200px]"
+		>
+			<div class="aspect-square">
+				<div class="absolute inset-0 rounded-full bg-white"></div>
+				<img
+					src="https://illustrations.popsy.co/purple/weight-lifting.svg"
+					alt="Weight lifting illustration"
+					class="relative z-10 h-full w-full object-contain"
+					loading="lazy"
+				/>
+			</div>
+		</div>
 		<h1 class="text-3xl font-bold tracking-tight md:text-4xl">
 			Free College Extracurricular Activities Organizer
 		</h1>
