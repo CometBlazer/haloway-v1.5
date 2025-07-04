@@ -37,6 +37,20 @@
 	$: changeState = $activitiesChangeTracker;
 	$: statusDisplay = getChangeStatusDisplay(changeState);
 
+	// Keyboard shortcut handler
+	function handleKeydown(event: KeyboardEvent) {
+		// Check for Ctrl+S (Windows/Linux) or Cmd+S (Mac)
+		if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+			event.preventDefault(); // Prevent browser's default save dialog
+			event.stopPropagation();
+
+			// Only save if authenticated and there are unsaved changes
+			if (isAuthenticated && changeState.hasUnsavedChanges) {
+				handleSave();
+			}
+		}
+	}
+
 	// Public method to get current activities (for parent component)
 	export function getCurrentActivities(): Activity[] {
 		return activitiesChangeTracker.getCurrentActivities();
@@ -77,6 +91,7 @@
 		// Handle browser navigation
 		if (browser) {
 			window.addEventListener('beforeunload', handleBeforeUnload);
+			window.addEventListener('keydown', handleKeydown);
 		}
 	});
 
@@ -88,6 +103,7 @@
 
 		if (browser) {
 			window.removeEventListener('beforeunload', handleBeforeUnload);
+			window.removeEventListener('keydown', handleKeydown);
 		}
 	});
 
