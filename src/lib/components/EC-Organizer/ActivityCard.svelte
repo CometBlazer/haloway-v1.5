@@ -202,6 +202,31 @@
 
 					<!-- Organization Name -->
 					<div class="space-y-2">
+						<div class="flex items-center justify-between">
+							<Label
+								for="organizationName-{activity.id}"
+								class="text-xs font-medium text-muted-foreground/60"
+							>
+								Organization Name
+							</Label>
+							<div class="flex items-center gap-2">
+								<WordCounter
+									currentWordCount={(activity.organizationName || '').length}
+									wordLimit={100}
+									size="sm"
+								/>
+								<Button
+									variant="ghost"
+									size="sm"
+									class="h-6 w-6 p-0"
+									on:click={() =>
+										copyToClipboard(activity.organizationName || '')}
+									type="button"
+								>
+									<Copy class="h-3 w-3" />
+								</Button>
+							</div>
+						</div>
 						<div class="relative">
 							<Textarea
 								id="organizationName-{activity.id}"
@@ -213,23 +238,6 @@
 								rows={2}
 								class="resize-none rounded-xl border-border/60 bg-background/80 focus:border-primary/60"
 							/>
-						</div>
-						<div class="flex items-center justify-end gap-2">
-							<WordCounter
-								currentWordCount={(activity.organizationName || '').length}
-								wordLimit={100}
-								size="sm"
-							/>
-							<Button
-								variant="ghost"
-								size="sm"
-								class="h-6 w-6 p-0"
-								on:click={() =>
-									copyToClipboard(activity.organizationName || '')}
-								type="button"
-							>
-								<Copy class="h-3 w-3" />
-							</Button>
 						</div>
 					</div>
 
@@ -301,6 +309,31 @@
 				<div class="space-y-4">
 					<!-- Position/Leadership Description -->
 					<div class="space-y-2">
+						<div class="flex items-center justify-between">
+							<Label
+								for="position-{activity.id}"
+								class="text-xs font-medium text-muted-foreground/60"
+							>
+								Position/Leadership Role
+							</Label>
+							<div class="flex items-center gap-2">
+								<WordCounter
+									currentWordCount={(activity.positionDescription || '').length}
+									wordLimit={50}
+									size="sm"
+								/>
+								<Button
+									variant="ghost"
+									size="sm"
+									class="h-6 w-6 p-0"
+									on:click={() =>
+										copyToClipboard(activity.positionDescription || '')}
+									type="button"
+								>
+									<Copy class="h-3 w-3" />
+								</Button>
+							</div>
+						</div>
 						<div class="relative">
 							<Input
 								id="position-{activity.id}"
@@ -314,55 +347,46 @@
 								class="h-9 rounded-xl border-border/60 bg-background/80 focus:border-primary/60"
 							/>
 						</div>
-						<div class="flex items-center justify-end gap-2">
-							<WordCounter
-								currentWordCount={(activity.positionDescription || '').length}
-								wordLimit={50}
-								size="sm"
-							/>
-							<Button
-								variant="ghost"
-								size="sm"
-								class="h-6 w-6 p-0"
-								on:click={() =>
-									copyToClipboard(activity.positionDescription || '')}
-								type="button"
-							>
-								<Copy class="h-3 w-3" />
-							</Button>
-						</div>
 					</div>
 
 					<!-- Activity Description -->
 					<div class="space-y-2">
+						<div class="flex items-center justify-between">
+							<Label
+								for="activityDescription-{activity.id}"
+								class="text-xs font-medium text-muted-foreground/60"
+							>
+								Activity Description
+							</Label>
+							<div class="flex items-center gap-2">
+								<WordCounter
+									currentWordCount={(activity.activityDescription || '').length}
+									wordLimit={150}
+									size="sm"
+								/>
+								<Button
+									variant="ghost"
+									size="sm"
+									class="h-6 w-6 p-0"
+									on:click={() =>
+										copyToClipboard(activity.activityDescription || '')}
+									type="button"
+								>
+									<Copy class="h-3 w-3" />
+								</Button>
+							</div>
+						</div>
 						<div class="relative">
 							<Textarea
 								id="activityDescription-{activity.id}"
 								value={activity.activityDescription}
 								on:input={(e) =>
 									handleUpdate('activityDescription', e.currentTarget.value)}
-								placeholder="Activity Description - Describe your activity and achievements..."
+								placeholder="Describe your activity and achievements..."
 								maxlength={150}
 								rows={5}
 								class="resize-vertical rounded-xl border-border/60 bg-background/80 focus:border-primary/60"
 							/>
-						</div>
-						<div class="flex items-center justify-end gap-2">
-							<WordCounter
-								currentWordCount={(activity.activityDescription || '').length}
-								wordLimit={150}
-								size="sm"
-							/>
-							<Button
-								variant="ghost"
-								size="sm"
-								class="h-6 w-6 p-0"
-								on:click={() =>
-									copyToClipboard(activity.activityDescription || '')}
-								type="button"
-							>
-								<Copy class="h-3 w-3" />
-							</Button>
 						</div>
 					</div>
 				</div>
@@ -381,7 +405,7 @@
 							<div class="space-y-1">
 								<Label
 									for="hoursPerWeek-{activity.id}"
-									class="text-xs font-medium text-muted-foreground"
+									class="text-xs font-medium text-muted-foreground/60"
 								>
 									Hours per Week
 								</Label>
@@ -403,7 +427,7 @@
 							<div class="space-y-1">
 								<Label
 									for="weeksPerYear-{activity.id}"
-									class="text-xs font-medium text-muted-foreground"
+									class="text-xs font-medium text-muted-foreground/60"
 								>
 									Weeks per Year
 								</Label>
