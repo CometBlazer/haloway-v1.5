@@ -301,26 +301,59 @@
 		});
 	}
 
-	function downloadActivitiesJSON() {
-		const currentActivities = localActivities;
+	// function downloadActivitiesJSON() {
+	// 	const currentActivities = localActivities;
 
-		const jsonData = {
-			exportDate: new Date().toISOString(),
-			totalActivities: currentActivities.length,
-			activities: currentActivities,
-		};
+	// 	const jsonData = {
+	// 		exportDate: new Date().toISOString(),
+	// 		totalActivities: currentActivities.length,
+	// 		activities: currentActivities,
+	// 	};
 
-		const jsonString = JSON.stringify(jsonData, null, 2);
-		const blob = new Blob([jsonString], { type: 'application/json' });
+	// 	const jsonString = JSON.stringify(jsonData, null, 2);
+	// 	const blob = new Blob([jsonString], { type: 'application/json' });
+	// 	const url = URL.createObjectURL(blob);
+
+	// 	const link = document.createElement('a');
+	// 	link.href = url;
+	// 	link.download = `extracurricular-activities-${new Date().toISOString().split('T')[0]}.json`;
+
+	// 	document.body.appendChild(link);
+	// 	link.click();
+
+	// 	document.body.removeChild(link);
+	// 	URL.revokeObjectURL(url);
+	// }
+
+	function downloadActivitiesTXT() {
+		if (!localActivities.length) return;
+
+		const lines: string[] = [];
+
+		localActivities.forEach((activity, idx) => {
+			lines.push(`Activity ${idx + 1}`);
+			lines.push('--------------------');
+			lines.push(`Position: ${activity.positionDescription || '-'}`);
+			lines.push(`Organization: ${activity.organizationName || '-'}`);
+			lines.push(`Description: ${activity.activityDescription || '-'}`);
+			lines.push(`Type: ${activity.activityType || '-'}`);
+			lines.push(`Hours/week: ${activity.hoursPerWeek}`);
+			lines.push(`Weeks/year: ${activity.weeksPerYear}`);
+			lines.push(
+				`College Participation: ${activity.collegeParticipation ? 'Yes' : 'No'}`,
+			);
+			lines.push(''); // empty line between activities
+		});
+
+		const txtContent = lines.join('\n');
+		const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8' });
 		const url = URL.createObjectURL(blob);
 
 		const link = document.createElement('a');
 		link.href = url;
-		link.download = `extracurricular-activities-${new Date().toISOString().split('T')[0]}.json`;
-
+		link.download = `activities-${new Date().toISOString().split('T')[0]}.txt`;
 		document.body.appendChild(link);
 		link.click();
-
 		document.body.removeChild(link);
 		URL.revokeObjectURL(url);
 	}
@@ -410,7 +443,7 @@
 					Add Activity
 				</Button>
 				<Button
-					on:click={downloadActivitiesJSON}
+					on:click={downloadActivitiesTXT}
 					variant="outline"
 					size="sm"
 					disabled={localActivities.length === 0}
@@ -426,7 +459,7 @@
 				Add Activity
 			</Button>
 			<Button
-				on:click={downloadActivitiesJSON}
+				on:click={downloadActivitiesTXT}
 				variant="outline"
 				size="sm"
 				disabled={localActivities.length === 0}
