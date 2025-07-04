@@ -8,23 +8,61 @@
 	import { Textarea } from '$lib/components/ui/textarea';
 	import { Checkbox } from '$lib/components/ui/checkbox';
 	import {
-		Select,
-		SelectContent,
-		SelectItem,
-		SelectTrigger,
-		SelectValue,
-	} from '$lib/components/ui/select';
+		Command,
+		CommandEmpty,
+		CommandGroup,
+		CommandInput,
+		CommandItem,
+		CommandList,
+	} from '$lib/components/ui/command';
+	import {
+		Popover,
+		PopoverContent,
+		PopoverTrigger,
+	} from '$lib/components/ui/popover';
+	// import { Badge } from '$lib/components/ui/badge';
+	import { cn } from '$lib/utils';
 	import {
 		GripVertical,
-		Trophy,
+		// Trophy,
 		Copy,
 		Trash2,
-		Star,
+		// Star,
 		Users,
 		Calendar,
 		Clock,
-		BookOpen,
+		// BookOpen,
 		Check,
+		GraduationCap,
+		Palette,
+		Dumbbell,
+		Shield,
+		Briefcase,
+		Heart,
+		Computer,
+		Globe,
+		Music,
+		MessageSquare,
+		Leaf,
+		Home,
+		Plane,
+		Languages,
+		FileText,
+		// Megaphone,
+		Rainbow,
+		Piano,
+		Mic,
+		Church,
+		FlaskConical,
+		Bot,
+		Sparkles,
+		Calculator,
+		Scale,
+		Vote,
+		Drama,
+		DollarSign,
+		Puzzle,
+		ChevronsUpDown,
 	} from 'lucide-svelte';
 	import WordCounter from '$lib/components/Editor/WordCounter.svelte';
 	import type { Activity } from '$lib/types/activity';
@@ -37,15 +75,218 @@
 		update: { id: string; activity: Partial<Activity> };
 	}>();
 
-	// Activity type icons mapping
-	const activityIcons: Record<string, typeof Trophy> = {
-		Academic: Trophy,
-		Arts: Star,
-		Athletics: Users,
-		'Community Service': Users,
-		Leadership: Trophy,
-		'Work/Career': Users,
-		Other: Star,
+	// Activity type configuration with icons, names, and colors
+	const activityTypes = {
+		Academic: {
+			icon: GraduationCap,
+			name: 'Academic',
+			color: 'text-blue-600',
+			bgColor: 'bg-blue-100',
+			borderColor: 'border-blue-200',
+		},
+		Art: {
+			icon: Palette,
+			name: 'Art',
+			color: 'text-purple-600',
+			bgColor: 'bg-purple-100',
+			borderColor: 'border-purple-200',
+		},
+		'Athletics: Club': {
+			icon: Users,
+			name: 'Athletics: Club',
+			color: 'text-green-600',
+			bgColor: 'bg-green-100',
+			borderColor: 'border-green-200',
+		},
+		'Athletics: JV/Varsity': {
+			icon: Dumbbell,
+			name: 'Athletics: JV/Varsity',
+			color: 'text-emerald-600',
+			bgColor: 'bg-emerald-100',
+			borderColor: 'border-emerald-200',
+		},
+		'Career-Oriented': {
+			icon: Briefcase,
+			name: 'Career-Oriented',
+			color: 'text-slate-600',
+			bgColor: 'bg-slate-100',
+			borderColor: 'border-slate-200',
+		},
+		'Community Service (Volunteer)': {
+			icon: Heart,
+			name: 'Community Service (Volunteer)',
+			color: 'text-red-600',
+			bgColor: 'bg-red-100',
+			borderColor: 'border-red-200',
+		},
+		'Computer/Technology': {
+			icon: Computer,
+			name: 'Computer/Technology',
+			color: 'text-cyan-600',
+			bgColor: 'bg-cyan-100',
+			borderColor: 'border-cyan-200',
+		},
+		Cultural: {
+			icon: Globe,
+			name: 'Cultural',
+			color: 'text-orange-600',
+			bgColor: 'bg-orange-100',
+			borderColor: 'border-orange-200',
+		},
+		Dance: {
+			icon: Music,
+			name: 'Dance',
+			color: 'text-pink-600',
+			bgColor: 'bg-pink-100',
+			borderColor: 'border-pink-200',
+		},
+		'Debate/Speech': {
+			icon: MessageSquare,
+			name: 'Debate/Speech',
+			color: 'text-indigo-600',
+			bgColor: 'bg-indigo-100',
+			borderColor: 'border-indigo-200',
+		},
+		Environmental: {
+			icon: Leaf,
+			name: 'Environmental',
+			color: 'text-green-600',
+			bgColor: 'bg-green-100',
+			borderColor: 'border-green-200',
+		},
+		'Family Responsibilities': {
+			icon: Home,
+			name: 'Family Responsibilities',
+			color: 'text-amber-600',
+			bgColor: 'bg-amber-100',
+			borderColor: 'border-amber-200',
+		},
+		'Foreign Exchange': {
+			icon: Plane,
+			name: 'Foreign Exchange',
+			color: 'text-sky-600',
+			bgColor: 'bg-sky-100',
+			borderColor: 'border-sky-200',
+		},
+		'Foreign Language': {
+			icon: Languages,
+			name: 'Foreign Language',
+			color: 'text-violet-600',
+			bgColor: 'bg-violet-100',
+			borderColor: 'border-violet-200',
+		},
+		Internship: {
+			icon: Briefcase,
+			name: 'Internship',
+			color: 'text-gray-600',
+			bgColor: 'bg-gray-100',
+			borderColor: 'border-gray-200',
+		},
+		'Journalism/Publication': {
+			icon: FileText,
+			name: 'Journalism/Publication',
+			color: 'text-blue-600',
+			bgColor: 'bg-blue-100',
+			borderColor: 'border-blue-200',
+		},
+		'Junior R.O.T.C.': {
+			icon: Shield,
+			name: 'Junior R.O.T.C.',
+			color: 'text-red-600',
+			bgColor: 'bg-red-100',
+			borderColor: 'border-red-200',
+		},
+		LGBT: {
+			icon: Rainbow,
+			name: 'LGBT',
+			color: 'text-pink-600',
+			bgColor: 'bg-pink-100',
+			borderColor: 'border-pink-200',
+		},
+		'Music: Instrumental': {
+			icon: Piano,
+			name: 'Music: Instrumental',
+			color: 'text-purple-600',
+			bgColor: 'bg-purple-100',
+			borderColor: 'border-purple-200',
+		},
+		'Music: Vocal': {
+			icon: Mic,
+			name: 'Music: Vocal',
+			color: 'text-fuchsia-600',
+			bgColor: 'bg-fuchsia-100',
+			borderColor: 'border-fuchsia-200',
+		},
+		Religious: {
+			icon: Church,
+			name: 'Religious',
+			color: 'text-yellow-600',
+			bgColor: 'bg-yellow-100',
+			borderColor: 'border-yellow-200',
+		},
+		Research: {
+			icon: FlaskConical,
+			name: 'Research',
+			color: 'text-teal-600',
+			bgColor: 'bg-teal-100',
+			borderColor: 'border-teal-200',
+		},
+		Robotics: {
+			icon: Bot,
+			name: 'Robotics',
+			color: 'text-slate-600',
+			bgColor: 'bg-slate-100',
+			borderColor: 'border-slate-200',
+		},
+		'School Spirit': {
+			icon: Sparkles,
+			name: 'School Spirit',
+			color: 'text-rose-600',
+			bgColor: 'bg-rose-100',
+			borderColor: 'border-rose-200',
+		},
+		'Science/Math': {
+			icon: Calculator,
+			name: 'Science/Math',
+			color: 'text-emerald-600',
+			bgColor: 'bg-emerald-100',
+			borderColor: 'border-emerald-200',
+		},
+		'Social Justice': {
+			icon: Scale,
+			name: 'Social Justice',
+			color: 'text-orange-600',
+			bgColor: 'bg-orange-100',
+			borderColor: 'border-orange-200',
+		},
+		'Student Gov.t./Politics': {
+			icon: Vote,
+			name: 'Student Gov.t./Politics',
+			color: 'text-blue-600',
+			bgColor: 'bg-blue-100',
+			borderColor: 'border-blue-200',
+		},
+		'Theater/Drama': {
+			icon: Drama,
+			name: 'Theater/Drama',
+			color: 'text-red-600',
+			bgColor: 'bg-red-100',
+			borderColor: 'border-red-200',
+		},
+		'Work (paid)': {
+			icon: DollarSign,
+			name: 'Work (paid)',
+			color: 'text-green-600',
+			bgColor: 'bg-green-100',
+			borderColor: 'border-green-200',
+		},
+		'Other Club/Activity': {
+			icon: Puzzle,
+			name: 'Other Club/Activity',
+			color: 'text-gray-600',
+			bgColor: 'bg-gray-100',
+			borderColor: 'border-gray-200',
+		},
 	};
 
 	let isDeleting = false;
@@ -54,6 +295,7 @@
 		positionDescription: false,
 		activityDescription: false,
 	};
+	let comboboxOpen = false;
 
 	function handleDelete() {
 		isDeleting = true;
@@ -109,12 +351,16 @@
 		handleUpdate('timingOfParticipation', timings);
 	}
 
-	// Get the appropriate icon component
-	$: IconComponent = activityIcons[activity.activityType] || BookOpen;
+	// Get the appropriate icon component and styling
+	$: selectedActivityType =
+		activityTypes[activity.activityType as keyof typeof activityTypes] ||
+		activityTypes['Other Club/Activity'];
+	$: IconComponent = selectedActivityType.icon;
+	$: activityTypesList = Object.values(activityTypes);
 </script>
 
 <div
-	class="sortable-item group mb-6 w-full {isDeleting
+	class="sortable-item group mb-6 w-full rounded-2xl {isDeleting
 		? 'animate-scale-out'
 		: ''}"
 	data-id={activity.id}
@@ -169,43 +415,82 @@
 					<div class="space-y-3">
 						<div class="flex items-center gap-3">
 							<div
-								class="rounded-xl border border-primary/20 bg-primary/10 p-3"
+								class="rounded-xl border {selectedActivityType.borderColor} {selectedActivityType.bgColor} p-3"
 							>
 								<svelte:component
 									this={IconComponent}
-									class="h-7 w-7 text-primary"
+									class="h-7 w-7 {selectedActivityType.color}"
 								/>
 							</div>
 							<div class="flex-1">
 								<Label
 									class="mb-1 block text-sm font-semibold text-foreground/80"
-									>Activity Type</Label
+									>Activity Type<span class="text-destructive">*</span></Label
 								>
-								<Select
-									selected={{
-										value: activity.activityType,
-										label: activity.activityType,
-									}}
-									onSelectedChange={(selected) =>
-										handleUpdate('activityType', selected?.value || '')}
-								>
-									<SelectTrigger
-										class="h-9 rounded-xl border-border/60 focus:border-primary/60"
-									>
-										<SelectValue placeholder="Select activity type..." />
-									</SelectTrigger>
-									<SelectContent class="rounded-xl">
-										<SelectItem value="Academic">Academic</SelectItem>
-										<SelectItem value="Arts">Arts</SelectItem>
-										<SelectItem value="Athletics">Athletics</SelectItem>
-										<SelectItem value="Community Service"
-											>Community Service</SelectItem
+								<Popover bind:open={comboboxOpen}>
+									<PopoverTrigger asChild let:builder>
+										<Button
+											builders={[builder]}
+											variant="outline"
+											role="combobox"
+											aria-expanded={comboboxOpen}
+											class="h-9 w-full justify-between rounded-xl border-border/60 bg-background/80 px-3 hover:bg-background/90 focus:border-primary/60"
 										>
-										<SelectItem value="Leadership">Leadership</SelectItem>
-										<SelectItem value="Work/Career">Work/Career</SelectItem>
-										<SelectItem value="Other">Other</SelectItem>
-									</SelectContent>
-								</Select>
+											{#if activity.activityType}
+												<div class="flex items-center gap-2">
+													<svelte:component
+														this={selectedActivityType.icon}
+														class="h-4 w-4 {selectedActivityType.color}"
+													/>
+													<span class="truncate"
+														>{selectedActivityType.name}</span
+													>
+												</div>
+											{:else}
+												<span class="text-muted-foreground"
+													>Select activity type...</span
+												>
+											{/if}
+											<ChevronsUpDown
+												class="ml-2 h-4 w-4 shrink-0 opacity-50"
+											/>
+										</Button>
+									</PopoverTrigger>
+									<PopoverContent class="w-[300px] p-0" align="start">
+										<Command>
+											<CommandInput placeholder="Search activity types..." />
+											<CommandList>
+												<CommandEmpty>No activity type found.</CommandEmpty>
+												<CommandGroup>
+													{#each activityTypesList as activityType}
+														<CommandItem
+															value={activityType.name}
+															onSelect={() => {
+																handleUpdate('activityType', activityType.name);
+																comboboxOpen = false;
+															}}
+															class="flex items-center gap-2"
+														>
+															<svelte:component
+																this={activityType.icon}
+																class="h-4 w-4 {activityType.color}"
+															/>
+															<span>{activityType.name}</span>
+															<Check
+																class={cn(
+																	'ml-auto h-4 w-4',
+																	activity.activityType === activityType.name
+																		? 'opacity-100'
+																		: 'opacity-0',
+																)}
+															/>
+														</CommandItem>
+													{/each}
+												</CommandGroup>
+											</CommandList>
+										</Command>
+									</PopoverContent>
+								</Popover>
 							</div>
 						</div>
 					</div>
@@ -263,10 +548,10 @@
 					<!-- Timing of Participation -->
 					<div class="space-y-3">
 						<Label
-							class="flex items-center gap-2 text-sm font-semibold text-foreground/80"
+							class="flex items-center text-sm font-semibold text-foreground/80"
 						>
-							<Calendar class="h-4 w-4" />
-							When Active
+							<Calendar class="mr-2 h-4 w-4" />
+							Timing of Participation<span class="text-destructive">*</span>
 						</Label>
 						<div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
 							<div
@@ -333,7 +618,7 @@
 								for="position-{activity.id}"
 								class="text-xs font-medium text-muted-foreground/60"
 							>
-								Position/Leadership Role
+								Position/Leadership Role<span class="text-destructive">*</span>
 							</Label>
 							<div class="flex items-center gap-2">
 								<WordCounter
@@ -384,7 +669,7 @@
 								for="activityDescription-{activity.id}"
 								class="text-xs font-medium text-muted-foreground/60"
 							>
-								Activity Description
+								Activity Description<span class="text-destructive">*</span>
 							</Label>
 							<div class="flex items-center gap-2">
 								<WordCounter
@@ -444,7 +729,7 @@
 									for="hoursPerWeek-{activity.id}"
 									class="text-xs font-medium text-muted-foreground/60"
 								>
-									Hours per Week
+									Hours per Week<span class="text-destructive">*</span>
 								</Label>
 								<Input
 									id="hoursPerWeek-{activity.id}"
@@ -466,7 +751,7 @@
 									for="weeksPerYear-{activity.id}"
 									class="text-xs font-medium text-muted-foreground/60"
 								>
-									Weeks per Year
+									Weeks per Year<span class="text-destructive">*</span>
 								</Label>
 								<Input
 									id="weeksPerYear-{activity.id}"
@@ -489,10 +774,10 @@
 					<!-- Participation Levels -->
 					<div class="space-y-3">
 						<Label
-							class="flex items-center gap-2 text-sm font-semibold text-foreground/80"
+							class="flex items-center text-sm font-semibold text-foreground/80"
 						>
-							<Users class="h-4 w-4" />
-							Grade Levels
+							<Users class="mr-2 h-4 w-4" />
+							Participation Grade Levels<span class="text-destructive">*</span>
 						</Label>
 						<div class="grid grid-cols-2 gap-2">
 							<div
@@ -581,7 +866,7 @@
 									for="college-{activity.id}"
 									class="cursor-pointer text-xs font-medium leading-relaxed"
 								>
-									I plan to continue this activity in college
+									I intend to participate in a similar activity in college.
 								</Label>
 							</div>
 						</div>
