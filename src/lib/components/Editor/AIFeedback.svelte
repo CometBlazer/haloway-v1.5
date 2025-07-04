@@ -176,7 +176,7 @@
 				sanitizedHtml.includes('<strong>') || sanitizedHtml.includes('<em>');
 
 			if (containsExpectedTags || containsConvertedMarkdown) {
-				console.log('Sanitized HTML:', sanitizedHtml); // Debug log
+				// console.log('Sanitized HTML:', sanitizedHtml); // Debug log
 				return {
 					type: 'html',
 					content: sanitizedHtml,
