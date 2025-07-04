@@ -2,12 +2,13 @@
 <script lang="ts">
 	import { onMount, afterUpdate, onDestroy, tick } from 'svelte';
 	import { Button } from '$lib/components/ui/button';
-	import { Plus } from 'lucide-svelte';
+	import { Plus, Download } from 'lucide-svelte';
 	import ActivityCard from './ActivityCard.svelte';
 	import type { Activity } from '$lib/types/activity';
 	import Sortable from 'sortablejs';
-	import { Download } from 'lucide-svelte';
-	// import { activities } from '$lib/stores/activities';
+
+	export let initialActivities: Activity[] = [];
+	export let isAuthenticated: boolean = false;
 
 	let localActivities: Activity[] = [];
 	let sortableContainer: HTMLElement;
@@ -16,12 +17,52 @@
 
 	const STORAGE_KEY = 'college-extracurriculars';
 
+	// Public method to get current activities (for parent component)
+	export function getCurrentActivities(): Activity[] {
+		return localActivities;
+	}
+
+	// Public method to load activities (for parent component)
+	export function loadActivities(activities: Activity[]) {
+		localActivities = activities;
+		saveToStorage();
+		if (mounted) {
+			tick().then(() => {
+				reinitializeSortable();
+			});
+		}
+	}
+
 	onMount(async () => {
 		mounted = true;
-		loadFromStorage();
-		await tick(); // Wait for DOM to update
+
+		if (isAuthenticated) {
+			// For authenticated users: ALWAYS prioritize server data
+			if (initialActivities && initialActivities.length > 0) {
+				localActivities = initialActivities;
+				saveToStorage(); // Sync sessionStorage with server data
+			} else {
+				// No server data exists yet, check if user has sessionStorage work to preserve
+				loadFromStorage();
+			}
+		} else {
+			// For anonymous users: only use sessionStorage
+			loadFromStorage();
+		}
+
+		await tick();
 		initializeSortable();
 	});
+
+	// Watch for authentication changes
+	$: if (mounted && isAuthenticated && initialActivities.length > 0) {
+		// User just logged in and has server data - prioritize it
+		localActivities = initialActivities;
+		saveToStorage();
+		tick().then(() => {
+			reinitializeSortable();
+		});
+	}
 
 	onDestroy(() => {
 		if (sortableInstance) {
@@ -38,6 +79,7 @@
 	});
 
 	function loadFromStorage() {
+		// Always load from sessionStorage for temporary work
 		try {
 			const stored = sessionStorage.getItem(STORAGE_KEY);
 			if (stored) {
@@ -56,6 +98,14 @@
 		}
 	}
 
+	function reinitializeSortable() {
+		if (sortableInstance) {
+			sortableInstance.destroy();
+			sortableInstance = null;
+		}
+		initializeSortable();
+	}
+
 	function initializeSortable() {
 		if (!sortableContainer || !mounted) return;
 
@@ -72,8 +122,8 @@
 		try {
 			sortableInstance = Sortable.create(sortableContainer, {
 				handle: '.sortable-handle',
-				animation: 300, // Sortable's built-in animation
-				easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)', // Material design easing
+				animation: 300,
+				easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)',
 				ghostClass: 'sortable-ghost',
 				chosenClass: 'sortable-chosen',
 				dragClass: 'sortable-drag',
@@ -85,16 +135,13 @@
 				scrollSensitivity: 30,
 				scrollSpeed: 10,
 				bubbleScroll: true,
-				// Key settings for smooth transitions
 				removeCloneOnHide: false,
 				revertOnSpill: false,
-				// Enable smooth dragging
 				dragoverBubble: false,
 				dropBubble: false,
 				preventOnFilter: false,
 				onStart: () => {
 					document.body.classList.add('is-dragging');
-					// Disable transitions during active drag
 					if (sortableContainer) {
 						sortableContainer.classList.add('dragging-active');
 					}
@@ -103,7 +150,6 @@
 				onEnd: (evt) => {
 					document.body.classList.remove('is-dragging');
 
-					// Re-enable transitions after a short delay
 					setTimeout(() => {
 						if (sortableContainer) {
 							sortableContainer.classList.remove('dragging-active');
@@ -131,7 +177,6 @@
 					}
 				},
 				onMove: () => {
-					// Optional: Add custom move validation here
 					return true;
 				},
 			});
@@ -160,28 +205,17 @@
 	async function addNewActivity() {
 		localActivities = [createNewActivity(), ...localActivities];
 		saveToStorage();
-		await tick(); // Wait for DOM update
-
-		// Reinitialize sortable after adding new item
-		if (sortableInstance) {
-			sortableInstance.destroy();
-			sortableInstance = null;
-		}
-		initializeSortable();
+		await tick();
+		reinitializeSortable();
 	}
 
 	async function handleDeleteActivity(event: CustomEvent<{ id: string }>) {
 		localActivities = localActivities.filter((a) => a.id !== event.detail.id);
 		saveToStorage();
-		await tick(); // Wait for DOM update
+		await tick();
 
-		// Reinitialize sortable after removing item
 		if (localActivities.length > 0) {
-			if (sortableInstance) {
-				sortableInstance.destroy();
-				sortableInstance = null;
-			}
-			initializeSortable();
+			reinitializeSortable();
 		}
 	}
 
@@ -204,33 +238,25 @@
 	}
 
 	function downloadActivitiesJSON() {
-		// Use localActivities instead of $activities
 		const currentActivities = localActivities;
 
-		// Create the JSON data
 		const jsonData = {
 			exportDate: new Date().toISOString(),
 			totalActivities: currentActivities.length,
 			activities: currentActivities,
 		};
 
-		// Convert to JSON string with pretty formatting
 		const jsonString = JSON.stringify(jsonData, null, 2);
-
-		// Create blob and download
 		const blob = new Blob([jsonString], { type: 'application/json' });
 		const url = URL.createObjectURL(blob);
 
-		// Create temporary download link
 		const link = document.createElement('a');
 		link.href = url;
 		link.download = `extracurricular-activities-${new Date().toISOString().split('T')[0]}.json`;
 
-		// Trigger download
 		document.body.appendChild(link);
 		link.click();
 
-		// Cleanup
 		document.body.removeChild(link);
 		URL.revokeObjectURL(url);
 	}
@@ -252,13 +278,19 @@
 			<Download class="h-4 w-4" />
 		</Button>
 	</div>
+
 	<!-- Main Board -->
 	<div class="w-full">
 		<div class="rounded-lg bg-muted/30 p-6">
-			<div class="mb-6">
+			<div class="mb-6 flex items-center justify-between">
 				<h2 class="text-xl font-semibold">
 					Activities ({localActivities.length})
 				</h2>
+				{#if !isAuthenticated}
+					<div class="text-sm text-muted-foreground">
+						Sign in to save your work
+					</div>
+				{/if}
 			</div>
 
 			{#if localActivities.length === 0}
@@ -298,13 +330,11 @@
 	/* Sortable.js styling - clean and minimal */
 	:global(.sortable-ghost) {
 		opacity: 0.4;
-		/* transform: scale(1.02); */
 	}
 
 	:global(.sortable-chosen) {
 		cursor: grabbing !important;
 		z-index: 1000;
-		/* transform: scale(1.03); */
 		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 	}
 
@@ -341,9 +371,7 @@
 
 	/* Simple hover effect - just slight lift */
 	.sortable-container:not(.dragging-active) :global(.sortable-item:hover) {
-		/* transform: scale(1.01); */
 		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-		/* border-color: hsl(var(--color-primary)); */
 	}
 
 	/* Handle styling */
@@ -383,11 +411,6 @@
 		margin: 0 !important;
 		position: relative;
 	}
-
-	/* Simple entry animation for new items */
-	/* .sortable-container :global(.sortable-item) {
-		animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	} */
 
 	@keyframes fadeIn {
 		from {

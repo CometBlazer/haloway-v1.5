@@ -9,6 +9,64 @@ export type Json =
 export interface Database {
 	public: {
 		Tables: {
+			activities: {
+				Row: {
+					id: string;
+					user_id: string;
+					activity_type: string;
+					organization_name: string | null;
+					position_description: string | null;
+					activity_description: string | null;
+					participation_levels: Json;
+					timing_of_participation: Json;
+					hours_per_week: number;
+					weeks_per_year: number;
+					college_participation: boolean;
+					sort_order: number;
+					created_at: Date;
+					updated_at: Date;
+				};
+				Insert: {
+					id?: string;
+					user_id: string;
+					activity_type: string;
+					organization_name?: string | null;
+					position_description?: string | null;
+					activity_description?: string | null;
+					participation_levels?: Json;
+					timing_of_participation?: Json;
+					hours_per_week?: number;
+					weeks_per_year?: number;
+					college_participation?: boolean;
+					sort_order?: number;
+					created_at?: Date;
+					updated_at?: Date;
+				};
+				Update: {
+					id?: string;
+					user_id?: string;
+					activity_type?: string;
+					organization_name?: string | null;
+					position_description?: string | null;
+					activity_description?: string | null;
+					participation_levels?: Json;
+					timing_of_participation?: Json;
+					hours_per_week?: number;
+					weeks_per_year?: number;
+					college_participation?: boolean;
+					sort_order?: number;
+					created_at?: Date;
+					updated_at?: Date;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'activities_user_id_fkey';
+						columns: ['user_id'];
+						referencedRelation: 'users';
+						referencedColumns: ['id'];
+					},
+				];
+			};
 			contact_messages: {
 				Row: {
 					id: string;
@@ -385,6 +443,7 @@ export type DocumentVersion =
 export type Document = Database['public']['Tables']['documents']['Row'];
 export type Tag = Database['public']['Tables']['tags']['Row'];
 export type School = Database['public']['Tables']['schools']['Row'];
+export type Activity = Database['public']['Tables']['activities']['Row'];
 
 // Type for your component usage (with field transformations)
 export interface ComponentTag {
