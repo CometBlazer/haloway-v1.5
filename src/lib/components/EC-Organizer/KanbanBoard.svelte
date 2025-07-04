@@ -241,9 +241,10 @@
 				</div>
 			{:else}
 				<div bind:this={sortableContainer} class="sortable-container">
-					{#each activities as activity (activity.id)}
+					{#each activities as activity, index (activity.id)}
 						<ActivityCard
 							{activity}
+							position={index + 1}
 							on:delete={handleDeleteActivity}
 							on:update={handleUpdateActivity}
 						/>

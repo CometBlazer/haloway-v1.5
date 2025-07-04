@@ -372,15 +372,13 @@
 			<div class="flex items-center justify-between">
 				<div class="flex items-center gap-3">
 					<!-- Activity Position Number - Top Left -->
-					<div
-						class="flex items-center gap-2 text-sm font-medium text-muted-foreground/70"
-					>
-						<div
+					<div class="flex items-center gap-2 text-base font-medium">
+						<!-- <div
 							class="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary"
 						>
 							{position}
-						</div>
-						Activity {position}
+						</div> -->
+						<span class="text-color-primary">Activity</span> #{position}
 					</div>
 				</div>
 				<div class="flex items-center gap-2">

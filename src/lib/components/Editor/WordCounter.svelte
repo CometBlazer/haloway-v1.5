@@ -78,9 +78,8 @@
 
 	{#if showText}
 		<span class="word-count-text">
-			{currentWordCount} words {isOverLimit
-				? '(limit reached)'
-				: `/ ${wordLimit} limit`}
+			{currentWordCount}
+			{isOverLimit ? '(limit reached)' : `/ ${wordLimit} limit`}
 		</span>
 	{/if}
 </div>
