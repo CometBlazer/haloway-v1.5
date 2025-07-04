@@ -47,8 +47,14 @@
 		Other: Star,
 	};
 
+	let isDeleting = false;
+
 	function handleDelete() {
-		dispatch('delete', { id: activity.id });
+		isDeleting = true;
+		// Wait for animation to complete before dispatching delete
+		setTimeout(() => {
+			dispatch('delete', { id: activity.id });
+		}, 300);
 	}
 
 	function handleUpdate(
@@ -97,14 +103,29 @@
 	$: IconComponent = activityIcons[activity.activityType] || BookOpen;
 </script>
 
-<div class="sortable-item group mb-6 w-full" data-id={activity.id}>
+<div
+	class="sortable-item group mb-6 w-full {isDeleting
+		? 'animate-scale-out'
+		: ''}"
+	data-id={activity.id}
+>
 	<Card
-		class="w-full rounded-2xl border-2 border-border/50 bg-card/50 shadow-sm backdrop-blur-sm transition-all duration-300 hover:border-border/80 hover:shadow-xl"
+		class="w-full rounded-2xl border-2 border-border/50 bg-card/50 shadow-sm backdrop-blur-sm"
 	>
 		<CardHeader class="pb-4">
 			<div class="flex items-center justify-between">
 				<div class="flex items-center gap-3">
-					<!-- Empty space where the old activity number was -->
+					<!-- Activity Position Number - Top Left -->
+					<div
+						class="flex items-center gap-2 text-sm font-medium text-muted-foreground/70"
+					>
+						<div
+							class="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary"
+						>
+							{position}
+						</div>
+						Activity {position}
+					</div>
 				</div>
 				<div class="flex items-center gap-2">
 					<Button
@@ -138,11 +159,11 @@
 					<div class="space-y-3">
 						<div class="flex items-center gap-3">
 							<div
-								class="rounded-xl border border-primary/20 bg-primary/10 p-2"
+								class="rounded-xl border border-primary/20 bg-primary/10 p-3"
 							>
 								<svelte:component
 									this={IconComponent}
-									class="h-5 w-5 text-primary"
+									class="h-7 w-7 text-primary"
 								/>
 							</div>
 							<div class="flex-1">
@@ -526,20 +547,23 @@
 					</div>
 				</div>
 			</div>
-
-			<!-- Activity Position Number - Bottom Right -->
-			<div class="mt-4 flex justify-end border-t border-border/30 pt-3">
-				<div
-					class="flex items-center gap-2 text-sm font-medium text-muted-foreground/70"
-				>
-					<div
-						class="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary"
-					>
-						{position}
-					</div>
-					Activity {position}
-				</div>
-			</div>
 		</CardContent>
 	</Card>
 </div>
+
+<style>
+	@keyframes scale-out {
+		0% {
+			transform: scale(1);
+			opacity: 1;
+		}
+		100% {
+			transform: scale(0.8);
+			opacity: 0;
+		}
+	}
+
+	.animate-scale-out {
+		animation: scale-out 0.2s ease-in-out forwards;
+	}
+</style>
