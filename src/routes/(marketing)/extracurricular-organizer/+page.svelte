@@ -104,7 +104,7 @@
 		<h1 class="text-3xl font-bold tracking-tight md:text-4xl">
 			Free College Extracurricular Activities Organizer
 		</h1>
-		<h2 class="mt-2 text-lg text-muted-foreground md:text-xl">
+		<h2 class="mt-4 text-lg text-muted-foreground md:text-xl">
 			Modeled after the Common App Activities List
 		</h2>
 
@@ -116,11 +116,15 @@
 					class="text-foreground underline hover:text-foreground/80"
 					>create a free account</a
 				>
-				today.
+				today or
+				<a
+					href="/login"
+					class="text-foreground underline hover:text-foreground/80">sign in</a
+				>.
 			</h3>
 		{/if}
 
-		<h3 class="mt-2 text-base text-muted-foreground">
+		<h3 class="mt-1 text-base text-muted-foreground">
 			Want a feature?
 			<a
 				href="/contact"
@@ -139,8 +143,8 @@
 		<p class="text-center text-sm text-muted-foreground">
 			Note: This tool is for organizational purposes only. To submit your
 			activities to the Common App, please copy individual elements from the
-			organizer and paste them into the Common App Activities Section. We're not
-			affiliated with the Common App or College Board.
+			organizer and paste them into the Common App Activities Section. {WebsiteName}
+			is not affiliated with the Common App or College Board.
 		</p>
 	</div>
 </div>
