@@ -315,39 +315,81 @@
 	}
 </script>
 
-<div class="min-h-screen space-y-6 bg-background p-4">
-	<!-- Status Bar -->
+<div class="my-6">
+	<!-- Status Bar - Styled like the essay document autosave -->
 	{#if isAuthenticated}
-		<div class="flex w-full items-center justify-between">
-			<div class="flex items-center gap-3">
-				<!-- Status Display -->
-				<div class="flex items-center gap-2 text-sm {statusDisplay.class}">
-					{#if changeState.status === 'saving'}
-						<div class="loading-spinner h-4 w-4"></div>
-					{:else if changeState.hasUnsavedChanges}
-						<AlertCircle class="h-4 w-4" />
-					{:else}
-						<div class="h-2 w-2 rounded-full bg-green-500"></div>
-					{/if}
-					<span>{statusDisplay.text}</span>
-				</div>
-
-				<!-- Save Button -->
-				{#if statusDisplay.showSaveButton}
-					<Button
-						on:click={handleSave}
-						size="sm"
-						variant="outline"
-						disabled={changeState.status === 'saving'}
+		<div class="mb-4 flex w-full items-center justify-between">
+			<div class="flex items-center gap-4">
+				<!-- Save State Display - Matching TopToolbar.svelte styling exactly -->
+				<div class="flex items-center gap-2">
+					<div
+						class="status-indicator"
+						class:status-saved={statusDisplay.class === 'saved'}
+						class:status-saving={statusDisplay.class === 'saving'}
+						class:status-unsaved={statusDisplay.class === 'unsaved'}
+						class:status-error={statusDisplay.class === 'error'}
+						class:animate-pulse={changeState.status === 'error'}
 					>
-						<Save class="mr-2 h-4 w-4" />
-						{changeState.status === 'saving' ? 'Saving...' : 'Save Changes'}
-					</Button>
-				{/if}
+						<!-- Status Icon -->
+						<div class="status-icon">
+							{#if statusDisplay.icon === 'saved'}
+								<svg
+									class="h-4 w-4"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<path d="M20 6L9 17l-5-5" />
+								</svg>
+							{:else if statusDisplay.icon === 'saving'}
+								<div class="loading-spinner"></div>
+							{:else if statusDisplay.icon === 'unsaved'}
+								<AlertCircle class="h-4 w-4 text-yellow-500" />
+							{:else if statusDisplay.icon === 'error'}
+								<svg
+									class="h-4 w-4"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+								>
+									<circle cx="12" cy="12" r="10" />
+									<line x1="15" y1="9" x2="9" y2="15" />
+									<line x1="9" y1="9" x2="15" y2="15" />
+								</svg>
+							{/if}
+						</div>
+
+						<!-- Status Text -->
+						<span class="status-text text-xs sm:text-sm"
+							>{statusDisplay.text}</span
+						>
+					</div>
+
+					<!-- Manual Save Button - Matching TopToolbar.svelte styling exactly -->
+					{#if statusDisplay.showSaveButton}
+						<Button
+							variant="outline"
+							size="sm"
+							on:click={handleSave}
+							disabled={changeState.status === 'saving'}
+						>
+							<Save class="mr-2 h-4 w-4" />
+							<span class="hidden sm:inline">
+								{#if changeState.status === 'error'}
+									Retry
+								{:else}
+									Save
+								{/if}
+							</span>
+						</Button>
+					{/if}
+				</div>
 			</div>
 
-			<div class="flex items-center gap-2">
-				<Button on:click={addNewActivity} size="sm" class="mt-4">
+			<div class="mb-4 flex items-center gap-2">
+				<Button on:click={addNewActivity} size="sm">
 					<Plus class="mr-2 h-4 w-4" />
 					Add Activity
 				</Button>
@@ -355,7 +397,6 @@
 					on:click={downloadActivitiesJSON}
 					variant="outline"
 					size="sm"
-					class="mt-4"
 					disabled={localActivities.length === 0}
 				>
 					<Download class="h-4 w-4" />
@@ -364,7 +405,7 @@
 		</div>
 	{:else}
 		<div class="flex w-full justify-end gap-2">
-			<Button on:click={addNewActivity} size="sm" class="mt-4">
+			<Button on:click={addNewActivity} size="sm">
 				<Plus class="mr-2 h-4 w-4" />
 				Add Activity
 			</Button>
@@ -372,7 +413,6 @@
 				on:click={downloadActivitiesJSON}
 				variant="outline"
 				size="sm"
-				class="mt-4"
 				disabled={localActivities.length === 0}
 			>
 				<Download class="h-4 w-4" />
@@ -380,56 +420,114 @@
 		</div>
 	{/if}
 
-	<!-- Main Board -->
-	<div class="w-full">
-		<div class="rounded-lg bg-muted/30 p-6">
-			<div class="mb-6 flex items-center justify-between">
-				<h2 class="text-xl font-semibold">
-					Activities ({localActivities.length})
-				</h2>
-				{#if !isAuthenticated}
-					<div class="text-sm text-muted-foreground">
-						Sign in to save your work
+	<div class="min-h-screen space-y-6 bg-background">
+		<!-- Main Board -->
+		<div class="w-full">
+			<div class="rounded-xl bg-muted/30 p-3 md:p-6">
+				<div class="mb-6 flex items-center justify-between">
+					<h2 class="text-xl font-semibold">
+						Activities ({localActivities.length})
+					</h2>
+					{#if !isAuthenticated}
+						<div class="text-sm text-muted-foreground">
+							Sign in to save your work
+						</div>
+					{/if}
+				</div>
+
+				{#if localActivities.length === 0}
+					<div
+						class="flex flex-col items-center justify-center space-y-4 py-16 text-center"
+					>
+						<div class="rounded-full bg-muted p-4">
+							<Plus class="h-8 w-8 text-muted-foreground" />
+						</div>
+						<h3 class="text-lg font-semibold">No activities yet</h3>
+						<p class="max-w-sm text-muted-foreground">
+							Start organizing your extracurricular activities for your college
+							applications.
+						</p>
+						<Button on:click={addNewActivity}>
+							<Plus class="mr-2 h-4 w-4" />
+							Add Activity
+						</Button>
+					</div>
+				{:else}
+					<div bind:this={sortableContainer} class="sortable-container">
+						{#each localActivities as activity, index (activity.id)}
+							<ActivityCard
+								{activity}
+								position={index + 1}
+								on:delete={handleDeleteActivity}
+								on:update={handleUpdateActivity}
+							/>
+						{/each}
 					</div>
 				{/if}
 			</div>
-
-			{#if localActivities.length === 0}
-				<div
-					class="flex flex-col items-center justify-center space-y-4 py-16 text-center"
-				>
-					<div class="rounded-full bg-muted p-4">
-						<Plus class="h-8 w-8 text-muted-foreground" />
-					</div>
-					<h3 class="text-lg font-semibold">No activities yet</h3>
-					<p class="max-w-sm text-muted-foreground">
-						Start organizing your extracurricular activities for your college
-						applications.
-					</p>
-					<Button on:click={addNewActivity}>
-						<Plus class="mr-2 h-4 w-4" />
-						Add Activity
-					</Button>
-				</div>
-			{:else}
-				<div bind:this={sortableContainer} class="sortable-container">
-					{#each localActivities as activity, index (activity.id)}
-						<ActivityCard
-							{activity}
-							position={index + 1}
-							on:delete={handleDeleteActivity}
-							on:update={handleUpdateActivity}
-						/>
-					{/each}
-				</div>
-			{/if}
 		</div>
 	</div>
 </div>
 
 <style>
-	/* Loading spinner */
+	/* Status Section - Matching TopToolbar.svelte exactly */
+	.status-indicator {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 0.625rem;
+		border-radius: 9999px;
+		font-size: 0.875rem;
+		font-weight: 500;
+		transition: all 0.2s ease;
+	}
+
+	@media (min-width: 640px) {
+		.status-indicator {
+			padding: 0.5rem 0.75rem;
+		}
+	}
+
+	.status-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+	}
+
+	.status-text {
+		white-space: nowrap;
+	}
+
+	/* Status variants - Matching TopToolbar.svelte exactly */
+	.status-saved {
+		background: hsl(var(--color-success) / 0.1);
+		color: hsl(var(--color-success));
+		border: 1px solid hsl(var(--color-success) / 0.2);
+	}
+
+	.status-saving {
+		background: hsl(var(--color-info) / 0.1);
+		color: hsl(var(--color-info));
+		border: 1px solid hsl(var(--color-info) / 0.2);
+	}
+
+	.status-unsaved {
+		background: hsl(var(--color-warning) / 0.1);
+		color: hsl(var(--color-warning));
+		border: 1px solid hsl(var(--color-warning) / 0.2);
+	}
+
+	.status-error {
+		background: hsl(var(--color-error) / 0.1);
+		color: hsl(var(--color-error));
+		border: 1px solid hsl(var(--color-error) / 0.2);
+	}
+
+	/* Loading spinner - Matching TopToolbar.svelte exactly */
 	.loading-spinner {
+		width: 16px;
+		height: 16px;
 		border: 2px solid transparent;
 		border-top: 2px solid currentColor;
 		border-radius: 50%;

@@ -125,12 +125,13 @@ function createActivitiesChangeTracker() {
 
 export const activitiesChangeTracker = createActivitiesChangeTracker();
 
-// Helper function to get status display
+// Helper function to get status display - Matching essay document format exactly
 export function getChangeStatusDisplay(state: ChangeState) {
 	if (!state.isAuthenticated) {
 		return {
 			text: 'Sign in to save',
-			class: 'text-muted-foreground',
+			class: '', // No class for unauthenticated
+			icon: '',
 			showSaveButton: false,
 		};
 	}
@@ -141,31 +142,36 @@ export function getChangeStatusDisplay(state: ChangeState) {
 				text: state.lastSavedTime
 					? `Saved ${formatTime(state.lastSavedTime)}`
 					: 'All changes saved',
-				class: 'text-green-600',
+				class: 'saved', // This will be used for CSS class binding
+				icon: 'saved',
 				showSaveButton: false,
 			};
 		case 'unsaved':
 			return {
-				text: 'You have unsaved changes',
-				class: 'text-orange-600',
+				text: 'Unsaved changes',
+				class: 'unsaved',
+				icon: 'unsaved',
 				showSaveButton: true,
 			};
 		case 'saving':
 			return {
 				text: 'Saving...',
-				class: 'text-blue-600',
+				class: 'saving',
+				icon: 'saving',
 				showSaveButton: false,
 			};
 		case 'error':
 			return {
 				text: 'Save failed',
-				class: 'text-red-600',
+				class: 'error',
+				icon: 'error',
 				showSaveButton: true,
 			};
 		default:
 			return {
 				text: '',
 				class: '',
+				icon: '',
 				showSaveButton: false,
 			};
 	}
