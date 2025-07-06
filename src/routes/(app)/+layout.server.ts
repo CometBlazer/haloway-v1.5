@@ -21,8 +21,13 @@ export const load: LayoutServerLoad = async ({
 	// Check if profile is complete
 	const profileComplete = hasFullProfile(profile);
 
-	// If profile is incomplete and user is not on dashboard, redirect to dashboard
-	if (!profileComplete && url.pathname !== '/dashboard') {
+	// If profile is incomplete and user is not on dashboard, log-out, or settings/profile, redirect to dashboard
+	if (
+		!profileComplete &&
+		url.pathname !== '/dashboard' &&
+		url.pathname !== '/log-out' &&
+		url.pathname !== '/settings/profile'
+	) {
 		redirect(303, '/dashboard');
 	}
 

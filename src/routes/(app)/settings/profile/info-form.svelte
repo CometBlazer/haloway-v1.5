@@ -25,16 +25,12 @@
 
 	const { form: formData, enhance, submitting, tainted, message } = form;
 
-	const gradeOptions: Array<{
-		value: '9' | '10' | '11' | '12' | 'other';
-		label: string;
-	}> = [
-		{ value: '9', label: '9' },
-		{ value: '10', label: '10' },
-		{ value: '11', label: '11' },
-		{ value: '12', label: '12' },
-		{ value: 'other', label: 'Other' },
-	];
+	// Graduation year options (5 years before and 10 years in front of current year)
+	const currentYear = new Date().getFullYear();
+	const graduationYearOptions = Array.from({ length: 16 }, (_, i) => {
+		const year = currentYear - 5 + i;
+		return { value: year, label: year.toString() };
+	});
 
 	const referralOptions: Array<{
 		value: 'friend' | 'social_media' | 'search' | 'school' | 'ad' | 'other';
@@ -49,9 +45,8 @@
 	];
 
 	// Helper function to get label from value
-	function getGradeLabel(value: string): string {
-		const option = gradeOptions.find((opt) => opt.value === value);
-		return option ? option.label : 'Select your grade';
+	function getGraduationYearLabel(value: number): string {
+		return value ? value.toString() : 'Select your graduation year';
 	}
 
 	function getReferralLabel(value: string): string {
@@ -84,9 +79,9 @@
 				<Form.FieldErrors />
 			</Form.Field>
 
-			<Form.Field {form} name="grade">
+			<Form.Field {form} name="graduation_year">
 				<Form.Control let:attrs>
-					<Form.Label>Grade</Form.Label>
+					<Form.Label>Graduation Year</Form.Label>
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger asChild let:builder>
 							<Button
@@ -95,21 +90,27 @@
 								class="w-[200px] justify-between"
 								type="button"
 							>
-								{getGradeLabel($formData.grade)}
+								{getGraduationYearLabel($formData.graduation_year)}
 								<ChevronDown class="h-4 w-4 opacity-50" />
 							</Button>
 						</DropdownMenu.Trigger>
-						<DropdownMenu.Content class="w-[200px]">
-							{#each gradeOptions as option}
+						<DropdownMenu.Content
+							class="max-h-[200px] w-[200px] overflow-y-auto"
+						>
+							{#each graduationYearOptions as option}
 								<DropdownMenu.Item
-									on:click={() => ($formData.grade = option.value)}
+									on:click={() => ($formData.graduation_year = option.value)}
 								>
 									{option.label}
 								</DropdownMenu.Item>
 							{/each}
 						</DropdownMenu.Content>
 					</DropdownMenu.Root>
-					<input type="hidden" name={attrs.name} bind:value={$formData.grade} />
+					<input
+						type="hidden"
+						name={attrs.name}
+						bind:value={$formData.graduation_year}
+					/>
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>

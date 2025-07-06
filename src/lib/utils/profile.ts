@@ -9,7 +9,7 @@ export const hasFullProfile = (
 	if (!profile.full_name) {
 		return false;
 	}
-	if (!profile.grade) {
+	if (!profile.graduation_year) {
 		return false;
 	}
 	if (!profile.referral_source) {

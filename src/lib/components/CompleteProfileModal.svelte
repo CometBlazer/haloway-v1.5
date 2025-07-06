@@ -43,7 +43,7 @@
 
 	// Form values with defaults from existing profile
 	let fullName = profile?.full_name ?? '';
-	let grade = profile?.grade ?? '';
+	let graduationYear = profile?.graduation_year ?? new Date().getFullYear();
 	let dreamSchool = profile?.dream_school ?? '';
 	let referralSource = profile?.referral_source ?? '';
 
@@ -86,14 +86,12 @@
 		}, 300);
 	});
 
-	// Grade options
-	const gradeOptions = [
-		{ value: '9', label: '9th Grade' },
-		{ value: '10', label: '10th Grade' },
-		{ value: '11', label: '11th Grade' },
-		{ value: '12', label: '12th Grade' },
-		{ value: 'other', label: 'Other' },
-	];
+	// Graduation year options (5 years behind and 10 years in front of current year)
+	const currentYear = new Date().getFullYear();
+	const graduationYearOptions = Array.from({ length: 16 }, (_, i) => {
+		const year = currentYear - 5 + i;
+		return { value: year.toString(), label: year.toString() };
+	});
 
 	// Referral source options
 	const referralOptions = [
@@ -105,7 +103,9 @@
 		{ value: 'other', label: 'Other' },
 	];
 
-	$: selectedGrade = gradeOptions.find((option) => option.value === grade);
+	$: selectedGraduationYear = graduationYearOptions.find(
+		(option) => option.value === graduationYear.toString(),
+	);
 	$: selectedReferral = referralOptions.find(
 		(option) => option.value === referralSource,
 	);
@@ -143,6 +143,10 @@
 					<p class="text-lg text-muted-foreground">
 						Just a few more details before we get started!
 					</p>
+					<p class="text-sm text-muted-foreground">
+						We collect this data solely to understand how Haloway is being used.
+						You can always update your profile later.
+					</p>
 				</div>
 			</div>
 
@@ -175,11 +179,11 @@
 					{/if}
 				</div>
 
-				<!-- Grade Field -->
+				<!-- Graduation Year Field -->
 				<div class="space-y-2">
-					<Label for="grade" class="text-base font-medium">
+					<Label for="graduationYear" class="text-base font-medium">
 						<GraduationCap class="mr-2 inline h-4 w-4" />
-						Your Grade
+						Your Graduation Year
 						<span class="text-destructive">*</span>
 					</Label>
 					<DropdownMenu.Root>
@@ -188,28 +192,35 @@
 								builders={[builder]}
 								variant="outline"
 								role="combobox"
-								class="w-full justify-between {fieldError(form, 'grade')
+								class="w-full justify-between {fieldError(
+									form,
+									'graduationYear',
+								)
 									? 'border-destructive'
 									: ''}"
 							>
-								{selectedGrade?.label || 'Select your grade'}
+								{selectedGraduationYear?.label || 'Select your graduation year'}
 								<ChevronDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
 							</Button>
 						</DropdownMenu.Trigger>
-						<DropdownMenu.Content class="w-full">
-							{#each gradeOptions as option}
+						<DropdownMenu.Content class="max-h-[200px] w-full overflow-y-auto">
+							{#each graduationYearOptions as option}
 								<DropdownMenu.Item
-									on:click={() => (grade = option.value)}
-									class={grade === option.value ? 'bg-accent' : ''}
+									on:click={() => (graduationYear = parseInt(option.value))}
+									class={graduationYear.toString() === option.value
+										? 'bg-accent'
+										: ''}
 								>
 									{option.label}
 								</DropdownMenu.Item>
 							{/each}
 						</DropdownMenu.Content>
 					</DropdownMenu.Root>
-					<input type="hidden" name="grade" value={grade} />
-					{#if fieldError(form, 'grade')}
-						<p class="text-sm text-destructive">Please select your grade</p>
+					<input type="hidden" name="graduationYear" value={graduationYear} />
+					{#if fieldError(form, 'graduationYear')}
+						<p class="text-sm text-destructive">
+							Please select your graduation year
+						</p>
 					{/if}
 				</div>
 

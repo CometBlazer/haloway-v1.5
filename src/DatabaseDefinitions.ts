@@ -271,7 +271,7 @@ export interface Database {
 					updated_at: Date | null;
 					full_name: string | null;
 					avatar_url: string | null;
-					grade: string | null;
+					graduation_year: number | null;
 					dream_school: string | null;
 					referral_source: string | null;
 					unsubscribed: boolean;
@@ -281,7 +281,7 @@ export interface Database {
 					updated_at?: Date | null;
 					full_name?: string | null;
 					avatar_url?: string | null;
-					grade?: string | null;
+					graduation_year?: number | null;
 					dream_school?: string | null;
 					referral_source?: string | null;
 					unsubscribed: boolean;
@@ -291,7 +291,7 @@ export interface Database {
 					updated_at?: Date | null;
 					full_name?: string | null;
 					avatar_url?: string | null;
-					grade?: string | null;
+					graduation_year?: number | null;
 					dream_school?: string | null;
 					referral_source?: string | null;
 					unsubscribed?: boolean;

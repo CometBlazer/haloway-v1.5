@@ -16,9 +16,12 @@ export const infoFormSchema = z.object({
 		.trim()
 		.min(1, 'Name is required')
 		.max(50, 'Name must be 50 characters or less'),
-	grade: z.enum(['9', '10', '11', '12', 'other'], {
-		required_error: 'Please select your grade',
-	}),
+	graduation_year: z
+		.number({
+			required_error: 'Please select your graduation year',
+		})
+		.min(1950, 'Graduation year must be 1950 or later')
+		.max(2100, 'Graduation year must be 2100 or earlier'),
 	dream_school: z
 		.string()
 		.trim()

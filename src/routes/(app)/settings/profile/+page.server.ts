@@ -23,7 +23,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 	if (user) {
 		const { data, error } = await locals.supabase
 			.from('profiles')
-			.select('full_name, grade, dream_school, referral_source, unsubscribed')
+			.select(
+				'full_name, graduation_year, dream_school, referral_source, unsubscribed',
+			)
 			.eq('id', user.id)
 			.single();
 		if (error) {
@@ -41,7 +43,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 		infoForm: await superValidate(
 			{
 				full_name: info?.full_name || '',
-				grade: (info?.grade as '9' | '10' | '11' | '12' | 'other') || undefined,
+				graduation_year: info?.graduation_year || new Date().getFullYear(),
 				dream_school: info?.dream_school || '',
 				referral_source:
 					(info?.referral_source as
@@ -107,7 +109,7 @@ export const actions = {
 
 		const {
 			full_name,
-			grade,
+			graduation_year,
 			dream_school,
 			referral_source,
 			subscribed_to_emails,
@@ -116,7 +118,7 @@ export const actions = {
 		const { error } = await supabase.from('profiles').upsert({
 			id: user.id,
 			full_name,
-			grade,
+			graduation_year,
 			dream_school: dream_school || null,
 			referral_source,
 			unsubscribed: !subscribed_to_emails, // Convert subscribed_to_emails back to unsubscribed

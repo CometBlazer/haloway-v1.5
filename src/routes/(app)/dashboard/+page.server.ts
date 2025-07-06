@@ -170,7 +170,7 @@ export const actions = {
 
 		const formData = await request.formData();
 		const fullName = formData.get('fullName') as string;
-		const grade = formData.get('grade') as string;
+		const graduationYear = formData.get('graduationYear') as string;
 		const referralSource = formData.get('referralSource') as string;
 		const dreamSchool = formData.get('dreamSchool') as string;
 
@@ -180,8 +180,8 @@ export const actions = {
 		if (!fullName?.trim()) {
 			errorFields.push('fullName');
 		}
-		if (!grade?.trim()) {
-			errorFields.push('grade');
+		if (!graduationYear?.trim()) {
+			errorFields.push('graduationYear');
 		}
 		if (!referralSource?.trim()) {
 			errorFields.push('referralSource');
@@ -192,7 +192,7 @@ export const actions = {
 				errorMessage: 'Please fill in all required fields',
 				errorFields,
 				fullName,
-				grade,
+				graduationYear,
 				referralSource,
 				dreamSchool,
 			});
@@ -203,7 +203,7 @@ export const actions = {
 			.from('profiles')
 			.update({
 				full_name: fullName.trim(),
-				grade: grade.trim(),
+				graduation_year: parseInt(graduationYear.trim()),
 				referral_source: referralSource.trim(),
 				dream_school: dreamSchool?.trim() || null,
 				updated_at: new Date(),
@@ -215,7 +215,7 @@ export const actions = {
 			return fail(500, {
 				errorMessage: 'Failed to update profile. Please try again.',
 				fullName,
-				grade,
+				graduationYear,
 				referralSource,
 				dreamSchool,
 			});
