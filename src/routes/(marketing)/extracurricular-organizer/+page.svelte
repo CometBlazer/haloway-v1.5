@@ -101,10 +101,10 @@
 				/>
 			</div>
 		</div>
-		<h1 class="text-3xl font-bold tracking-tight md:text-4xl">
-			Free College Extracurricular Activities Organizer
+		<h1 class="text-4xl font-bold tracking-tight md:text-5xl">
+			College Extracurricular Activities Organizer
 		</h1>
-		<h2 class="mt-4 text-lg font-semibold text-foreground md:text-xl">
+		<h2 class="mt-4 text-xl font-semibold text-foreground md:text-2xl">
 			Modeled after the Common App Activities List
 		</h2>
 
