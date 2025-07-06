@@ -23,6 +23,7 @@
 		BookText,
 		Lock,
 		Check,
+		BookOpenCheck,
 		X,
 		ArrowRight,
 	} from 'lucide-svelte';
@@ -156,7 +157,7 @@
 			ctaLink: '/dashboard',
 		},
 		{
-			title: 'Save Your Work Efficiently',
+			title: 'Manage Your Drafts Efficiently',
 			description:
 				'Use checkpoints to track your progress and restore any previous version with a single click. Download your essays to save a local copy or upload them to Google Drive for backup.',
 			image:
@@ -580,7 +581,7 @@
 								<span
 									class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-color-accent to-color-warning shadow-lg"
 								>
-									<svg
+									<!-- <svg
 										class="h-8 w-8 text-white"
 										fill="none"
 										stroke="currentColor"
@@ -592,7 +593,8 @@
 											stroke-width="2"
 											d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
 										/>
-									</svg>
+									</svg> -->
+									<BookOpenCheck class="h-8 w-8 text-white" />
 								</span>
 							</div>
 							<div class="mt-6">

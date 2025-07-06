@@ -2,16 +2,16 @@
 	import '../../app.css';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
-	import Banner from '$lib/components/Banner.svelte';
-	import { WebsiteName } from '../../config';
+	// import Banner from '$lib/components/Banner.svelte';
+	// import { WebsiteName } from '../../config';
 
 	export let data;
 </script>
 
-<Banner
+<!-- <Banner
 	text="{WebsiteName} is free during our beta — stay tuned for pricing plans coming soon!"
 	showBullets={false}
-/>
+/> -->
 
 <div class="banner-offset flex min-h-screen flex-col">
 	<Navbar user={data.user} />
