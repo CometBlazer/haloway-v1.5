@@ -93,16 +93,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<link rel="icon" type="image/png" href="/favicon.png" />
 	<script type="application/ld+json">
-	{@html JSON.stringify({
-		'@context': 'https://schema.org',
-		'@type': 'Organization',
-		'name': 'Haloway',
-		'url': 'https://haloway.co',
-		'logo': 'https://haloway.co/favicon.png',
-		'description': 'Haloway is a college essay writing platform that helps students draft, organize, and finalize their essays with ease.',
-		'sameAs': [
-			'https://haloway.co'
-		]
-	})}
+		{
+			"@context": "https://schema.org",
+			"@type": "Organization",
+			"name": "Haloway",
+			"url": "https://haloway.co",
+			"logo": "https://haloway.co/favicon.png",
+			"description": "Haloway is a college essay writing platform that helps students draft, organize, and finalize their essays with ease.",
+			"sameAs": ["https://haloway.co"]
+		}
 	</script>
 </svelte:head>
