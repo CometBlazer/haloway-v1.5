@@ -310,7 +310,7 @@
 			>
 				<a
 					href="/extracurricular-organizer"
-					class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-sm font-semibold text-primary sm:px-3 sm:text-base"
+					class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-xs font-semibold text-primary sm:px-3 sm:text-base md:text-sm"
 				>
 					<div class="flex items-center gap-1"></div>
 					<svg
