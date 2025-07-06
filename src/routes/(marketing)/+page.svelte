@@ -330,7 +330,7 @@
 							d="M17 19h4"
 						/></svg
 					>
-					New! Try our Extracurricular Activities Organizer
+					New! Try Our Free Extracurriculars Organizer
 					<ArrowRight class="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
 				</a>
 

@@ -105,7 +105,7 @@
 			College Extracurricular Activities Organizer
 		</h1>
 		<h2 class="mt-4 text-xl font-semibold text-foreground md:text-2xl">
-			Modeled after the Common App Activities List
+			Modeled after the Common App Activities List, Completely free to use
 		</h2>
 
 		<hr class="mx-auto my-6 max-w-5xl border-2 border-t border-accent" />
