@@ -3,6 +3,7 @@ import { fail, type Actions, type ServerLoad } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { formSchema } from './schema';
+import { sendTemplatedEmail } from '$lib/mailer';
 
 export const load: ServerLoad = async () => {
 	return {
@@ -41,17 +42,35 @@ export const actions: Actions = {
 		});
 
 		// const send = transport.sendMail({
-		// 	from: `${name} ${PRIVATE_SMTP_USER}`,
-		// 	to: PRIVATE_NOTIFICATIONS_EMAIL,
-		// 	subject,
-		// 	text: `from: ${name} <${email}>\nsubject:${subject}\n\n${body}`,
+		//  from: `${name} ${PRIVATE_SMTP_USER}`,
+		//  to: PRIVATE_NOTIFICATIONS_EMAIL,
+		//  subject,
+		//  text: `from: ${name} <${email}>\nsubject:${subject}\n\n${body}`,
 		// });
+		// Send email notification
+		const emailPromise = sendTemplatedEmail({
+			subject: `New Contact Form Submission: ${subject}`,
+			to_emails: ['admin@yourdomain.com'], // Replace with your admin email
+			from_email: 'noreply@yourdomain.com', // Replace with your verified domain
+			template_name: 'contact_notification',
+			template_properties: {
+				name,
+				email,
+				subject,
+				message: body,
+				timestamp: new Date().toLocaleString(),
+			},
+		});
 
 		// let result: SMTPTransport.SentMessageInfo | null = null,
 		let error: PostgrestError | null = null;
 
 		try {
-			[/*result,*/ { error }] = await Promise.all([/*send, */ insert]);
+			const [insertResult, _emailResult] = await Promise.all([
+				insert,
+				emailPromise,
+			]);
+			error = insertResult.error;
 		} catch (e) {
 			console.warn("Couldn't send contact request email.", e);
 			if (!error) {
