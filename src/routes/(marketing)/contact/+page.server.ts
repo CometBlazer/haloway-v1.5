@@ -4,6 +4,10 @@ import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { formSchema } from './schema';
 import { sendTemplatedEmail } from '$lib/mailer';
+import {
+	PRIVATE_ADMIN_EMAIL,
+	PRIVATE_FROM_ADMIN_EMAIL,
+} from '$env/static/private';
 
 export const load: ServerLoad = async () => {
 	return {
@@ -50,8 +54,8 @@ export const actions: Actions = {
 		// Send email notification
 		const emailPromise = sendTemplatedEmail({
 			subject: `New Contact Form Submission: ${subject}`,
-			to_emails: ['admin@yourdomain.com'], // Replace with your admin email
-			from_email: 'noreply@yourdomain.com', // Replace with your verified domain
+			to_emails: [PRIVATE_ADMIN_EMAIL], // Replace with your admin email
+			from_email: PRIVATE_FROM_ADMIN_EMAIL, // Replace with your verified domain
 			template_name: 'contact_notification',
 			template_properties: {
 				name,
