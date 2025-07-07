@@ -85,4 +85,10 @@
 			Create an account
 		{/if}
 	</Form.Button>
+
+	<div class="text-center text-xs text-muted-foreground">
+		<a href="/forgot-password" class="text-primary hover:underline"
+			>Forgot your password?</a
+		>
+	</div>
 </form>
