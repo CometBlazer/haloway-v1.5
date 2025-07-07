@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { WebsiteName } from '../../../../config';
 
-	export const prerender = true;
+	// export const prerender = true;
 </script>
 
 <svelte:head>

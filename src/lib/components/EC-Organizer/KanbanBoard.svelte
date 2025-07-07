@@ -439,7 +439,7 @@
 			this.doc.setTextColor(150, 0, 0); // Dark red
 
 			const noticeText =
-				'PREVIEW ONLY: For the most accurate view of how Admissions Officers see your activities, please use the Common App Activities List.';
+				'PREVIEW ONLY: For the most accurate view of how admissions officers see your activities, please use the Common App Activities List.';
 			const lines = this.doc.splitTextToSize(
 				noticeText,
 				this.pageWidth - this.margin * 2,
@@ -689,8 +689,16 @@
 			const disclaimer =
 				'DISCLAIMER: This preview is for organizational purposes only and is not affiliated with or endorsed by The Common Application, Inc. Common App is a registered trademark of The Common Application, Inc. To submit your activities, please use the official Common Application platform.';
 
-			const lines = this.doc.splitTextToSize(
+			const promotionText =
+				'This preview was made with Haloway. Try the free extracurriculars activities organizer at \nhttps://haloway.co/extracurricular-organizer';
+
+			const disclaimerLines = this.doc.splitTextToSize(
 				disclaimer,
+				this.pageWidth - this.margin * 2,
+			);
+
+			const promoLines = this.doc.splitTextToSize(
+				promotionText,
 				this.pageWidth - this.margin * 2,
 			);
 
@@ -700,11 +708,21 @@
 				this.margin - 5,
 				disclaimerY - 5,
 				this.pageWidth - this.margin * 2 + 10,
-				lines.length * 3 + 10,
+				(disclaimerLines.length + promoLines.length) * 3 + 12,
 				'F',
 			);
 
-			this.doc.text(lines, this.margin, disclaimerY);
+			// Add disclaimer text
+			this.doc.text(disclaimerLines, this.margin, disclaimerY);
+
+			// Add promotion text with slightly bolder font
+			this.doc.setFont(undefined, 'bold');
+			this.doc.setTextColor(50, 50, 150); // Slightly blue color
+			this.doc.text(
+				promoLines,
+				this.margin,
+				disclaimerY + (disclaimerLines.length * 3 + 4),
+			);
 		}
 	}
 
