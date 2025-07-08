@@ -326,9 +326,16 @@ export const actions = {
 	},
 
 	createHalowayTutorial: async ({ locals }) => {
+		// console.log('🔧 createHalowayTutorial: Starting function');
+
 		const { session } = await locals.safeGetSession();
+		// console.log('🔧 createHalowayTutorial: Session check:', {
+		// 	hasSession: !!session,
+		// 	userId: session?.user?.id,
+		// });
 
 		if (!session?.user?.id) {
+			console.error('🔧 createHalowayTutorial: No session or user ID');
 			throw error(401, 'Unauthorized');
 		}
 
@@ -444,7 +451,14 @@ export const actions = {
 			],
 		};
 
+		// console.log(
+		// 	'🔧 createHalowayTutorial: Tutorial content prepared, length:',
+		// 	tutorialContent.content.length,
+		// );
+
 		try {
+			// console.log('🔧 createHalowayTutorial: Attempting to create document...');
+
 			// Create document with tutorial content
 			const { data: document, error: docError } = await locals.supabase
 				.from('documents')
@@ -461,31 +475,86 @@ export const actions = {
 				.select()
 				.single();
 
-			if (docError) throw docError;
+			if (docError) {
+				console.error(
+					'🔧 createHalowayTutorial: Document creation failed:',
+					docError,
+				);
+				throw docError;
+			}
+
+			// console.log('🔧 createHalowayTutorial: Document created successfully:', {
+			// 	documentId: document.id,
+			// 	title: document.title,
+			// });
 
 			// Create initial version with tutorial content
-			const { error: versionError } = await locals.supabase
+			// console.log('🔧 createHalowayTutorial: Creating document version...');
+
+			const { data: version, error: versionError } = await locals.supabase
 				.from('document_versions')
 				.insert({
 					document_id: document.id,
 					version_name: 'Version 1',
 					content: tutorialContent,
 					created_by: session.user.id,
-				});
+				})
+				.select()
+				.single();
 
-			if (versionError) throw versionError;
+			if (versionError) {
+				console.error(
+					'🔧 createHalowayTutorial: Version creation failed:',
+					versionError,
+				);
+				throw versionError;
+			}
+
+			// console.log('🔧 createHalowayTutorial: Version created successfully:', {
+			// 	versionId: version.id,
+			// });
+
+			// // Update document to set current_version_id
+			// console.log(
+			// 	'🔧 createHalowayTutorial: Updating document with current version...',
+			// );
+
+			const { error: updateError } = await locals.supabase
+				.from('documents')
+				.update({ current_version_id: version.id })
+				.eq('id', document.id);
+
+			if (updateError) {
+				console.error(
+					'🔧 createHalowayTutorial: Document update failed:',
+					updateError,
+				);
+				throw updateError;
+			}
+
+			// console.log(
+			// 	'🔧 createHalowayTutorial: Document updated with current version',
+			// );
+			// console.log('🔧 createHalowayTutorial: Function completed successfully');
 
 			return { success: true };
 		} catch (error) {
-			console.error('Error creating Haloway tutorial:', error);
+			console.error('🔧 createHalowayTutorial: Error occurred:', error);
 			return { success: false, error: 'Failed to create tutorial' };
 		}
 	},
 
 	createSamplePersonalStatement: async ({ locals }) => {
+		// console.log('📝 createSamplePersonalStatement: Starting function');
+
 		const { session } = await locals.safeGetSession();
+		// console.log('📝 createSamplePersonalStatement: Session check:', {
+		// 	hasSession: !!session,
+		// 	userId: session?.user?.id,
+		// });
 
 		if (!session?.user?.id) {
+			console.error('📝 createSamplePersonalStatement: No session or user ID');
 			throw error(401, 'Unauthorized');
 		}
 
@@ -576,7 +645,16 @@ export const actions = {
 			],
 		};
 
+		// console.log(
+		// 	'📝 createSamplePersonalStatement: Sample content prepared, paragraphs:',
+		// 	sampleContent.content.length,
+		// );
+
 		try {
+			// console.log(
+			// 	'📝 createSamplePersonalStatement: Attempting to create document...',
+			// );
+
 			// Create document
 			const { data: document, error: docError } = await locals.supabase
 				.from('documents')
@@ -593,23 +671,79 @@ export const actions = {
 				.select()
 				.single();
 
-			if (docError) throw docError;
+			if (docError) {
+				console.error(
+					'📝 createSamplePersonalStatement: Document creation failed:',
+					docError,
+				);
+				throw docError;
+			}
+
+			// console.log(
+			// 	'📝 createSamplePersonalStatement: Document created successfully:',
+			// 	{
+			// 		documentId: document.id,
+			// 		title: document.title,
+			// 	},
+			// );
 
 			// Create initial version with sample content
-			const { error: versionError } = await locals.supabase
+			// console.log(
+			// 	'📝 createSamplePersonalStatement: Creating document version...',
+			// );
+
+			const { data: version, error: versionError } = await locals.supabase
 				.from('document_versions')
 				.insert({
 					document_id: document.id,
 					content: sampleContent,
 					created_by: session.user.id,
 					version_name: 'Version 1',
-				});
+				})
+				.select()
+				.single();
 
-			if (versionError) throw versionError;
+			if (versionError) {
+				console.error(
+					'📝 createSamplePersonalStatement: Version creation failed:',
+					versionError,
+				);
+				throw versionError;
+			}
+
+			// console.log(
+			// 	'📝 createSamplePersonalStatement: Version created successfully:',
+			// 	{ versionId: version.id },
+			// );
+
+			// Update document to set current_version_id
+			// console.log(
+			// 	'📝 createSamplePersonalStatement: Updating document with current version...',
+			// );
+
+			const { error: updateError } = await locals.supabase
+				.from('documents')
+				.update({ current_version_id: version.id })
+				.eq('id', document.id);
+
+			if (updateError) {
+				console.error(
+					'📝 createSamplePersonalStatement: Document update failed:',
+					updateError,
+				);
+				throw updateError;
+			}
+
+			// console.log(
+			// 	'📝 createSamplePersonalStatement: Document updated with current version',
+			// );
+			// console.log(
+			// 	'📝 createSamplePersonalStatement: Function completed successfully',
+			// );
 
 			return { success: true };
 		} catch (error) {
-			console.error('Error creating sample personal statement:', error);
+			console.error('📝 createSamplePersonalStatement: Error occurred:', error);
 			return {
 				success: false,
 				error: 'Failed to create sample personal statement',
