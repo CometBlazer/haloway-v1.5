@@ -1,6 +1,6 @@
 import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { supabase } from '$lib/supabase';
+// import { supabase } from '$lib/supabase';
 import {
 	getSchoolDisplayNameStrict,
 	getSchoolUrlSafeNameStrict,
@@ -28,7 +28,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	}
 
 	// Get the document and verify ownership and school
-	const { data: document, error: documentError } = await supabase
+	const { data: document, error: documentError } = await locals.supabase
 		.from('documents')
 		.select('id, user_id, current_version_id, school')
 		.eq('id', documentId)
@@ -51,7 +51,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	// If there's no current version, redirect to create one
 	if (!document.current_version_id) {
 		// Create a new version for this document
-		const { data: version, error: versionError } = await supabase
+		const { data: version, error: versionError } = await locals.supabase
 			.from('document_versions')
 			.insert({
 				document_id: documentId,
@@ -68,7 +68,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		}
 
 		// Update the document with the new current version
-		const { error: updateError } = await supabase
+		const { error: updateError } = await locals.supabase
 			.from('documents')
 			.update({ current_version_id: version.id })
 			.eq('id', documentId);

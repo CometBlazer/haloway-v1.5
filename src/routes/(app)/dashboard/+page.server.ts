@@ -1,7 +1,8 @@
 // src/routes/(app)/dashboard/+page.server.ts
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { supabase } from '$lib/supabase';
+// ❌ Remove this import - we'll use locals.supabase instead
+// import { supabase } from '$lib/supabase';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	// Session is already validated by the layout, no need to check again
@@ -13,11 +14,12 @@ export const load: PageServerLoad = async ({ locals }) => {
 	}
 
 	try {
-		// First, get all documents for the user (same as working version)
-		const { data: documents, error: documentsError } = await supabase
+		// ✅ Use locals.supabase which has the user's auth context
+		// ✅ Remove .eq('user_id', session.user.id) - let RLS handle it
+		const { data: documents, error: documentsError } = await locals.supabase
 			.from('documents')
 			.select('*')
-			.eq('user_id', session.user.id)
+			.eq('user_id', session.user.id) // Backup to ensure we only get the user's documents
 			.order('updated_at', { ascending: false });
 
 		if (documentsError) {
@@ -25,13 +27,13 @@ export const load: PageServerLoad = async ({ locals }) => {
 			throw error(500, 'Failed to load documents');
 		}
 
-		// For each document, get its current version and total version count (same as working version)
+		// For each document, get its current version and total version count
 		const documentsWithVersionInfo = await Promise.all(
 			(documents || []).map(async (doc) => {
 				// Get current version if current_version_id exists
 				let currentVersion = null;
 				if (doc.current_version_id) {
-					const { data: versionData } = await supabase
+					const { data: versionData } = await locals.supabase
 						.from('document_versions')
 						.select('*')
 						.eq('id', doc.current_version_id)
@@ -40,7 +42,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 				}
 
 				// Get total version count for this document
-				const { count } = await supabase
+				const { count } = await locals.supabase
 					.from('document_versions')
 					.select('*', { count: 'exact', head: true })
 					.eq('document_id', doc.id);
@@ -69,7 +71,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 		const schoolUrlMappings = new Map<string, string>();
 
 		if (schoolNames.length > 0) {
-			const { data: schoolsData, error: schoolsError } = await supabase
+			// ✅ Use locals.supabase for schools table too
+			const { data: schoolsData, error: schoolsError } = await locals.supabase
 				.from('schools')
 				.select('name, url_safe_name')
 				.in('name', schoolNames);
@@ -112,7 +115,6 @@ export const load: PageServerLoad = async ({ locals }) => {
 	}
 };
 
-// ... rest of your actions remain the same
 export const actions = {
 	signout: async ({ locals: { supabase, safeGetSession } }) => {
 		const { session } = await safeGetSession();
@@ -121,6 +123,7 @@ export const actions = {
 			return { type: 'redirect', location: '/' };
 		}
 	},
+
 	deleteDocument: async ({ request, locals }) => {
 		const { session } = await locals.safeGetSession();
 		if (!session?.user?.id) {
@@ -134,8 +137,8 @@ export const actions = {
 			throw error(400, 'Document ID is required');
 		}
 
-		// Verify document ownership
-		const { data: document, error: docError } = await supabase
+		// ✅ Use locals.supabase and let RLS handle ownership verification
+		const { data: document, error: docError } = await locals.supabase
 			.from('documents')
 			.select('id, user_id')
 			.eq('id', documentId)
@@ -145,12 +148,15 @@ export const actions = {
 			throw error(404, 'Document not found');
 		}
 
+		// RLS will ensure user can only access their own documents
+		// But we can still do this check for explicit error messages
 		if (document.user_id !== session.user.id) {
 			throw error(403, "You don't have permission to delete this document");
 		}
 
+		// ✅ Use locals.supabase for delete
 		// Delete document (cascades to versions and tags due to foreign key constraints)
-		const { error: deleteError } = await supabase
+		const { error: deleteError } = await locals.supabase
 			.from('documents')
 			.delete()
 			.eq('id', documentId);
@@ -198,7 +204,7 @@ export const actions = {
 			});
 		}
 
-		// Update profile
+		// Update profile - using supabaseServiceRole is correct here for admin operations
 		const { error: updateError } = await locals.supabaseServiceRole
 			.from('profiles')
 			.update({
@@ -242,8 +248,8 @@ export const actions = {
 		}
 
 		try {
-			// Create document
-			const { data: document, error: documentError } = await supabase
+			// ✅ Use locals.supabase for document creation
+			const { data: document, error: documentError } = await locals.supabase
 				.from('documents')
 				.insert({
 					title: title?.trim() || `[${school.trim()} Essay]`,
@@ -261,8 +267,8 @@ export const actions = {
 				return fail(500, { error: { message: 'Failed to create document' } });
 			}
 
-			// Create initial version
-			const { data: version, error: versionError } = await supabase
+			// ✅ Use locals.supabase for version creation
+			const { data: version, error: versionError } = await locals.supabase
 				.from('document_versions')
 				.insert({
 					document_id: document.id,
@@ -283,8 +289,8 @@ export const actions = {
 				});
 			}
 
-			// Update document with current version
-			const { error: updateError } = await supabase
+			// ✅ Use locals.supabase for document update
+			const { error: updateError } = await locals.supabase
 				.from('documents')
 				.update({ current_version_id: version.id })
 				.eq('id', document.id);

@@ -1,6 +1,6 @@
 import { error, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { supabase } from '$lib/supabase';
+// import { supabase } from '$lib/supabase';
 import {
 	getSchoolDisplayNameStrict,
 	getSchoolUrlSafeNameStrict,
@@ -50,7 +50,7 @@ export const actions = {
 		}
 
 		// Create a new document with the specific school
-		const { data: document, error: documentError } = await supabase
+		const { data: document, error: documentError } = await locals.supabase
 			.from('documents')
 			.insert({
 				title: `[${schoolDisplayName} Essay]`,
@@ -66,7 +66,7 @@ export const actions = {
 		}
 
 		// Create initial version
-		const { data: version, error: versionError } = await supabase
+		const { data: version, error: versionError } = await locals.supabase
 			.from('document_versions')
 			.insert({
 				document_id: document.id,
@@ -83,7 +83,7 @@ export const actions = {
 		}
 
 		// Update document with current version ID
-		const { error: updateError } = await supabase
+		const { error: updateError } = await locals.supabase
 			.from('documents')
 			.update({ current_version_id: version.id })
 			.eq('id', document.id);

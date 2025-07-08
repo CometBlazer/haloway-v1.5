@@ -1,7 +1,7 @@
 // src/routes/(app)/essayfeedback/+page.server.ts
 import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { supabase } from '$lib/supabase';
+// import { supabase } from '$lib/supabase';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const { session } = await locals.safeGetSession();
@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	}
 
 	// Create a new uncategorized essay document
-	const { data: document, error: documentError } = await supabase
+	const { data: document, error: documentError } = await locals.supabase
 		.from('documents')
 		.insert({
 			title: 'New Essay with AI Feedback',
@@ -27,7 +27,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	}
 
 	// Create initial version
-	const { data: version, error: versionError } = await supabase
+	const { data: version, error: versionError } = await locals.supabase
 		.from('document_versions')
 		.insert({
 			document_id: document.id,
@@ -47,7 +47,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	}
 
 	// Update the document with the new current version
-	const { error: updateError } = await supabase
+	const { error: updateError } = await locals.supabase
 		.from('documents')
 		.update({ current_version_id: version.id })
 		.eq('id', document.id);

@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { supabase } from '$lib/supabase';
+// import { supabase } from '$lib/supabase';
 import {
 	getSchoolDisplayNameStrict,
 	getSchoolUrlSafeNameStrict,
@@ -51,7 +51,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	try {
 		// Get all documents for the user with the specific school (case-insensitive)
-		const { data: documents, error: documentsError } = await supabase
+		const { data: documents, error: documentsError } = await locals.supabase
 			.from('documents')
 			.select('*')
 			.eq('user_id', session.user.id)
@@ -69,7 +69,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				// Get current version if current_version_id exists
 				let currentVersion = null;
 				if (doc.current_version_id) {
-					const { data: versionData } = await supabase
+					const { data: versionData } = await locals.supabase
 						.from('document_versions')
 						.select('*')
 						.eq('id', doc.current_version_id)
@@ -78,7 +78,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 				}
 
 				// Get total version count for this document
-				const { count } = await supabase
+				const { count } = await locals.supabase
 					.from('document_versions')
 					.select('*', { count: 'exact', head: true })
 					.eq('document_id', doc.id);
@@ -118,7 +118,7 @@ export const actions = {
 		}
 
 		// Verify document ownership
-		const { data: document, error: docError } = await supabase
+		const { data: document, error: docError } = await locals.supabase
 			.from('documents')
 			.select('id, user_id')
 			.eq('id', documentId)
@@ -133,7 +133,7 @@ export const actions = {
 		}
 
 		// Delete document (cascades to versions and tags due to foreign key constraints)
-		const { error: deleteError } = await supabase
+		const { error: deleteError } = await locals.supabase
 			.from('documents')
 			.delete()
 			.eq('id', documentId);

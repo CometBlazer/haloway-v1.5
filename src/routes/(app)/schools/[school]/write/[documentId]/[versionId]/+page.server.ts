@@ -1,7 +1,7 @@
 // src/routes/(app)/schools/[school]/write/[documentId]/[versionId]/+page.server.ts
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
-import { supabase } from '$lib/supabase';
+// import { supabase } from '$lib/supabase';
 import dayjs from 'dayjs';
 import type {
 	Database,
@@ -52,7 +52,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	}
 
 	// Get document and its tags
-	const { data: document, error: documentError } = (await supabase
+	// ✅ Use locals.supabase instead of imported supabase
+	const { data: document, error: documentError } = (await locals.supabase
 		.from('documents')
 		.select(
 			`
@@ -111,7 +112,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	}
 
 	// Get all versions of the document, sorted by updated_at desc (most recent first)
-	const { data: versions, error: versionsError } = await supabase
+	// ✅ Use locals.supabase instead of imported supabase
+	const { data: versions, error: versionsError } = await locals.supabase
 		.from('document_versions')
 		.select('*')
 		.eq('document_id', documentId)
@@ -133,7 +135,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 
 	// Update document's current_version_id if it's different
 	if (document.current_version_id !== currentVersion.id) {
-		const { error: updateError } = await supabase
+		const { error: updateError } = await locals.supabase
 			.from('documents')
 			.update({ current_version_id: currentVersion.id })
 			.eq('id', documentId);
@@ -231,7 +233,7 @@ export const actions: Actions = {
 		const documentId = params.documentId;
 
 		// Verify document ownership first
-		const { data: existingDoc, error: docError } = await supabase
+		const { data: existingDoc, error: docError } = await locals.supabase
 			.from('documents')
 			.select('user_id, school')
 			.eq('id', documentId)
@@ -288,7 +290,7 @@ export const actions: Actions = {
 			}
 		}
 
-		const { error: updateError } = await supabase
+		const { error: updateError } = await locals.supabase
 			.from('documents')
 			.update(updateData)
 			.eq('id', documentId)
@@ -329,7 +331,7 @@ export const actions: Actions = {
 
 			// First, check if version exists and get document info
 			console.log('Checking version existence...');
-			const { data: versionData, error: versionError } = await supabase
+			const { data: versionData, error: versionError } = await locals.supabase
 				.from('document_versions')
 				.select('id, document_id')
 				.eq('id', versionId)
@@ -348,7 +350,7 @@ export const actions: Actions = {
 				throw error(400, 'Invalid document ID');
 			}
 
-			const { data: documentData, error: documentError } = await supabase
+			const { data: documentData, error: documentError } = await locals.supabase
 				.from('documents')
 				.select('id, user_id')
 				.eq('id', versionData.document_id)
@@ -371,7 +373,7 @@ export const actions: Actions = {
 
 			// Save feedback to the version
 			console.log('Saving feedback...');
-			const { error: updateError } = await supabase
+			const { error: updateError } = await locals.supabase
 				.from('document_versions')
 				.update({
 					latest_ai_response: feedback,
@@ -423,7 +425,7 @@ export const actions: Actions = {
 		const documentId = params.documentId;
 
 		// Verify document ownership
-		const { data: existingDoc, error: docError } = await supabase
+		const { data: existingDoc, error: docError } = await locals.supabase
 			.from('documents')
 			.select('user_id, current_version_id')
 			.eq('id', documentId)
@@ -444,7 +446,7 @@ export const actions: Actions = {
 		} as Database['public']['Tables']['document_versions']['Insert']['content']; // Default empty content
 
 		if (existingDoc?.current_version_id) {
-			const { data: currentVersion } = await supabase
+			const { data: currentVersion } = await locals.supabase
 				.from('document_versions')
 				.select('content')
 				.eq('id', existingDoc.current_version_id)
@@ -465,7 +467,7 @@ export const actions: Actions = {
 				updated_at: new Date(),
 			};
 
-		const { data: version, error: versionError } = await supabase
+		const { data: version, error: versionError } = await locals.supabase
 			.from('document_versions')
 			.insert(versionData)
 			.select()
@@ -476,7 +478,7 @@ export const actions: Actions = {
 		}
 
 		// Update document's current_version_id to the new version
-		const { error: updateDocError } = await supabase
+		const { error: updateDocError } = await locals.supabase
 			.from('documents')
 			.update({ current_version_id: version.id })
 			.eq('id', documentId);
@@ -530,7 +532,7 @@ export const actions: Actions = {
 
 			// First, check if version exists and get document info
 			console.log('Checking version existence...');
-			const { data: versionData, error: versionError } = await supabase
+			const { data: versionData, error: versionError } = await locals.supabase
 				.from('document_versions')
 				.select('id, document_id')
 				.eq('id', versionId)
@@ -549,7 +551,7 @@ export const actions: Actions = {
 				throw error(400, 'Invalid document ID');
 			}
 
-			const { data: documentData, error: documentError } = await supabase
+			const { data: documentData, error: documentError } = await locals.supabase
 				.from('documents')
 				.select('id, user_id, school')
 				.eq('id', versionData.document_id)
@@ -569,7 +571,7 @@ export const actions: Actions = {
 
 			// Update the version with new updated_at timestamp
 			console.log('Updating version content...');
-			const { error: updateError } = await supabase
+			const { error: updateError } = await locals.supabase
 				.from('document_versions')
 				.update({
 					content: contentJson,
@@ -583,7 +585,7 @@ export const actions: Actions = {
 			}
 
 			// Update document's current_version_id to ensure it's set
-			const { error: updateDocError } = await supabase
+			const { error: updateDocError } = await locals.supabase
 				.from('documents')
 				.update({ current_version_id: versionId })
 				.eq('id', versionData.document_id);
@@ -641,7 +643,7 @@ export const actions: Actions = {
 			}
 
 			// First, check if version exists and get document info
-			const { data: versionData, error: versionError } = await supabase
+			const { data: versionData, error: versionError } = await locals.supabase
 				.from('document_versions')
 				.select('id, document_id')
 				.eq('id', versionId)
@@ -657,7 +659,7 @@ export const actions: Actions = {
 				throw error(400, 'Invalid document ID');
 			}
 
-			const { data: documentData, error: documentError } = await supabase
+			const { data: documentData, error: documentError } = await locals.supabase
 				.from('documents')
 				.select('id, user_id, school')
 				.eq('id', versionData.document_id)
@@ -674,7 +676,7 @@ export const actions: Actions = {
 			}
 
 			// Update the version name
-			const { error: updateError } = await supabase
+			const { error: updateError } = await locals.supabase
 				.from('document_versions')
 				.update({ version_name: name })
 				.eq('id', versionId);
@@ -719,7 +721,7 @@ export const actions: Actions = {
 			);
 
 			// Get source version and verify ownership
-			const { data: sourceVersion, error: sourceError } = await supabase
+			const { data: sourceVersion, error: sourceError } = await locals.supabase
 				.from('document_versions')
 				.select('*')
 				.eq('id', sourceVersionId)
@@ -731,7 +733,7 @@ export const actions: Actions = {
 			}
 
 			// Check if user owns the document
-			const { data: documentData, error: documentError } = await supabase
+			const { data: documentData, error: documentError } = await locals.supabase
 				.from('documents')
 				.select('id, user_id, school')
 				.eq('id', documentId)
@@ -748,7 +750,7 @@ export const actions: Actions = {
 			}
 
 			// Create new version with current timestamp
-			const { data: newVersion, error: createError } = await supabase
+			const { data: newVersion, error: createError } = await locals.supabase
 				.from('document_versions')
 				.insert({
 					document_id: documentId,
@@ -766,7 +768,7 @@ export const actions: Actions = {
 			}
 
 			// Update document's current_version_id to the new version
-			const { error: updateDocError } = await supabase
+			const { error: updateDocError } = await locals.supabase
 				.from('documents')
 				.update({ current_version_id: newVersion.id })
 				.eq('id', documentId);
@@ -807,7 +809,7 @@ export const actions: Actions = {
 			console.log('Deleting version:', versionId);
 
 			// First, check if version exists and get document info
-			const { data: versionData, error: versionError } = await supabase
+			const { data: versionData, error: versionError } = await locals.supabase
 				.from('document_versions')
 				.select('id, document_id')
 				.eq('id', versionId)
@@ -823,7 +825,7 @@ export const actions: Actions = {
 				throw error(400, 'Invalid document ID');
 			}
 
-			const { data: documentData, error: documentError } = await supabase
+			const { data: documentData, error: documentError } = await locals.supabase
 				.from('documents')
 				.select('id, user_id, current_version_id, school')
 				.eq('id', versionData.document_id)
@@ -849,7 +851,7 @@ export const actions: Actions = {
 			}
 
 			// Delete the version
-			const { error: deleteError } = await supabase
+			const { error: deleteError } = await locals.supabase
 				.from('document_versions')
 				.delete()
 				.eq('id', versionId);
@@ -887,7 +889,7 @@ export const actions: Actions = {
 		const documentId = params.documentId;
 
 		// Verify document ownership
-		const { data: document, error: docError } = await supabase
+		const { data: document, error: docError } = await locals.supabase
 			.from('documents')
 			.select('user_id, school')
 			.eq('id', documentId)
@@ -902,7 +904,7 @@ export const actions: Actions = {
 		}
 
 		// Create tag
-		const { data: tag, error: tagError } = await supabase
+		const { data: tag, error: tagError } = await locals.supabase
 			.from('tags')
 			.insert({
 				type: 'custom',
@@ -918,12 +920,14 @@ export const actions: Actions = {
 		}
 
 		// Add tag to document
-		const { error: linkError } = await supabase.from('document_tags').insert({
-			document_id: documentId,
-			tag_id: tag.id,
-			created_at: null,
-			updated_at: null,
-		});
+		const { error: linkError } = await locals.supabase
+			.from('document_tags')
+			.insert({
+				document_id: documentId,
+				tag_id: tag.id,
+				created_at: null,
+				updated_at: null,
+			});
 
 		if (linkError) {
 			throw error(500, 'Failed to link tag to document');
@@ -943,7 +947,7 @@ export const actions: Actions = {
 		const documentId = params.documentId;
 
 		// Verify document ownership
-		const { data: document, error: docError } = await supabase
+		const { data: document, error: docError } = await locals.supabase
 			.from('documents')
 			.select('user_id, school')
 			.eq('id', documentId)
@@ -958,7 +962,7 @@ export const actions: Actions = {
 		}
 
 		// Remove tag from document
-		const { error: unlinkError } = await supabase
+		const { error: unlinkError } = await locals.supabase
 			.from('document_tags')
 			.delete()
 			.eq('document_id', documentId)
@@ -983,7 +987,7 @@ export const actions: Actions = {
 			const documentId = params.documentId;
 
 			// First, check if version exists and get document info
-			const { data: versionData, error: versionError } = await supabase
+			const { data: versionData, error: versionError } = await locals.supabase
 				.from('document_versions')
 				.select('id, document_id')
 				.eq('id', versionId)
@@ -999,7 +1003,7 @@ export const actions: Actions = {
 				throw error(400, 'Invalid document ID');
 			}
 
-			const { data: documentData, error: documentError } = await supabase
+			const { data: documentData, error: documentError } = await locals.supabase
 				.from('documents')
 				.select('id, user_id, school')
 				.eq('id', versionData.document_id)
@@ -1020,7 +1024,7 @@ export const actions: Actions = {
 			};
 
 			// Update the document's current_version_id
-			const { error: updateError } = await supabase
+			const { error: updateError } = await locals.supabase
 				.from('documents')
 				.update(updateData)
 				.eq('id', documentId);
