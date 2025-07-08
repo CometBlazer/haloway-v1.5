@@ -27,19 +27,17 @@
 		confirm that you meet this requirement.
 	</p>
 	<h2>2. Definitions</h2>
-	<ul>
-		<li>
-			<strong>“Haloway”</strong> refers to our website, platform, and any services
-			we offer.
-		</li>
-		<li>
-			<strong>“User”</strong> refers to anyone who accesses or uses Haloway.
-		</li>
-		<li>
-			<strong>“Content”</strong> means any text, essays, drafts, or other data submitted,
-			uploaded, or generated on the platform.
-		</li>
-	</ul>
+	<p>
+		<strong>“Haloway”</strong> refers to our website, platform, and any services
+		we offer.
+	</p>
+	<p>
+		<strong>“User”</strong> refers to anyone who accesses or uses Haloway.
+	</p>
+	<p>
+		<strong>“Content”</strong> means any text, essays, drafts, or other data submitted,
+		uploaded, or generated on the platform.
+	</p>
 	<h2>3. Changes to Terms</h2>
 	<p>
 		We may update these Terms at any time, with or without notice. Continued use

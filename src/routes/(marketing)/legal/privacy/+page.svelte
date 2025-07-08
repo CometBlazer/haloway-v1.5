@@ -19,23 +19,21 @@
 	</p>
 	<hr />
 	<h2>1. Information We May Collect</h2>
-	<ul>
-		<li>
-			<strong>Account Information:</strong> Name, year graduating, dream school,
-			referral source.
-		</li>
-		<li>
-			<strong>User Content:</strong> Essays, common app activities, drafts, and tags
-			you create or save.
-		</li>
-		<li>
-			<strong>Usage Data:</strong> Metadata such as timestamps, version history,
-			and interaction patterns.
-		</li>
-		<li>
-			<strong>Analytics:</strong> Usage statistics collected via Cloudflare Analytics.
-		</li>
-	</ul>
+	<p>
+		<strong>Account Information:</strong> Name, year graduating, dream school, referral
+		source.
+	</p>
+	<p>
+		<strong>User Content:</strong> Essays, common app activities, drafts, and tags
+		you create or save.
+	</p>
+	<p>
+		<strong>Usage Data:</strong> Metadata such as timestamps, version history, and
+		interaction patterns.
+	</p>
+	<p>
+		<strong>Analytics:</strong> Usage statistics collected via Cloudflare Analytics.
+	</p>
 	<h2>2. How We Use Your Information</h2>
 	<p>
 		We use your information to provide, maintain, and improve Haloway,
