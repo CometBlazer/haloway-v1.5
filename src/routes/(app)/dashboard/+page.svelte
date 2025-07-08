@@ -32,8 +32,43 @@
 	// Handle profile completion
 	function handleProfileCompleted() {
 		showProfileModal = false;
+		// Create tutorial documents
+		createTutorialDocuments();
 		// Refresh the page to update the profile data
 		goto('/dashboard', { replaceState: true, noScroll: true });
+	}
+
+	// Create tutorial documents after onboarding completion
+	async function createTutorialDocuments(): Promise<void> {
+		try {
+			await createHalowayTutorial();
+			await createSamplePersonalStatement();
+		} catch (error) {
+			console.error('Error creating tutorial documents:', error);
+			// Don't show error to user as this is not critical
+		}
+	}
+
+	// Create Haloway Tutorial document
+	async function createHalowayTutorial(): Promise<void> {
+		const form = document.createElement('form');
+		form.method = 'POST';
+		form.action = '?/createHalowayTutorial';
+
+		document.body.appendChild(form);
+		form.submit();
+		document.body.removeChild(form);
+	}
+
+	// Create Sample Personal Statement document
+	async function createSamplePersonalStatement(): Promise<void> {
+		const form = document.createElement('form');
+		form.method = 'POST';
+		form.action = '?/createSamplePersonalStatement';
+
+		document.body.appendChild(form);
+		form.submit();
+		document.body.removeChild(form);
 	}
 
 	// Watch for successful form submission
