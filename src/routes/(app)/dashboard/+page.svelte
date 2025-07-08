@@ -229,7 +229,10 @@
 							>{WebsiteBaseUrl}</a
 						>
 						with your friends</strong
-					> and help us grow!
+					>
+					and help us grow!
+					<br /> <br />
+					To create a new essay, click the "Create Essay" button in the left sidebar.
 				</p>
 			</Alert.Description>
 		</Alert.Root>
