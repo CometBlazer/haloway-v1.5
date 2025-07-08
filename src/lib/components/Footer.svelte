@@ -49,7 +49,7 @@
 				<ul class="space-y-2">
 					<li>
 						<Button
-							href="/blog"
+							href="/"
 							variant="link"
 							class="h-auto p-0 text-sm text-muted-foreground hover:text-foreground"
 						>
@@ -58,7 +58,7 @@
 					</li>
 					<li>
 						<Button
-							href="/contact_us"
+							href="/contact"
 							variant="link"
 							class="h-auto p-0 text-sm text-muted-foreground hover:text-foreground"
 						>
