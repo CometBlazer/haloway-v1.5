@@ -223,8 +223,8 @@
 		<Alert.Root class="info-banner">
 			<Alert.Description class="text-center">
 				<p class="banner-text">
-					We're working on sorting, searching, due date notifications, AI
-					feedback, and more. Love what you see? <strong
+					We're working on improving the user experience for searching, email
+					notifications, and more. Love what you see? <strong
 						>Share <a href={WebsiteBaseUrl} class="banner-link" target="_blank"
 							>{WebsiteBaseUrl}</a
 						>
@@ -333,7 +333,8 @@
 <style>
 	/* Dashboard Container */
 	.dashboard-container {
-		max-width: 1680px;
+		max-width: none;
+		width: 100%;
 		margin: 0 auto;
 		padding: 2rem;
 		display: flex;
