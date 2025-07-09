@@ -32,75 +32,9 @@
 	// Handle profile completion
 	function handleProfileCompleted() {
 		showProfileModal = false;
-		// Create tutorial documents
-		createTutorialDocuments();
-		// Refresh the page to update the profile data
-		goto('/dashboard', { replaceState: true, noScroll: true });
+		// Refresh the page to show the newly created tutorial documents
+		window.location.reload();
 	}
-
-	// Create tutorial documents after onboarding completion
-	async function createTutorialDocuments(): Promise<void> {
-		// console.log('🎯 createTutorialDocuments: Starting...');
-		try {
-			// console.log('🎯 createTutorialDocuments: Creating Haloway tutorial...');
-			await createHalowayTutorial();
-			// console.log(
-			// 	'🎯 createTutorialDocuments: Creating sample personal statement...',
-			// );
-			await createSamplePersonalStatement();
-			console.log(
-				'🎯 createTutorialDocuments: Both documents created successfully',
-			);
-		} catch (error) {
-			console.error(
-				'🎯 createTutorialDocuments: Error creating tutorial documents:',
-				error,
-			);
-			// Don't show error to user as this is not critical
-		}
-	}
-
-	// Create Haloway Tutorial document
-	async function createHalowayTutorial(): Promise<void> {
-		// console.log('🔧 Client createHalowayTutorial: Starting...');
-		const form = document.createElement('form');
-		form.method = 'POST';
-		form.action = '?/createHalowayTutorial';
-
-		// console.log('🔧 Client createHalowayTutorial: Submitting form...');
-		document.body.appendChild(form);
-		form.submit();
-		document.body.removeChild(form);
-		// console.log('🔧 Client createHalowayTutorial: Form submitted');
-	}
-
-	// Create Sample Personal Statement document
-	async function createSamplePersonalStatement(): Promise<void> {
-		// console.log('📝 Client createSamplePersonalStatement: Starting...');
-		const form = document.createElement('form');
-		form.method = 'POST';
-		form.action = '?/createSamplePersonalStatement';
-
-		// console.log('📝 Client createSamplePersonalStatement: Submitting form...');
-		document.body.appendChild(form);
-		form.submit();
-		document.body.removeChild(form);
-		// console.log('📝 Client createSamplePersonalStatement: Form submitted');
-	}
-
-	// Debug function to test tutorial creation
-	// async function debugCreateTutorials(): Promise<void> {
-	// 	// console.log('🐛 debugCreateTutorials: Starting debug...');
-	// 	const form = document.createElement('form');
-	// 	form.method = 'POST';
-	// 	form.action = '?/debugCreateTutorials';
-
-	// 	// console.log('🐛 debugCreateTutorials: Submitting debug form...');
-	// 	document.body.appendChild(form);
-	// 	form.submit();
-	// 	document.body.removeChild(form);
-	// 	// console.log('🐛 debugCreateTutorials: Debug form submitted');
-	// }
 
 	// Watch for successful form submission
 	$: if (form?.success && showProfileModal) {

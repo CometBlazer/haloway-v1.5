@@ -58,7 +58,7 @@
 			await update({ reset: false });
 			loading = false;
 			if (result.type === 'success') {
-				// Profile completed successfully
+				// Profile completed successfully - tutorial documents are being created server-side
 				dispatch('completed');
 			}
 		};
