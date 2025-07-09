@@ -1,3 +1,4 @@
+<!-- src/routes/(marketing)/(auth)/register/+page.svelte -->
 <script lang="ts">
 	import * as Alert from '$lib/components/ui/alert';
 	import * as Card from '$lib/components/ui/card';

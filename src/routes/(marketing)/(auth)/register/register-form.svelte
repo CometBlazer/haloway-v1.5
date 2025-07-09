@@ -1,3 +1,4 @@
+<!-- src/routes/(marketing)/(auth)/register/register-form.svelte -->
 <script lang="ts">
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
