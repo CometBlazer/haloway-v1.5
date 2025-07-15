@@ -77,7 +77,7 @@
 
 <svelte:head>
 	<title
-		>Free College Extracurricular Activities Organizer | {WebsiteName}</title
+		>Easy Drag and Drop Extracurricular Activities Organizer | {WebsiteName}</title
 	>
 	<meta
 		name="description"
@@ -102,10 +102,10 @@
 			</div>
 		</div>
 		<h1 class="text-4xl font-bold tracking-tight md:text-5xl">
-			College Extracurricular Activities Organizer
+			Free Extracurricular Activities Organizer
 		</h1>
 		<h2 class="mt-4 text-xl font-semibold text-foreground md:text-2xl">
-			Modeled after the Common App Activities List, Completely free to use
+			Modeled after the Common App Activities List
 		</h2>
 
 		<hr class="mx-auto my-6 max-w-5xl border-2 border-t border-accent" />

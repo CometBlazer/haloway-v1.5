@@ -1,9 +1,10 @@
 // src/routes/(app)/essayfeedback/+page.server.ts
-import { error, redirect } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 // import { supabase } from '$lib/supabase';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load: PageServerLoad = async () => {
+	/*
 	const { session } = await locals.safeGetSession();
 
 	if (!session?.user?.id) {
@@ -61,4 +62,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 		303,
 		`/schools/uncategorized/write/${document.id}/${version.id}#feedback`,
 	);
+
+	*/
+	// Redirect to the external URL
+	throw redirect(303, 'https://dan.haloway.co');
 };
