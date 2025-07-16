@@ -1,4 +1,3 @@
-import type { PostgrestError } from '@supabase/supabase-js';
 import { fail, type Actions, type ServerLoad } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -27,15 +26,13 @@ export const actions: Actions = {
 
 		const { name, email, subject, body } = form.data;
 
-		// const transport = createTransport({
-		// 	host: PRIVATE_SMTP_HOST,
-		// 	port: Number(PRIVATE_SMTP_PORT),
-		// 	secure: true,
-		// 	auth: {
-		// 		user: PRIVATE_SMTP_USER,
-		// 		pass: PRIVATE_SMTP_PASSWORD,
-		// 	},
-		// });
+		console.log('=== CONTACT FORM DEBUG START ===');
+		console.log('Environment check:', {
+			hasResendKey: !!process.env.PRIVATE_RESEND_API_KEY,
+			resendKeyPrefix: process.env.PRIVATE_RESEND_API_KEY?.substring(0, 5),
+			adminEmail: PRIVATE_ADMIN_EMAIL,
+			fromEmail: PRIVATE_FROM_ADMIN_EMAIL,
+		});
 
 		const insert = supabaseServiceRole.from('contact_messages').insert({
 			name,
@@ -45,17 +42,10 @@ export const actions: Actions = {
 			updated_at: new Date(),
 		});
 
-		// const send = transport.sendMail({
-		//  from: `${name} ${PRIVATE_SMTP_USER}`,
-		//  to: PRIVATE_NOTIFICATIONS_EMAIL,
-		//  subject,
-		//  text: `from: ${name} <${email}>\nsubject:${subject}\n\n${body}`,
-		// });
-		// Send email notification
 		const emailPromise = sendTemplatedEmail({
 			subject: `New Contact Form Submission: ${subject}`,
-			to_emails: [PRIVATE_ADMIN_EMAIL], // Replace with your admin email
-			from_email: PRIVATE_FROM_ADMIN_EMAIL, // Replace with your verified domain
+			to_emails: [PRIVATE_ADMIN_EMAIL],
+			from_email: PRIVATE_FROM_ADMIN_EMAIL,
 			template_name: 'contact_notification',
 			template_properties: {
 				name,
@@ -66,48 +56,58 @@ export const actions: Actions = {
 			},
 		});
 
-		// let result: SMTPTransport.SentMessageInfo | null = null,
-		let error: PostgrestError | null = null;
-
 		try {
-			const [insertResult, _emailResult] = await Promise.all([
+			console.log('About to execute database insert and email send...');
+
+			const [insertResult, emailResult] = await Promise.all([
 				insert,
 				emailPromise,
 			]);
-			error = insertResult.error;
-		} catch (e) {
-			console.warn("Couldn't send contact request email.", e);
-			if (!error) {
-				console.info(
-					`Contact message from ${name} <${email}> with subject "${subject}" and body "${body}" was saved to your databases \`contact_messages\` table.`,
-				);
+
+			console.log(
+				'Database insert result:',
+				insertResult.error ? 'FAILED' : 'SUCCESS',
+			);
+			console.log('Email send result:', emailResult);
+
+			if (insertResult.error) {
+				console.error('Database insert failed:', insertResult.error);
+				return fail(500, {
+					form,
+				});
 			}
+
+			console.log('Email sent successfully:', emailResult);
+			console.log('=== CONTACT FORM DEBUG END ===');
+
+			return message(form, {
+				success: 'Thank you for your message. We will get back to you soon.',
+			});
+		} catch (error) {
+			console.error('DETAILED ERROR:', error);
+			console.error('Error type:', typeof error);
+
+			// Type-safe error handling
+			if (error instanceof Error) {
+				console.error('Error message:', error.message);
+				console.error('Error stack:', error.stack);
+			}
+
+			// Try to save to database even if email fails
+			try {
+				const insertResult = await insert;
+				if (insertResult.error) {
+					console.error('Database fallback also failed:', insertResult.error);
+				} else {
+					console.log('Database insert succeeded despite email failure');
+				}
+			} catch (dbError) {
+				console.error('Database fallback error:', dbError);
+			}
+
+			return fail(500, {
+				form,
+			});
 		}
-
-		if (error) {
-			console.error(
-				'Error inserting contact request message into the database: ',
-				error,
-			);
-			console.error(
-				`Contact message from ${name} <${email}> with subject "${subject}" and body "${body}" was not saved.`,
-			);
-		}
-
-		// if (result && result.rejected.length > 0) {
-		// 	console.error('Rejected email send response: ', result.response);
-		// 	console.error(
-		// 		`Email from ${name} <${email}> with subject ${subject} and body ${body} was rejected.`,
-		// 	);
-		// 	return setError(
-		// 		form,
-		// 		'',
-		// 		'An error occured while sending the message. Please try again later.',
-		// 	);
-		// }
-
-		return message(form, {
-			success: 'Thank you for your message. We will get back to you soon.',
-		});
 	},
 };
