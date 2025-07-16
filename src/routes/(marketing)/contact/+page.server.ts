@@ -3,10 +3,7 @@ import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { formSchema } from './schema';
 import { sendTemplatedEmail } from '$lib/mailer';
-import {
-	PRIVATE_ADMIN_EMAIL,
-	PRIVATE_FROM_ADMIN_EMAIL,
-} from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
 export const load: ServerLoad = async () => {
 	return {
@@ -28,10 +25,10 @@ export const actions: Actions = {
 
 		console.log('=== CONTACT FORM DEBUG START ===');
 		console.log('Environment check:', {
-			hasResendKey: !!process.env.PRIVATE_RESEND_API_KEY,
-			resendKeyPrefix: process.env.PRIVATE_RESEND_API_KEY?.substring(0, 5),
-			adminEmail: PRIVATE_ADMIN_EMAIL,
-			fromEmail: PRIVATE_FROM_ADMIN_EMAIL,
+			hasResendKey: !!env.PRIVATE_RESEND_API_KEY,
+			resendKeyPrefix: env.PRIVATE_RESEND_API_KEY?.substring(0, 5),
+			adminEmail: env.PRIVATE_ADMIN_EMAIL,
+			fromEmail: env.PRIVATE_FROM_ADMIN_EMAIL,
 		});
 
 		const insert = supabaseServiceRole.from('contact_messages').insert({
@@ -44,8 +41,8 @@ export const actions: Actions = {
 
 		const emailPromise = sendTemplatedEmail({
 			subject: `New Contact Form Submission: ${subject}`,
-			to_emails: [PRIVATE_ADMIN_EMAIL],
-			from_email: PRIVATE_FROM_ADMIN_EMAIL,
+			to_emails: [env.PRIVATE_ADMIN_EMAIL!],
+			from_email: env.PRIVATE_FROM_ADMIN_EMAIL!,
 			template_name: 'contact_notification',
 			template_properties: {
 				name,
