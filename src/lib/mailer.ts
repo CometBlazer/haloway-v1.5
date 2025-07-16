@@ -1,11 +1,14 @@
 import { Resend } from 'resend';
 import { env } from '$env/dynamic/private';
 
-// Pre-compiled template functions (we'll create these)
+// Pre-compiled template functions
 import {
 	contactNotificationText,
 	contactNotificationHtml,
+	welcomeEmailText,
+	welcomeEmailHtml,
 	type ContactNotificationProps,
+	type WelcomeEmailProps,
 } from '$lib/email-templates';
 
 // Send admin notification emails
@@ -47,7 +50,7 @@ export const sendAdminEmail = async ({
 	}
 };
 
-// Send templated emails
+// Send templated emails (supports both contact and welcome emails)
 export const sendTemplatedEmail = async ({
 	subject,
 	to_emails,
@@ -59,7 +62,7 @@ export const sendTemplatedEmail = async ({
 	to_emails: string[];
 	from_email: string;
 	template_name: string;
-	template_properties: ContactNotificationProps; // Changed this type
+	template_properties: ContactNotificationProps | WelcomeEmailProps; // Support both types
 }) => {
 	console.log('=== MAILER DEBUG START ===');
 	console.log('Mailer env check:', {
@@ -81,13 +84,24 @@ export const sendTemplatedEmail = async ({
 	let plaintextBody: string | undefined = undefined;
 	let htmlBody: string | undefined = undefined;
 
-	// Use pre-compiled templates instead of dynamic compilation
+	// Use pre-compiled templates for different email types
 	try {
 		if (template_name === 'contact_notification') {
 			console.log('Using pre-compiled contact notification templates');
-			plaintextBody = contactNotificationText(template_properties);
-			htmlBody = contactNotificationHtml(template_properties);
-			console.log('Templates compiled successfully');
+			plaintextBody = contactNotificationText(
+				template_properties as ContactNotificationProps,
+			);
+			htmlBody = contactNotificationHtml(
+				template_properties as ContactNotificationProps,
+			);
+			console.log('Contact notification templates compiled successfully');
+		} else if (template_name === 'welcome_email') {
+			console.log('Using pre-compiled welcome email templates');
+			plaintextBody = welcomeEmailText(
+				template_properties as WelcomeEmailProps,
+			);
+			htmlBody = welcomeEmailHtml(template_properties as WelcomeEmailProps);
+			console.log('Welcome email templates compiled successfully');
 		} else {
 			console.error(`Unknown template: ${template_name}`);
 			return;
@@ -137,4 +151,26 @@ export const sendTemplatedEmail = async ({
 		console.log('=== MAILER DEBUG END (ERROR) ===');
 		throw e;
 	}
+};
+
+// Convenience function for sending welcome emails
+export const sendWelcomeEmail = async ({
+	to_email,
+	companyName = 'Haloway',
+	websiteBaseUrl = 'https://haloway.co',
+}: {
+	to_email: string;
+	companyName?: string;
+	websiteBaseUrl?: string;
+}) => {
+	return sendTemplatedEmail({
+		subject: `Welcome to ${companyName}! 🎓`,
+		to_emails: [to_email],
+		from_email: env.PRIVATE_FROM_ADMIN_EMAIL?.trim() || 'hello@haloway.co',
+		template_name: 'welcome_email',
+		template_properties: {
+			companyName,
+			WebsiteBaseUrl: websiteBaseUrl,
+		},
+	});
 };

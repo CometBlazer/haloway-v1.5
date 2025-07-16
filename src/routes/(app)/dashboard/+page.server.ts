@@ -1,6 +1,7 @@
 // src/routes/(app)/dashboard/+page.server.ts
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { sendWelcomeEmail } from '$lib/mailer';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	// Session is already validated by the layout, no need to check again
@@ -577,6 +578,23 @@ export const actions = {
 			console.error('🎯 Error creating tutorial documents:', tutorialError);
 			// Don't fail the entire request if tutorial creation fails
 			// The profile update was successful, which is the primary goal
+		}
+
+		// Send welcome email after profile completion
+		try {
+			if (!session.user.email) {
+				throw new Error('User email is undefined');
+			}
+
+			await sendWelcomeEmail({
+				to_email: session.user.email,
+				companyName: 'Haloway',
+				websiteBaseUrl: 'https://haloway.co',
+			});
+			console.log('Welcome email sent to:', session.user.email);
+		} catch (emailError) {
+			console.error('Failed to send welcome email:', emailError);
+			// Don't fail the profile update if email fails
 		}
 
 		return { success: true };
