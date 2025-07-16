@@ -1,6 +1,12 @@
 import { Resend } from 'resend';
 import { env } from '$env/dynamic/private';
-import handlebars from 'handlebars';
+
+// Pre-compiled template functions (we'll create these)
+import {
+	contactNotificationText,
+	contactNotificationHtml,
+	type ContactNotificationProps,
+} from '$lib/email-templates';
 
 // Send admin notification emails
 export const sendAdminEmail = async ({
@@ -24,7 +30,7 @@ export const sendAdminEmail = async ({
 	try {
 		const resend = new Resend(env.PRIVATE_RESEND_API_KEY);
 		const resp = await resend.emails.send({
-			from: env.PRIVATE_FROM_ADMIN_EMAIL || env.PRIVATE_ADMIN_EMAIL,
+			from: env.PRIVATE_FROM_ADMIN_EMAIL?.trim() || env.PRIVATE_ADMIN_EMAIL,
 			to: [env.PRIVATE_ADMIN_EMAIL],
 			subject: 'ADMIN_MAIL: ' + subject,
 			text: body,
@@ -53,7 +59,7 @@ export const sendTemplatedEmail = async ({
 	to_emails: string[];
 	from_email: string;
 	template_name: string;
-	template_properties: Record<string, string>;
+	template_properties: ContactNotificationProps; // Changed this type
 }) => {
 	console.log('=== MAILER DEBUG START ===');
 	console.log('Mailer env check:', {
@@ -63,7 +69,7 @@ export const sendTemplatedEmail = async ({
 	console.log('Email params:', {
 		subject,
 		to_emails,
-		from_email,
+		from_email: from_email.trim(),
 		template_name,
 	});
 
@@ -73,44 +79,32 @@ export const sendTemplatedEmail = async ({
 	}
 
 	let plaintextBody: string | undefined = undefined;
-	try {
-		console.log(`Attempting to load text template: ${template_name}_text.hbs`);
-		const textTemplate = await import(
-			`./emails/${template_name}_text.hbs?raw`
-		).then((mod) => mod.default);
-		const template = handlebars.compile(textTemplate);
-		plaintextBody = template(template_properties);
-		console.log('Text template loaded successfully');
-	} catch (error) {
-		console.error('Failed to load text template:', error);
-		plaintextBody = undefined;
-	}
-
 	let htmlBody: string | undefined = undefined;
+
+	// Use pre-compiled templates instead of dynamic compilation
 	try {
-		console.log(`Attempting to load HTML template: ${template_name}_html.hbs`);
-		const htmlTemplate = await import(
-			`./emails/${template_name}_html.hbs?raw`
-		).then((mod) => mod.default);
-		const template = handlebars.compile(htmlTemplate);
-		htmlBody = template(template_properties);
-		console.log('HTML template loaded successfully');
+		if (template_name === 'contact_notification') {
+			console.log('Using pre-compiled contact notification templates');
+			plaintextBody = contactNotificationText(template_properties);
+			htmlBody = contactNotificationHtml(template_properties);
+			console.log('Templates compiled successfully');
+		} else {
+			console.error(`Unknown template: ${template_name}`);
+			return;
+		}
 	} catch (error) {
-		console.error('Failed to load HTML template:', error);
-		htmlBody = undefined;
+		console.error('Template compilation error:', error);
+		return;
 	}
 
 	if (!plaintextBody && !htmlBody) {
-		console.log(
-			'No email body: requires plaintextBody or htmlBody. Template: ',
-			template_name,
-		);
+		console.log('No email body generated from templates');
 		return;
 	}
 
 	try {
 		const email = {
-			from: from_email,
+			from: from_email.trim(), // Remove any whitespace/newlines
 			to: to_emails,
 			subject: subject,
 			text: plaintextBody || 'No text content available',
