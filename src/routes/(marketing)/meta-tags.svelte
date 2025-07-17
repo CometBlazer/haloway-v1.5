@@ -26,7 +26,7 @@
 	<meta property="og:description" content={description} />
 	<meta property="og:url" content={canonicalUrl} />
 	<meta property="og:type" content="website" />
-	<meta property="og:image" content="/favicon.png" />
+	<meta property="og:image" content="/images/haloway-thumbnail.png" />
 	<meta property="og:site_name" content={WebsiteName} />
 	<meta property="og:locale" content="en_US" />
 
@@ -34,5 +34,5 @@
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={pageTitle} />
 	<meta name="twitter:description" content={description} />
-	<meta name="twitter:image" content="/favicon.png" />
+	<meta name="twitter:image" content="/images/haloway-thumbnail.png" />
 </svelte:head>
