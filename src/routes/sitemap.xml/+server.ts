@@ -1,12 +1,12 @@
 import { WebsiteBaseUrl } from '../../config';
-import { sortedBlogPosts } from '../(marketing)/blog/blog';
+// import { sortedBlogPosts } from '../(marketing)/blog/blog';
 
 export async function GET() {
 	const urls = ['', '/pricing', '/contact', '/legal/privacy', '/legal/terms'];
 
-	const blogUrls = (sortedBlogPosts || []).map((post) => post.link);
+	// const blogUrls = (sortedBlogPosts || []).map((post) => post.link);
 
-	const allUrls = [...urls, ...blogUrls];
+	const allUrls = [...urls];
 
 	const now = new Date().toISOString();
 	const sitemap = `<?xml version="1.0" encoding="UTF-8"?>

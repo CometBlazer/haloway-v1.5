@@ -49,7 +49,8 @@
 				<ul class="space-y-2">
 					<li>
 						<Button
-							href="/"
+							href="https://haloway.blogg.so"
+							target="_blank"
 							variant="link"
 							class="h-auto p-0 text-sm text-muted-foreground hover:text-foreground"
 						>
