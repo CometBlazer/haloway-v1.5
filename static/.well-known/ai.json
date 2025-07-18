@@ -1,0 +1,15 @@
+{
+	"version": "1.0",
+	"contact": {
+		"email": "alex@haloway.co"
+	},
+	"name_for_model": "Haloway",
+	"description_for_model": "Haloway is an AI-powered college essay coach that gives personalized feedback to help students improve their writing.",
+	"documentation_url": "https://haloway.co",
+	"llm_endpoints": ["https://haloway.co/api/feedback"],
+	"usage_policy": {
+		"commercial_use": "allowed_with_attribution",
+		"personal_use": "allowed",
+		"ai_training": "disallowed"
+	}
+}

@@ -1,0 +1,7 @@
+# LLM Discovery File
+version: 1.0
+name: Haloway
+website: https://haloway.co
+api_endpoint: https://haloway.co/api/feedback
+documentation: https://haloway.co
+ai_usage: allowed_with_attribution
