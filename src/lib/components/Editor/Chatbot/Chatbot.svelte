@@ -27,6 +27,15 @@
 		currentStep: number;
 		isComplete: boolean;
 	} | null = null;
+	let inputFocused: boolean = false;
+	let showSuggestions: boolean = false;
+
+	// Configurable suggestions - adjust this JSON as needed
+	const suggestions = [
+		"What's the weather like today?",
+		'Help me write a professional email',
+		'Explain quantum computing in simple terms',
+	];
 
 	function sendMessage(): void {
 		if (!inputValue.trim()) return;
@@ -42,6 +51,7 @@
 		];
 
 		inputValue = '';
+		hideSuggestions();
 
 		// Auto-scroll to bottom
 		setTimeout(() => {
@@ -123,6 +133,45 @@
 		}
 	}
 
+	function handleInputFocus(): void {
+		inputFocused = true;
+		if (inputValue.length === 0) {
+			showSuggestions = true;
+		}
+	}
+
+	function handleInputBlur(): void {
+		inputFocused = false;
+		// Delay hiding suggestions to allow clicking on them
+		setTimeout(() => {
+			if (!inputFocused) {
+				hideSuggestions();
+			}
+		}, 150);
+	}
+
+	function handleInputChange(): void {
+		if (inputValue.length > 0) {
+			hideSuggestions();
+		} else if (inputFocused) {
+			showSuggestions = true;
+		}
+	}
+
+	function hideSuggestions(): void {
+		showSuggestions = false;
+	}
+
+	function selectSuggestion(suggestion: string): void {
+		inputValue = suggestion;
+		hideSuggestions();
+		// Focus back on input after suggestion selection
+		setTimeout(() => {
+			const input = document.querySelector('input');
+			if (input) input.focus();
+		}, 0);
+	}
+
 	function clearChat(): void {
 		messages = [];
 		showDropdown = false;
@@ -157,7 +206,7 @@
 />
 
 <div
-	class="flex flex-col rounded-lg border bg-background"
+	class="relative flex flex-col rounded-lg border bg-background"
 	style="width: {width}; height: {height};"
 >
 	<!-- Header -->
@@ -278,12 +327,32 @@
 		{/if}
 	</div>
 
+	<!-- Floating Suggestions -->
+	{#if showSuggestions}
+		<div class="suggestion-container absolute bottom-20 left-4 right-4 z-20">
+			<div class="flex flex-wrap justify-center gap-2">
+				{#each suggestions as suggestion, index}
+					<button
+						on:click={() => selectSuggestion(suggestion)}
+						class="suggestion-button rounded-full border bg-background px-4 py-2 text-sm font-medium text-foreground shadow-lg transition-all duration-200 hover:bg-muted hover:shadow-xl"
+						style="animation-delay: {index * 100}ms"
+					>
+						{suggestion}
+					</button>
+				{/each}
+			</div>
+		</div>
+	{/if}
+
 	<!-- Input Area -->
 	<div class="border-t bg-background p-4">
 		<div class="flex space-x-2">
 			<input
 				bind:value={inputValue}
 				on:keydown={handleKeyPress}
+				on:focus={handleInputFocus}
+				on:blur={handleInputBlur}
+				on:input={handleInputChange}
 				placeholder="Type your message..."
 				class="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring"
 			/>
@@ -315,5 +384,32 @@
 
 	div::-webkit-scrollbar-thumb:hover {
 		background: hsl(var(--muted-foreground) / 0.5);
+	}
+
+	/* Suggestion animations */
+	.suggestion-container {
+		animation: fadeIn 0.3s ease-out;
+	}
+
+	.suggestion-button {
+		animation: slideUpFade 0.4s ease-out both;
+		transform: translateY(10px);
+		opacity: 0;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	@keyframes slideUpFade {
+		to {
+			transform: translateY(0);
+			opacity: 1;
+		}
 	}
 </style>
