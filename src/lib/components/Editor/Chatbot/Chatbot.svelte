@@ -1,5 +1,7 @@
-<!-- Chatbot.svelte -->
+<!-- src/lib/components/Editor/Chatbot/Chatbot.svelte -->
 <script lang="ts">
+	import { MoreVertical, Copy, Check, Sparkles, User } from 'lucide-svelte';
+
 	export let width: string = '100%';
 	export let height: string = '400px';
 
@@ -12,6 +14,8 @@
 	let messages: Message[] = [];
 	let inputValue: string = '';
 	let messagesContainer: HTMLDivElement;
+	let showDropdown: boolean = false;
+	let copiedMessageId: number | null = null;
 
 	function sendMessage(): void {
 		if (!inputValue.trim()) return;
@@ -61,7 +65,37 @@
 			sendMessage();
 		}
 	}
+
+	function clearChat(): void {
+		messages = [];
+		showDropdown = false;
+	}
+
+	function toggleDropdown(): void {
+		showDropdown = !showDropdown;
+	}
+
+	function closeDropdown(): void {
+		showDropdown = false;
+	}
+
+	async function copyMessage(messageId: number, text: string): Promise<void> {
+		try {
+			await navigator.clipboard.writeText(text);
+			copiedMessageId = messageId;
+			setTimeout(() => {
+				copiedMessageId = null;
+			}, 2000);
+		} catch (err) {
+			console.error('Failed to copy text: ', err);
+		}
+	}
 </script>
+
+<svelte:window
+	on:click={closeDropdown}
+	on:keydown={(e) => e.key === 'Escape' && closeDropdown()}
+/>
 
 <div
 	class="flex flex-col rounded-lg border bg-background"
@@ -69,10 +103,36 @@
 >
 	<!-- Header -->
 	<div class="flex items-center justify-between border-b bg-muted/50 p-4">
-		<h3 class="font-semibold text-foreground">Chat Assistant</h3>
-		<div class="flex items-center space-x-2">
-			<div class="h-2 w-2 rounded-full bg-green-500"></div>
-			<span class="text-sm text-muted-foreground">Online</span>
+		<div class="flex items-center space-x-3">
+			<h3 class="font-semibold text-foreground">Chat Assistant</h3>
+			<div class="flex items-center space-x-2">
+				<div class="h-2 w-2 rounded-full bg-green-500"></div>
+				<span class="text-sm text-muted-foreground">Online</span>
+			</div>
+		</div>
+
+		<!-- Dropdown Menu -->
+		<div class="dropdown-container relative">
+			<button
+				on:click|stopPropagation={toggleDropdown}
+				class="rounded-md p-1 transition-colors hover:bg-muted"
+				aria-label="Menu"
+			>
+				<MoreVertical class="h-4 w-4 text-muted-foreground" />
+			</button>
+
+			{#if showDropdown}
+				<div
+					class="absolute right-0 top-full z-10 mt-1 w-36 rounded-md border bg-background shadow-lg"
+				>
+					<button
+						on:click={clearChat}
+						class="w-full rounded-md px-3 py-2 text-left text-sm text-foreground transition-colors hover:bg-muted"
+					>
+						Clear Chat
+					</button>
+				</div>
+			{/if}
 		</div>
 	</div>
 
@@ -93,34 +153,38 @@
 					? 'justify-end'
 					: 'justify-start'}"
 			>
-				<div class="flex max-w-[80%] items-start space-x-2">
+				<div class="group flex max-w-[80%] items-start space-x-2">
 					{#if message.sender === 'ai'}
 						<div
 							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary"
 						>
-							<svg
-								class="h-4 w-4 text-primary-foreground"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"
-								></path>
-							</svg>
+							<Sparkles class="h-4 w-4 text-primary-foreground" />
 						</div>
 					{/if}
 
 					<div class="flex flex-col">
 						<div
-							class="rounded-lg px-3 py-2 {message.sender === 'user'
+							class="relative rounded-lg px-3 py-2 {message.sender === 'user'
 								? 'ml-auto bg-primary text-primary-foreground'
 								: 'bg-muted text-foreground'}"
 						>
-							<p class="whitespace-pre-wrap text-sm">{message.text}</p>
+							<p class="whitespace-pre-wrap pr-6 text-sm">{message.text}</p>
+
+							<!-- Copy Button -->
+							<button
+								on:click={() => copyMessage(message.id, message.text)}
+								class="absolute right-2 top-2 rounded p-1 opacity-0 transition-all duration-200 hover:bg-black/10 group-hover:opacity-100 {message.sender ===
+								'user'
+									? 'text-primary-foreground/70 hover:text-primary-foreground'
+									: 'text-muted-foreground hover:text-foreground'}"
+								aria-label="Copy message"
+							>
+								{#if copiedMessageId === message.id}
+									<Check class="h-3 w-3" />
+								{:else}
+									<Copy class="h-3 w-3" />
+								{/if}
+							</button>
 						</div>
 					</div>
 
@@ -128,19 +192,7 @@
 						<div
 							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-secondary"
 						>
-							<svg
-								class="h-4 w-4 text-secondary-foreground"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-								></path>
-							</svg>
+							<User class="h-4 w-4 text-secondary-foreground" />
 						</div>
 					{/if}
 				</div>

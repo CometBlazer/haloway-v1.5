@@ -3,7 +3,7 @@
 	// import { Loader2 } from 'lucide-svelte';
 
 	// import KanbanBoard from '$lib/components/EC-Organizer/KanbanBoard.svelte';
-	import Chatbot from '$lib/components/Editor/Chatbot.svelte';
+	import Chatbot from '$lib/components/Editor/Chatbot/Chatbot.svelte';
 </script>
 
 <div
