@@ -1118,7 +1118,6 @@
 	.editor-controls {
 		padding: 0.5rem;
 		border-radius: 0.375rem;
-		margin-bottom: 0.75rem;
 	}
 
 	/* Toggle Switch */

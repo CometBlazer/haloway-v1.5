@@ -19,6 +19,7 @@
 	import { WebsiteName } from '../../../../../../../config';
 	import type { Status } from '$lib/components/Editor/StatusDropdown.svelte';
 	import AIFeedback from '$lib/components/Editor/AIFeedback.svelte';
+	import Chatbot from '$lib/components/Editor/Chatbot/Chatbot.svelte';
 
 	// Import modular systems
 	import { AutoSaveManager, getStatusDisplay } from '$lib/autosave';
@@ -1032,49 +1033,85 @@
 		/>
 	</header>
 	<div class="editor-container">
-		<header class:zen-mode={editorZenMode} class="mb-8 lg:mb-12">
-			<div class="w-full">
-				<DocumentHeader
-					documentTitle={documentTitle || ''}
-					{documentPrompt}
-					zenMode={editorZenMode}
-					on:updateTitle={handleTitleUpdate}
-					on:updatePrompt={handlePromptUpdate}
-				/>
-			</div>
-		</header>
+		<div class="grid grid-cols-1 gap-6 lg:grid-cols-4">
+			<!-- Left column: Editor content (spans 3 columns on md+) -->
+			<div class="order-1 lg:order-1 lg:col-span-3">
+				<header class:zen-mode={editorZenMode} class="mb-6">
+					<div class="w-full">
+						<DocumentHeader
+							documentTitle={documentTitle || ''}
+							{documentPrompt}
+							zenMode={editorZenMode}
+							on:updateTitle={handleTitleUpdate}
+							on:updatePrompt={handlePromptUpdate}
+						/>
+					</div>
+				</header>
 
-		<!-- Editor container -->
-		<div class:px-4={editorZenMode}>
-			<div class="min-h-[600px] rounded-xl">
-				<TiptapEditor
-					bind:editor
-					bind:body={content}
-					bind:zenMode={editorZenMode}
-					bind:wordCountLimit
-					bind:wordCount={currentWordCount}
-					on:update={handleContentUpdate}
-					on:wordCount={handleWordCountUpdate}
-				/>
-			</div>
+				<!-- Editor container -->
+				<div class:px-4={editorZenMode}>
+					<div class="min-h-[600px] rounded-lg">
+						<TiptapEditor
+							bind:editor
+							bind:body={content}
+							bind:zenMode={editorZenMode}
+							bind:wordCountLimit
+							bind:wordCount={currentWordCount}
+							on:update={handleContentUpdate}
+							on:wordCount={handleWordCountUpdate}
+						/>
+					</div>
 
-			<!-- AI Feedback section -->
-			<Section.Root anchor="feedback">
-				<div id="feedback" class="feedback-section">
-					<AIFeedback
-						essayText={content}
-						{wordCountLimit}
-						{currentWordCount}
-						existingFeedback={currentFeedback}
-						disabled={!editorReady || !contentLoaded}
-						{documentPrompt}
-						{editor}
-						on:feedbackReceived={handleFeedbackReceived}
-						on:contentLocked={handleContentLocked}
-						on:saveRequired={handleSaveRequired}
-					/>
+					<!-- AI Feedback section (mobile only) -->
+					<div class="lg:hidden">
+						<Section.Root anchor="feedback">
+							<div id="feedback" class="feedback-section">
+								<AIFeedback
+									essayText={content}
+									{wordCountLimit}
+									{currentWordCount}
+									existingFeedback={currentFeedback}
+									disabled={!editorReady || !contentLoaded}
+									{documentPrompt}
+									{editor}
+									on:feedbackReceived={handleFeedbackReceived}
+									on:contentLocked={handleContentLocked}
+									on:saveRequired={handleSaveRequired}
+								/>
+							</div>
+						</Section.Root>
+					</div>
 				</div>
-			</Section.Root>
+			</div>
+
+			<!-- Right column: Chatbot (column 4 on md+) -->
+			<div class="order-2 lg:order-2 lg:col-span-1">
+				<div class="sticky top-4">
+					<Chatbot height="650px" />
+				</div>
+			</div>
+
+			<!-- AI Feedback section (desktop only) -->
+			<div class="order-3 hidden lg:col-span-4 lg:block">
+				<Section.Root anchor="feedback">
+					<div id="feedback" class="feedback-section">
+						<AIFeedback
+							essayText={content}
+							{wordCountLimit}
+							{currentWordCount}
+							existingFeedback={currentFeedback}
+							disabled={!editorReady || !contentLoaded}
+							{documentPrompt}
+							{editor}
+							on:feedbackReceived={handleFeedbackReceived}
+							on:contentLocked={handleContentLocked}
+							on:saveRequired={handleSaveRequired}
+						/>
+					</div>
+				</Section.Root>
+			</div>
+
+			<!-- Close grid container -->
 		</div>
 
 		<!-- Checkpoint sidebar -->
@@ -1201,6 +1238,18 @@
 </div>
 
 <style>
+	/* Ensure grid container takes full width */
+	.editor-container > .grid {
+		width: 100%;
+	}
+
+	/* Adjust TipTap editor padding for grid layout */
+	@media (min-width: 768px) {
+		:global(.tiptap) {
+			padding: 3rem 4rem;
+		}
+	}
+
 	/* Loading spinner */
 	.loading-spinner {
 		width: 16px;
@@ -1248,7 +1297,7 @@
 	}
 
 	.editor-container {
-		max-width: 1400px;
+		max-width: 1800px;
 		margin: 0 auto;
 		min-height: 100vh;
 	}

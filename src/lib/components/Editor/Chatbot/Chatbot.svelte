@@ -1,3 +1,4 @@
+<!-- src/lib/components/Editor/Chatbot/Chatbot.svelte -->
 <script lang="ts">
 	import { MoreVertical, Copy, Check, Sparkles } from 'lucide-svelte';
 	import * as Avatar from '$lib/components/ui/avatar';
@@ -207,11 +208,13 @@
 />
 
 <div
-	class="relative flex flex-col rounded-lg border bg-background"
+	class="relative flex flex-col rounded-xl border bg-background"
 	style="width: {width}; height: {height};"
 >
 	<!-- Header -->
-	<div class="flex items-center justify-between border-b bg-muted/50 p-4">
+	<div
+		class="flex items-center justify-between rounded-t-xl border-b bg-muted/50 p-4"
+	>
 		<div class="flex items-center space-x-3">
 			<h3 class="font-semibold text-foreground">Chat Assistant</h3>
 			<div class="flex items-center space-x-2">
@@ -251,7 +254,7 @@
 		class="flex-1 space-y-4 overflow-y-auto bg-background p-4"
 	>
 		{#if messages.length === 0}
-			<div class="py-8 text-center text-muted-foreground">
+			<div class="py-4 text-center text-muted-foreground">
 				<p class="text-sm">Start a conversation...</p>
 			</div>
 		{/if}
@@ -349,8 +352,12 @@
 	</div>
 
 	<!-- Floating Suggestions -->
-	{#if showSuggestions}
-		<div class="suggestion-container absolute bottom-20 left-4 right-4 z-20">
+	{#if showSuggestions || messages.length === 0}
+		<div
+			class="suggestion-container absolute {messages.length === 0
+				? 'bottom-24'
+				: 'bottom-20'} left-4 right-4 z-20"
+		>
 			<div class="flex flex-wrap justify-center gap-2">
 				{#each suggestions as suggestion, index}
 					<button
@@ -366,7 +373,7 @@
 	{/if}
 
 	<!-- Input Area -->
-	<div class="border-t bg-background p-4">
+	<div class="rounded-b-xl border-t bg-background p-4">
 		<div class="flex space-x-2">
 			<input
 				bind:value={inputValue}
