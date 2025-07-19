@@ -1,7 +1,7 @@
 // src/routes/(app)/dashboard/+page.server.ts
 import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { sendWelcomeEmail } from '$lib/mailer';
+import { sendWelcomeEmail, sendAdminEmail } from '$lib/mailer';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	// Session is already validated by the layout, no need to check again
@@ -580,7 +580,7 @@ export const actions = {
 			// The profile update was successful, which is the primary goal
 		}
 
-		// Send welcome email after profile completion
+		// Send welcome email to user after profile completion
 		try {
 			if (!session.user.email) {
 				throw new Error('User email is undefined');
@@ -591,10 +591,49 @@ export const actions = {
 				companyName: 'Haloway',
 				websiteBaseUrl: 'https://haloway.co',
 			});
-			console.log('Welcome email sent to:', session.user.email);
+			console.log('✅ Welcome email sent to user:', session.user.email);
 		} catch (emailError) {
-			console.error('Failed to send welcome email:', emailError);
+			console.error('❌ Failed to send welcome email:', emailError);
 			// Don't fail the profile update if email fails
+		}
+
+		// 🆕 Send admin notification email about new user signup
+		try {
+			if (!session.user.email) {
+				throw new Error('User email is undefined');
+			}
+
+			await sendAdminEmail({
+				subject: 'New User Completed Profile - Haloway',
+				body: `🎉 A new user has completed their profile and joined Haloway!
+
+📊 User Details:
+• Name: ${fullName.trim()}
+• Email: ${session.user.email}
+• Graduation Year: ${graduationYear.trim()}
+• How they found us: ${referralSource.trim()}
+• Dream School: ${dreamSchool?.trim() || 'Not specified'}
+• Profile Completed: ${new Date().toLocaleString('en-US', {
+					timeZone: 'America/New_York',
+					dateStyle: 'full',
+					timeStyle: 'short',
+				})}
+
+🔗 Quick Links:
+• User Dashboard: https://haloway.co/dashboard
+• Admin Panel: https://haloway.co/admin (if available)
+
+💡 Tutorial documents (Haloway Tutorial + Sample Personal Statement) have been automatically created for this user.
+
+This is an automated notification from the Haloway platform.`,
+			});
+			console.log(
+				'✅ Admin notification sent for new user:',
+				session.user.email,
+			);
+		} catch (emailError) {
+			console.error('❌ Failed to send admin notification:', emailError);
+			// Don't fail the profile update if admin email fails
 		}
 
 		return { success: true };
