@@ -1,100 +1,161 @@
 <!-- src/lib/components/Editor/Chatbot/ThinkingIndicator.svelte -->
 <script lang="ts">
-	import { Brain, Loader2 } from 'lucide-svelte';
+	import { onMount, onDestroy } from 'svelte';
 
-	export let thinkingSteps: string[] = [];
-	export let currentStep = 0;
 	export let isComplete = false;
 
-	// Allow editing of thinking steps
-	function updateStep(index: number, value: string) {
-		thinkingSteps[index] = value;
-		thinkingSteps = [...thinkingSteps];
+	// Predefined thinking states with emojis and durations
+	const thinkingStates = [
+		{ text: 'Hmmm', icon: '🤔', duration: 2000, id: 'thinking' },
+		{ text: 'Thinking', icon: '🧠', duration: 2000, id: 'processing' },
+		{ text: 'Brainstorming', icon: '⚡', duration: 2000, id: 'analyzing' },
+		{
+			text: 'Looking for answers',
+			icon: '🔍',
+			duration: 1900,
+			id: 'pondering',
+		},
+		{ text: 'Refining my answer', icon: '✨', duration: 1900, id: 'refining' },
+		{ text: 'Almost ready', icon: '🚀', duration: 5000, id: 'ready' },
+		{
+			text: 'Hmm... let me think a bit longer',
+			icon: '🔄',
+			duration: 4000,
+			id: 'retrying',
+		},
+	];
+
+	let currentStateIndex = 0;
+	let dots = '';
+	let stateTimer: ReturnType<typeof setInterval>;
+	let dotTimer: ReturnType<typeof setInterval>;
+	let mounted = false;
+
+	onMount(() => {
+		mounted = true;
+		startAnimations();
+	});
+
+	onDestroy(() => {
+		if (stateTimer) clearInterval(stateTimer);
+		if (dotTimer) clearInterval(dotTimer);
+	});
+
+	function startAnimations() {
+		// Cycle through thinking states
+		stateTimer = setInterval(() => {
+			if (!isComplete) {
+				currentStateIndex =
+					currentStateIndex < thinkingStates.length - 1
+						? currentStateIndex + 1
+						: 0;
+			}
+		}, thinkingStates[currentStateIndex]?.duration || 2000);
+
+		// Animate dots independently
+		dotTimer = setInterval(() => {
+			if (!isComplete) {
+				dots = dots === '...' ? '' : dots + '.';
+			}
+		}, 500);
 	}
 
-	function addStep() {
-		thinkingSteps = [...thinkingSteps, 'New thinking step...'];
-		currentStep = thinkingSteps.length - 1;
-	}
-
-	function removeStep(index: number) {
-		thinkingSteps = thinkingSteps.filter((_, i) => i !== index);
-		if (currentStep >= thinkingSteps.length) {
-			currentStep = Math.max(0, thinkingSteps.length - 1);
-		}
+	$: currentState = thinkingStates[currentStateIndex];
+	$: if (isComplete && stateTimer && dotTimer) {
+		clearInterval(stateTimer);
+		clearInterval(dotTimer);
+		dots = '';
 	}
 </script>
 
-<div
-	class="space-y-3 rounded-lg border border-dashed border-muted-foreground/20 bg-muted/30 p-4"
->
-	<!-- Header -->
-	<div class="flex items-center space-x-2">
-		<div class="flex items-center space-x-2">
-			<Brain class="h-4 w-4 text-blue-500" />
-			<span class="text-sm font-medium text-muted-foreground">
-				{isComplete ? 'Thinking Complete' : 'Thinking...'}
-			</span>
-		</div>
+<div class="relative w-full">
+	<!-- Breathing effect background -->
+	<div
+		class="absolute inset-0 -z-10 rounded-xl bg-primary/5 {isComplete
+			? ''
+			: 'animate-pulse'}"
+		style="animation-duration: 3s;"
+	></div>
 
-		{#if !isComplete}
-			<Loader2 class="h-3 w-3 animate-spin text-blue-500" />
-		{/if}
-	</div>
+	<div class="flex w-full gap-4 rounded-xl px-2">
+		<div class="flex w-full flex-col gap-3 py-2">
+			{#if !isComplete}
+				<!-- Main thinking text with smooth transitions -->
+				<div class="flex items-center gap-2 text-muted-foreground">
+					<!-- Emoji icon with bounce animation -->
+					<span
+						class="text-lg transition-all duration-300 {mounted
+							? 'scale-100'
+							: 'scale-0'}"
+						style="animation: bounce 1s ease-in-out infinite;"
+					>
+						{currentState?.icon}
+					</span>
 
-	<!-- Thinking Steps -->
-	<div class="space-y-2">
-		{#each thinkingSteps as step, index (index)}
-			<div class="flex items-start space-x-2">
-				<!-- Step indicator -->
-				<div class="mt-1 flex-shrink-0">
+					<!-- Text -->
+					<span class="duration-400 font-medium transition-all">
+						{currentState?.text}
+					</span>
+
+					<!-- Animated dots -->
+					<span class="w-6 font-bold text-primary transition-all duration-200">
+						{dots}
+					</span>
+				</div>
+			{:else}
+				<!-- Completion state -->
+				<div class="flex items-center gap-2 text-muted-foreground">
+					<span class="text-lg">✅</span>
+					<span class="font-medium">Thinking Complete</span>
+				</div>
+			{/if}
+
+			<!-- Progress indicator -->
+			<div class="flex gap-1.5">
+				{#each thinkingStates as state, index (state.id)}
 					<div
-						class="h-2 w-2 rounded-full {index < currentStep
-							? 'bg-green-500'
-							: index === currentStep
-								? 'animate-pulse bg-blue-500'
-								: 'bg-muted-foreground/30'}"
+						class="h-1 rounded-full transition-all duration-300 {index <=
+							currentStateIndex || isComplete
+							? 'bg-primary'
+							: 'bg-muted'}"
+						style="width: {index === currentStateIndex && !isComplete
+							? '24px'
+							: '8px'};"
+					></div>
+				{/each}
+			</div>
+
+			{#if isComplete}
+				<!-- Final progress bar when complete -->
+				<div class="h-1 w-full overflow-hidden rounded-full bg-muted">
+					<div
+						class="h-full bg-primary transition-all duration-1000 ease-out"
+						style="width: 100%;"
 					></div>
 				</div>
-
-				<!-- Editable step content -->
-				<div class="flex-1">
-					<textarea
-						bind:value={step}
-						on:input={(e) => updateStep(index, e.currentTarget.value)}
-						class="min-h-[20px] w-full resize-none border-none bg-transparent text-xs leading-relaxed text-muted-foreground outline-none"
-						rows="1"
-						placeholder="Thinking step..."
-					/>
-				</div>
-
-				<!-- Remove button -->
-				<button
-					on:click={() => removeStep(index)}
-					class="flex-shrink-0 text-xs text-muted-foreground/50 transition-colors hover:text-red-500"
-					aria-label="Remove step"
-				>
-					×
-				</button>
-			</div>
-		{/each}
-
-		<!-- Add step button -->
-		<button
-			on:click={addStep}
-			class="text-xs text-blue-500 transition-colors hover:text-blue-600"
-		>
-			+ Add thinking step
-		</button>
-	</div>
-
-	<!-- Progress bar -->
-	<div class="h-1 w-full overflow-hidden rounded-full bg-muted-foreground/10">
-		<div
-			class="h-full bg-blue-500 transition-all duration-500 ease-out"
-			style="width: {isComplete
-				? 100
-				: (currentStep / Math.max(thinkingSteps.length - 1, 1)) * 100}%"
-		></div>
+			{/if}
+		</div>
 	</div>
 </div>
+
+<style>
+	@keyframes bounce {
+		0%,
+		20%,
+		53%,
+		80%,
+		100% {
+			transform: translate3d(0, 0, 0);
+		}
+		40%,
+		43% {
+			transform: translate3d(0, -8px, 0);
+		}
+		70% {
+			transform: translate3d(0, -4px, 0);
+		}
+		90% {
+			transform: translate3d(0, -2px, 0);
+		}
+	}
+</style>

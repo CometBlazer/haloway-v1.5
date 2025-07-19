@@ -1,6 +1,6 @@
-<!-- src/lib/components/Editor/Chatbot/Chatbot.svelte -->
 <script lang="ts">
 	import { MoreVertical, Copy, Check, Sparkles, User } from 'lucide-svelte';
+	import ThinkingIndicator from './ThinkingIndicator.svelte';
 
 	export let width: string = '100%';
 	export let height: string = '400px';
@@ -31,6 +31,7 @@
 	function sendMessage(): void {
 		if (!inputValue.trim()) return;
 
+		// Add user message
 		messages = [
 			...messages,
 			{
@@ -42,12 +43,14 @@
 
 		inputValue = '';
 
+		// Auto-scroll to bottom
 		setTimeout(() => {
 			if (messagesContainer) {
 				messagesContainer.scrollTop = messagesContainer.scrollHeight;
 			}
 		}, 0);
 
+		// Start thinking process
 		startThinking();
 	}
 
@@ -65,6 +68,7 @@
 			isComplete: false,
 		};
 
+		// Simulate thinking steps
 		const thinkingInterval = setInterval(() => {
 			if (
 				currentThinking &&
@@ -85,6 +89,7 @@
 			currentThinking = { ...currentThinking };
 		}
 
+		// Add AI response after thinking is complete
 		setTimeout(() => {
 			const aiResponse =
 				'This is a longer, more comprehensive response that demonstrates the improved AI capabilities. The system has carefully analyzed your input and is providing a detailed answer that shows the thinking process was worthwhile. This response includes multiple sentences and provides substantial value to continue the conversation effectively.';
@@ -102,6 +107,7 @@
 			isThinking = false;
 			currentThinking = null;
 
+			// Auto-scroll to bottom
 			setTimeout(() => {
 				if (messagesContainer) {
 					messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -202,67 +208,29 @@
 
 		{#each messages as message (message.id)}
 			<div
-				class="flex justify-start"
-				class:justify-end={message.sender === 'user'}
+				class="flex {message.sender === 'user'
+					? 'justify-end'
+					: 'justify-start'}"
 			>
-				<div
-					class="flex max-w-[80%] items-start space-x-2"
-					class:flex-row-reverse={message.sender === 'user'}
-				>
+				<div class="flex max-w-[80%] items-start space-x-2">
 					{#if message.sender === 'ai'}
 						<div
 							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary"
 						>
 							<Sparkles class="h-4 w-4 text-primary-foreground" />
 						</div>
-					{:else}
-						<div
-							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-secondary"
-						>
-							<User class="h-4 w-4 text-secondary-foreground" />
-						</div>
 					{/if}
 
 					<div class="flex w-full flex-col space-y-2">
-						{#if message.sender === 'ai' && message.thinking}
-							<div class="mb-2">
-								<div
-									class="space-y-2 rounded-lg border border-dashed border-muted-foreground/20 bg-muted/30 p-3"
-								>
-									<div class="flex items-center space-x-2">
-										<div class="h-2 w-2 rounded-full bg-blue-500"></div>
-										<span class="text-xs font-medium text-muted-foreground"
-											>Thinking Process</span
-										>
-									</div>
-
-									<div class="space-y-1">
-										{#each message.thinking.steps as step, index (index)}
-											<div class="flex items-center space-x-2">
-												<div
-													class="h-1.5 w-1.5 rounded-full {index <
-													message.thinking.currentStep
-														? 'bg-green-500'
-														: index === message.thinking.currentStep
-															? 'bg-blue-500'
-															: 'bg-muted-foreground/30'}"
-												></div>
-												<span class="text-xs text-muted-foreground">{step}</span
-												>
-											</div>
-										{/each}
-									</div>
-								</div>
-							</div>
-						{/if}
-
+						<!-- Main message -->
 						<div
-							class="relative rounded-lg px-3 py-2 {message.sender === 'user'
-								? 'ml-auto bg-primary text-right text-primary-foreground'
-								: 'bg-muted text-foreground'}"
+							class="relative {message.sender === 'user'
+								? 'ml-auto bg-primary text-primary-foreground'
+								: 'bg-muted text-foreground'} rounded-lg px-3 py-2"
 						>
 							<p class="whitespace-pre-wrap pb-6 text-sm">{message.text}</p>
 
+							<!-- Always visible copy button -->
 							<button
 								on:click={() => copyMessage(message.id, message.text)}
 								class="absolute bottom-2 right-2 rounded p-1 transition-all duration-200 {message.sender ===
@@ -279,10 +247,19 @@
 							</button>
 						</div>
 					</div>
+
+					{#if message.sender === 'user'}
+						<div
+							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-secondary"
+						>
+							<User class="h-4 w-4 text-secondary-foreground" />
+						</div>
+					{/if}
 				</div>
 			</div>
 		{/each}
 
+		<!-- Live Thinking Indicator -->
 		{#if isThinking && currentThinking}
 			<div class="flex justify-start">
 				<div class="flex max-w-[80%] items-start space-x-2">
@@ -291,43 +268,8 @@
 					>
 						<Sparkles class="h-4 w-4 text-primary-foreground" />
 					</div>
-
-					<div
-						class="space-y-2 rounded-lg border border-dashed border-muted-foreground/20 bg-muted/30 p-3"
-					>
-						<div class="flex items-center space-x-2">
-							<div class="h-2 w-2 animate-pulse rounded-full bg-blue-500"></div>
-							<span class="text-xs font-medium text-muted-foreground"
-								>Thinking...</span
-							>
-						</div>
-
-						<div class="space-y-1">
-							{#each currentThinking.steps as step, index (index)}
-								<div class="flex items-center space-x-2">
-									<div
-										class="h-1.5 w-1.5 rounded-full {index <
-										currentThinking.currentStep
-											? 'bg-green-500'
-											: index === currentThinking.currentStep
-												? 'animate-pulse bg-blue-500'
-												: 'bg-muted-foreground/30'}"
-									></div>
-									<span class="text-xs text-muted-foreground">{step}</span>
-								</div>
-							{/each}
-						</div>
-
-						<div
-							class="h-1 w-full overflow-hidden rounded-full bg-muted-foreground/10"
-						>
-							<div
-								class="h-full bg-blue-500 transition-all duration-500 ease-out"
-								style="width: {(currentThinking.currentStep /
-									Math.max(currentThinking.steps.length - 1, 1)) *
-									100}%"
-							></div>
-						</div>
+					<div class="flex-1">
+						<ThinkingIndicator isComplete={false} />
 					</div>
 				</div>
 			</div>
@@ -355,16 +297,20 @@
 </div>
 
 <style>
+	/* Custom scrollbar styling */
 	div::-webkit-scrollbar {
 		width: 6px;
 	}
+
 	div::-webkit-scrollbar-track {
 		background: transparent;
 	}
+
 	div::-webkit-scrollbar-thumb {
 		background: hsl(var(--muted-foreground) / 0.3);
 		border-radius: 3px;
 	}
+
 	div::-webkit-scrollbar-thumb:hover {
 		background: hsl(var(--muted-foreground) / 0.5);
 	}
