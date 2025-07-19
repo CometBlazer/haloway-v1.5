@@ -9,6 +9,11 @@
 		id: number;
 		text: string;
 		sender: 'user' | 'ai';
+		thinking?: {
+			steps: string[];
+			currentStep: number;
+			isComplete: boolean;
+		};
 	}
 
 	let messages: Message[] = [];
@@ -16,6 +21,12 @@
 	let messagesContainer: HTMLDivElement;
 	let showDropdown: boolean = false;
 	let copiedMessageId: number | null = null;
+	let isThinking: boolean = false;
+	let currentThinking: {
+		steps: string[];
+		currentStep: number;
+		isComplete: boolean;
+	} | null = null;
 
 	function sendMessage(): void {
 		if (!inputValue.trim()) return;
@@ -39,24 +50,70 @@
 			}
 		}, 0);
 
-		// Add AI response after a short delay
+		// Start thinking process
+		startThinking();
+	}
+
+	function startThinking(): void {
+		isThinking = true;
+		currentThinking = {
+			steps: [
+				"Analyzing the user's question...",
+				'Searching knowledge base...',
+				'Processing context and intent...',
+				'Formulating comprehensive response...',
+				'Reviewing and refining answer...',
+			],
+			currentStep: 0,
+			isComplete: false,
+		};
+
+		// Simulate thinking steps
+		const thinkingInterval = setInterval(() => {
+			if (
+				currentThinking &&
+				currentThinking.currentStep < currentThinking.steps.length - 1
+			) {
+				currentThinking.currentStep++;
+				currentThinking = { ...currentThinking };
+			} else {
+				clearInterval(thinkingInterval);
+				completeThinking();
+			}
+		}, 800);
+	}
+
+	function completeThinking(): void {
+		if (currentThinking) {
+			currentThinking.isComplete = true;
+			currentThinking = { ...currentThinking };
+		}
+
+		// Add AI response after thinking is complete
 		setTimeout(() => {
+			const aiResponse =
+				'This is a longer, more comprehensive response that demonstrates the improved AI capabilities. The system has carefully analyzed your input and is providing a detailed answer that shows the thinking process was worthwhile. This response includes multiple sentences and provides substantial value to continue the conversation effectively.';
+
 			messages = [
 				...messages,
 				{
 					id: Date.now() + 1,
-					text: 'testing',
+					text: aiResponse,
 					sender: 'ai',
+					thinking: currentThinking ? { ...currentThinking } : undefined,
 				},
 			];
 
-			// Auto-scroll to bottom again
+			isThinking = false;
+			currentThinking = null;
+
+			// Auto-scroll to bottom
 			setTimeout(() => {
 				if (messagesContainer) {
 					messagesContainer.scrollTop = messagesContainer.scrollHeight;
 				}
 			}, 0);
-		}, 500);
+		}, 1000);
 	}
 
 	function handleKeyPress(event: KeyboardEvent): void {
@@ -69,6 +126,8 @@
 	function clearChat(): void {
 		messages = [];
 		showDropdown = false;
+		isThinking = false;
+		currentThinking = null;
 	}
 
 	function toggleDropdown(): void {
@@ -153,7 +212,7 @@
 					? 'justify-end'
 					: 'justify-start'}"
 			>
-				<div class="group flex max-w-[80%] items-start space-x-2">
+				<div class="flex max-w-[80%] items-start space-x-2">
 					{#if message.sender === 'ai'}
 						<div
 							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary"
@@ -162,21 +221,55 @@
 						</div>
 					{/if}
 
-					<div class="flex flex-col">
-						<div
-							class="relative rounded-lg px-3 py-2 {message.sender === 'user'
-								? 'ml-auto bg-primary text-primary-foreground'
-								: 'bg-muted text-foreground'}"
-						>
-							<p class="whitespace-pre-wrap pr-6 text-sm">{message.text}</p>
+					<div class="flex w-full flex-col space-y-2">
+						<!-- Thinking Process (only for AI messages with thinking) -->
+						{#if message.sender === 'ai' && message.thinking}
+							<div class="mb-2">
+								<div
+									class="space-y-2 rounded-lg border border-dashed border-muted-foreground/20 bg-muted/30 p-3"
+								>
+									<div class="flex items-center space-x-2">
+										<div class="h-2 w-2 rounded-full bg-blue-500"></div>
+										<span class="text-xs font-medium text-muted-foreground"
+											>Thinking Process</span
+										>
+									</div>
 
-							<!-- Copy Button -->
+									<div class="space-y-1">
+										{#each message.thinking.steps as step, index (index)}
+											<div class="flex items-center space-x-2">
+												<div
+													class="h-1.5 w-1.5 rounded-full {index <
+													message.thinking.currentStep
+														? 'bg-green-500'
+														: index === message.thinking.currentStep
+															? 'bg-blue-500'
+															: 'bg-muted-foreground/30'}"
+												></div>
+												<span class="text-xs text-muted-foreground">{step}</span
+												>
+											</div>
+										{/each}
+									</div>
+								</div>
+							</div>
+						{/if}
+
+						<!-- Main message -->
+						<div
+							class="relative {message.sender === 'user'
+								? 'ml-auto bg-primary text-primary-foreground'
+								: 'bg-muted text-foreground'} rounded-lg px-3 py-2"
+						>
+							<p class="whitespace-pre-wrap pb-6 text-sm">{message.text}</p>
+
+							<!-- Always visible copy button -->
 							<button
 								on:click={() => copyMessage(message.id, message.text)}
-								class="absolute right-2 top-2 rounded p-1 opacity-0 transition-all duration-200 hover:bg-black/10 group-hover:opacity-100 {message.sender ===
+								class="absolute bottom-2 right-2 rounded p-1 transition-all duration-200 {message.sender ===
 								'user'
-									? 'text-primary-foreground/70 hover:text-primary-foreground'
-									: 'text-muted-foreground hover:text-foreground'}"
+									? 'text-primary-foreground/70 hover:bg-white/10 hover:text-primary-foreground'
+									: 'text-muted-foreground hover:bg-black/10 hover:text-foreground'}"
 								aria-label="Copy message"
 							>
 								{#if copiedMessageId === message.id}
@@ -198,6 +291,58 @@
 				</div>
 			</div>
 		{/each}
+
+		<!-- Live Thinking Indicator -->
+		{#if isThinking && currentThinking}
+			<div class="flex justify-start">
+				<div class="flex max-w-[80%] items-start space-x-2">
+					<div
+						class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary"
+					>
+						<Sparkles class="h-4 w-4 text-primary-foreground" />
+					</div>
+
+					<div
+						class="space-y-2 rounded-lg border border-dashed border-muted-foreground/20 bg-muted/30 p-3"
+					>
+						<div class="flex items-center space-x-2">
+							<div class="h-2 w-2 animate-pulse rounded-full bg-blue-500"></div>
+							<span class="text-xs font-medium text-muted-foreground"
+								>Thinking...</span
+							>
+						</div>
+
+						<div class="space-y-1">
+							{#each currentThinking.steps as step, index (index)}
+								<div class="flex items-center space-x-2">
+									<div
+										class="h-1.5 w-1.5 rounded-full {index <
+										currentThinking.currentStep
+											? 'bg-green-500'
+											: index === currentThinking.currentStep
+												? 'animate-pulse bg-blue-500'
+												: 'bg-muted-foreground/30'}"
+									></div>
+									<span class="text-xs text-muted-foreground">{step}</span>
+								</div>
+							{/each}
+						</div>
+
+						<!-- Progress bar -->
+						<div
+							class="h-1 w-full overflow-hidden rounded-full bg-muted-foreground/10"
+						>
+							<div
+								class="h-full bg-blue-500 transition-all duration-500 ease-out"
+								style="width: {(currentThinking.currentStep /
+									Math.max(currentThinking.steps.length - 1, 1)) *
+									100}%"
+							></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{/if}
 	</div>
 
 	<!-- Input Area -->
