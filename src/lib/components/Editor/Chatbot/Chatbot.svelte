@@ -280,9 +280,9 @@
 			<div class="py-6 text-center">
 				<div class="mb-4 flex justify-center">
 					<div
-						class="flex h-20 w-20 items-center justify-center rounded-full bg-primary"
+						class="flex h-24 w-24 items-center justify-center rounded-full bg-primary"
 					>
-						<Avatar.Root class="h-20 w-20">
+						<Avatar.Root class="h-24 w-24">
 							<Avatar.Image
 								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png"
 								alt="Clara"
@@ -294,15 +294,15 @@
 					</div>
 				</div>
 				<div class="space-y-2 text-foreground">
-					<h4 class="text-lg font-semibold">Hi! I'm Clara 👋</h4>
+					<h4 class="text-xl font-semibold">Hi! I'm Clara 👋</h4>
 					<p class="text-sm leading-relaxed text-muted-foreground">
-						I'm your essay reviewer and brainstorming assistant. I can help you
-						with revisions, feedback, and generating first drafts for your
-						writing.
+						Select one of the suggestions below or ask me anything about your
+						essay!
 					</p>
 					<p class="mt-3 text-xs text-muted-foreground">
-						Select one of the suggestions below or ask me anything about your
-						essay! For more in-depth essay coaching, ask <a
+						I'm your essay reviewer and brainstorming assistant. I can help you
+						with revisions, feedback, and generating first drafts for your
+						writing. For more in-depth essay coaching, ask <a
 							href="https://dan.haloway.co"
 							target="_blank"
 							class="font-medium underline hover:text-foreground"

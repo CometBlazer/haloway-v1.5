@@ -27,6 +27,7 @@
 	import { DocumentExporter } from '$lib/export';
 	import type { DocumentMetadata } from '$lib/export';
 	import TopToolbar from '$lib/components/Editor/TopToolbar.svelte';
+	import { Button } from '$lib/components/ui/button';
 
 	export let data: PageData;
 
@@ -68,19 +69,74 @@
 	function scrollToFeedback() {
 		if (!browser) return;
 
-		// Use requestAnimationFrame to ensure DOM is fully rendered
-		requestAnimationFrame(() => {
-			const feedbackElement = document.getElementById('feedback');
+		// Function to attempt scrolling
+		const attemptScroll = () => {
+			// Check screen size to determine which feedback section to scroll to
+			const isMobile = window.innerWidth < 1024; // lg breakpoint
+
+			let feedbackElement;
+
+			if (isMobile) {
+				// On mobile, look for the feedback section in the mobile layout
+				feedbackElement =
+					document.querySelector('.lg\\:hidden .feedback-section') ||
+					document.querySelector('.lg\\:hidden #feedback');
+			} else {
+				// On desktop, look for the feedback section in the desktop layout
+				feedbackElement =
+					document.querySelector('.lg\\:block .feedback-section') ||
+					document.querySelector('.lg\\:block #feedback');
+			}
+
+			// Fallback: try to find any visible feedback element
+			if (!feedbackElement) {
+				const allFeedbackElements = document.querySelectorAll(
+					'#feedback, .feedback-section',
+				);
+				for (const element of allFeedbackElements) {
+					const isVisible =
+						window.getComputedStyle(element).display !== 'none' &&
+						window.getComputedStyle(element).visibility !== 'hidden';
+					if (isVisible) {
+						feedbackElement = element;
+						break;
+					}
+				}
+			}
+
 			if (feedbackElement) {
-				feedbackElement.scrollIntoView({
+				// Add a small offset to account for any fixed headers
+				const offset = 80; // Adjust this value based on your header height
+				const elementPosition =
+					feedbackElement.getBoundingClientRect().top +
+					window.pageYOffset -
+					offset;
+
+				window.scrollTo({
+					top: elementPosition,
 					behavior: 'smooth',
-					block: 'start',
 				});
+
 				console.log('Scrolled to feedback section');
+				return true; // Success
 			} else {
 				console.log('Feedback element not found');
 			}
-		});
+			return false; // Failed
+		};
+
+		// Try immediate scroll
+		if (attemptScroll()) return;
+
+		// If immediate scroll failed, try after a short delay
+		setTimeout(() => {
+			if (attemptScroll()) return;
+
+			// If still failed, try one more time with a longer delay
+			setTimeout(() => {
+				attemptScroll();
+			}, 500);
+		}, 100);
 	}
 
 	// Create autosave manager with callbacks
@@ -1087,31 +1143,35 @@
 			<!-- Right column: Chatbot (column 4 on md+) -->
 			<div class="order-2 lg:order-2 lg:col-span-1">
 				<div class="sticky top-4">
+					<Button
+						on:click={() => scrollToFeedback()}
+						class="mb-4 hidden w-full lg:block"
+					>
+						Go to AI Feedback
+					</Button>
 					<Chatbot height="650px" />
 				</div>
 			</div>
+		</div>
 
-			<!-- AI Feedback section (desktop only) -->
-			<div class="order-3 hidden lg:col-span-4 lg:block">
-				<Section.Root anchor="feedback">
-					<div id="feedback" class="feedback-section">
-						<AIFeedback
-							essayText={content}
-							{wordCountLimit}
-							{currentWordCount}
-							existingFeedback={currentFeedback}
-							disabled={!editorReady || !contentLoaded}
-							{documentPrompt}
-							{editor}
-							on:feedbackReceived={handleFeedbackReceived}
-							on:contentLocked={handleContentLocked}
-							on:saveRequired={handleSaveRequired}
-						/>
-					</div>
-				</Section.Root>
-			</div>
-
-			<!-- Close grid container -->
+		<!-- AI Feedback section (desktop only) - moved outside grid -->
+		<div class="mt-8 hidden lg:block">
+			<Section.Root anchor="feedback">
+				<div id="feedback" class="feedback-section">
+					<AIFeedback
+						essayText={content}
+						{wordCountLimit}
+						{currentWordCount}
+						existingFeedback={currentFeedback}
+						disabled={!editorReady || !contentLoaded}
+						{documentPrompt}
+						{editor}
+						on:feedbackReceived={handleFeedbackReceived}
+						on:contentLocked={handleContentLocked}
+						on:saveRequired={handleSaveRequired}
+					/>
+				</div>
+			</Section.Root>
 		</div>
 
 		<!-- Checkpoint sidebar -->
