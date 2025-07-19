@@ -35,9 +35,10 @@
 
 	// Configurable suggestions - adjust this JSON as needed
 	const suggestions = [
-		"What's the weather like today?",
-		'Help me write a professional email',
-		'Explain quantum computing in simple terms',
+		'Brainstorm ideas based on what you know about me',
+		'Generate a first draft for my essay',
+		'Fix all my grammar and spelling mistakes',
+		'Improve the flow and structure of this paragraph: [copy and paste paragraph here]',
 	];
 
 	function sendMessage(): void {
