@@ -31,6 +31,7 @@
 	} | null = null;
 	let inputFocused: boolean = false;
 	let showSuggestions: boolean = false;
+	let textareaElement: HTMLTextAreaElement;
 
 	// Configurable suggestions - adjust this JSON as needed
 	const suggestions = [
@@ -53,6 +54,10 @@
 		];
 
 		inputValue = '';
+		// Reset textarea height
+		if (textareaElement) {
+			textareaElement.style.height = 'auto';
+		}
 		hideSuggestions();
 
 		// Auto-scroll to bottom
@@ -158,6 +163,7 @@
 		} else if (inputFocused) {
 			showSuggestions = true;
 		}
+		autoResizeTextarea();
 	}
 
 	function hideSuggestions(): void {
@@ -167,10 +173,12 @@
 	function selectSuggestion(suggestion: string): void {
 		inputValue = suggestion;
 		hideSuggestions();
-		// Focus back on input after suggestion selection
+		// Focus back on textarea after suggestion selection
 		setTimeout(() => {
-			const input = document.querySelector('input');
-			if (input) input.focus();
+			if (textareaElement) {
+				textareaElement.focus();
+				autoResizeTextarea();
+			}
 		}, 0);
 	}
 
@@ -187,6 +195,20 @@
 
 	function closeDropdown(): void {
 		showDropdown = false;
+	}
+
+	function autoResizeTextarea(): void {
+		if (textareaElement) {
+			// Reset height to auto to get the correct scrollHeight
+			textareaElement.style.height = 'auto';
+
+			// Set height based on content, with min and max constraints
+			const newHeight = Math.min(
+				Math.max(textareaElement.scrollHeight, 40),
+				120,
+			);
+			textareaElement.style.height = newHeight + 'px';
+		}
 	}
 
 	async function copyMessage(messageId: number, text: string): Promise<void> {
@@ -209,7 +231,7 @@
 
 <div
 	class="relative flex flex-col rounded-xl border bg-background"
-	style="width: {width}; height: {height};"
+	style="width: {width};"
 >
 	<!-- Header -->
 	<div
@@ -251,7 +273,8 @@
 	<!-- Messages Container -->
 	<div
 		bind:this={messagesContainer}
-		class="flex-1 space-y-4 overflow-y-auto bg-background p-4"
+		class="space-y-4 overflow-y-auto bg-background p-4"
+		style="height: {height};"
 	>
 		{#if messages.length === 0}
 			<div class="py-4 text-center text-muted-foreground">
@@ -354,9 +377,8 @@
 	<!-- Floating Suggestions -->
 	{#if showSuggestions || messages.length === 0}
 		<div
-			class="suggestion-container absolute {messages.length === 0
-				? 'bottom-24'
-				: 'bottom-20'} left-4 right-4 z-20"
+			class="suggestion-container absolute bottom-4 left-4 right-4 z-20"
+			style="transform: translateY(-100%);"
 		>
 			<div class="flex flex-wrap justify-center gap-2">
 				{#each suggestions as suggestion, index}
@@ -374,20 +396,23 @@
 
 	<!-- Input Area -->
 	<div class="rounded-b-xl border-t bg-background p-4">
-		<div class="flex space-x-2">
-			<input
+		<div class="flex items-end space-x-2">
+			<textarea
+				bind:this={textareaElement}
 				bind:value={inputValue}
 				on:keydown={handleKeyPress}
 				on:focus={handleInputFocus}
 				on:blur={handleInputBlur}
 				on:input={handleInputChange}
 				placeholder="Type your message..."
-				class="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring"
-			/>
+				rows="1"
+				class="flex-1 resize-none overflow-hidden rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring"
+				style="transform-origin: bottom;"
+			></textarea>
 			<button
 				on:click={sendMessage}
 				disabled={!inputValue.trim()}
-				class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+				class="flex-shrink-0 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 			>
 				Send
 			</button>
@@ -396,6 +421,24 @@
 </div>
 
 <style>
+	/* Textarea styling */
+	textarea {
+		min-height: 40px;
+		max-height: 120px;
+		line-height: 1.4;
+		vertical-align: bottom;
+	}
+
+	/* Ensure textarea expands downward and scrolls if it gets too tall */
+	textarea:focus {
+		overflow-y: auto;
+	}
+
+	/* Make sure the input container aligns items at the bottom */
+	.flex.items-end {
+		align-items: flex-end;
+	}
+
 	/* Custom scrollbar styling */
 	div::-webkit-scrollbar {
 		width: 6px;
