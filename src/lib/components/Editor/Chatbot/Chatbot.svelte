@@ -280,9 +280,9 @@
 			<div class="py-6 text-center">
 				<div class="mb-4 flex justify-center">
 					<div
-						class="flex h-12 w-12 items-center justify-center rounded-full bg-primary"
+						class="flex h-20 w-20 items-center justify-center rounded-full bg-primary"
 					>
-						<Avatar.Root class="h-16 w-16">
+						<Avatar.Root class="h-20 w-20">
 							<Avatar.Image
 								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png"
 								alt="Clara"
