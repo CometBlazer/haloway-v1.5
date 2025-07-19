@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { MoreVertical, Copy, Check, Sparkles, User } from 'lucide-svelte';
+	import { MoreVertical, Copy, Check, Sparkles } from 'lucide-svelte';
 	import ThinkingIndicator from './ThinkingIndicator.svelte';
 
 	export let width: string = '100%';
@@ -223,38 +223,40 @@
 
 					<div class="flex w-full flex-col space-y-2">
 						<!-- Main message -->
-						<div
-							class="relative {message.sender === 'user'
-								? 'ml-auto bg-primary text-primary-foreground'
-								: 'bg-muted text-foreground'} rounded-lg px-3 py-2"
-						>
-							<p class="whitespace-pre-wrap pb-6 text-sm">{message.text}</p>
-
-							<!-- Always visible copy button -->
-							<button
-								on:click={() => copyMessage(message.id, message.text)}
-								class="absolute bottom-2 right-2 rounded p-1 transition-all duration-200 {message.sender ===
-								'user'
-									? 'text-primary-foreground/70 hover:bg-white/10 hover:text-primary-foreground'
-									: 'text-muted-foreground hover:bg-black/10 hover:text-foreground'}"
-								aria-label="Copy message"
+						<div class="relative">
+							<div
+								class="relative {message.sender === 'user'
+									? 'ml-auto bg-primary text-primary-foreground'
+									: 'bg-muted text-foreground'} rounded-lg px-3 py-2"
 							>
-								{#if copiedMessageId === message.id}
-									<Check class="h-3 w-3" />
-								{:else}
-									<Copy class="h-3 w-3" />
-								{/if}
-							</button>
+								<p class="whitespace-pre-wrap pb-6 text-sm">{message.text}</p>
+
+								<!-- Always visible copy button -->
+								<button
+									on:click={() => copyMessage(message.id, message.text)}
+									class="absolute bottom-2 right-2 rounded p-1 transition-all duration-200 {message.sender ===
+									'user'
+										? 'text-primary-foreground/50 hover:bg-white/10 hover:text-primary-foreground'
+										: 'text-muted-foreground hover:bg-black/10 hover:text-foreground'}"
+									aria-label="Copy message"
+								>
+									{#if copiedMessageId === message.id}
+										<Check class="h-3 w-3" />
+									{:else}
+										<Copy class="h-3 w-3" />
+									{/if}
+								</button>
+							</div>
 						</div>
 					</div>
 
-					{#if message.sender === 'user'}
+					<!-- {#if message.sender === 'user'}
 						<div
 							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-secondary"
 						>
 							<User class="h-4 w-4 text-secondary-foreground" />
 						</div>
-					{/if}
+					{/if} -->
 				</div>
 			</div>
 		{/each}
