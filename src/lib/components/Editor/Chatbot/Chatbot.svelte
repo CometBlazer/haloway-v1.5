@@ -238,7 +238,7 @@
 		class="flex items-center justify-between rounded-t-xl border-b bg-muted/50 p-4"
 	>
 		<div class="flex items-center space-x-3">
-			<h3 class="font-semibold text-foreground">Chat Assistant</h3>
+			<h3 class="font-semibold text-foreground">Essay Assistant</h3>
 			<div class="flex items-center space-x-2">
 				<div class="h-2 w-2 rounded-full bg-green-500"></div>
 				<span class="text-sm text-muted-foreground">Online</span>
@@ -277,8 +277,39 @@
 		style="height: {height};"
 	>
 		{#if messages.length === 0}
-			<div class="py-4 text-center text-muted-foreground">
-				<p class="text-sm">Start a conversation...</p>
+			<div class="py-6 text-center">
+				<div class="mb-4 flex justify-center">
+					<div
+						class="flex h-12 w-12 items-center justify-center rounded-full bg-primary"
+					>
+						<Avatar.Root class="h-16 w-16">
+							<Avatar.Image
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png"
+								alt="Clara"
+							/>
+							<Avatar.Fallback>
+								<Sparkles class="h-10 w-10 text-primary-foreground" />
+							</Avatar.Fallback>
+						</Avatar.Root>
+					</div>
+				</div>
+				<div class="space-y-2 text-foreground">
+					<h4 class="text-lg font-semibold">Hi! I'm Clara 👋</h4>
+					<p class="text-sm leading-relaxed text-muted-foreground">
+						I'm your essay reviewer and brainstorming assistant. I can help you
+						with revisions, feedback, and generating first drafts for your
+						writing.
+					</p>
+					<p class="mt-3 text-xs text-muted-foreground">
+						Select one of the suggestions below or ask me anything about your
+						essay! For more in-depth essay coaching, ask <a
+							href="https://dan.haloway.co"
+							target="_blank"
+							class="font-medium underline hover:text-foreground"
+							>Dan the essay coach</a
+						>.
+					</p>
+				</div>
 			</div>
 		{/if}
 
@@ -374,28 +405,28 @@
 		{/if}
 	</div>
 
-	<!-- Floating Suggestions -->
-	{#if showSuggestions || messages.length === 0}
-		<div
-			class="suggestion-container absolute bottom-4 left-4 right-4 z-20"
-			style="transform: translateY(-100%);"
-		>
-			<div class="flex flex-wrap justify-center gap-2">
-				{#each suggestions as suggestion, index}
-					<button
-						on:click={() => selectSuggestion(suggestion)}
-						class="suggestion-button rounded-full border bg-background px-4 py-2 text-sm font-medium text-foreground shadow-lg transition-all duration-200 hover:bg-muted hover:shadow-xl"
-						style="animation-delay: {index * 100}ms"
-					>
-						{suggestion}
-					</button>
-				{/each}
-			</div>
-		</div>
-	{/if}
-
 	<!-- Input Area -->
-	<div class="rounded-b-xl border-t bg-background p-4">
+	<div class="relative rounded-b-xl border-t bg-background p-4">
+		<!-- Floating Suggestions -->
+		{#if showSuggestions || messages.length === 0}
+			<div
+				class="suggestion-container absolute left-4 right-4 z-20 mb-2"
+				style="bottom: 100%; transform: translateY(-0.5rem);"
+			>
+				<div class="flex flex-wrap justify-center gap-2">
+					{#each suggestions as suggestion, index}
+						<button
+							on:click={() => selectSuggestion(suggestion)}
+							class="suggestion-button rounded-full border bg-background px-4 py-2 text-sm font-medium text-foreground shadow-lg transition-all duration-200 hover:bg-muted hover:shadow-xl"
+							style="animation-delay: {index * 100}ms"
+						>
+							{suggestion}
+						</button>
+					{/each}
+				</div>
+			</div>
+		{/if}
+
 		<div class="flex items-end space-x-2">
 			<textarea
 				bind:this={textareaElement}
