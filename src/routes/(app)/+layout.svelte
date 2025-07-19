@@ -3,7 +3,14 @@
 	import Home from '~icons/lucide/home';
 	import PanelLeft from '~icons/lucide/panel-left';
 	import Settings from '~icons/lucide/settings';
-	import { CirclePlus, PenLine, Loader2, NotebookPen } from 'lucide-svelte';
+	import {
+		CirclePlus,
+		PenLine,
+		Loader2,
+		Trophy,
+		GraduationCap,
+		Sparkles,
+	} from 'lucide-svelte';
 
 	import Logo from '$lib/components/Logo.svelte';
 	import PersonalMenu from '$lib/components/personal-menu.svelte';
@@ -13,7 +20,7 @@
 	import Breadcrumbs from './components/breadcrumbs.svelte';
 	import NavLink from './components/nav-link.svelte';
 	import { WebsiteName } from '../../config';
-	import { ExternalLink, Sparkles } from 'lucide-svelte';
+	import { ExternalLink, NotebookPen } from 'lucide-svelte';
 	import { enhance } from '$app/forms';
 	import { toastStore } from '$lib/stores/toast';
 
@@ -125,17 +132,13 @@
 				<Home class="h-5 w-5" />
 				<span class="text-center text-xs font-medium">Dashboard</span>
 			</NavLink>
-
 			<NavLink
+				href="/extracurricular-organizer"
 				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
 				activeClass="bg-accent text-accent-foreground"
-				href="https://www.commonapp.org/blog/announcing-2025-2026-common-app-essay-prompts"
-				target="_blank"
 			>
-				<ExternalLink class="h-5 w-5" />
-				<span class="text-center text-xs font-medium text-muted-foreground"
-					>Common App Prompts</span
-				>
+				<GraduationCap class="h-5 w-5" />
+				<span class="text-center text-xs font-medium">College Consultant</span>
 			</NavLink>
 
 			<NavLink
@@ -143,7 +146,7 @@
 				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
 				activeClass="bg-accent text-accent-foreground"
 			>
-				<NotebookPen class="h-5 w-5" />
+				<Trophy class="h-5 w-5" />
 				<span class="text-center text-xs font-medium">Activities Organizer</span
 				>
 			</NavLink>
@@ -152,8 +155,27 @@
 				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
 				activeClass="bg-accent text-accent-foreground"
 			>
+				<NotebookPen class="h-5 w-5" />
+				<span class="text-center text-xs font-medium">Background</span>
+			</NavLink>
+			<NavLink
+				href="/essayfeedback"
+				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
+				activeClass="bg-accent text-accent-foreground"
+			>
 				<Sparkles class="h-5 w-5" />
-				<span class="text-center text-xs font-medium">AI Feedback</span>
+				<span class="text-center text-xs font-medium">Essay Coaching</span>
+			</NavLink>
+			<NavLink
+				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
+				activeClass="bg-accent text-accent-foreground"
+				href="https://www.commonapp.org/blog/announcing-2025-2026-common-app-essay-prompts"
+				target="_blank"
+			>
+				<ExternalLink class="h-5 w-5" />
+				<span class="text-center text-xs font-medium text-muted-foreground"
+					>T20 Sample Essays</span
+				>
 			</NavLink>
 		</nav>
 		<nav class="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
@@ -210,27 +232,41 @@
 						</button>
 
 						<a
-							href="https://www.commonapp.org/blog/announcing-2025-2026-common-app-essay-prompts"
-							target="_blank"
-							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-						>
-							<ExternalLink class="h-5 w-5" />
-							Common App Prompts
-						</a>
-
-						<a
 							href="/extracurricular-organizer"
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
 						>
-							<NotebookPen class="h-5 w-5" />
+							<Trophy class="h-5 w-5" />
 							Activities Organizer
 						</a>
 						<a
 							href="/essayfeedback"
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
 						>
+							<NotebookPen class="h-5 w-5" />
+							Background
+						</a>
+						<a
+							href="https://www.commonapp.org/blog/announcing-2025-2026-common-app-essay-prompts"
+							target="_blank"
+							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+						>
+							<GraduationCap class="h-5 w-5" />
+							College Consultant
+						</a>
+						<a
+							href="/essayfeedback"
+							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+						>
 							<Sparkles class="h-5 w-5" />
-							AI Feedback
+							Essay Coaching
+						</a>
+						<a
+							href="https://www.commonapp.org/blog/announcing-2025-2026-common-app-essay-prompts"
+							target="_blank"
+							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+						>
+							<ExternalLink class="h-5 w-5" />
+							T20 Sample Essays
 						</a>
 						<a
 							href="/settings"
