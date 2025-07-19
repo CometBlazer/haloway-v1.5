@@ -97,7 +97,7 @@
 				clearInterval(thinkingInterval);
 				completeThinking();
 			}
-		}, 800);
+		}, 2500);
 	}
 
 	function completeThinking(): void {

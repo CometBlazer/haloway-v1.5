@@ -6,16 +6,31 @@
 
 	// Predefined thinking states with emojis and durations
 	const thinkingStates = [
-		{ text: 'Hmmm', icon: '🤔', duration: 2000, id: 'thinking' },
-		{ text: 'Thinking', icon: '🧠', duration: 2000, id: 'processing' },
-		{ text: 'Brainstorming', icon: '⚡', duration: 2000, id: 'analyzing' },
+		{ text: 'Let me think', icon: '🤔', duration: 3500, id: 'thinking' },
 		{
-			text: 'Looking for answers',
-			icon: '🔍',
-			duration: 1900,
+			text: 'Searching knowledge base',
+			icon: '🧠',
+			duration: 3500,
+			id: 'processing',
+		},
+		{
+			text: 'Digging even deeper',
+			icon: '⚡',
+			duration: 3500,
+			id: 'analyzing',
+		},
+		{
+			text: 'Cooking up something good',
+			icon: '🤌',
+			duration: 3500,
 			id: 'pondering',
 		},
-		{ text: 'Refining my answer', icon: '✨', duration: 1900, id: 'refining' },
+		{
+			text: 'Adding final touches',
+			icon: '✨',
+			duration: 3500,
+			id: 'refining',
+		},
 		{ text: 'Almost ready', icon: '🚀', duration: 5000, id: 'ready' },
 		{
 			text: 'Hmm... let me think a bit longer',
