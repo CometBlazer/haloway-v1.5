@@ -31,7 +31,6 @@
 	function sendMessage(): void {
 		if (!inputValue.trim()) return;
 
-		// Add user message
 		messages = [
 			...messages,
 			{
@@ -43,14 +42,12 @@
 
 		inputValue = '';
 
-		// Auto-scroll to bottom
 		setTimeout(() => {
 			if (messagesContainer) {
 				messagesContainer.scrollTop = messagesContainer.scrollHeight;
 			}
 		}, 0);
 
-		// Start thinking process
 		startThinking();
 	}
 
@@ -68,7 +65,6 @@
 			isComplete: false,
 		};
 
-		// Simulate thinking steps
 		const thinkingInterval = setInterval(() => {
 			if (
 				currentThinking &&
@@ -89,7 +85,6 @@
 			currentThinking = { ...currentThinking };
 		}
 
-		// Add AI response after thinking is complete
 		setTimeout(() => {
 			const aiResponse =
 				'This is a longer, more comprehensive response that demonstrates the improved AI capabilities. The system has carefully analyzed your input and is providing a detailed answer that shows the thinking process was worthwhile. This response includes multiple sentences and provides substantial value to continue the conversation effectively.';
@@ -107,7 +102,6 @@
 			isThinking = false;
 			currentThinking = null;
 
-			// Auto-scroll to bottom
 			setTimeout(() => {
 				if (messagesContainer) {
 					messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -208,21 +202,28 @@
 
 		{#each messages as message (message.id)}
 			<div
-				class="flex {message.sender === 'user'
-					? 'justify-end'
-					: 'justify-start'}"
+				class="flex justify-start"
+				class:justify-end={message.sender === 'user'}
 			>
-				<div class="flex max-w-[80%] items-start space-x-2">
+				<div
+					class="flex max-w-[80%] items-start space-x-2"
+					class:flex-row-reverse={message.sender === 'user'}
+				>
 					{#if message.sender === 'ai'}
 						<div
 							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary"
 						>
 							<Sparkles class="h-4 w-4 text-primary-foreground" />
 						</div>
+					{:else}
+						<div
+							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-secondary"
+						>
+							<User class="h-4 w-4 text-secondary-foreground" />
+						</div>
 					{/if}
 
 					<div class="flex w-full flex-col space-y-2">
-						<!-- Thinking Process (only for AI messages with thinking) -->
 						{#if message.sender === 'ai' && message.thinking}
 							<div class="mb-2">
 								<div
@@ -255,15 +256,13 @@
 							</div>
 						{/if}
 
-						<!-- Main message -->
 						<div
-							class="relative {message.sender === 'user'
-								? 'ml-auto bg-primary text-primary-foreground'
-								: 'bg-muted text-foreground'} rounded-lg px-3 py-2"
+							class="relative rounded-lg px-3 py-2 {message.sender === 'user'
+								? 'ml-auto bg-primary text-right text-primary-foreground'
+								: 'bg-muted text-foreground'}"
 						>
 							<p class="whitespace-pre-wrap pb-6 text-sm">{message.text}</p>
 
-							<!-- Always visible copy button -->
 							<button
 								on:click={() => copyMessage(message.id, message.text)}
 								class="absolute bottom-2 right-2 rounded p-1 transition-all duration-200 {message.sender ===
@@ -280,19 +279,10 @@
 							</button>
 						</div>
 					</div>
-
-					{#if message.sender === 'user'}
-						<div
-							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-secondary"
-						>
-							<User class="h-4 w-4 text-secondary-foreground" />
-						</div>
-					{/if}
 				</div>
 			</div>
 		{/each}
 
-		<!-- Live Thinking Indicator -->
 		{#if isThinking && currentThinking}
 			<div class="flex justify-start">
 				<div class="flex max-w-[80%] items-start space-x-2">
@@ -328,7 +318,6 @@
 							{/each}
 						</div>
 
-						<!-- Progress bar -->
 						<div
 							class="h-1 w-full overflow-hidden rounded-full bg-muted-foreground/10"
 						>
@@ -366,20 +355,16 @@
 </div>
 
 <style>
-	/* Custom scrollbar styling */
 	div::-webkit-scrollbar {
 		width: 6px;
 	}
-
 	div::-webkit-scrollbar-track {
 		background: transparent;
 	}
-
 	div::-webkit-scrollbar-thumb {
 		background: hsl(var(--muted-foreground) / 0.3);
 		border-radius: 3px;
 	}
-
 	div::-webkit-scrollbar-thumb:hover {
 		background: hsl(var(--muted-foreground) / 0.5);
 	}
