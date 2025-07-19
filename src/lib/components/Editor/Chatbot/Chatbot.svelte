@@ -297,12 +297,12 @@
 					<h4 class="text-xl font-semibold">Hi! I'm Clara 👋</h4>
 					<p class="text-sm leading-relaxed text-muted-foreground">
 						Select one of the suggestions below or ask me anything about your
-						essay!
+						essay. Type away!
 					</p>
 					<p class="mt-3 text-xs text-muted-foreground">
-						I'm your essay reviewer and brainstorming assistant. I can help you
-						with revisions, feedback, and generating first drafts for your
-						writing. For more in-depth essay coaching, ask <a
+						I'm your personal essay reviewer and brainstorming assistant! I can
+						help you with revisions, feedback, and generating first drafts for
+						your writing. For more in-depth essay coaching, ask <a
 							href="https://dan.haloway.co"
 							target="_blank"
 							class="font-medium underline hover:text-foreground"

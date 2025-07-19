@@ -8,7 +8,9 @@
 		PenLine,
 		Loader2,
 		Trophy,
-		GraduationCap,
+		ExternalLink,
+		// NotebookPen,
+		// GraduationCap,
 		Sparkles,
 	} from 'lucide-svelte';
 
@@ -20,7 +22,6 @@
 	import Breadcrumbs from './components/breadcrumbs.svelte';
 	import NavLink from './components/nav-link.svelte';
 	import { WebsiteName } from '../../config';
-	import { ExternalLink, NotebookPen } from 'lucide-svelte';
 	import { enhance } from '$app/forms';
 	import { toastStore } from '$lib/stores/toast';
 
@@ -140,14 +141,14 @@
 				<Home class="h-5 w-5" />
 				<span class="text-center text-xs font-medium">Dashboard</span>
 			</NavLink>
-			<NavLink
+			<!-- <NavLink
 				href="/extracurricular-organizer"
 				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
 				activeClass="bg-accent text-accent-foreground"
 			>
 				<GraduationCap class="h-5 w-5" />
 				<span class="text-center text-xs font-medium">College Consultant</span>
-			</NavLink>
+			</NavLink> -->
 
 			<NavLink
 				href="/extracurricular-organizer"
@@ -158,14 +159,14 @@
 				<span class="text-center text-xs font-medium">Activities Organizer</span
 				>
 			</NavLink>
-			<NavLink
+			<!-- <NavLink
 				href="/essayfeedback"
 				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
 				activeClass="bg-accent text-accent-foreground"
 			>
 				<NotebookPen class="h-5 w-5" />
 				<span class="text-center text-xs font-medium">Background</span>
-			</NavLink>
+			</NavLink> -->
 			<NavLink
 				href="/essayfeedback"
 				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
@@ -246,21 +247,21 @@
 							<Trophy class="h-5 w-5" />
 							Activities Organizer
 						</a>
-						<a
+						<!-- <a
 							href="/essayfeedback"
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
 						>
 							<NotebookPen class="h-5 w-5" />
 							Background
-						</a>
-						<a
+						</a> -->
+						<!-- <a
 							href="https://www.commonapp.org/blog/announcing-2025-2026-common-app-essay-prompts"
 							target="_blank"
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
 						>
 							<GraduationCap class="h-5 w-5" />
 							College Consultant
-						</a>
+						</a> -->
 						<a
 							href="/essayfeedback"
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
