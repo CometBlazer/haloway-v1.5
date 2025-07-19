@@ -84,22 +84,19 @@
 				<div class="flex items-center gap-2 text-muted-foreground">
 					<!-- Emoji icon with bounce animation -->
 					<span
-						class="text-lg transition-all duration-300 {mounted
+						class="font-medium transition-all duration-300 {mounted
 							? 'scale-100'
 							: 'scale-0'}"
 						style="animation: bounce 1s ease-in-out infinite;"
 					>
-						{currentState?.icon}
-					</span>
-
-					<!-- Text -->
-					<span class="duration-400 font-medium transition-all">
 						{currentState?.text}
-					</span>
 
-					<!-- Animated dots -->
-					<span class="w-6 font-bold text-primary transition-all duration-200">
-						{dots}
+						<!-- Animated dots -->
+						<span
+							class="w-6 font-bold text-primary transition-all duration-200"
+						>
+							{dots}
+						</span>
 					</span>
 				</div>
 			{:else}

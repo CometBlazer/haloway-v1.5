@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { MoreVertical, Copy, Check, Sparkles } from 'lucide-svelte';
+	import * as Avatar from '$lib/components/ui/avatar';
 	import ThinkingIndicator from './ThinkingIndicator.svelte';
 
 	export let width: string = '100%';
@@ -266,7 +267,17 @@
 						<div
 							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary"
 						>
-							<Sparkles class="h-4 w-4 text-primary-foreground" />
+							<Avatar.Root>
+								<Avatar.Image
+									src="https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png"
+									alt="Clara"
+								/>
+								<Avatar.Fallback
+									><Sparkles
+										class="h-4 w-4 text-primary-foreground"
+									/></Avatar.Fallback
+								>
+							</Avatar.Root>
 						</div>
 					{/if}
 
@@ -276,7 +287,7 @@
 							<div
 								class="relative {message.sender === 'user'
 									? 'ml-auto bg-primary text-primary-foreground'
-									: 'bg-muted text-foreground'} rounded-lg px-3 py-2"
+									: 'bg-muted text-foreground'} ml-2 rounded-lg px-3 py-2"
 							>
 								<p class="whitespace-pre-wrap pb-6 text-sm">{message.text}</p>
 
@@ -317,7 +328,17 @@
 					<div
 						class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary"
 					>
-						<Sparkles class="h-4 w-4 text-primary-foreground" />
+						<Avatar.Root>
+							<Avatar.Image
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png"
+								alt="Clara"
+							/>
+							<Avatar.Fallback
+								><Sparkles
+									class="h-4 w-4 text-primary-foreground"
+								/></Avatar.Fallback
+							>
+						</Avatar.Root>
 					</div>
 					<div class="flex-1">
 						<ThinkingIndicator isComplete={false} />
