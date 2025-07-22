@@ -103,7 +103,7 @@
 					href="https://popsy.co/illustrations"
 					target="_blank"
 					variant="link"
-					class="h-auto p-0 text-sm text-primary underline hover:no-underline"
+					class="h-auto p-0 text-sm underline hover:no-underline"
 				>
 					Popsy
 				</Button>.
@@ -111,7 +111,7 @@
 			</p>
 			<div class="flex items-center space-x-4">
 				<Button
-					href="https://instagram.com/unibooth_ai"
+					href="https://instagram.com/"
 					target="_blank"
 					variant="ghost"
 					size="icon"
@@ -136,7 +136,7 @@
 					</svg>
 				</Button>
 				<Button
-					href="https://linkedin.com/company/your-company"
+					href="https://linkedin.com/"
 					target="_blank"
 					variant="ghost"
 					size="icon"
