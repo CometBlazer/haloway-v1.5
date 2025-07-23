@@ -60,8 +60,8 @@ Haloway is a browser-based writing platform that helps students stay organized a
 ### Setup
 
 ```bash
-git clone https://github.com/your-org/haloway.git
-cd haloway
+git clone https://github.com/CometBlazer/haloway-v1.5.git
+cd haloway-v1.5
 npm install
 ```
 
