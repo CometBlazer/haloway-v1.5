@@ -77,7 +77,10 @@
 
 	async function loadInitialMessages() {
 		try {
-			console.log('Loading messages for document:', $page.params.documentId); // Debug
+			console.log(
+				'Loading initial messages for document:',
+				$page.params.documentId,
+			);
 
 			const response = await fetch(
 				`/api/ai-chatbot-messages/${$page.params.documentId}`,
@@ -85,10 +88,10 @@
 
 			if (response.ok) {
 				const result = await response.json();
-				console.log('API response:', result); // Debug
+				console.log('Initial API response:', result);
 
 				if (result.success && result.messages) {
-					console.log('Processing messages:', result.messages); // Debug
+					console.log('Processing initial messages:', result.messages.length);
 
 					messages = result.messages.map((msg: ChatMessage) => ({
 						id: msg.id,
@@ -97,19 +100,22 @@
 						timestamp: msg.timestamp,
 					}));
 
-					console.log('Mapped messages:', messages); // Debug
+					console.log('Mapped initial messages:', messages.length);
 					scrollToBottom();
 				}
 			} else if (response.status === 401) {
-				// Handle unauthorized - redirect to login
 				goto('/login');
 			} else {
-				console.error('Failed to load messages, status:', response.status);
+				console.error(
+					'Failed to load initial messages, status:',
+					response.status,
+				);
 			}
 		} catch (error) {
 			console.error('Failed to load initial messages:', error);
 			// Fall back to using initialMessages prop if API fails
 			if (initialMessages && initialMessages.length > 0) {
+				console.log('Using fallback initial messages:', initialMessages.length);
 				messages = initialMessages.map((msg: ChatMessage) => ({
 					id: msg.id,
 					text: msg.content, // Make sure we're using content
@@ -200,7 +206,6 @@
 			const decoder = new TextDecoder();
 			let accumulatedText = '';
 			let hasStartedStreaming = false;
-			let streamingComplete = false;
 
 			console.log('Starting to read stream...');
 
@@ -210,17 +215,11 @@
 					while (true) {
 						const { done, value } = await reader.read();
 
-						console.log('Stream chunk received:', {
-							done,
-							valueLength: value?.length,
-						});
-
 						if (done) {
 							console.log(
-								'Stream completed, accumulated text length:',
+								'Stream completed, final text length:',
 								accumulatedText.length,
 							);
-							streamingComplete = true;
 							break;
 						}
 
@@ -233,12 +232,6 @@
 								try {
 									const jsonStr = line.slice(2); // Remove '0:' prefix
 									const data = JSON.parse(jsonStr);
-
-									console.log(
-										'Parsed stream data:',
-										data.type,
-										data.textDelta?.substring(0, 50),
-									);
 
 									if (data.type === 'textDelta' && data.textDelta) {
 										accumulatedText += data.textDelta;
@@ -258,7 +251,6 @@
 
 											messages = [...messages, streamingMsg];
 											hasStartedStreaming = true;
-											console.log('Streaming message created');
 										} else {
 											// Update the streaming message
 											messages = messages.map((msg) =>
@@ -270,53 +262,42 @@
 										scrollToBottom();
 									}
 								} catch (error) {
-									console.error(
-										'Failed to parse stream chunk:',
-										error,
-										'Line:',
-										line,
-									);
+									console.error('Failed to parse stream chunk:', error);
 								}
 							}
 						}
 					}
 				} catch (streamError) {
 					console.error('Stream reading error:', streamError);
-					streamingComplete = true;
 				}
 			}
 
-			console.log('Stream processing finished:', {
-				hasStartedStreaming,
-				streamingComplete,
-				finalTextLength: accumulatedText.length,
-			});
-
-			// Handle case where no streaming occurred (empty response or error)
-			if (!hasStartedStreaming && accumulatedText.length === 0) {
-				console.log(
-					'No streaming data received, completing thinking and showing error',
-				);
-				completeThinking();
-
-				const errorMsg: Message = {
-					id: `error-${Date.now()}`,
-					text: 'I received your message but had trouble generating a response. Please try again.',
-					sender: 'ai',
-					timestamp: new Date().toISOString(),
-				};
-
-				messages = [...messages, errorMsg];
-			} else if (hasStartedStreaming) {
+			// CRITICAL FIX: After streaming completes, reload messages from database
+			if (hasStartedStreaming && accumulatedText.length > 0) {
+				console.log('Streaming completed successfully, marking as complete');
 				// Mark streaming as complete
-				console.log('Marking streaming as complete');
 				messages = messages.map((msg) =>
 					msg.id === assistantId ? { ...msg, isStreaming: false } : msg,
 				);
+
+				// Wait a moment for the database save to complete, then reload
+				setTimeout(async () => {
+					console.log('Reloading messages from database...');
+					await reloadMessagesFromDatabase();
+				}, 1000);
+			} else {
+				// Handle case where no streaming occurred
+				console.log('No streaming data received');
+				completeThinking();
+
+				// Wait and try to reload from database in case it was saved anyway
+				setTimeout(async () => {
+					console.log('Checking database for saved messages...');
+					await reloadMessagesFromDatabase();
+				}, 2000);
 			}
 
 			scrollToBottom();
-			console.log('Message processing completed successfully');
 		} catch (error) {
 			console.error('Failed to send message:', error);
 
@@ -326,17 +307,24 @@
 			// Remove the optimistic user message and show error
 			messages = messages.filter((m) => m.id !== userMsg.id);
 
-			const errorMsg: Message = {
-				id: `error-${Date.now()}`,
-				text: 'Sorry, I encountered an error processing your message. Please try again.',
-				sender: 'ai',
-				timestamp: new Date().toISOString(),
-			};
+			// Check database before showing error - maybe it was saved despite the error
+			setTimeout(async () => {
+				const beforeErrorCount = messages.length;
+				await reloadMessagesFromDatabase();
 
-			setTimeout(() => {
-				messages = [...messages, errorMsg];
-				scrollToBottom();
-			}, 500);
+				// Only show error if no new messages were loaded
+				if (messages.length === beforeErrorCount) {
+					const errorMsg: Message = {
+						id: `error-${Date.now()}`,
+						text: 'Sorry, I encountered an error processing your message. Please try again.',
+						sender: 'ai',
+						timestamp: new Date().toISOString(),
+					};
+
+					messages = [...messages, errorMsg];
+					scrollToBottom();
+				}
+			}, 1000);
 		} finally {
 			console.log('Cleaning up - setting isLoading to false');
 			isLoading = false;
@@ -345,6 +333,57 @@
 				console.log('Force completing thinking in finally block');
 				completeThinking();
 			}
+		}
+	}
+
+	// Add this new function to reload messages from the database:
+	async function reloadMessagesFromDatabase(): Promise<void> {
+		try {
+			console.log('Fetching latest messages from database...');
+
+			const response = await fetch(
+				`/api/ai-chatbot-messages/${$page.params.documentId}`,
+			);
+
+			if (response.ok) {
+				const result = await response.json();
+				if (result.success && result.messages) {
+					console.log('Loaded messages from DB:', result.messages.length);
+
+					const loadedMessages = result.messages.map((msg: ChatMessage) => ({
+						id: msg.id,
+						text: msg.content,
+						sender: msg.role === 'user' ? 'user' : 'ai',
+						timestamp: msg.timestamp,
+					}));
+
+					// Only update if we got more messages than we currently have
+					if (loadedMessages.length > messages.length) {
+						console.log('Updating UI with database messages');
+						messages = loadedMessages;
+						scrollToBottom();
+					} else if (loadedMessages.length === messages.length) {
+						// Same count, but check if the last message content is different
+						const lastDbMessage = loadedMessages[loadedMessages.length - 1];
+						const lastUiMessage = messages[messages.length - 1];
+
+						if (
+							lastDbMessage &&
+							lastUiMessage &&
+							lastDbMessage.text !== lastUiMessage.text &&
+							lastDbMessage.sender === 'ai'
+						) {
+							console.log('Updating last message with database version');
+							messages = loadedMessages;
+							scrollToBottom();
+						}
+					}
+				}
+			} else {
+				console.error('Failed to reload messages, status:', response.status);
+			}
+		} catch (error) {
+			console.error('Error reloading messages from database:', error);
 		}
 	}
 
