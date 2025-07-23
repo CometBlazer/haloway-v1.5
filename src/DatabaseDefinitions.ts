@@ -221,8 +221,9 @@ export interface Database {
 					created_at: Date | null;
 					updated_at: Date | null;
 					current_version_id: string | null;
-					word_count_limit: number | null; // Added word count limit field
-					school: string; // Added school field (non-null)
+					word_count_limit: number | null;
+					school: string;
+					chatbot_messages: Json | null;
 				};
 				Insert: {
 					id?: string;
@@ -235,7 +236,8 @@ export interface Database {
 					updated_at?: Date | null;
 					current_version_id?: string | null;
 					word_count_limit?: number | null;
-					school?: string; // Optional on insert due to default value
+					school?: string;
+					chatbot_messages?: Json | null;
 				};
 				Update: {
 					id?: string;
@@ -249,6 +251,7 @@ export interface Database {
 					current_version_id?: string | null;
 					word_count_limit?: number | null;
 					school?: string;
+					chatbot_messages?: Json | null;
 				};
 				Relationships: [
 					{
@@ -444,6 +447,11 @@ export type Document = Database['public']['Tables']['documents']['Row'];
 export type Tag = Database['public']['Tables']['tags']['Row'];
 export type School = Database['public']['Tables']['schools']['Row'];
 export type Activity = Database['public']['Tables']['activities']['Row'];
+// Updated Document type with chatbot_messages
+export type DocumentWithChat =
+	Database['public']['Tables']['documents']['Row'] & {
+		chatbot_messages: ChatMessage[] | null;
+	};
 
 // Type for your component usage (with field transformations)
 export interface ComponentTag {
@@ -454,6 +462,14 @@ export interface ComponentTag {
 	created_at?: Date | null;
 	updated_at?: Date | null;
 	created_by?: string | null;
+}
+
+// Chat message type for the chatbot_messages JSON field
+export interface ChatMessage {
+	id: string;
+	role: 'user' | 'assistant';
+	content: string;
+	timestamp: string;
 }
 
 // Type for version data as used in your components - updated to include updated_at, removed word_count

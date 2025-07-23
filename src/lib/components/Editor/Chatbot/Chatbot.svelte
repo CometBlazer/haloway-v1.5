@@ -1,28 +1,38 @@
 <!-- src/lib/components/Editor/Chatbot/Chatbot.svelte -->
 <script lang="ts">
-	import { MoreVertical, Copy, Check, Sparkles } from 'lucide-svelte';
+	import { MoreVertical, Copy, Check, Sparkles, Send } from 'lucide-svelte';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import ThinkingIndicator from './ThinkingIndicator.svelte';
+	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 
 	export let width: string = '100%';
 	export let height: string = '400px';
 
+	// Context props - passed from parent page
+	export let essayContent: string = '';
+	export let documentTitle: string = '';
+	export let documentPrompt: string = '';
+	export let wordCount: number = 0;
+	export let wordCountLimit: number = 250;
+	export let school: string = '';
+	export let dueDate: string = '';
+	export let status: string = '';
+	export let initialMessages: any[] = [];
+
 	interface Message {
-		id: number;
+		id: string;
 		text: string;
 		sender: 'user' | 'ai';
-		thinking?: {
-			steps: string[];
-			currentStep: number;
-			isComplete: boolean;
-		};
+		timestamp: string;
+		isStreaming?: boolean;
 	}
 
 	let messages: Message[] = [];
 	let inputValue: string = '';
 	let messagesContainer: HTMLDivElement;
 	let showDropdown: boolean = false;
-	let copiedMessageId: number | null = null;
+	let copiedMessageId: string | null = null;
 	let isThinking: boolean = false;
 	let currentThinking: {
 		steps: string[];
@@ -32,6 +42,8 @@
 	let inputFocused: boolean = false;
 	let showSuggestions: boolean = false;
 	let textareaElement: HTMLTextAreaElement;
+	let isLoading: boolean = false;
+	let streamingMessageId: string | null = null;
 
 	// Configurable suggestions - adjust this JSON as needed
 	const suggestions = [
@@ -41,35 +53,202 @@
 		'Improve the flow and structure of this paragraph: [copy and paste paragraph here]',
 	];
 
-	function sendMessage(): void {
-		if (!inputValue.trim()) return;
+	onMount(() => {
+		loadInitialMessages();
+	});
 
-		// Add user message
-		messages = [
-			...messages,
-			{
-				id: Date.now(),
-				text: inputValue,
-				sender: 'user',
-			},
-		];
+	async function loadInitialMessages() {
+		try {
+			const response = await fetch(
+				`/api/ai-chatbot-messages/${$page.params.documentId}`,
+			);
 
+			if (response.ok) {
+				const result = await response.json();
+				if (result.success && result.messages) {
+					messages = result.messages.map((msg: any) => ({
+						id: msg.id,
+						text: msg.content,
+						sender: msg.role === 'user' ? 'user' : 'ai',
+						timestamp: msg.timestamp,
+					}));
+					scrollToBottom();
+				}
+			} else if (response.status === 401) {
+				// Handle unauthorized - redirect to login
+				goto('/login');
+			}
+		} catch (error) {
+			console.error('Failed to load initial messages:', error);
+			// Fall back to using initialMessages prop if API fails
+			if (initialMessages && initialMessages.length > 0) {
+				messages = initialMessages.map((msg: any) => ({
+					id: msg.id,
+					text: msg.content,
+					sender: msg.role === 'user' ? 'user' : 'ai',
+					timestamp: msg.timestamp,
+				}));
+				scrollToBottom();
+			}
+		}
+	}
+
+	// Convert messages to the format expected by the server
+	function messagesToServerFormat(): any[] {
+		return messages.map((msg) => ({
+			id: msg.id,
+			role: msg.sender === 'user' ? 'user' : 'assistant',
+			content: msg.text,
+			timestamp: msg.timestamp,
+		}));
+	}
+
+	async function sendMessage(): Promise<void> {
+		if (!inputValue.trim() || isLoading) return;
+
+		const userMessage = inputValue.trim();
+
+		// Add user message immediately for better UX
+		const userMsg: Message = {
+			id: `user-${Date.now()}`,
+			text: userMessage,
+			sender: 'user',
+			timestamp: new Date().toISOString(),
+		};
+
+		messages = [...messages, userMsg];
 		inputValue = '';
+
 		// Reset textarea height
 		if (textareaElement) {
 			textareaElement.style.height = 'auto';
 		}
 		hideSuggestions();
+		scrollToBottom();
 
-		// Auto-scroll to bottom
-		setTimeout(() => {
-			if (messagesContainer) {
-				messagesContainer.scrollTop = messagesContainer.scrollHeight;
-			}
-		}, 0);
-
-		// Start thinking process
+		// Start thinking animation
 		startThinking();
+		isLoading = true;
+
+		try {
+			// Get current user ID from page data or session
+			const userId = $page.data.session?.user?.id;
+
+			if (!userId) {
+				throw new Error('User not authenticated');
+			}
+
+			// Create streaming assistant message
+			const assistantId = `assistant-${Date.now()}`;
+			streamingMessageId = assistantId;
+
+			const streamingMsg: Message = {
+				id: assistantId,
+				text: '',
+				sender: 'ai',
+				timestamp: new Date().toISOString(),
+				isStreaming: true,
+			};
+
+			// Complete thinking and add streaming message placeholder
+			completeThinking();
+			messages = [...messages, streamingMsg];
+			scrollToBottom();
+
+			// Send to streaming API route
+			const response = await fetch('/api/ai-chatbot', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					message: userMessage,
+					currentMessages: messagesToServerFormat().slice(0, -1), // Exclude the streaming message
+					documentId: $page.params.documentId,
+					versionId: $page.params.versionId,
+					essayContent,
+					documentTitle,
+					documentPrompt,
+					wordCount,
+					wordCountLimit,
+					school,
+					dueDate,
+					status,
+				}),
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP ${response.status}`);
+			}
+
+			// Handle streaming response
+			const reader = response.body?.getReader();
+			const decoder = new TextDecoder();
+			let accumulatedText = '';
+
+			if (reader) {
+				while (true) {
+					const { done, value } = await reader.read();
+
+					if (done) break;
+
+					const chunk = decoder.decode(value, { stream: true });
+					const lines = chunk.split('\n');
+
+					for (const line of lines) {
+						if (line.startsWith('0:')) {
+							// Parse AI SDK streaming format
+							try {
+								const jsonStr = line.slice(2); // Remove '0:' prefix
+								const data = JSON.parse(jsonStr);
+								if (data.type === 'textDelta' && data.textDelta) {
+									accumulatedText += data.textDelta;
+
+									// Update the streaming message
+									messages = messages.map((msg) =>
+										msg.id === assistantId
+											? { ...msg, text: accumulatedText }
+											: msg,
+									);
+									scrollToBottom();
+								}
+							} catch (e) {
+								// Ignore parsing errors for partial chunks
+							}
+						}
+					}
+				}
+			}
+
+			// Mark streaming as complete
+			messages = messages.map((msg) =>
+				msg.id === assistantId ? { ...msg, isStreaming: false } : msg,
+			);
+
+			streamingMessageId = null;
+			scrollToBottom();
+		} catch (error) {
+			console.error('Failed to send message:', error);
+
+			// Remove the optimistic user message and show error
+			messages = messages.filter((m) => m.id !== userMsg.id);
+
+			const errorMsg: Message = {
+				id: `error-${Date.now()}`,
+				text: 'Sorry, I encountered an error processing your message. Please try again.',
+				sender: 'ai',
+				timestamp: new Date().toISOString(),
+			};
+
+			completeThinking();
+			setTimeout(() => {
+				messages = [...messages, errorMsg];
+				scrollToBottom();
+			}, 1000);
+		} finally {
+			isLoading = false;
+			streamingMessageId = null;
+		}
 	}
 
 	function startThinking(): void {
@@ -322,6 +501,7 @@
 			>
 				<div class="flex max-w-[80%] items-start space-x-2">
 					{#if message.sender === 'ai'}
+						<!-- AI Avatar -->
 						<div
 							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary"
 						>
@@ -330,11 +510,9 @@
 									src="https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png"
 									alt="Clara"
 								/>
-								<Avatar.Fallback
-									><Sparkles
-										class="h-4 w-4 text-primary-foreground"
-									/></Avatar.Fallback
-								>
+								<Avatar.Fallback>
+									<Sparkles class="h-4 w-4 text-primary-foreground" />
+								</Avatar.Fallback>
 							</Avatar.Root>
 						</div>
 					{/if}
@@ -347,34 +525,52 @@
 									? 'ml-auto bg-primary text-primary-foreground'
 									: 'bg-muted text-foreground'} ml-2 rounded-lg px-3 py-2"
 							>
-								<p class="whitespace-pre-wrap pb-6 text-sm">{message.text}</p>
-
-								<!-- Always visible copy button -->
-								<button
-									on:click={() => copyMessage(message.id, message.text)}
-									class="absolute bottom-2 right-2 rounded p-1 transition-all duration-200 {message.sender ===
-									'user'
-										? 'text-primary-foreground/50 hover:bg-white/10 hover:text-primary-foreground'
-										: 'text-muted-foreground hover:bg-black/10 hover:text-foreground'}"
-									aria-label="Copy message"
-								>
-									{#if copiedMessageId === message.id}
-										<Check class="h-3 w-3" />
-									{:else}
-										<Copy class="h-3 w-3" />
+								<p class="whitespace-pre-wrap pb-6 text-sm">
+									{message.text}
+									{#if message.isStreaming}
+										<span class="animate-pulse">|</span>
 									{/if}
-								</button>
+								</p>
+
+								<!-- Copy button (hidden while streaming) -->
+								{#if !message.isStreaming}
+									<button
+										on:click={() => copyMessage(message.id, message.text)}
+										class="absolute bottom-2 right-2 rounded p-1 transition-all duration-200 {message.sender ===
+										'user'
+											? 'text-primary-foreground/50 hover:bg-white/10 hover:text-primary-foreground'
+											: 'text-muted-foreground hover:bg-black/10 hover:text-foreground'}"
+										aria-label="Copy message"
+									>
+										{#if copiedMessageId === message.id}
+											<Check class="h-3 w-3" />
+										{:else}
+											<Copy class="h-3 w-3" />
+										{/if}
+									</button>
+								{/if}
 							</div>
 						</div>
-					</div>
 
-					<!-- {#if message.sender === 'user'}
+						<!-- Timestamp (hidden while streaming) -->
+						{#if !message.isStreaming}
+							<div
+								class="text-xs text-muted-foreground {message.sender === 'user'
+									? 'text-right'
+									: 'text-left'}"
+							>
+								{formatTime(message.timestamp)}
+							</div>
+						{/if}
+
+						<!-- {#if message.sender === 'user'}
 						<div
 							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-secondary"
 						>
 							<User class="h-4 w-4 text-secondary-foreground" />
 						</div>
 					{/if} -->
+					</div>
 				</div>
 			</div>
 		{/each}

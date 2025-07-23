@@ -200,6 +200,14 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		content: currentVersion.content,
 	};
 
+	const { data: chatData } = await locals.supabase
+		.from('documents')
+		.select('chatbot_messages')
+		.eq('id', documentId)
+		.single();
+
+	const chatMessages = chatData?.chatbot_messages || [];
+
 	return {
 		document: {
 			...document,
@@ -212,6 +220,7 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		versions: transformedVersions,
 		school: schoolDisplayName,
 		schoolUrlSafeName: schoolUrlSafeName,
+		chatMessages,
 		session,
 	};
 };
