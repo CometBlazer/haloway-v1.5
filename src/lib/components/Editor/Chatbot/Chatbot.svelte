@@ -159,6 +159,8 @@
 		isLoading = true;
 
 		try {
+			console.log('Sending message to API...');
+
 			// Send to streaming API route
 			const response = await fetch('/api/ai-chatbot', {
 				method: 'POST',
@@ -181,8 +183,12 @@
 				}),
 			});
 
+			console.log('API response status:', response.status);
+
 			if (!response.ok) {
-				throw new Error(`HTTP ${response.status}`);
+				const errorText = await response.text();
+				console.error('API error response:', errorText);
+				throw new Error(`HTTP ${response.status}: ${errorText}`);
 			}
 
 			// Create streaming assistant message AFTER thinking is complete
@@ -194,68 +200,128 @@
 			const decoder = new TextDecoder();
 			let accumulatedText = '';
 			let hasStartedStreaming = false;
+			let streamingComplete = false;
+
+			console.log('Starting to read stream...');
 
 			if (reader) {
-				// eslint-disable-next-line no-constant-condition
-				while (true) {
-					const { done, value } = await reader.read();
+				try {
+					// eslint-disable-next-line no-constant-condition
+					while (true) {
+						const { done, value } = await reader.read();
 
-					if (done) break;
+						console.log('Stream chunk received:', {
+							done,
+							valueLength: value?.length,
+						});
 
-					const chunk = decoder.decode(value, { stream: true });
-					const lines = chunk.split('\n');
+						if (done) {
+							console.log(
+								'Stream completed, accumulated text length:',
+								accumulatedText.length,
+							);
+							streamingComplete = true;
+							break;
+						}
 
-					for (const line of lines) {
-						if (line.startsWith('0:')) {
-							// Parse AI SDK streaming format
-							try {
-								const jsonStr = line.slice(2); // Remove '0:' prefix
-								const data = JSON.parse(jsonStr);
-								if (data.type === 'textDelta' && data.textDelta) {
-									accumulatedText += data.textDelta;
+						const chunk = decoder.decode(value, { stream: true });
+						const lines = chunk.split('\n');
 
-									// Create streaming message on first delta
-									if (!hasStartedStreaming) {
-										completeThinking(); // Complete thinking before showing streaming
+						for (const line of lines) {
+							if (line.startsWith('0:')) {
+								// Parse AI SDK streaming format
+								try {
+									const jsonStr = line.slice(2); // Remove '0:' prefix
+									const data = JSON.parse(jsonStr);
 
-										streamingMsg = {
-											id: assistantId,
-											text: accumulatedText,
-											sender: 'ai',
-											timestamp: new Date().toISOString(),
-											isStreaming: true,
-										};
+									console.log(
+										'Parsed stream data:',
+										data.type,
+										data.textDelta?.substring(0, 50),
+									);
 
-										messages = [...messages, streamingMsg];
-										hasStartedStreaming = true;
-									} else {
-										// Update the streaming message
-										messages = messages.map((msg) =>
-											msg.id === assistantId
-												? { ...msg, text: accumulatedText }
-												: msg,
-										);
+									if (data.type === 'textDelta' && data.textDelta) {
+										accumulatedText += data.textDelta;
+
+										// Create streaming message on first delta
+										if (!hasStartedStreaming) {
+											console.log('Starting streaming, completing thinking...');
+											completeThinking(); // Complete thinking before showing streaming
+
+											streamingMsg = {
+												id: assistantId,
+												text: accumulatedText,
+												sender: 'ai',
+												timestamp: new Date().toISOString(),
+												isStreaming: true,
+											};
+
+											messages = [...messages, streamingMsg];
+											hasStartedStreaming = true;
+											console.log('Streaming message created');
+										} else {
+											// Update the streaming message
+											messages = messages.map((msg) =>
+												msg.id === assistantId
+													? { ...msg, text: accumulatedText }
+													: msg,
+											);
+										}
+										scrollToBottom();
 									}
-									scrollToBottom();
+								} catch (error) {
+									console.error(
+										'Failed to parse stream chunk:',
+										error,
+										'Line:',
+										line,
+									);
 								}
-							} catch {
-								// Ignore parsing errors for partial chunks
 							}
 						}
 					}
+				} catch (streamError) {
+					console.error('Stream reading error:', streamError);
+					streamingComplete = true;
 				}
 			}
 
-			// Mark streaming as complete
-			if (hasStartedStreaming) {
+			console.log('Stream processing finished:', {
+				hasStartedStreaming,
+				streamingComplete,
+				finalTextLength: accumulatedText.length,
+			});
+
+			// Handle case where no streaming occurred (empty response or error)
+			if (!hasStartedStreaming && accumulatedText.length === 0) {
+				console.log(
+					'No streaming data received, completing thinking and showing error',
+				);
+				completeThinking();
+
+				const errorMsg: Message = {
+					id: `error-${Date.now()}`,
+					text: 'I received your message but had trouble generating a response. Please try again.',
+					sender: 'ai',
+					timestamp: new Date().toISOString(),
+				};
+
+				messages = [...messages, errorMsg];
+			} else if (hasStartedStreaming) {
+				// Mark streaming as complete
+				console.log('Marking streaming as complete');
 				messages = messages.map((msg) =>
 					msg.id === assistantId ? { ...msg, isStreaming: false } : msg,
 				);
 			}
 
 			scrollToBottom();
+			console.log('Message processing completed successfully');
 		} catch (error) {
 			console.error('Failed to send message:', error);
+
+			// Ensure thinking is completed on error
+			completeThinking();
 
 			// Remove the optimistic user message and show error
 			messages = messages.filter((m) => m.id !== userMsg.id);
@@ -267,17 +333,24 @@
 				timestamp: new Date().toISOString(),
 			};
 
-			completeThinking();
 			setTimeout(() => {
 				messages = [...messages, errorMsg];
 				scrollToBottom();
-			}, 1000);
+			}, 500);
 		} finally {
+			console.log('Cleaning up - setting isLoading to false');
 			isLoading = false;
+			// Ensure thinking is stopped
+			if (isThinking) {
+				console.log('Force completing thinking in finally block');
+				completeThinking();
+			}
 		}
 	}
 
 	function startThinking(): void {
+		console.log('Starting thinking animation');
+
 		isThinking = true;
 		currentThinking = {
 			steps: [
@@ -295,31 +368,49 @@
 		const thinkingInterval = setInterval(() => {
 			if (
 				currentThinking &&
-				currentThinking.currentStep < currentThinking.steps.length - 1
+				currentThinking.currentStep < currentThinking.steps.length - 1 &&
+				isThinking // Add this check to prevent continuing after completion
 			) {
 				currentThinking.currentStep++;
 				currentThinking = { ...currentThinking };
+				console.log('Thinking step:', currentThinking.currentStep);
 			} else {
+				console.log('Thinking interval cleared');
 				clearInterval(thinkingInterval);
-				if (currentThinking) {
-					currentThinking.isComplete = true;
-					currentThinking = { ...currentThinking };
-				}
+				// Don't auto-complete here - let the streaming logic handle it
 			}
 		}, 1500);
 	}
 
 	function completeThinking(): void {
+		console.log('completeThinking called, current state:', {
+			isThinking,
+			currentThinking,
+		});
+
 		isThinking = false;
+
 		if (currentThinking) {
 			currentThinking.isComplete = true;
 			currentThinking = { ...currentThinking };
 		}
+		debugState();
 
+		// Force a reactive update
 		setTimeout(() => {
-			isThinking = false;
 			currentThinking = null;
-		}, 1000);
+			console.log('Thinking state cleared');
+		}, 100);
+	}
+
+	function debugState() {
+		console.log('Current component state:', {
+			isLoading,
+			isThinking,
+			currentThinking,
+			messagesCount: messages.length,
+			lastMessage: messages[messages.length - 1],
+		});
 	}
 
 	function handleKeyPress(event: KeyboardEvent): void {
