@@ -45,8 +45,8 @@ Haloway is a browser-based writing platform that helps students stay organized a
 - **Language**: TypeScript
 - **Package Manager**: npm
 - **Database**: PostgreSQL (with Supabase)
-- **Hosting**: Vercel
-- **AI Integration**: OpenAI API (for feedback and suggestions)
+- **Hosting**: Cloudflare Pages
+- **AI Integration**: Gemini (for feedback and suggestions)
 
 ---
 
