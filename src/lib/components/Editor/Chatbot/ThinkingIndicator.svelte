@@ -33,7 +33,7 @@
 		},
 		{ text: 'Almost ready', icon: '🚀', duration: 5000, id: 'ready' },
 		{
-			text: 'Hmm... let me think a bit longer',
+			text: 'This is taking longer than expected',
 			icon: '🔄',
 			duration: 4000,
 			id: 'retrying',

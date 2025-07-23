@@ -200,13 +200,23 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 		content: currentVersion.content,
 	};
 
+	// Load chat messages for this document
 	const { data: chatData } = await locals.supabase
 		.from('documents')
 		.select('chatbot_messages')
 		.eq('id', documentId)
 		.single();
 
-	const chatMessages = chatData?.chatbot_messages || [];
+	// Parse chatbot_messages if it's a string
+	let chatMessages = chatData?.chatbot_messages || [];
+	if (typeof chatMessages === 'string') {
+		try {
+			chatMessages = JSON.parse(chatMessages);
+		} catch (error) {
+			console.error('Failed to parse chatbot_messages in load:', error);
+			chatMessages = [];
+		}
+	}
 
 	return {
 		document: {

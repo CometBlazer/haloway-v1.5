@@ -6,6 +6,7 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import type { ChatMessage } from '$lib/types/ai-chatbot.ts';
 
 	export let width: string = '100%';
 	export let height: string = '400px';
@@ -19,14 +20,6 @@
 	export let school: string = '';
 	export let dueDate: string = '';
 	export let status: string = '';
-
-	// Define proper types
-	interface ChatMessage {
-		id: string;
-		role: 'user' | 'assistant';
-		content: string;
-		timestamp: string;
-	}
 
 	export let initialMessages: ChatMessage[] = [];
 
@@ -84,24 +77,34 @@
 
 	async function loadInitialMessages() {
 		try {
+			console.log('Loading messages for document:', $page.params.documentId); // Debug
+
 			const response = await fetch(
 				`/api/ai-chatbot-messages/${$page.params.documentId}`,
 			);
 
 			if (response.ok) {
 				const result = await response.json();
+				console.log('API response:', result); // Debug
+
 				if (result.success && result.messages) {
+					console.log('Processing messages:', result.messages); // Debug
+
 					messages = result.messages.map((msg: ChatMessage) => ({
 						id: msg.id,
-						text: msg.content,
+						text: msg.content, // Make sure we're using content, not text
 						sender: msg.role === 'user' ? 'user' : 'ai',
 						timestamp: msg.timestamp,
 					}));
+
+					console.log('Mapped messages:', messages); // Debug
 					scrollToBottom();
 				}
 			} else if (response.status === 401) {
 				// Handle unauthorized - redirect to login
 				goto('/login');
+			} else {
+				console.error('Failed to load messages, status:', response.status);
 			}
 		} catch (error) {
 			console.error('Failed to load initial messages:', error);
@@ -109,7 +112,7 @@
 			if (initialMessages && initialMessages.length > 0) {
 				messages = initialMessages.map((msg: ChatMessage) => ({
 					id: msg.id,
-					text: msg.content,
+					text: msg.content, // Make sure we're using content
 					sender: msg.role === 'user' ? 'user' : 'ai',
 					timestamp: msg.timestamp,
 				}));
@@ -156,22 +159,6 @@
 		isLoading = true;
 
 		try {
-			// Create streaming assistant message
-			const assistantId = `assistant-${Date.now()}`;
-
-			const streamingMsg: Message = {
-				id: assistantId,
-				text: '',
-				sender: 'ai',
-				timestamp: new Date().toISOString(),
-				isStreaming: true,
-			};
-
-			// Complete thinking and add streaming message placeholder
-			completeThinking();
-			messages = [...messages, streamingMsg];
-			scrollToBottom();
-
 			// Send to streaming API route
 			const response = await fetch('/api/ai-chatbot', {
 				method: 'POST',
@@ -180,7 +167,7 @@
 				},
 				body: JSON.stringify({
 					message: userMessage,
-					currentMessages: messagesToServerFormat().slice(0, -1), // Exclude the streaming message
+					currentMessages: messagesToServerFormat().slice(0, -1), // Exclude user message since it's already in the array
 					documentId: $page.params.documentId,
 					versionId: $page.params.versionId,
 					essayContent,
@@ -198,10 +185,15 @@
 				throw new Error(`HTTP ${response.status}`);
 			}
 
+			// Create streaming assistant message AFTER thinking is complete
+			const assistantId = `assistant-${Date.now()}`;
+			let streamingMsg: Message;
+
 			// Handle streaming response
 			const reader = response.body?.getReader();
 			const decoder = new TextDecoder();
 			let accumulatedText = '';
+			let hasStartedStreaming = false;
 
 			if (reader) {
 				// eslint-disable-next-line no-constant-condition
@@ -222,12 +214,28 @@
 								if (data.type === 'textDelta' && data.textDelta) {
 									accumulatedText += data.textDelta;
 
-									// Update the streaming message
-									messages = messages.map((msg) =>
-										msg.id === assistantId
-											? { ...msg, text: accumulatedText }
-											: msg,
-									);
+									// Create streaming message on first delta
+									if (!hasStartedStreaming) {
+										completeThinking(); // Complete thinking before showing streaming
+
+										streamingMsg = {
+											id: assistantId,
+											text: accumulatedText,
+											sender: 'ai',
+											timestamp: new Date().toISOString(),
+											isStreaming: true,
+										};
+
+										messages = [...messages, streamingMsg];
+										hasStartedStreaming = true;
+									} else {
+										// Update the streaming message
+										messages = messages.map((msg) =>
+											msg.id === assistantId
+												? { ...msg, text: accumulatedText }
+												: msg,
+										);
+									}
 									scrollToBottom();
 								}
 							} catch {
@@ -239,9 +247,11 @@
 			}
 
 			// Mark streaming as complete
-			messages = messages.map((msg) =>
-				msg.id === assistantId ? { ...msg, isStreaming: false } : msg,
-			);
+			if (hasStartedStreaming) {
+				messages = messages.map((msg) =>
+					msg.id === assistantId ? { ...msg, isStreaming: false } : msg,
+				);
+			}
 
 			scrollToBottom();
 		} catch (error) {
@@ -300,6 +310,7 @@
 	}
 
 	function completeThinking(): void {
+		isThinking = false;
 		if (currentThinking) {
 			currentThinking.isComplete = true;
 			currentThinking = { ...currentThinking };

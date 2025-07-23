@@ -1,4 +1,4 @@
-// src/routes/api/ai-chatbot-messages/[documentId]/+server.ts
+// src/routes/(app)/api/ai-chatbot-messages/[documentId]/+server.ts
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
@@ -32,9 +32,22 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 			return json({ error: 'Access denied' }, { status: 403 });
 		}
 
+		// Parse the chatbot_messages if it's a string
+		let messages = document.chatbot_messages || [];
+		if (typeof messages === 'string') {
+			try {
+				messages = JSON.parse(messages);
+			} catch (error) {
+				console.error('Failed to parse chatbot_messages:', error);
+				messages = [];
+			}
+		}
+
+		console.log('Loaded messages from DB:', messages); // Debug log
+
 		return json({
 			success: true,
-			messages: document.chatbot_messages || [],
+			messages: messages,
 		});
 	} catch (error) {
 		console.error('Load Chat Messages API Error:', error);

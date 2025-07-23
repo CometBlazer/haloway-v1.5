@@ -66,6 +66,34 @@
 		isSaveInProgress: false,
 	};
 
+	$: essayContent = content; // Map content to essayContent for the chatbot
+	$: schoolName = data.document.school || '';
+	$: dueDateString = data.document.due_date
+		? data.document.due_date instanceof Date
+			? data.document.due_date.toISOString()
+			: String(data.document.due_date)
+		: '';
+
+	// Parse chat messages safely
+	$: chatMessages = (() => {
+		if (!data.chatMessages) return [];
+		if (Array.isArray(data.chatMessages)) return data.chatMessages;
+		if (typeof data.chatMessages === 'string') {
+			try {
+				const parsed = JSON.parse(data.chatMessages);
+				return Array.isArray(parsed) ? parsed : [];
+			} catch (error) {
+				console.error('Failed to parse chatMessages:', error);
+				return [];
+			}
+		}
+		// If it's some other JSON type, try to convert
+		if (typeof data.chatMessages === 'object') {
+			return [];
+		}
+		return [];
+	})();
+
 	function scrollToFeedback() {
 		if (!browser) return;
 
@@ -1149,7 +1177,18 @@
 					>
 						Go to AI Feedback
 					</Button>
-					<Chatbot height="650px" />
+					<Chatbot
+						height="650px"
+						{essayContent}
+						{documentTitle}
+						{documentPrompt}
+						{wordCount}
+						{wordCountLimit}
+						school={schoolName}
+						dueDate={dueDateString}
+						status={data.document.status || ''}
+						initialMessages={chatMessages}
+					/>
 				</div>
 			</div>
 		</div>
