@@ -1,13 +1,30 @@
 // src/lib/utils/chatbot-vertex-provider.ts
 import { customProvider } from 'ai';
+import { env } from '$env/dynamic/private';
 import { createVertex } from '@ai-sdk/google-vertex';
 
-// Validate environment variables
+// Validate environment variables - use env consistently
 const requiredEnvVars = {
-	GOOGLE_VERTEX_PROJECT: process.env.GOOGLE_VERTEX_PROJECT,
-	GOOGLE_CLIENT_EMAIL: process.env.GOOGLE_CLIENT_EMAIL,
-	GOOGLE_PRIVATE_KEY: process.env.GOOGLE_PRIVATE_KEY,
+	GOOGLE_VERTEX_PROJECT: env.GOOGLE_VERTEX_PROJECT,
+	GOOGLE_CLIENT_EMAIL: env.GOOGLE_CLIENT_EMAIL,
+	GOOGLE_PRIVATE_KEY: env.GOOGLE_PRIVATE_KEY,
 };
+
+console.log('Environment Variables Check:');
+console.log(
+	'GOOGLE_VERTEX_PROJECT:',
+	env.GOOGLE_VERTEX_PROJECT ? 'SET' : 'MISSING',
+);
+console.log(
+	'GOOGLE_CLIENT_EMAIL:',
+	env.GOOGLE_CLIENT_EMAIL ? 'SET' : 'MISSING',
+);
+console.log(
+	'GOOGLE_PRIVATE_KEY:',
+	env.GOOGLE_PRIVATE_KEY
+		? 'SET (length: ' + (env.GOOGLE_PRIVATE_KEY?.length || 0) + ')'
+		: 'MISSING',
+);
 
 // Check for missing environment variables
 const missingVars = Object.entries(requiredEnvVars)
@@ -15,33 +32,50 @@ const missingVars = Object.entries(requiredEnvVars)
 	.map(([key]) => key);
 
 if (missingVars.length > 0) {
+	console.error('Missing environment variables:', missingVars);
 	throw new Error(
 		`Missing required environment variables: ${missingVars.join(', ')}`,
 	);
 }
 
-// Create vertex instance with error handling
+// Create vertex instance with error handling - use env consistently
 let vertex;
 try {
+	console.log(
+		'Initializing Vertex AI with project:',
+		env.GOOGLE_VERTEX_PROJECT,
+	);
+
 	vertex = createVertex({
-		project: process.env.GOOGLE_VERTEX_PROJECT!,
-		location: process.env.GOOGLE_VERTEX_LOCATION || 'us-central1',
+		project: env.GOOGLE_VERTEX_PROJECT!, // Use env instead of process.env
+		location: env.GOOGLE_VERTEX_LOCATION || 'us-central1', // Use env
 		googleAuthOptions: {
 			credentials: {
-				client_email: process.env.GOOGLE_CLIENT_EMAIL!,
-				private_key: process.env.GOOGLE_PRIVATE_KEY!.replace(/\\n/g, '\n'),
+				client_email: env.GOOGLE_CLIENT_EMAIL!, // Use env
+				private_key: env.GOOGLE_PRIVATE_KEY!.replace(/\\n/g, '\n'), // Use env
 			},
 		},
 	});
+
+	console.log('Vertex AI initialized successfully');
 } catch (error) {
 	console.error('Failed to initialize Vertex AI:', error);
-	throw new Error('Failed to initialize Vertex AI provider');
+	console.error('Error details:', {
+		project: env.GOOGLE_VERTEX_PROJECT,
+		location: env.GOOGLE_VERTEX_LOCATION,
+		hasClientEmail: !!env.GOOGLE_CLIENT_EMAIL,
+		hasPrivateKey: !!env.GOOGLE_PRIVATE_KEY,
+		privateKeyLength: env.GOOGLE_PRIVATE_KEY?.length,
+	});
+	throw new Error(
+		`Failed to initialize Vertex AI provider: ${error instanceof Error ? error.message : 'Unknown error'}`,
+	);
 }
 
 export const vertexProvider = customProvider({
 	languageModels: {
-		'chat-model': vertex('gemini-2.0-flash-exp'),
-		'chat-model-pro': vertex('gemini-1.5-pro'),
-		'chat-model-flash': vertex('gemini-1.5-flash'),
+		'chat-model': vertex('gemini-2.5-pro'),
+		'chat-model-pro': vertex('gemini-2.5-pro'),
+		'chat-model-flash': vertex('gemini-2.5-flash'),
 	},
 });

@@ -1,9 +1,10 @@
 <!-- src/lib/components/Editor/Chatbot/Chatbot.svelte -->
 <script lang="ts">
-	import { MoreVertical, Copy, Check, Sparkles, Send } from 'lucide-svelte';
+	import { MoreVertical, Copy, Check, Sparkles } from 'lucide-svelte';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import ThinkingIndicator from './ThinkingIndicator.svelte';
 	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
 	export let width: string = '100%';
@@ -18,7 +19,16 @@
 	export let school: string = '';
 	export let dueDate: string = '';
 	export let status: string = '';
-	export let initialMessages: any[] = [];
+
+	// Define proper types
+	interface ChatMessage {
+		id: string;
+		role: 'user' | 'assistant';
+		content: string;
+		timestamp: string;
+	}
+
+	export let initialMessages: ChatMessage[] = [];
 
 	interface Message {
 		id: string;
@@ -43,7 +53,6 @@
 	let showSuggestions: boolean = false;
 	let textareaElement: HTMLTextAreaElement;
 	let isLoading: boolean = false;
-	let streamingMessageId: string | null = null;
 
 	// Configurable suggestions - adjust this JSON as needed
 	const suggestions = [
@@ -57,6 +66,22 @@
 		loadInitialMessages();
 	});
 
+	function scrollToBottom(): void {
+		setTimeout(() => {
+			if (messagesContainer) {
+				messagesContainer.scrollTop = messagesContainer.scrollHeight;
+			}
+		}, 0);
+	}
+
+	// Format timestamp for display
+	function formatTime(timestamp: string): string {
+		return new Date(timestamp).toLocaleTimeString([], {
+			hour: '2-digit',
+			minute: '2-digit',
+		});
+	}
+
 	async function loadInitialMessages() {
 		try {
 			const response = await fetch(
@@ -66,7 +91,7 @@
 			if (response.ok) {
 				const result = await response.json();
 				if (result.success && result.messages) {
-					messages = result.messages.map((msg: any) => ({
+					messages = result.messages.map((msg: ChatMessage) => ({
 						id: msg.id,
 						text: msg.content,
 						sender: msg.role === 'user' ? 'user' : 'ai',
@@ -82,7 +107,7 @@
 			console.error('Failed to load initial messages:', error);
 			// Fall back to using initialMessages prop if API fails
 			if (initialMessages && initialMessages.length > 0) {
-				messages = initialMessages.map((msg: any) => ({
+				messages = initialMessages.map((msg: ChatMessage) => ({
 					id: msg.id,
 					text: msg.content,
 					sender: msg.role === 'user' ? 'user' : 'ai',
@@ -94,7 +119,7 @@
 	}
 
 	// Convert messages to the format expected by the server
-	function messagesToServerFormat(): any[] {
+	function messagesToServerFormat(): ChatMessage[] {
 		return messages.map((msg) => ({
 			id: msg.id,
 			role: msg.sender === 'user' ? 'user' : 'assistant',
@@ -131,16 +156,8 @@
 		isLoading = true;
 
 		try {
-			// Get current user ID from page data or session
-			const userId = $page.data.session?.user?.id;
-
-			if (!userId) {
-				throw new Error('User not authenticated');
-			}
-
 			// Create streaming assistant message
 			const assistantId = `assistant-${Date.now()}`;
-			streamingMessageId = assistantId;
 
 			const streamingMsg: Message = {
 				id: assistantId,
@@ -187,6 +204,7 @@
 			let accumulatedText = '';
 
 			if (reader) {
+				// eslint-disable-next-line no-constant-condition
 				while (true) {
 					const { done, value } = await reader.read();
 
@@ -212,7 +230,7 @@
 									);
 									scrollToBottom();
 								}
-							} catch (e) {
+							} catch {
 								// Ignore parsing errors for partial chunks
 							}
 						}
@@ -225,7 +243,6 @@
 				msg.id === assistantId ? { ...msg, isStreaming: false } : msg,
 			);
 
-			streamingMessageId = null;
 			scrollToBottom();
 		} catch (error) {
 			console.error('Failed to send message:', error);
@@ -247,7 +264,6 @@
 			}, 1000);
 		} finally {
 			isLoading = false;
-			streamingMessageId = null;
 		}
 	}
 
@@ -275,9 +291,12 @@
 				currentThinking = { ...currentThinking };
 			} else {
 				clearInterval(thinkingInterval);
-				completeThinking();
+				if (currentThinking) {
+					currentThinking.isComplete = true;
+					currentThinking = { ...currentThinking };
+				}
 			}
-		}, 2500);
+		}, 1500);
 	}
 
 	function completeThinking(): void {
@@ -286,30 +305,9 @@
 			currentThinking = { ...currentThinking };
 		}
 
-		// Add AI response after thinking is complete
 		setTimeout(() => {
-			const aiResponse =
-				'This is a longer, more comprehensive response that demonstrates the improved AI capabilities. The system has carefully analyzed your input and is providing a detailed answer that shows the thinking process was worthwhile. This response includes multiple sentences and provides substantial value to continue the conversation effectively.';
-
-			messages = [
-				...messages,
-				{
-					id: Date.now() + 1,
-					text: aiResponse,
-					sender: 'ai',
-					thinking: currentThinking ? { ...currentThinking } : undefined,
-				},
-			];
-
 			isThinking = false;
 			currentThinking = null;
-
-			// Auto-scroll to bottom
-			setTimeout(() => {
-				if (messagesContainer) {
-					messagesContainer.scrollTop = messagesContainer.scrollHeight;
-				}
-			}, 0);
 		}, 1000);
 	}
 
@@ -391,7 +389,7 @@
 		}
 	}
 
-	async function copyMessage(messageId: number, text: string): Promise<void> {
+	async function copyMessage(messageId: string, text: string): Promise<void> {
 		try {
 			await navigator.clipboard.writeText(text);
 			copiedMessageId = messageId;
@@ -421,7 +419,9 @@
 			<h3 class="font-semibold text-foreground">Essay Assistant</h3>
 			<div class="flex items-center space-x-2">
 				<div class="h-2 w-2 rounded-full bg-green-500"></div>
-				<span class="text-sm text-muted-foreground">Online</span>
+				<span class="text-sm text-muted-foreground">
+					{isLoading ? 'Thinking...' : 'Online'}
+				</span>
 			</div>
 		</div>
 
@@ -468,7 +468,7 @@
 								alt="Clara"
 							/>
 							<Avatar.Fallback>
-								<Sparkles class="h-10 w-10 text-primary-foreground" />
+								<Sparkles class="h-10 w-10 text-primary" />
 							</Avatar.Fallback>
 						</Avatar.Root>
 					</div>
@@ -476,8 +476,8 @@
 				<div class="space-y-2 text-foreground">
 					<h4 class="text-xl font-semibold">Hi! I'm Clara 👋</h4>
 					<p class="text-sm leading-relaxed text-muted-foreground">
-						Select one of the suggestions below or ask me anything about your
-						essay. Type away!
+						I can see your essay and help you improve it! I know about your
+						assignment, your goals, and your writing style. Ask me anything!
 					</p>
 					<p class="mt-3 text-xs text-muted-foreground">
 						I'm your personal essay reviewer and brainstorming assistant! I can
@@ -562,14 +562,6 @@
 								{formatTime(message.timestamp)}
 							</div>
 						{/if}
-
-						<!-- {#if message.sender === 'user'}
-						<div
-							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-secondary"
-						>
-							<User class="h-4 w-4 text-secondary-foreground" />
-						</div>
-					{/if} -->
 					</div>
 				</div>
 			</div>
@@ -616,6 +608,7 @@
 							on:click={() => selectSuggestion(suggestion)}
 							class="suggestion-button rounded-full border bg-background px-4 py-2 text-sm font-medium text-foreground shadow-lg transition-all duration-200 hover:bg-muted hover:shadow-xl"
 							style="animation-delay: {index * 100}ms"
+							disabled={isLoading}
 						>
 							{suggestion}
 						</button>
@@ -632,19 +625,33 @@
 				on:focus={handleInputFocus}
 				on:blur={handleInputBlur}
 				on:input={handleInputChange}
-				placeholder="Type your message..."
+				placeholder="Ask me anything about your essay..."
 				rows="1"
-				class="flex-1 resize-none overflow-hidden rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring"
+				disabled={isLoading}
+				class="flex-1 resize-none overflow-hidden rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
 				style="transform-origin: bottom;"
 			></textarea>
 			<button
 				on:click={sendMessage}
-				disabled={!inputValue.trim()}
+				disabled={!inputValue.trim() || isLoading}
 				class="flex-shrink-0 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 			>
-				Send
+				{#if isLoading}
+					<div
+						class="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent"
+					></div>
+				{:else}
+					Send
+				{/if}
 			</button>
 		</div>
+
+		<!-- Context indicator -->
+		{#if documentTitle}
+			<div class="mt-2 text-xs text-muted-foreground">
+				💡 I can see your essay "{documentTitle}" ({wordCount}/{wordCountLimit} words)
+			</div>
+		{/if}
 	</div>
 </div>
 
@@ -710,5 +717,16 @@
 			transform: translateY(0);
 			opacity: 1;
 		}
+	}
+
+	/* Loading spinner animation */
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	.animate-spin {
+		animation: spin 1s linear infinite;
 	}
 </style>

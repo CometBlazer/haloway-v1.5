@@ -2,7 +2,7 @@
 import { streamText } from 'ai';
 import { vertexProvider } from '$lib/utils/chatbot-vertex-provider';
 import type { RequestHandler } from './$types.js';
-import type { ChatMessage } from '$lib/types/ai-chatbot.ts';
+import type { ChatMessage, UserProfile } from '$lib/types/ai-chatbot.ts';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	try {
@@ -21,7 +21,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			message,
 			currentMessages,
 			documentId,
-			versionId,
+			// Remove unused variables by prefixing with underscore
+			versionId: _versionId,
 			essayContent,
 			documentTitle,
 			documentPrompt,
@@ -29,7 +30,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			wordCountLimit,
 			school,
 			dueDate,
-			status,
+			status: _status,
 		} = body;
 
 		// Validate required fields
@@ -123,8 +124,9 @@ User: ${message}`,
 		];
 
 		// Create streaming response using custom Vertex provider
+		// Fix: Use .languageModel() method instead of calling provider directly
 		const result = await streamText({
-			model: vertexProvider('chat-model'), // Use your custom provider
+			model: vertexProvider.languageModel('chat-model'), // Fixed: Use .languageModel() method
 			messages: aiMessages,
 			temperature: 0.7,
 			maxTokens: 2000,
@@ -163,8 +165,8 @@ User: ${message}`,
 			},
 		});
 
-		// Return streaming response
-		return result.toAIStreamResponse();
+		// Fix: Use toDataStreamResponse() instead of toAIStreamResponse()
+		return result.toDataStreamResponse();
 	} catch (err) {
 		console.error('AI Chatbot API Error:', err);
 		return new Response(JSON.stringify({ error: 'Internal server error' }), {
@@ -182,9 +184,9 @@ function buildSystemPrompt({
 	school,
 	dueDate,
 	wordCount,
-	essayContent,
+	essayContent, // Keep this parameter since it's used in the function
 }: {
-	userProfile: any;
+	userProfile: UserProfile; // Fix: Use proper type instead of 'any'
 	documentTitle: string;
 	documentPrompt: string;
 	wordCountLimit: number;
@@ -207,6 +209,9 @@ ASSIGNMENT CONTEXT:
 - Word Limit: ${wordCountLimit} words
 - Due Date: ${dueDate ? new Date(dueDate).toLocaleDateString() : 'not specified'}
 - Current Word Count: ${wordCount}
+
+CURRENT ESSAY CONTENT:
+The student has written ${wordCount} words so far. The essay content is as follows: ${essayContent}
 
 INSTRUCTIONS:
 1. Provide personalized writing assistance based on the student's profile and goals

@@ -29,6 +29,7 @@ export interface ChatContext {
 
 export interface UserProfile {
 	id: string;
-	full_name: string;
-	dream_school?: string;
+	full_name: string | null;
+	graduation_year: number | null;
+	dream_school: string | null;
 }

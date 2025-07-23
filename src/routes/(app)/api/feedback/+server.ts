@@ -218,8 +218,8 @@ ${essayText}
 		const accessToken = await getVertexAIAccessToken();
 
 		// Call Vertex AI REST API
-		const PROJECT_ID = env.VITE_GCP_PROJECT_ID || 'snappi-v1';
-		const LOCATION = 'us-central1';
+		const PROJECT_ID = env.GOOGLE_VERTEX_PROJECT || 'snappi-v1';
+		const LOCATION = env.GOOGLE_VERTEX_LOCATION || 'us-central1';
 		const MODEL = 'gemini-2.0-flash-exp';
 
 		const url = `https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/publishers/google/models/${MODEL}:generateContent`;
