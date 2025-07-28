@@ -8,27 +8,27 @@
 	const thinkingStates = [
 		{ text: 'Let me think', icon: '🤔', duration: 3500, id: 'thinking' },
 		{
-			text: 'Searching knowledge base',
-			icon: '🧠',
-			duration: 3500,
-			id: 'processing',
-		},
-		{
 			text: 'Digging even deeper',
 			icon: '⚡',
-			duration: 3500,
+			duration: 4500,
 			id: 'analyzing',
 		},
 		{
 			text: 'Cooking up something good',
 			icon: '🤌',
-			duration: 3500,
+			duration: 4500,
 			id: 'pondering',
+		},
+		{
+			text: 'Verifying with knowledge base',
+			icon: '🧠',
+			duration: 4500,
+			id: 'processing',
 		},
 		{
 			text: 'Adding final touches',
 			icon: '✨',
-			duration: 3500,
+			duration: 4500,
 			id: 'refining',
 		},
 		{ text: 'Almost ready', icon: '🚀', duration: 5000, id: 'ready' },
