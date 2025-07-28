@@ -66,6 +66,7 @@
 		openDropdowns = {};
 	});
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	function toggleDropdown(index: number) {
 		openDropdowns[index] = !openDropdowns[index];
 	}
@@ -73,10 +74,10 @@
 
 <header class="sticky top-0 z-50 border-b border-border bg-card py-4">
 	<div
-		class="container grid grid-cols-2 flex-nowrap items-center justify-between lg:grid-cols-[auto,auto,auto]"
+		class="container flex flex-nowrap items-center justify-between lg:grid lg:grid-cols-[auto,1fr,auto]"
 	>
 		<HomeButton />
-		<nav class="hidden lg:block">
+		<nav class="hidden lg:mr-4 lg:block lg:justify-self-end">
 			<ul class="hidden flex-wrap px-1 text-base font-bold lg:flex">
 				{#each menuItems as item, _index}
 					<li class="lg:mx-2">
@@ -191,7 +192,7 @@
 					<Separator />
 					<nav class="[&_ul]:flex [&_ul]:flex-col [&_ul]:p-2">
 						<ul>
-							{#each menuItems as item, index}
+							{#each menuItems as item}
 								{#if item.type === 'link'}
 									<li>
 										<Button
@@ -203,36 +204,26 @@
 										</Button>
 									</li>
 								{:else if item.type === 'dropdown'}
-									<li>
-										<Collapsible.Root bind:open={openDropdowns[index]}>
-											<Collapsible.Trigger asChild let:builder>
-												<Button
-													variant="ghost"
-													class="flex w-full items-center justify-between py-6 text-base"
-													builders={[builder]}
-													on:click={() => toggleDropdown(index)}
-												>
-													{item.text}
-													<ChevronsUpDown class="h-4 w-4" />
-												</Button>
-											</Collapsible.Trigger>
-											<Collapsible.Content>
-												<ul class="space-y-1 pl-4">
-													{#each item.items as subItem}
-														<li>
-															<Button
-																href={subItem.href}
-																variant="ghost"
-																class="w-full justify-start py-4 text-left text-sm"
-															>
-																{subItem.text}
-															</Button>
-														</li>
-													{/each}
-												</ul>
-											</Collapsible.Content>
-										</Collapsible.Root>
-									</li>
+									<!-- Show dropdown header as a non-clickable label -->
+									<!-- <li>
+										<div
+											class="px-4 py-3 text-sm font-semibold text-muted-foreground"
+										>
+											{item.text}
+										</div>
+									</li> -->
+									<!-- Show all dropdown items as regular links -->
+									{#each item.items as subItem}
+										<li>
+											<Button
+												href={subItem.href}
+												variant="ghost"
+												class="w-full py-6 text-base"
+											>
+												{subItem.text}
+											</Button>
+										</li>
+									{/each}
 								{/if}
 							{/each}
 						</ul>

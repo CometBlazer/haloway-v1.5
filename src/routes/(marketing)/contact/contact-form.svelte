@@ -55,6 +55,9 @@
 				<Form.FieldErrors />
 			</Form.Field>
 		</div>
+		<p class="mb-4 text-sm text-muted-foreground">
+			(in case we need to contact you)
+		</p>
 		<Form.Field class="flex-1" {form} name="subject">
 			<Form.Control let:attrs>
 				<Form.Label class="mb-2"
