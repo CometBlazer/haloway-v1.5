@@ -121,7 +121,6 @@ Available variables in contact notification templates:
 ### Adding New Email Templates
 
 1. **Create template files** in `src/lib/emails/`:
-
    - `your_template_text.hbs` (plain text)
    - `your_template_html.hbs` (HTML)
 
@@ -154,13 +153,11 @@ await sendAdminEmail({
 ### Common Issues
 
 1. **"Failed to send email" errors**
-
    - Check your Resend API key
    - Verify your domain is confirmed in Resend
    - Ensure environment variables are set correctly
 
 2. **Template not found errors**
-
    - Check template file names match exactly
    - Ensure `.hbs` files are in `src/lib/emails/`
    - Verify Vite config includes `assetsInclude: ['**/*.hbs']`
@@ -183,13 +180,11 @@ Check your server logs for detailed information about email operations.
 ## Security Considerations
 
 1. **API Key Security**
-
    - Never commit API keys to version control
    - Use environment variables for all sensitive data
    - Rotate API keys regularly
 
 2. **Email Validation**
-
    - All emails are validated server-side
    - Rate limiting should be implemented for production
    - Consider CAPTCHA for spam prevention
