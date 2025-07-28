@@ -51,6 +51,7 @@
 {/if}
 <Card.Root class="mx-auto max-w-sm">
 	<Card.Header>
+		<img src="/favicon.png" alt="Logo" class="mb-4 h-12 w-12" />
 		<Card.Title tag="h1" class="text-2xl">
 			Log in to continue <span class="sr-only">to {WebsiteName}</span>
 		</Card.Title>

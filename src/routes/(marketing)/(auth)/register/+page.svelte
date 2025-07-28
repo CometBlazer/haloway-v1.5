@@ -64,13 +64,13 @@
 {:else}
 	<Card.Root class="mx-auto max-w-sm">
 		<Card.Header>
+			<img src="/favicon.png" alt="Logo" class="mb-4 h-12 w-12" />
 			<Card.Title tag="h1" class="text-2xl">
 				Start writing with <span> {WebsiteName}</span>
 			</Card.Title>
 		</Card.Header>
 		<Card.Content class="flex flex-col gap-4">
 			<SocialsAuth />
-
 			<div class="flex flex-col gap-3">
 				<p class="text-sm text-muted-foreground">
 					Create an account today with your email address below.
