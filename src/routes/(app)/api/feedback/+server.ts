@@ -179,7 +179,7 @@ export async function POST({ request }) {
 		// Use provided currentWordCount or calculate from text as fallback
 		const words = currentWordCount ?? wordCount(essayText);
 
-		const prompt = `You are a polished, snazzy, professional writing coach who gives **substantial**, **actionable** feedback.  
+		const prompt = `You are a polished, brutal, professional writing coach who gives **substantial**, **actionable** feedback. Be very brutal and very honest and very harsh with your feedback, but they all have be truthful and constructive and actionable. There is no use giving harsh feedback if the writer can't follow through and do something with it.  
 
 **Several detailed sections, praise or diagnose**  
    **A. Your strengths:** What's working well?  
@@ -220,7 +220,7 @@ ${essayText}
 		// Call Vertex AI REST API
 		const PROJECT_ID = env.GOOGLE_VERTEX_PROJECT || 'snappi-v1';
 		const LOCATION = env.GOOGLE_VERTEX_LOCATION || 'us-central1';
-		const MODEL = 'gemini-2.0-flash-exp';
+		const MODEL = 'gemini-2.5-pro';
 
 		const url = `https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/publishers/google/models/${MODEL}:generateContent`;
 
@@ -247,9 +247,10 @@ ${essayText}
 					temperature: 0.7,
 					topK: 40,
 					topP: 0.95,
-					maxOutputTokens: 2048,
+					maxOutputTokens: 8192,
 				},
 			}),
+			signal: AbortSignal.timeout(60000),
 		});
 
 		if (!response.ok) {

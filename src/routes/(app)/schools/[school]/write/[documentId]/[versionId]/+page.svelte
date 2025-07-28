@@ -298,6 +298,7 @@
 				const saveResponse = await fetch('?/saveFeedback', {
 					method: 'POST',
 					body: formData,
+					signal: AbortSignal.timeout(90000), // 90 seconds
 				});
 
 				if (!saveResponse.ok) {
