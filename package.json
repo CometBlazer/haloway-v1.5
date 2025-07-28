@@ -81,6 +81,7 @@
 		"@tiptap/extension-underline": "^2.14.1",
 		"@tiptap/starter-kit": "^2.14.1",
 		"@types/pikaday": "^1.7.9",
+		"@vercel/analytics": "^1.5.0",
 		"ai": "^4.3.19",
 		"clsx": "^2.1.1",
 		"date-fns": "^4.1.0",

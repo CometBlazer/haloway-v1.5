@@ -10,6 +10,8 @@
 	import { slide } from 'svelte/transition';
 	import '../app.css';
 	import MetaTags from './(marketing)/meta-tags.svelte';
+	import { browser, dev } from '$app/environment';
+	import { inject } from '@vercel/analytics';
 
 	export let data;
 
@@ -17,6 +19,10 @@
 	$: ({ supabase, session } = data);
 
 	onMount(() => {
+		if (browser && !dev) {
+			inject({ mode: 'production' });
+		}
+
 		const { data } = supabase.auth.onAuthStateChange((event, _session) => {
 			if (_session?.expires_at !== session?.expires_at) {
 				invalidate('supabase:auth');

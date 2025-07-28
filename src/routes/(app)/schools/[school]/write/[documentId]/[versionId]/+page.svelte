@@ -66,6 +66,8 @@
 		isSaveInProgress: false,
 	};
 
+	$: safeDocumentId = $page.params.documentId!;
+	$: safeVersionId = $page.params.versionId!;
 	$: essayContent = content; // Map content to essayContent for the chatbot
 	$: schoolName = data.document.school || '';
 	$: dueDateString = data.document.due_date
@@ -335,7 +337,7 @@
 				autoSaveManager.initialize(
 					editor,
 					initialContent,
-					$page.params.documentId,
+					$page.params.documentId!,
 				);
 			}
 		}
@@ -912,8 +914,8 @@
 		if (saveState.hasUnsavedChanges) {
 			if (autoSaveManager) {
 				autoSaveManager.createBackup(
-					$page.params.documentId,
-					$page.params.versionId,
+					$page.params.documentId!,
+					$page.params.versionId!,
 					documentTitle,
 				);
 			}
@@ -1228,8 +1230,8 @@
 				transition:slide={{ duration: 300, axis: 'x' }}
 			>
 				<VersionSidebar
-					documentId={$page.params.documentId}
-					currentVersionId={$page.params.versionId}
+					documentId={safeDocumentId}
+					currentVersionId={safeVersionId}
 					versions={data.versions}
 					schoolUrlSafeName={data.schoolUrlSafeName}
 					on:createVersion={handleVersionCreate}
