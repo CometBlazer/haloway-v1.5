@@ -1,6 +1,7 @@
 <!-- src/lib/components/Editor/AIFeedback.svelte -->
 <script lang="ts">
 	import { createEventDispatcher, onDestroy } from 'svelte';
+	import * as Avatar from '$lib/components/ui/avatar';
 	import { fade, slide } from 'svelte/transition';
 	// import { enhance } from '$app/forms';
 	import {
@@ -394,8 +395,17 @@
 	<div class="feedback-header">
 		<div class="header-content">
 			<div class="title-section">
-				<Sparkles class="title-icon" size={24} />
-				<h2 class="title">AI Feedback</h2>
+				<!-- <Sparkles class="title-icon" size={24} /> -->
+				<Avatar.Root class="h-16 w-16 ring-2 ring-primary">
+					<Avatar.Image
+						src="https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png"
+						alt="Clara"
+					/>
+					<Avatar.Fallback>
+						<Sparkles class="title-icon" size={24} />
+					</Avatar.Fallback>
+				</Avatar.Root>
+				<h2 class="title">Clara's AI Essay Review</h2>
 				{#if lastFeedbackTime}
 					<div class="last-updated" transition:fade={{ duration: 200 }}>
 						<Clock size={14} />
@@ -474,17 +484,17 @@
 		{#if loading}
 			<div class="loading-state" transition:fade={{ duration: 200 }}>
 				<div class="loading-animation">
-					<Sparkles class="primary-color animate-pulse" size={32} />
+					<RefreshCw class="primary-color animate-spin" size={32} />
 				</div>
 				<div class="loading-text">
-					<h3>Reading your essay...</h3>
-					<p>Analyzing structure, style, and content</p>
+					<h3>Analyzing your essay...</h3>
+					<p>Looking at your structure, writing style, and content...</p>
 				</div>
 			</div>
 		{:else if !hasContent}
 			<div class="empty-state" transition:fade={{ duration: 200 }}>
 				<Sparkles class="primary-color" size={48} />
-				<h3>To get started with AI feedback:</h3>
+				<h3>To get started with the AI essay review:</h3>
 				<p class="text-left">
 					1. Copy and paste your existing essay into the editor or start writing
 					your draft above. <br />
@@ -495,7 +505,7 @@
 		{:else if !hasFeedback}
 			<div class="get-started-state" transition:fade={{ duration: 200 }}>
 				<Sparkles class="primary-color" size={48} />
-				<h3>Get AI feedback</h3>
+				<h3>Get Clara's AI feedback on your essay</h3>
 				<p class="text-center">
 					Click "Get Feedback" above to receive detailed analysis with
 					personalized suggestions for improvement.
@@ -521,18 +531,18 @@
 	<div class="ai-disclaimer">
 		<div class="disclaimer-header">
 			<Info size={16} class="disclaimer-icon" />
-			<span class="disclaimer-title">Important Disclaimer</span>
+			<span class="disclaimer-title">Important AI Disclaimer</span>
 		</div>
-		<p class="disclaimer-text">
+		<!-- <p class="disclaimer-text">
 			<strong
-				>This AI feedback is a supplementary tool and should not replace human
+				>All AI feedback is a supplementary tool and should not replace human
 				guidance.</strong
 			>
 			We strongly recommend seeking feedback from experienced guidance counselors,
 			English teachers, or professionals familiar with college admissions essays.
 			If such resources aren't available, this AI analysis can serve as a helpful
 			starting point.
-		</p>
+		</p> -->
 		<p class="disclaimer-text disclaimer-text-small">
 			AI-generated feedback may contain inaccuracies, biases, or miss nuanced
 			aspects of your writing. Always use your judgment and consider multiple
@@ -806,10 +816,10 @@
 		color: hsl(var(--color-base-content) / 0.7);
 	}
 
-	.disclaimer-text strong {
+	/* .disclaimer-text strong {
 		color: hsl(var(--color-base-content));
 		font-weight: 600;
-	}
+	} */
 
 	/* Mobile Responsive */
 	@media (max-width: 768px) {

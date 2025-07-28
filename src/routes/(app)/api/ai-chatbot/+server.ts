@@ -24,6 +24,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			// Remove unused variables by prefixing with underscore
 			versionId: _versionId,
 			essayContent,
+			currentFeedback,
 			documentTitle,
 			documentPrompt,
 			wordCount,
@@ -99,6 +100,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			dueDate,
 			wordCount,
 			essayContent,
+			currentFeedback,
 		});
 
 		// Build conversation history for context
@@ -185,6 +187,7 @@ function buildSystemPrompt({
 	dueDate,
 	wordCount,
 	essayContent,
+	currentFeedback,
 }: {
 	userProfile: UserProfile;
 	documentTitle: string;
@@ -194,7 +197,13 @@ function buildSystemPrompt({
 	dueDate?: string;
 	wordCount: number;
 	essayContent: string;
+	currentFeedback?: string;
 }): string {
+	const feedbackSection =
+		currentFeedback && currentFeedback.trim()
+			? `\n\nRECENT AI FEEDBACK:\nThe student has received the following feedback on their current essay:\n${currentFeedback}\n\nYou can reference this feedback when helping the student. If they ask about implementing suggestions from the feedback, help them do so.`
+			: '';
+
 	return `You are Clara, an expert essay writing assistant and tutor. You help students improve their writing by following their specific requests and providing actionable assistance.
 
 STUDENT CONTEXT:
@@ -211,7 +220,7 @@ ASSIGNMENT CONTEXT:
 - Current Word Count: ${wordCount}
 
 CURRENT ESSAY CONTENT:
-The student has written ${wordCount} words so far. The essay content is as follows: ${essayContent}
+The student has written ${wordCount} words so far. The essay content is as follows: ${essayContent}${feedbackSection}
 
 CORE INSTRUCTIONS:
 1. **Be obedient and action-oriented**: Do exactly what the student asks for. If they want feedback, give specific feedback. If they want grammar fixes, provide corrected text. If they want paragraph improvements, rewrite and enhance their paragraphs.
@@ -226,7 +235,7 @@ CORE INSTRUCTIONS:
 
 3. **ONLY refuse complete ghostwriting**: If asked to write the entire essay from scratch, politely decline but offer to help create an outline, suggest key points, or help them develop their existing ideas into full paragraphs.
 
-4. **Reference their actual content**: Always work with what they've written. Quote specific parts of their essay when giving feedback or suggestions.
+4. **Reference their actual content**: Always work with what they've written. Quote specific parts of their essay when giving feedback or suggestions. If they copy pasted a specific paragraph or sentence inside the chat, work with that instead.
 
 5. **Be direct and helpful**: Skip generic advice and give specific, actionable help. If they ask you to rewrite something, do it. If they ask for better word choices, suggest them.
 

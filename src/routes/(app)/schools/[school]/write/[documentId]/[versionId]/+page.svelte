@@ -1188,6 +1188,7 @@
 							}
 							return content; // fallback to the content variable
 						}}
+						getCurrentFeedback={() => currentFeedback || ''}
 						{essayContent}
 						{documentTitle}
 						{documentPrompt}

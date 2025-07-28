@@ -13,6 +13,7 @@
 
 	// Context props - passed from parent page
 	export let getCurrentContent: (() => string) | undefined = undefined;
+	export let getCurrentFeedback: (() => string) | undefined = undefined;
 	export let essayContent: string = '';
 	export let documentTitle: string = '';
 	export let documentPrompt: string = '';
@@ -201,6 +202,7 @@
 					documentId: $page.params.documentId,
 					versionId: $page.params.versionId,
 					essayContent: await getCurrentEssayContent(),
+					currentFeedback: getCurrentFeedback ? getCurrentFeedback() : '',
 					documentTitle,
 					documentPrompt,
 					wordCount,
