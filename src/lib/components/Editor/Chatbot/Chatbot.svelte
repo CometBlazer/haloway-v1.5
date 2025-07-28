@@ -50,10 +50,10 @@
 
 	// Configurable suggestions - adjust this JSON as needed
 	const suggestions = [
-		'Brainstorm ideas based on what you know about me',
-		'Generate a first draft for my essay',
+		'Help me brainstorm ideas for this prompt',
+		'Generate a first draft outline for my essay',
 		'Fix all my grammar and spelling mistakes',
-		'Improve the flow and structure of this paragraph: [copy and paste paragraph here]',
+		'Help me shorten this sentence:',
 	];
 
 	onMount(() => {
