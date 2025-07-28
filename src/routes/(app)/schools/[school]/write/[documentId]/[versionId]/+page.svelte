@@ -1181,6 +1181,12 @@
 					</Button>
 					<Chatbot
 						height="650px"
+						getCurrentContent={() => {
+							if (editor && editorReady) {
+								return editor.getText();
+							}
+							return content; // fallback to the content variable
+						}}
 						{essayContent}
 						{documentTitle}
 						{documentPrompt}

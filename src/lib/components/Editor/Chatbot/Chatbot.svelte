@@ -12,6 +12,7 @@
 	export let height: string = '400px';
 
 	// Context props - passed from parent page
+	export let getCurrentContent: (() => string) | undefined = undefined;
 	export let essayContent: string = '';
 	export let documentTitle: string = '';
 	export let documentPrompt: string = '';
@@ -127,6 +128,27 @@
 		}
 	}
 
+	async function getCurrentEssayContent(): Promise<string> {
+		// Try the callback first
+		if (getCurrentContent) {
+			try {
+				const currentText = getCurrentContent();
+				console.log(
+					'Got current content from callback:',
+					currentText.length,
+					'characters',
+				);
+				return currentText;
+			} catch (error) {
+				console.error('Failed to get content from callback:', error);
+			}
+		}
+
+		// Fallback to the prop
+		console.log('Using fallback essayContent prop');
+		return essayContent || '';
+	}
+
 	// Convert messages to the format expected by the server
 	function messagesToServerFormat(): ChatMessage[] {
 		return messages.map((msg) => ({
@@ -178,7 +200,7 @@
 					currentMessages: messagesToServerFormat().slice(0, -1), // Exclude user message since it's already in the array
 					documentId: $page.params.documentId,
 					versionId: $page.params.versionId,
-					essayContent,
+					essayContent: await getCurrentEssayContent(),
 					documentTitle,
 					documentPrompt,
 					wordCount,
