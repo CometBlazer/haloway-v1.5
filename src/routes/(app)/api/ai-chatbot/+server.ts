@@ -125,14 +125,12 @@ User: ${message}`,
 			},
 		];
 
-		// Create streaming response using custom Vertex provider
-		// Fix: Use .languageModel() method instead of calling provider directly
+		// Create streaming response using the properly typed Vertex provider
 		const result = await streamText({
-			model: vertexProvider.languageModel('chat-model'), // Fixed: Use .languageModel() method
+			model: vertexProvider('gemini-2.5-pro'), // Now TypeScript knows this returns LanguageModelV1
 			messages: aiMessages,
 			temperature: 0.7,
-			maxTokens: 2000,
-			// Add custom onFinish callback to save to database
+			maxTokens: 8192,
 			onFinish: async ({ text: aiResponse }) => {
 				try {
 					// Create assistant message

@@ -1,9 +1,9 @@
 // src/lib/utils/chatbot-vertex-provider.ts
-import { customProvider } from 'ai';
 import { env } from '$env/dynamic/private';
 import { createVertex } from '@ai-sdk/google-vertex';
+import type { LanguageModelV1 } from '@ai-sdk/provider';
 
-// Validate environment variables - use env consistently
+// Validate environment variables
 const requiredEnvVars = {
 	GOOGLE_VERTEX_PROJECT: env.GOOGLE_VERTEX_PROJECT,
 	GOOGLE_CLIENT_EMAIL: env.GOOGLE_CLIENT_EMAIL,
@@ -38,21 +38,21 @@ if (missingVars.length > 0) {
 	);
 }
 
-// Create vertex instance with error handling - use env consistently
-let vertex;
+// Create vertex instance with error handling and proper typing
+let vertexInstance: ReturnType<typeof createVertex>;
 try {
 	console.log(
 		'Initializing Vertex AI with project:',
 		env.GOOGLE_VERTEX_PROJECT,
 	);
 
-	vertex = createVertex({
-		project: env.GOOGLE_VERTEX_PROJECT!, // Use env instead of process.env
-		location: env.GOOGLE_VERTEX_LOCATION || 'us-central1', // Use env
+	vertexInstance = createVertex({
+		project: env.GOOGLE_VERTEX_PROJECT!,
+		location: env.GOOGLE_VERTEX_LOCATION || 'us-central1',
 		googleAuthOptions: {
 			credentials: {
-				client_email: env.GOOGLE_CLIENT_EMAIL!, // Use env
-				private_key: env.GOOGLE_PRIVATE_KEY!.replace(/\\n/g, '\n'), // Use env
+				client_email: env.GOOGLE_CLIENT_EMAIL!,
+				private_key: env.GOOGLE_PRIVATE_KEY!.replace(/\\n/g, '\n'),
 			},
 		},
 	});
@@ -72,10 +72,10 @@ try {
 	);
 }
 
-export const vertexProvider = customProvider({
-	languageModels: {
-		'chat-model': vertex('gemini-2.5-pro'),
-		'chat-model-pro': vertex('gemini-2.5-pro'),
-		'chat-model-flash': vertex('gemini-2.5-flash'),
-	},
-});
+// Create a typed function that returns a LanguageModelV1
+export const vertexProvider = (modelId: string): LanguageModelV1 => {
+	return vertexInstance(modelId);
+};
+
+// Alternative: Export the instance directly with proper typing
+export const vertex = vertexInstance;

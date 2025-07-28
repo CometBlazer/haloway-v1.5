@@ -221,7 +221,7 @@
 				throw new Error(`HTTP ${response.status}: ${errorText}`);
 			}
 
-			// Create streaming assistant message AFTER thinking is complete
+			// Create streaming assistant message IMMEDIATELY when first content arrives
 			const assistantId = `assistant-${Date.now()}`;
 			let streamingMsg: Message;
 
@@ -251,43 +251,62 @@
 						const lines = chunk.split('\n');
 
 						for (const line of lines) {
+							// FIXED: Parse the correct Vercel AI SDK format
 							if (line.startsWith('0:')) {
-								// Parse AI SDK streaming format
 								try {
+									// Extract the JSON string after "0:"
 									const jsonStr = line.slice(2); // Remove '0:' prefix
-									const data = JSON.parse(jsonStr);
 
-									if (data.type === 'textDelta' && data.textDelta) {
-										accumulatedText += data.textDelta;
+									// Parse the JSON-encoded text chunk
+									const textChunk = JSON.parse(jsonStr);
 
-										// Create streaming message on first delta
-										if (!hasStartedStreaming) {
-											console.log('Starting streaming, completing thinking...');
-											completeThinking(); // Complete thinking before showing streaming
+									console.log('Received text chunk:', textChunk);
+									accumulatedText += textChunk;
 
-											streamingMsg = {
-												id: assistantId,
-												text: accumulatedText,
-												sender: 'ai',
-												timestamp: new Date().toISOString(),
-												isStreaming: true,
-											};
+									// PARALLEL TRANSITION: Create message AND complete thinking simultaneously
+									if (!hasStartedStreaming) {
+										console.log('Starting parallel transition...');
 
-											messages = [...messages, streamingMsg];
-											hasStartedStreaming = true;
-										} else {
-											// Update the streaming message
-											messages = messages.map((msg) =>
-												msg.id === assistantId
-													? { ...msg, text: accumulatedText }
-													: msg,
-											);
-										}
-										scrollToBottom();
+										// Create streaming message first
+										streamingMsg = {
+											id: assistantId,
+											text: accumulatedText,
+											sender: 'ai',
+											timestamp: new Date().toISOString(),
+											isStreaming: true,
+										};
+
+										messages = [...messages, streamingMsg];
+
+										// Complete thinking immediately after (no delay)
+										completeThinking();
+
+										hasStartedStreaming = true;
+									} else {
+										// Update the streaming message
+										messages = messages.map((msg) =>
+											msg.id === assistantId
+												? { ...msg, text: accumulatedText }
+												: msg,
+										);
 									}
+									scrollToBottom();
 								} catch (error) {
-									console.error('Failed to parse stream chunk:', error);
+									console.error(
+										'Failed to parse text chunk:',
+										error,
+										'Line:',
+										line,
+									);
 								}
+							}
+							// Handle other stream events if needed
+							else if (line.startsWith('e:')) {
+								// End/finish event
+								console.log('Stream finish event:', line);
+							} else if (line.startsWith('d:')) {
+								// Data/metadata event
+								console.log('Stream data event:', line);
 							}
 						}
 					}
@@ -296,7 +315,7 @@
 				}
 			}
 
-			// CRITICAL FIX: After streaming completes, reload messages from database
+			// After streaming completes, reload messages from database
 			if (hasStartedStreaming && accumulatedText.length > 0) {
 				console.log('Streaming completed successfully, marking as complete');
 				// Mark streaming as complete
@@ -451,19 +470,23 @@
 			currentThinking,
 		});
 
+		// Immediate state clearing - no delays
 		isThinking = false;
 
 		if (currentThinking) {
 			currentThinking.isComplete = true;
+			// Trigger one final reactive update to show completion state briefly
 			currentThinking = { ...currentThinking };
 		}
+
 		debugState();
 
-		// Force a reactive update
+		// Clear thinking state immediately (removed setTimeout)
+		// This creates a smooth transition to the streaming response
 		setTimeout(() => {
 			currentThinking = null;
-			console.log('Thinking state cleared');
-		}, 100);
+			console.log('Thinking state cleared immediately');
+		}, 50); // Very brief 50ms to show completion state, then clear
 	}
 
 	function debugState() {
@@ -641,8 +664,8 @@
 				<div class="space-y-2 text-foreground">
 					<h4 class="text-xl font-semibold">Hi! I'm Clara 👋</h4>
 					<p class="text-sm leading-relaxed text-muted-foreground">
-						I can see your essay and help you improve it! I know about your
-						assignment, your goals, and your writing style. Ask me anything!
+						I can see your essay and help you improve it! Select one of the
+						suggestions below or ask me anything about your essay. Type away!
 					</p>
 					<p class="mt-3 text-xs text-muted-foreground">
 						I'm your personal essay reviewer and brainstorming assistant! I can
@@ -814,7 +837,7 @@
 		<!-- Context indicator -->
 		{#if documentTitle}
 			<div class="mt-2 text-xs text-muted-foreground">
-				💡 I can see your essay "{documentTitle}" ({wordCount}/{wordCountLimit} words)
+				→ I can see your essay "{documentTitle}" ({wordCount}/{wordCountLimit} words)
 			</div>
 		{/if}
 	</div>
