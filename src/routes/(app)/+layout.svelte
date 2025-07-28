@@ -168,9 +168,10 @@
 				<span class="text-center text-xs font-medium">Background</span>
 			</NavLink> -->
 			<NavLink
-				href="/essayfeedback"
+				href="https://dan.haloway.co"
 				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
 				activeClass="bg-accent text-accent-foreground"
+				target="_blank"
 			>
 				<Sparkles class="h-5 w-5" />
 				<span class="text-center text-xs font-medium">Essay Coaching</span>
@@ -183,9 +184,10 @@
 			>
 				<ExternalLink class="h-5 w-5" />
 				<span class="text-center text-xs font-medium text-muted-foreground"
-					>T20 Sample Essays</span
+					>Common App Prompts</span
 				>
 			</NavLink>
+			<!-- Replace later with "T20 Sample Essays"-->
 		</nav>
 		<nav class="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
 			<NavLink
@@ -275,8 +277,9 @@
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
 						>
 							<ExternalLink class="h-5 w-5" />
-							T20 Sample Essays
+							Common App Prompts
 						</a>
+						<!-- Replace later with "T20 Sample Essays"-->
 						<a
 							href="/settings"
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
