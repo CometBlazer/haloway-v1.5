@@ -9,7 +9,7 @@
 		Loader2,
 		Trophy,
 		ExternalLink,
-		// NotebookPen,
+		NotebookPen,
 		// GraduationCap,
 		Sparkles,
 	} from 'lucide-svelte';
@@ -159,14 +159,14 @@
 				<span class="text-center text-xs font-medium">Activities Organizer</span
 				>
 			</NavLink>
-			<!-- <NavLink
-				href="/essayfeedback"
+			<NavLink
+				href="/background"
 				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
 				activeClass="bg-accent text-accent-foreground"
 			>
 				<NotebookPen class="h-5 w-5" />
 				<span class="text-center text-xs font-medium">Background</span>
-			</NavLink> -->
+			</NavLink>
 			<NavLink
 				href="https://dan.haloway.co"
 				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
@@ -249,13 +249,13 @@
 							<Trophy class="h-5 w-5" />
 							Activities Organizer
 						</a>
-						<!-- <a
-							href="/essayfeedback"
+						<a
+							href="/background"
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
 						>
 							<NotebookPen class="h-5 w-5" />
 							Background
-						</a> -->
+						</a>
 						<!-- <a
 							href="https://www.commonapp.org/blog/announcing-2025-2026-common-app-essay-prompts"
 							target="_blank"
