@@ -9,6 +9,255 @@ export type Json =
 export interface Database {
 	public: {
 		Tables: {
+			consultant_User: {
+				Row: {
+					id: string;
+					email: string;
+					supabase_user_id: string;
+					created_at: Date;
+					updated_at: Date;
+				};
+				Insert: {
+					id?: string;
+					email: string;
+					supabase_user_id: string;
+					created_at?: Date;
+					updated_at?: Date;
+				};
+				Update: {
+					id?: string;
+					email?: string;
+					supabase_user_id?: string;
+					created_at?: Date;
+					updated_at?: Date;
+				};
+				Relationships: [];
+			};
+			consultant_Session: {
+				Row: {
+					id: string;
+					userId: string;
+					expires_at: Date;
+					created_at: Date;
+				};
+				Insert: {
+					id: string;
+					userId: string;
+					expires_at: Date;
+					created_at?: Date;
+				};
+				Update: {
+					id?: string;
+					userId?: string;
+					expires_at?: Date;
+					created_at?: Date;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'consultant_Session_userId_fkey';
+						columns: ['userId'];
+						referencedRelation: 'consultant_User';
+						referencedColumns: ['id'];
+					},
+				];
+			};
+			consultant_Chat: {
+				Row: {
+					id: string;
+					createdAt: Date;
+					title: string;
+					userId: string;
+					visibility: string;
+					created_at: Date;
+					updated_at: Date;
+				};
+				Insert: {
+					id?: string;
+					createdAt?: Date;
+					title: string;
+					userId: string;
+					visibility?: string;
+					created_at?: Date;
+					updated_at?: Date;
+				};
+				Update: {
+					id?: string;
+					createdAt?: Date;
+					title?: string;
+					userId?: string;
+					visibility?: string;
+					created_at?: Date;
+					updated_at?: Date;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'consultant_Chat_userId_fkey';
+						columns: ['userId'];
+						referencedRelation: 'consultant_User';
+						referencedColumns: ['id'];
+					},
+				];
+			};
+			consultant_Message: {
+				Row: {
+					id: string;
+					chatId: string;
+					role: string;
+					parts: Json;
+					attachments: Json;
+					createdAt: Date;
+				};
+				Insert: {
+					id?: string;
+					chatId: string;
+					role: string;
+					parts: Json;
+					attachments?: Json;
+					createdAt?: Date;
+				};
+				Update: {
+					id?: string;
+					chatId?: string;
+					role?: string;
+					parts?: Json;
+					attachments?: Json;
+					createdAt?: Date;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'consultant_Message_chatId_fkey';
+						columns: ['chatId'];
+						referencedRelation: 'consultant_Chat';
+						referencedColumns: ['id'];
+					},
+				];
+			};
+			consultant_Vote: {
+				Row: {
+					chatId: string;
+					messageId: string;
+					isUpvoted: boolean;
+					created_at: Date;
+				};
+				Insert: {
+					chatId: string;
+					messageId: string;
+					isUpvoted: boolean;
+					created_at?: Date;
+				};
+				Update: {
+					chatId?: string;
+					messageId?: string;
+					isUpvoted?: boolean;
+					created_at?: Date;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'consultant_Vote_chatId_fkey';
+						columns: ['chatId'];
+						referencedRelation: 'consultant_Chat';
+						referencedColumns: ['id'];
+					},
+					{
+						foreignKeyName: 'consultant_Vote_messageId_fkey';
+						columns: ['messageId'];
+						referencedRelation: 'consultant_Message';
+						referencedColumns: ['id'];
+					},
+				];
+			};
+			consultant_Document: {
+				Row: {
+					id: string;
+					createdAt: Date;
+					title: string;
+					content: string | null;
+					kind: string;
+					userId: string;
+					created_at: Date;
+					updated_at: Date;
+				};
+				Insert: {
+					id?: string;
+					createdAt?: Date;
+					title: string;
+					content?: string | null;
+					kind?: string;
+					userId: string;
+					created_at?: Date;
+					updated_at?: Date;
+				};
+				Update: {
+					id?: string;
+					createdAt?: Date;
+					title?: string;
+					content?: string | null;
+					kind?: string;
+					userId?: string;
+					created_at?: Date;
+					updated_at?: Date;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'consultant_Document_userId_fkey';
+						columns: ['userId'];
+						referencedRelation: 'consultant_User';
+						referencedColumns: ['id'];
+					},
+				];
+			};
+			consultant_Suggestion: {
+				Row: {
+					id: string;
+					documentId: string;
+					documentCreatedAt: Date;
+					originalText: string;
+					suggestedText: string;
+					description: string | null;
+					isResolved: boolean;
+					userId: string;
+					createdAt: Date;
+					created_at: Date;
+				};
+				Insert: {
+					id?: string;
+					documentId: string;
+					documentCreatedAt: Date;
+					originalText: string;
+					suggestedText: string;
+					description?: string | null;
+					isResolved?: boolean;
+					userId: string;
+					createdAt?: Date;
+					created_at?: Date;
+				};
+				Update: {
+					id?: string;
+					documentId?: string;
+					documentCreatedAt?: Date;
+					originalText?: string;
+					suggestedText?: string;
+					description?: string | null;
+					isResolved?: boolean;
+					userId?: string;
+					createdAt?: Date;
+					created_at?: Date;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'consultant_Suggestion_userId_fkey';
+						columns: ['userId'];
+						referencedRelation: 'consultant_User';
+						referencedColumns: ['id'];
+					},
+					{
+						foreignKeyName: 'consultant_Suggestion_documentId_fkey';
+						columns: ['documentId', 'documentCreatedAt'];
+						referencedRelation: 'consultant_Document';
+						referencedColumns: ['id', 'createdAt'];
+					},
+				];
+			};
 			activities: {
 				Row: {
 					id: string;
@@ -514,6 +763,20 @@ export interface Database {
 }
 
 // Additional type helpers for your components
+export type ConsultantUser =
+	Database['public']['Tables']['consultant_User']['Row'];
+export type ConsultantSession =
+	Database['public']['Tables']['consultant_Session']['Row'];
+export type ConsultantChat =
+	Database['public']['Tables']['consultant_Chat']['Row'];
+export type ConsultantMessage =
+	Database['public']['Tables']['consultant_Message']['Row'];
+export type ConsultantVote =
+	Database['public']['Tables']['consultant_Vote']['Row'];
+export type ConsultantDocument =
+	Database['public']['Tables']['consultant_Document']['Row'];
+export type ConsultantSuggestion =
+	Database['public']['Tables']['consultant_Suggestion']['Row'];
 export type DocumentVersion =
 	Database['public']['Tables']['document_versions']['Row'];
 export type Document = Database['public']['Tables']['documents']['Row'];
@@ -545,6 +808,23 @@ export interface ChatMessage {
 	role: 'user' | 'assistant';
 	content: string;
 	timestamp: string;
+}
+
+// Consultant message parts interface
+export interface ConsultantMessagePart {
+	type: 'text' | 'image' | 'file';
+	text?: string;
+	url?: string;
+	filename?: string;
+}
+
+// Consultant message attachment interface
+export interface ConsultantMessageAttachment {
+	id: string;
+	name: string;
+	type: string;
+	size: number;
+	url: string;
 }
 
 // Type for version data as used in your components - updated to include updated_at, removed word_count
