@@ -56,7 +56,7 @@
 			</Form.Field>
 		</div>
 		<p class="mb-4 text-sm text-muted-foreground">
-			(in case we need to contact you)
+			(in case we need to reach you)
 		</p>
 		<Form.Field class="flex-1" {form} name="subject">
 			<Form.Control let:attrs>

@@ -111,7 +111,7 @@
 		<!-- Gentle help section -->
 		<div class="help-section">
 			<p class="help-text">Still need a hand? 🙋‍♀️</p>
-			<a href="/contact_us" class="help-link"> We're here to help </a>
+			<a href="/contact" class="help-link"> We're here to help </a>
 		</div>
 	</div>
 </div>
