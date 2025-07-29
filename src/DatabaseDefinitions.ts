@@ -67,6 +67,79 @@ export interface Database {
 					},
 				];
 			};
+			backgrounds: {
+				Row: {
+					id: string;
+					user_id: string;
+					region_of_living: string | null;
+					first_generation: boolean;
+					low_income: boolean;
+					other_hooks: string | null;
+					intended_major: string | null;
+					class_rank: string | null;
+					ap_ib_college_classes: string | null;
+					gpa: string | null;
+					test_type: string | null;
+					sat: string | null;
+					act: string | null;
+					challenges: string | null;
+					identity_background: string | null;
+					values_beliefs: string | null;
+					personal_qualities: string | null;
+					created_at: Date;
+					updated_at: Date;
+				};
+				Insert: {
+					id?: string;
+					user_id: string;
+					region_of_living?: string | null;
+					first_generation?: boolean;
+					low_income?: boolean;
+					other_hooks?: string | null;
+					intended_major?: string | null;
+					class_rank?: string | null;
+					ap_ib_college_classes?: string | null;
+					gpa?: string | null;
+					test_type?: string | null;
+					sat?: string | null;
+					act?: string | null;
+					challenges?: string | null;
+					identity_background?: string | null;
+					values_beliefs?: string | null;
+					personal_qualities?: string | null;
+					created_at?: Date;
+					updated_at?: Date;
+				};
+				Update: {
+					id?: string;
+					user_id?: string;
+					region_of_living?: string | null;
+					first_generation?: boolean;
+					low_income?: boolean;
+					other_hooks?: string | null;
+					intended_major?: string | null;
+					class_rank?: string | null;
+					ap_ib_college_classes?: string | null;
+					gpa?: string | null;
+					test_type?: string | null;
+					sat?: string | null;
+					act?: string | null;
+					challenges?: string | null;
+					identity_background?: string | null;
+					values_beliefs?: string | null;
+					personal_qualities?: string | null;
+					created_at?: Date;
+					updated_at?: Date;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'backgrounds_user_id_fkey';
+						columns: ['user_id'];
+						referencedRelation: 'users';
+						referencedColumns: ['id'];
+					},
+				];
+			};
 			contact_messages: {
 				Row: {
 					id: string;
@@ -447,6 +520,8 @@ export type Document = Database['public']['Tables']['documents']['Row'];
 export type Tag = Database['public']['Tables']['tags']['Row'];
 export type School = Database['public']['Tables']['schools']['Row'];
 export type Activity = Database['public']['Tables']['activities']['Row'];
+export type Background = Database['public']['Tables']['backgrounds']['Row'];
+
 // Updated Document type with chatbot_messages
 export type DocumentWithChat =
 	Database['public']['Tables']['documents']['Row'] & {
@@ -482,4 +557,23 @@ export interface ComponentVersion {
 	document_id?: string | null;
 	content?: Json;
 	latest_ai_response?: string | null; // Added latest_ai_response field
+}
+
+// Background form data interface for easier component usage
+export interface BackgroundFormData {
+	regionOfLiving: string;
+	firstGeneration: boolean;
+	lowIncome: boolean;
+	otherHooks: string;
+	intendedMajor: string;
+	classRank: string;
+	apIbCollegeClasses: string;
+	gpa: string;
+	testType: string;
+	sat: string;
+	act: string;
+	challenges: string;
+	identityBackground: string;
+	valuesBeliefs: string;
+	personalQualities: string;
 }
