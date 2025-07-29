@@ -214,6 +214,9 @@
 							<div class="space-y-2">
 								<Label for="sat">SAT Score</Label>
 								<Input id="sat" bind:value={formData.sat} placeholder="1450" />
+								<p class="text-sm text-muted-foreground">
+									Enter your highest SAT score (superscore if applicable)
+								</p>
 							</div>
 						{/if}
 
@@ -236,30 +239,11 @@
 				<CardHeader>
 					<CardTitle>Personal</CardTitle>
 					<CardDescription
-						>List some personal and unique details about your life</CardDescription
+						>List some personal and unique details about your life. Remember,
+						all responses are optional!</CardDescription
 					>
 				</CardHeader>
 				<CardContent class="space-y-6">
-					<div class="space-y-2">
-						<Label for="challenges">Challenges</Label>
-						<Textarea
-							id="challenges"
-							bind:value={formData.challenges}
-							placeholder="Describe any significant challenges, obstacles, or adversities you have faced in your life. How have these experiences shaped your perspective and influenced your personal growth?"
-							rows={4}
-						/>
-					</div>
-
-					<div class="space-y-2">
-						<Label for="identity">Identity & Background</Label>
-						<Textarea
-							id="identity"
-							bind:value={formData.identityBackground}
-							placeholder="How have your identity, culture, family background, or personal experiences shaped your values, perspectives, and goals?"
-							rows={4}
-						/>
-					</div>
-
 					<div class="space-y-2">
 						<Label for="values">Values & Beliefs</Label>
 						<Textarea
@@ -280,11 +264,31 @@
 							rows={4}
 						/>
 					</div>
+
+					<div class="space-y-2">
+						<Label for="identity">Identity & Background</Label>
+						<Textarea
+							id="identity"
+							bind:value={formData.identityBackground}
+							placeholder="How have your identity, culture, family background, or personal experiences shaped your values, perspectives, and goals?"
+							rows={4}
+						/>
+					</div>
+
+					<div class="space-y-2">
+						<Label for="challenges">Challenges</Label>
+						<Textarea
+							id="challenges"
+							bind:value={formData.challenges}
+							placeholder="Describe any significant challenges, obstacles, or adversities you have faced in your life. How have these experiences shaped your perspective and influenced your personal growth?"
+							rows={4}
+						/>
+					</div>
 				</CardContent>
 			</Card>
 
 			<!-- Submit Button -->
-			<div class="flex justify-center pt-6">
+			<div class="flex justify-center pb-6">
 				<Button type="submit" size="lg" class="px-8">Save Responses</Button>
 			</div>
 		</form>
