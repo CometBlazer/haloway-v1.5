@@ -1,3 +1,4 @@
+// src/routes/(app)/background/+page.server.ts
 import { error, fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { supabase } from '$lib/supabase';

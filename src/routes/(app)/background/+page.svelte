@@ -1,3 +1,4 @@
+<!-- src/routes/(app)/background/+page.svelte -->
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { browser } from '$app/environment';
@@ -104,16 +105,16 @@
 	});
 
 	// Handle form submission state
-	const handleSubmit = () => {
-		return enhance(() => {
-			isSubmitting = true;
+	// const handleSubmit = () => {
+	// 	return enhance(() => {
+	// 		isSubmitting = true;
 
-			return async ({ update }) => {
-				isSubmitting = false;
-				await update();
-			};
-		});
-	};
+	// 		return async ({ update }) => {
+	// 			isSubmitting = false;
+	// 			await update();
+	// 		};
+	// 	});
+	// };
 </script>
 
 <div class="mx-auto min-h-screen w-full max-w-5xl py-8">
@@ -129,7 +130,17 @@
 			</p>
 		</div>
 
-		<form method="POST" use:handleSubmit class="space-y-8">
+		<form
+			method="POST"
+			use:enhance={() => {
+				isSubmitting = true;
+				return async ({ update }) => {
+					isSubmitting = false;
+					await update();
+				};
+			}}
+			class="space-y-8"
+		>
 			<!-- Basic Information -->
 			<Card>
 				<CardHeader>
