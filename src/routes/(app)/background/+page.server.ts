@@ -1,7 +1,6 @@
 // src/routes/(app)/background/+page.server.ts
 import { error, fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import { supabase } from '$lib/supabase';
 
 export const load: PageServerLoad = async ({ locals }) => {
 	// Get the current user session
@@ -12,8 +11,8 @@ export const load: PageServerLoad = async ({ locals }) => {
 		throw error(401, 'Unauthorized');
 	}
 
-	// Try to load existing background data
-	const { data: existingBackground } = await supabase
+	// ✅ Use locals.supabase instead of imported supabase
+	const { data: existingBackground } = await locals.supabase
 		.from('backgrounds')
 		.select('*')
 		.eq('user_id', session.user.id)
@@ -58,8 +57,8 @@ export const actions: Actions = {
 		};
 
 		try {
-			// Check if background already exists for this user
-			const { data: existingBackground } = await supabase
+			// ✅ Use locals.supabase for all database operations
+			const { data: existingBackground } = await locals.supabase
 				.from('backgrounds')
 				.select('id')
 				.eq('user_id', session.user.id)
@@ -69,7 +68,7 @@ export const actions: Actions = {
 
 			if (existingBackground) {
 				// Update existing background
-				result = await supabase
+				result = await locals.supabase
 					.from('backgrounds')
 					.update(backgroundData)
 					.eq('user_id', session.user.id)
@@ -77,7 +76,7 @@ export const actions: Actions = {
 					.single();
 			} else {
 				// Insert new background
-				result = await supabase
+				result = await locals.supabase
 					.from('backgrounds')
 					.insert(backgroundData)
 					.select()
