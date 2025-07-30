@@ -11,12 +11,18 @@ export const load: PageServerLoad = async ({ locals }) => {
 		throw error(401, 'Unauthorized');
 	}
 
-	// ✅ Use locals.supabase instead of imported supabase
-	const { data: existingBackground } = await locals.supabase
+	// Try to load existing background data
+	const { data: existingBackground, error: loadError } = await locals.supabase
 		.from('backgrounds')
 		.select('*')
 		.eq('user_id', session.user.id)
 		.single();
+
+	// If no existing background found, that's okay - we'll return null
+	// Only log actual errors, not "no rows found" errors
+	if (loadError && loadError.code !== 'PGRST116') {
+		console.error('Error loading background:', loadError);
+	}
 
 	return {
 		existingBackground: existingBackground || null,
@@ -27,42 +33,51 @@ export const actions: Actions = {
 	default: async ({ request, locals }) => {
 		const { session } = await locals.safeGetSession();
 
-		// This should never happen due to layout protection, but TypeScript safety
 		if (!session?.user?.id) {
 			throw error(401, 'Unauthorized');
 		}
 
 		const formData = await request.formData();
 
-		// Extract form data
+		// Extract and clean form data
 		const backgroundData = {
 			user_id: session.user.id,
-			region_of_living: (formData.get('regionOfLiving') as string) || null,
-			first_generation: formData.get('firstGeneration') === 'true',
-			low_income: formData.get('lowIncome') === 'true',
-			other_hooks: (formData.get('otherHooks') as string) || null,
-			intended_major: (formData.get('intendedMajor') as string) || null,
-			class_rank: (formData.get('classRank') as string) || null,
+			region_of_living:
+				(formData.get('regionOfLiving') as string)?.trim() || null,
+			first_generation: formData.get('firstGeneration') === 'on', // HTML checkboxes send 'on' when checked
+			low_income: formData.get('lowIncome') === 'on',
+			other_hooks: (formData.get('otherHooks') as string)?.trim() || null,
+			intended_major: (formData.get('intendedMajor') as string)?.trim() || null,
+			class_rank: (formData.get('classRank') as string)?.trim() || null,
 			ap_ib_college_classes:
-				(formData.get('apIbCollegeClasses') as string) || null,
-			gpa: (formData.get('gpa') as string) || null,
-			test_type: (formData.get('testType') as string) || null,
-			sat: (formData.get('sat') as string) || null,
-			act: (formData.get('act') as string) || null,
-			challenges: (formData.get('challenges') as string) || null,
+				(formData.get('apIbCollegeClasses') as string)?.trim() || null,
+			gpa: (formData.get('gpa') as string)?.trim() || null,
+			test_type: (formData.get('testType') as string)?.trim() || null,
+			sat: (formData.get('sat') as string)?.trim() || null,
+			act: (formData.get('act') as string)?.trim() || null,
+			challenges: (formData.get('challenges') as string)?.trim() || null,
 			identity_background:
-				(formData.get('identityBackground') as string) || null,
-			values_beliefs: (formData.get('valuesBeliefs') as string) || null,
-			personal_qualities: (formData.get('personalQualities') as string) || null,
+				(formData.get('identityBackground') as string)?.trim() || null,
+			values_beliefs: (formData.get('valuesBeliefs') as string)?.trim() || null,
+			personal_qualities:
+				(formData.get('personalQualities') as string)?.trim() || null,
 		};
 
 		try {
-			// ✅ Use locals.supabase for all database operations
-			const { data: existingBackground } = await locals.supabase
-				.from('backgrounds')
-				.select('id')
-				.eq('user_id', session.user.id)
-				.single();
+			// Check if background already exists for this user
+			const { data: existingBackground, error: checkError } =
+				await locals.supabase
+					.from('backgrounds')
+					.select('id')
+					.eq('user_id', session.user.id)
+					.maybeSingle(); // Use maybeSingle to avoid error when no rows found
+
+			if (checkError) {
+				console.error('Error checking existing background:', checkError);
+				return fail(500, {
+					error: 'Failed to check existing background information',
+				});
+			}
 
 			let result;
 
@@ -84,7 +99,7 @@ export const actions: Actions = {
 			}
 
 			if (result.error) {
-				console.error('Supabase error:', result.error);
+				console.error('Supabase operation error:', result.error);
 				return fail(500, {
 					error: 'Failed to save background information',
 					details: result.error.message,
@@ -96,7 +111,7 @@ export const actions: Actions = {
 				background: result.data,
 			};
 		} catch (error) {
-			console.error('Error saving background:', error);
+			console.error('Unexpected error saving background:', error);
 			return fail(500, {
 				error:
 					'An unexpected error occurred while saving your background information',

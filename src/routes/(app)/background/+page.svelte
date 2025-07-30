@@ -18,11 +18,12 @@
 	} from '$lib/components/ui/card';
 	import { toastStore } from '$lib/stores/toast';
 	import type { PageData, ActionData } from './$types';
+	import { Navigation, GraduationCap, Baby } from 'lucide-svelte';
 
 	export let data: PageData;
 	export let form: ActionData;
 
-	// Initialize form data with existing data if available
+	// Initialize form data with existing data on load
 	let formData = {
 		regionOfLiving: data.existingBackground?.region_of_living || '',
 		firstGeneration: data.existingBackground?.first_generation || false,
@@ -44,21 +45,52 @@
 	let hasUnsavedChanges = false;
 	let initialFormData = {};
 	let isSubmitting = false;
+	let hasInitialized = false;
 
-	// Track changes
-	$: {
-		if (Object.keys(initialFormData).length > 0) {
-			hasUnsavedChanges =
-				JSON.stringify(formData) !== JSON.stringify(initialFormData);
-		}
-	}
-
+	// Initialize once on mount
 	onMount(() => {
 		initialFormData = JSON.parse(JSON.stringify(formData));
+		hasInitialized = true;
 	});
 
-	// Handle form action results
-	$: if (form) {
+	// Only track changes after initialization
+	$: if (hasInitialized) {
+		hasUnsavedChanges =
+			JSON.stringify(formData) !== JSON.stringify(initialFormData);
+	}
+
+	// Handle form submission results - only show toast once per submission
+	let lastFormState:
+		| { success?: undefined; background?: undefined; error: string }
+		| {
+				error?: undefined;
+				success: boolean;
+				background: {
+					id: string;
+					user_id: string;
+					region_of_living: string | null;
+					first_generation: boolean;
+					low_income: boolean;
+					other_hooks: string | null;
+					intended_major: string | null;
+					class_rank: string | null;
+					ap_ib_college_classes: string | null;
+					gpa: string | null;
+					test_type: string | null;
+					sat: string | null;
+					act: string | null;
+					challenges: string | null;
+					identity_background: string | null;
+					values_beliefs: string | null;
+					personal_qualities: string | null;
+					created_at: Date;
+					updated_at: Date;
+				};
+		  }
+		| null = null;
+	$: if (form && form !== lastFormState) {
+		lastFormState = form;
+
 		if (form.success) {
 			// Reset unsaved changes flag
 			hasUnsavedChanges = false;
@@ -103,18 +135,6 @@
 			};
 		}
 	});
-
-	// Handle form submission state
-	// const handleSubmit = () => {
-	// 	return enhance(() => {
-	// 		isSubmitting = true;
-
-	// 		return async ({ update }) => {
-	// 			isSubmitting = false;
-	// 			await update();
-	// 		};
-	// 	});
-	// };
 </script>
 
 <div class="mx-auto min-h-screen w-full max-w-5xl py-8">
@@ -135,8 +155,8 @@
 			use:enhance={() => {
 				isSubmitting = true;
 				return async ({ update }) => {
+					await update({ reset: false }); // Prevent form reset
 					isSubmitting = false;
-					await update();
 				};
 			}}
 			class="space-y-8"
@@ -144,7 +164,10 @@
 			<!-- Basic Information -->
 			<Card>
 				<CardHeader>
-					<CardTitle>Basic Information</CardTitle>
+					<CardTitle class="flex items-center gap-2 text-primary">
+						<Navigation class="h-7 w-7 text-color-primary" />
+						Basic Information
+					</CardTitle>
 					<CardDescription
 						>Tell us about your background and location</CardDescription
 					>
@@ -183,10 +206,9 @@
 					</div>
 
 					<div class="space-y-2">
-						<Label for="hooks"
-							>Any other information that would help our AI better understand
-							you</Label
-						>
+						<Label for="hooks">
+							Any other information that would help our AI better understand you
+						</Label>
 						<Textarea
 							id="hooks"
 							name="otherHooks"
@@ -201,7 +223,10 @@
 			<!-- Academics -->
 			<Card>
 				<CardHeader>
-					<CardTitle>Academics</CardTitle>
+					<CardTitle class="flex items-center gap-2 text-primary">
+						<GraduationCap class="h-7 w-7 text-color-primary" />
+						Academics
+					</CardTitle>
 					<CardDescription
 						>Please enter your academic information</CardDescription
 					>
@@ -302,11 +327,14 @@
 			<!-- Personal -->
 			<Card>
 				<CardHeader>
-					<CardTitle>Personal</CardTitle>
-					<CardDescription
-						>List some personal and unique details about your life. Remember,
-						all responses are optional!</CardDescription
-					>
+					<CardTitle class="flex items-center gap-2 text-primary">
+						<Baby class="h-7 w-7 text-color-primary" />
+						Personal
+					</CardTitle>
+					<CardDescription>
+						List some personal and unique details about your life. Remember, all
+						responses are optional!
+					</CardDescription>
 				</CardHeader>
 				<CardContent class="space-y-6">
 					<div class="space-y-2">
