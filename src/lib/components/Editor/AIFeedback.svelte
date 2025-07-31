@@ -489,6 +489,9 @@
 				<div class="loading-text">
 					<h3>Analyzing your essay...</h3>
 					<p>Looking at your structure, writing style, and content...</p>
+					<p class="pt-2 text-xs text-muted">
+						This may take a few seconds, please be patient
+					</p>
 				</div>
 			</div>
 		{:else if !hasContent}
