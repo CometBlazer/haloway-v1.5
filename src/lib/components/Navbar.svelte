@@ -72,7 +72,7 @@
 	}
 </script>
 
-<header class="sticky top-0 z-50 border-b border-border bg-card py-4">
+<header class="sticky top-0 z-50 border-b border-border bg-card py-4 font-sans">
 	<div
 		class="container flex flex-nowrap items-center justify-between lg:grid lg:grid-cols-[auto,1fr,auto]"
 	>
@@ -85,7 +85,7 @@
 							<Button
 								variant="ghost"
 								href={item.href}
-								class="px-4 py-2 text-base text-foreground hover:bg-accent hover:text-accent-foreground"
+								class="px-4 py-2 font-sans text-base text-foreground hover:bg-accent hover:text-accent-foreground"
 							>
 								{item.text}
 							</Button>
@@ -94,19 +94,22 @@
 								<DropdownMenu.Trigger asChild let:builder>
 									<Button
 										variant="ghost"
-										class="flex items-center gap-1 px-4 py-2 text-base text-foreground hover:bg-accent hover:text-accent-foreground"
+										class="flex items-center gap-1 px-4 py-2 font-sans text-base text-foreground hover:bg-accent hover:text-accent-foreground"
 										builders={[builder]}
 									>
 										{item.text}
 										<ChevronDown class="h-4 w-4" />
 									</Button>
 								</DropdownMenu.Trigger>
-								<DropdownMenu.Content align="start" class="min-w-[200px]">
+								<DropdownMenu.Content
+									align="start"
+									class="min-w-[200px] font-sans"
+								>
 									{#each item.items as subItem}
 										<DropdownMenu.Item class="p-0">
 											<a
 												href={subItem.href}
-												class="w-full rounded-sm px-3 py-2 text-base font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+												class="w-full rounded-sm px-3 py-2 font-sans text-base font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
 											>
 												{subItem.text}
 											</a>
@@ -121,13 +124,15 @@
 		</nav>
 		<div class="hidden justify-self-end lg:flex lg:gap-4">
 			{#if user}
-				<Button variant="default" href="/dashboard">Dashboard</Button>
+				<Button variant="default" href="/dashboard" class="font-sans"
+					>Dashboard</Button
+				>
 				<PersonalMenu {user} />
 			{:else}
 				<PersonalMenu {user} />
 				<Button
 					variant="outline"
-					class="h-10 border-color-primary text-base hover:bg-accent hover:text-accent-foreground"
+					class="h-10 border-color-primary font-sans text-base hover:bg-accent hover:text-accent-foreground"
 					href="/login"
 					>Start writing <ArrowRight class="ml-1 h-4 w-4" /></Button
 				>
@@ -142,7 +147,7 @@
 						<MenuIcon />
 					</Button>
 				</Drawer.Trigger>
-				<Drawer.Content>
+				<Drawer.Content class="font-sans">
 					<Drawer.Header class="flex justify-end py-0">
 						<Drawer.Close asChild let:builder>
 							<Button variant="ghost" size="icon" builders={[builder]}>
@@ -156,7 +161,7 @@
 							<div class="p-2">
 								<Button
 									variant="ghost"
-									class="flex w-full flex-nowrap gap-2 text-base"
+									class="flex w-full flex-nowrap gap-2 font-sans text-base"
 									builders={[builder]}
 								>
 									Switch theme
@@ -171,19 +176,19 @@
 								<li class="col-span-2 grid grid-cols-subgrid">
 									<ThemeSwitchButton
 										mode="system"
-										class="col-span-2 grid grid-cols-subgrid"
+										class="col-span-2 grid grid-cols-subgrid font-sans"
 									/>
 								</li>
 								<li class="col-span-2 grid grid-cols-subgrid">
 									<ThemeSwitchButton
 										mode="light"
-										class="col-span-2 grid grid-cols-subgrid"
+										class="col-span-2 grid grid-cols-subgrid font-sans"
 									/>
 								</li>
 								<li class="col-span-2 grid grid-cols-subgrid">
 									<ThemeSwitchButton
 										mode="dark"
-										class="col-span-2 grid grid-cols-subgrid"
+										class="col-span-2 grid grid-cols-subgrid font-sans"
 									/>
 								</li>
 							</ul>
@@ -198,7 +203,7 @@
 										<Button
 											href={item.href}
 											variant="ghost"
-											class="w-full py-6 text-base"
+											class="w-full py-6 font-sans text-base"
 										>
 											{item.text}
 										</Button>
@@ -218,7 +223,7 @@
 											<Button
 												href={subItem.href}
 												variant="ghost"
-												class="w-full py-6 text-base"
+												class="w-full py-6 font-sans text-base"
 											>
 												{subItem.text}
 											</Button>
@@ -234,7 +239,7 @@
 									<Button
 										href="/register"
 										variant="ghost"
-										class="w-full py-6 text-base"
+										class="w-full py-6 font-sans text-base"
 									>
 										Register
 									</Button>
@@ -243,7 +248,7 @@
 									<Button
 										href="/login"
 										variant="ghost"
-										class="w-full py-6 text-base"
+										class="w-full py-6 font-sans text-base"
 									>
 										Log in
 									</Button>
@@ -253,7 +258,7 @@
 									<Button
 										href="/dashboard"
 										variant="ghost"
-										class="w-full py-6 text-base"
+										class="w-full py-6 font-sans text-base"
 									>
 										Dashboard
 									</Button>
@@ -262,7 +267,7 @@
 									<Button
 										href="/settings"
 										variant="ghost"
-										class="w-full py-6 text-base"
+										class="w-full py-6 font-sans text-base"
 									>
 										Settings
 									</Button>
@@ -271,7 +276,7 @@
 									<Button
 										href="/log-out"
 										variant="ghost"
-										class="w-full py-6 text-base"
+										class="w-full py-6 font-sans text-base"
 									>
 										Log out
 									</Button>
