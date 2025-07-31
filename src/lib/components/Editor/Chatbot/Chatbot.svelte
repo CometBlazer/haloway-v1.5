@@ -700,6 +700,13 @@
 							>Dan the essay coach</a
 						>.
 					</p>
+					<p class="mt-3 text-xs text-muted-foreground">
+						Fill out <a
+							href="/background"
+							class="font-medium underline hover:text-foreground"
+							>the background form</a
+						> so I can help you brainstorm ideas and provide personalized feedback!
+					</p>
 				</div>
 			</div>
 		{/if}
