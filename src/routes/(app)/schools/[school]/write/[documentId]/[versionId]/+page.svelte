@@ -1180,6 +1180,14 @@
 					>
 						Go to AI Feedback
 					</Button>
+					<Button
+						variant="outline"
+						href="https://dan.haloway.co"
+						target="_blank"
+						class="mb-4 hidden w-full text-center lg:block"
+					>
+						I need help brainstorming
+					</Button>
 					<Chatbot
 						height="650px"
 						getCurrentContent={() => {

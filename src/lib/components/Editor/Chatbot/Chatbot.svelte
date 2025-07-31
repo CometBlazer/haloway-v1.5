@@ -71,10 +71,33 @@
 
 	// Format timestamp for display
 	function formatTime(timestamp: string): string {
-		return new Date(timestamp).toLocaleTimeString([], {
-			hour: '2-digit',
-			minute: '2-digit',
-		});
+		const messageDate = new Date(timestamp);
+		const today = new Date();
+
+		// Check if the message is from today
+		const isToday = messageDate.toDateString() === today.toDateString();
+
+		if (isToday) {
+			// Just show time for today's messages
+			return messageDate.toLocaleTimeString([], {
+				hour: '2-digit',
+				minute: '2-digit',
+			});
+		} else {
+			// Show date and time for older messages
+			return (
+				messageDate.toLocaleDateString([], {
+					month: '2-digit',
+					day: '2-digit',
+					year: '2-digit',
+				}) +
+				' ' +
+				messageDate.toLocaleTimeString([], {
+					hour: '2-digit',
+					minute: '2-digit',
+				})
+			);
+		}
 	}
 
 	async function loadInitialMessages() {
@@ -677,6 +700,13 @@
 							>Dan the essay coach</a
 						>.
 					</p>
+					<p class="mt-3 text-xs text-muted-foreground">
+						Fill out <a
+							href="/background"
+							class="font-medium underline hover:text-foreground"
+							>the background form</a
+						> so I can help you brainstorm ideas and provide personalized feedback!
+					</p>
 				</div>
 			</div>
 		{/if}
@@ -687,31 +717,29 @@
 					? 'justify-end'
 					: 'justify-start'}"
 			>
-				<div class="flex max-w-[80%] items-start space-x-2">
-					{#if message.sender === 'ai'}
-						<!-- AI Avatar -->
-						<div
-							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary"
-						>
-							<Avatar.Root>
-								<Avatar.Image
-									src="https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png"
-									alt="Clara"
-								/>
-								<Avatar.Fallback>
-									<Sparkles class="h-4 w-4 text-primary-foreground" />
-								</Avatar.Fallback>
-							</Avatar.Root>
-						</div>
-					{/if}
-
+				<div class="flex max-w-[80%] items-start">
 					<div class="flex w-full flex-col space-y-2">
+						{#if message.sender === 'ai'}
+							<div
+								class="ml-1.5 mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary"
+							>
+								<Avatar.Root>
+									<Avatar.Image
+										src="https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png"
+										alt="Clara"
+									/>
+									<Avatar.Fallback>
+										<Sparkles class="h-4 w-4 text-primary-foreground" />
+									</Avatar.Fallback>
+								</Avatar.Root>
+							</div>
+						{/if}
 						<!-- Main message -->
 						<div class="relative">
 							<div
 								class="relative {message.sender === 'user'
 									? 'ml-auto bg-primary text-primary-foreground'
-									: 'bg-muted text-foreground'} ml-2 rounded-lg px-3 py-2"
+									: 'bg-muted text-foreground'} ml-1 mt-2 rounded-lg px-3 py-2"
 							>
 								<p class="whitespace-pre-wrap pb-6 text-sm">
 									{message.text}

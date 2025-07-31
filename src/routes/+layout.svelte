@@ -87,7 +87,7 @@
 	while slow networks see it moving for a full 12 seconds
 -->
 	<div
-		class="z-500 fixed left-0 right-0 top-0 h-1 w-full bg-primary"
+		class="fixed left-0 right-0 top-0 !z-[1000] h-1 w-full bg-primary"
 		in:slide={{ delay: 100, duration: 12000, axis: 'x', easing: expoOut }}
 	></div>
 {/if}
