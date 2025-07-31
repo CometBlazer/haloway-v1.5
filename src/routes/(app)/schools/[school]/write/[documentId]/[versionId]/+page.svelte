@@ -1182,7 +1182,7 @@
 					</Button>
 					<Button
 						variant="outline"
-						href="https://google.com"
+						href="https://dan.haloway.co"
 						target="_blank"
 						class="mb-4 hidden w-full text-center lg:block"
 					>
