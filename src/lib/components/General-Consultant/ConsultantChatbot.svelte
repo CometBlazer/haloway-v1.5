@@ -454,6 +454,8 @@
 	</div>
 </div>
 
+<p>I can see your profile, essays, background, and activities.</p>
+
 <style>
 	/* Textarea styling */
 	textarea {
