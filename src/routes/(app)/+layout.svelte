@@ -10,7 +10,7 @@
 		Trophy,
 		ExternalLink,
 		NotebookPen,
-		// GraduationCap,
+		GraduationCap,
 		Sparkles,
 	} from 'lucide-svelte';
 
@@ -124,7 +124,14 @@
 				<Logo />
 				<span class="text-xs font-medium text-muted-foreground">Home</span>
 			</a>
-
+			<NavLink
+				href="/dashboard"
+				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
+				activeClass="bg-accent text-accent-foreground"
+			>
+				<Home class="h-5 w-5 text-color-primary" />
+				<span class="text-center text-xs font-medium">Dashboard</span>
+			</NavLink>
 			<!-- Create Essay Button -->
 			<button
 				on:click={handleCreateEssay}
@@ -134,21 +141,13 @@
 				<span class="text-center text-xs font-medium">Create Essay</span>
 			</button>
 			<NavLink
-				href="/dashboard"
-				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
-				activeClass="bg-accent text-accent-foreground"
-			>
-				<Home class="h-5 w-5" />
-				<span class="text-center text-xs font-medium">Dashboard</span>
-			</NavLink>
-			<!-- <NavLink
-				href="/extracurricular-organizer"
+				href="/consultant"
 				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
 				activeClass="bg-accent text-accent-foreground"
 			>
 				<GraduationCap class="h-5 w-5" />
 				<span class="text-center text-xs font-medium">College Consultant</span>
-			</NavLink> -->
+			</NavLink>
 
 			<NavLink
 				href="/extracurricular-organizer"
@@ -229,7 +228,7 @@
 							href="/dashboard"
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
 						>
-							<Home class="h-5 w-5" />
+							<Home class="h-5 w-5 text-color-primary" />
 							Dashboard
 						</a>
 
@@ -256,14 +255,14 @@
 							<NotebookPen class="h-5 w-5" />
 							Background
 						</a>
-						<!-- <a
-							href="https://www.commonapp.org/blog/announcing-2025-2026-common-app-essay-prompts"
+						<a
+							href="/consultant"
 							target="_blank"
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
 						>
 							<GraduationCap class="h-5 w-5" />
 							College Consultant
-						</a> -->
+						</a>
 						<a
 							href="/essayfeedback"
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
