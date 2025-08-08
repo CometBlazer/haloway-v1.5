@@ -467,21 +467,25 @@
 
 <!-- Clear Chat Confirmation Modal -->
 <AlertDialog.Root bind:open={showClearChatModal}>
-	<AlertDialog.Content>
+	<AlertDialog.Content class="sm:max-w-md">
 		<AlertDialog.Header>
-			<AlertDialog.Title class="text-destructive"
-				>Clear Chat History</AlertDialog.Title
-			>
+			<AlertDialog.Title class="">Clear Chat History</AlertDialog.Title>
 			<AlertDialog.Description>
 				Are you sure you want to clear all chat messages? This action cannot be
 				undone.
 			</AlertDialog.Description>
 		</AlertDialog.Header>
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel on:click={cancelClearChat}>Cancel</AlertDialog.Cancel>
-			<AlertDialog.Action on:click={confirmClearChat}
-				>Clear Chat</AlertDialog.Action
+
+		<AlertDialog.Footer class="gap-2">
+			<AlertDialog.Cancel on:click={cancelClearChat} class="rounded-xl"
+				>Cancel</AlertDialog.Cancel
 			>
+			<AlertDialog.Action
+				on:click={confirmClearChat}
+				class="rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90"
+			>
+				Clear Chat
+			</AlertDialog.Action>
 		</AlertDialog.Footer>
 	</AlertDialog.Content>
 </AlertDialog.Root>
