@@ -42,6 +42,99 @@
 		JSON.stringify(ldJson) + '<'
 	}/script>`;
 
+	const schools = [
+		{
+			name: 'Harvard',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532874/harvard-min_t6lqkm.jpg',
+			showOnMobile: true,
+		},
+		{
+			name: 'MIT',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532875/mit-min_zydu0g.jpg',
+			showOnMobile: false,
+		},
+		{
+			name: 'Stanford',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532875/stanford-min_pjicnr.jpg',
+			showOnMobile: true,
+		},
+		{
+			name: 'Yale',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532880/yale-min_z7n3rs.jpg',
+			showOnMobile: false,
+		},
+		{
+			name: 'Princeton',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532875/princeton-min_tl4yak.jpg',
+			showOnMobile: true,
+		},
+		{
+			name: 'UCLA',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532877/ucla-min_y6bll1.jpg',
+			showOnMobile: true,
+		},
+		// {
+		//   name: "Brown",
+		//   image:
+		//     "https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532873/brown-min_isutma.jpg",
+		//   showOnMobile: false,
+		// },
+		{
+			name: 'UPenn',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532878/upenn-min_xwiyr5.jpg',
+			showOnMobile: false,
+		},
+		{
+			name: 'Cornell',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532873/cornell-min_oakaim.jpg',
+			showOnMobile: false,
+		},
+		{
+			name: 'Duke',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532873/duke-min_v9rnsi.jpg',
+			showOnMobile: false,
+		},
+		// {
+		//   name: "WashU",
+		//   image:
+		//     "https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532879/washu-min_etewmv.jpg",
+		//   showOnMobile: false,
+		// },
+		// {
+		//   name: "Georgetown",
+		//   image:
+		//     "https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532873/georgetown-min_rivio4.jpg",
+		//   showOnMobile: false,
+		// },
+		{
+			name: 'University of Florida',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532877/uf-min_qf891x.jpg',
+			showOnMobile: false,
+		},
+		{
+			name: 'USC',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532878/usc-min_te0xvx.jpg',
+			showOnMobile: true,
+		},
+		{
+			name: 'And more',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532876/student-min_qcyjat.jpg',
+			showOnMobile: true,
+		},
+	];
+
 	const featuresData = [
 		{
 			title: 'Minimal Editor & Easy Export ',
@@ -202,16 +295,11 @@
 
 	let currentRoleIndex = 0;
 	const roles = ['Consultant', 'Copilot', 'Coach', 'Mentor'];
-	let isAnimating = false;
 
 	onMount(() => {
 		const interval = setInterval(() => {
-			isAnimating = true;
-			setTimeout(() => {
-				currentRoleIndex = (currentRoleIndex + 1) % roles.length;
-				isAnimating = false;
-			}, 250); // Half of the animation duration
-		}, 3000); // Change every 3 seconds (increased for better UX)
+			currentRoleIndex = (currentRoleIndex + 1) % roles.length;
+		}, 2000); // Change every 2 seconds
 
 		return () => clearInterval(interval);
 	});
@@ -266,28 +354,25 @@
 						<h1
 							class="mb-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
 						>
-							Haloway, your Ethical AI College
-							<span class="slot-container">
-								<span class="slot-text current" class:animating={isAnimating}>
-									{roles[currentRoleIndex]}
-								</span>
-								<span class="slot-text next" class:animating={isAnimating}>
-									{roles[(currentRoleIndex + 1) % roles.length]}
-								</span>
+							Haloway, your Ethical AI College <span
+								class="inline-block transition-all duration-500 ease-in-out"
+								style="min-width: 200px;"
+							>
+								{roles[currentRoleIndex]}
 							</span>.
-							<!-- <span
+							<span
 								class="bg-gradient-to-r from-color-primary to-color-accent bg-clip-text text-transparent"
 								><span
 									class="sm:decoration-6 underline decoration-color-secondary decoration-4 md:decoration-8 lg:decoration-[10px]"
 									>faster</span
 								> with Haloway.</span
-							> -->
+							>
 						</h1>
-						<!-- 
+
 						<h2 class="mb-8 text-lg sm:text-xl md:text-2xl lg:text-3xl">
 							Haloway: an easy-to-use writing platform to organize, write, and
 							perfect your college application essays.
-						</h2> -->
+						</h2>
 
 						<div
 							class="flex flex-col justify-center gap-3 sm:flex-row sm:gap-4 lg:justify-start"
@@ -888,6 +973,99 @@
 	</div>
 </div>
 
+<!-- Schools Section -->
+<div class="min-h-[60vh] bg-color-base-100 py-12 sm:min-h-[70vh] sm:py-16">
+	<div class="px-4 py-6 sm:px-7 sm:py-8">
+		<div class="mx-auto max-w-7xl text-center">
+			<h1 class="px-2 text-4xl lg:text-5xl">
+				<span class="font-bold italic">Ready? </span>Pick a school
+			</h1>
+		</div>
+
+		<div
+			class="mx-auto mt-12 grid max-w-7xl grid-cols-1 gap-4 px-4 sm:mt-16 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8"
+		>
+			{#each schools.filter((school) => school.showOnMobile) as school (school.name)}
+				<Card.Root
+					class="mx-auto w-full max-w-sm overflow-hidden bg-color-base-200 shadow-xl transition-shadow hover:shadow-2xl sm:hidden"
+				>
+					<div class="relative aspect-square overflow-hidden">
+						<img
+							src={school.image}
+							alt={school.name}
+							class="h-full w-full object-cover"
+							loading="lazy"
+						/>
+					</div>
+
+					<Card.Content
+						class="flex flex-col items-center p-4 text-center sm:p-6"
+					>
+						<Card.Title
+							class="mb-3 text-lg sm:mb-4 sm:text-xl lg:mb-6 lg:text-2xl"
+						>
+							{school.name}
+						</Card.Title>
+						<!-- Replace with links to actual schools later (getUrlSafeName) -->
+						<Button
+							href="/schools"
+							class="{school.name === 'And more'
+								? 'bg-amber-500 hover:bg-amber-600'
+								: 'bg-foreground'} btn-sm sm:btn-md w-full rounded-full text-sm sm:text-base lg:text-lg"
+						>
+							<span>
+								{school.name === 'And more'
+									? 'Choose another school'
+									: 'Start writing'}
+							</span>
+							<ArrowUpRight class="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+						</Button>
+					</Card.Content>
+				</Card.Root>
+			{/each}
+
+			{#each schools as school (school.name)}
+				<Card.Root
+					class="mx-auto hidden w-full max-w-sm overflow-hidden bg-color-base-200 shadow-xl transition-shadow hover:shadow-2xl sm:block"
+				>
+					<div class="relative aspect-square overflow-hidden">
+						<img
+							src={school.image}
+							alt={school.name}
+							class="h-full w-full object-cover"
+							loading="lazy"
+						/>
+					</div>
+
+					<Card.Content
+						class="flex flex-col items-center p-4 text-center sm:p-6"
+					>
+						<Card.Title
+							class="mb-3 text-lg sm:mb-4 sm:text-xl lg:mb-6 lg:text-2xl"
+						>
+							{school.name}
+						</Card.Title>
+						<!-- Replace with links to actual schools later (getUrlSafeName) -->
+						<Button
+							href="/schools"
+							class="{school.name === 'And more'
+								? 'bg-amber-500 hover:bg-amber-600'
+								: 'bg-foreground'} btn-sm sm:btn-md w-full rounded-full text-sm sm:text-base lg:text-lg"
+						>
+							<span>
+								{school.name === 'And more'
+									? 'Choose another school'
+									: 'Start writing'}
+							</span>
+							<ArrowUpRight class="ml-3 mt-0.5 h-4 w-4 sm:h-5 sm:w-5" />
+						</Button>
+					</Card.Content>
+				</Card.Root>
+			{/each}
+		</div>
+	</div>
+</div>
+
 <!-- Privacy Section -->
 <Section.Root anchor="security">
 	<div
@@ -1221,36 +1399,6 @@
 </div> -->
 
 <style>
-	.slot-container {
-		overflow: hidden;
-		position: relative;
-		display: inline-block;
-		min-width: 200px;
-		height: 1.2em;
-	}
-
-	.slot-text {
-		position: absolute;
-		width: 100%;
-		transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-		transform-origin: center;
-	}
-
-	.slot-text.current {
-		transform: translateY(0);
-	}
-
-	.slot-text.next {
-		transform: translateY(100%);
-	}
-
-	.slot-text.animating {
-		transform: translateY(-100%);
-	}
-
-	.slot-text.next.animating {
-		transform: translateY(0);
-	}
 	.hero-content-fade {
 		opacity: 0;
 		transform: translateY(20px);
