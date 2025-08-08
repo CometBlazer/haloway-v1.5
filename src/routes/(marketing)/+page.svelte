@@ -2,6 +2,7 @@
 	import * as Section from '$lib/components/landing/section';
 	import * as Card from '$lib/components/ui/card';
 	import { onMount } from 'svelte';
+	import TextLoop from '$lib/components/TextLoop.svelte';
 	// import Features from './components/sections/features/features.svelte';
 	// import HeroSection from './components/sections/hero.svelte';
 	// import LogosCloud from './components/sections/logos-cloud.svelte';
@@ -120,98 +121,13 @@
 	// 	},
 	// ];
 
-	const comparisonFeatures = [
-		{
-			name: 'Rich-text Editing',
-			haloway: true,
-			notion: true,
-			word: true,
-			googleDocs: true,
-		},
-		{
-			name: 'Realtime Autosave',
-			haloway: true,
-			notion: true,
-			word: true,
-			googleDocs: true,
-		},
-		// {
-		//   name: "Export to .DOC and .TXT",
-		//   haloway: true,
-		//   notion: false,
-		//   word: true,
-		//   googleDocs: true,
-		// },
-		{
-			name: 'Draft Version Management',
-			haloway: true,
-			notion: false,
-			word: true,
-			googleDocs: true,
-		},
-		{
-			name: 'AI Feedback',
-			haloway: true,
-			notion: true,
-			word: false,
-			googleDocs: false,
-		},
-		{
-			name: 'Customizable UI',
-			haloway: true,
-			notion: true,
-			word: false,
-			googleDocs: false,
-		},
-		{
-			name: 'Prompt Management',
-			haloway: true,
-			notion: false,
-			word: false,
-			googleDocs: false,
-		},
-		{
-			name: 'Essay Dashboard',
-			haloway: true,
-			notion: false,
-			word: false,
-			googleDocs: false,
-		},
-		{
-			name: 'Custom Checkpoints',
-			haloway: true,
-			notion: false,
-			word: false,
-			googleDocs: false,
-		},
-		{
-			name: 'Built-in Deadline Tracking',
-			haloway: true,
-			notion: false,
-			word: false,
-			googleDocs: false,
-		},
-		{
-			name: 'Status Tracking',
-			haloway: true,
-			notion: false,
-			word: false,
-			googleDocs: false,
-		},
-	];
-
 	let currentRoleIndex = 0;
 	const roles = ['Consultant', 'Copilot', 'Coach', 'Mentor'];
-	let isAnimating = false;
 
 	onMount(() => {
 		const interval = setInterval(() => {
-			isAnimating = true;
-			setTimeout(() => {
-				currentRoleIndex = (currentRoleIndex + 1) % roles.length;
-				isAnimating = false;
-			}, 250); // Half of the animation duration
-		}, 3000); // Change every 3 seconds (increased for better UX)
+			currentRoleIndex = (currentRoleIndex + 1) % roles.length;
+		}, 2500);
 
 		return () => clearInterval(interval);
 	});
@@ -267,27 +183,26 @@
 							class="mb-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
 						>
 							Haloway, your Ethical AI College
-							<span class="slot-container">
-								<span class="slot-text current" class:animating={isAnimating}>
-									{roles[currentRoleIndex]}
-								</span>
-								<span class="slot-text next" class:animating={isAnimating}>
-									{roles[(currentRoleIndex + 1) % roles.length]}
-								</span>
-							</span>.
-							<!-- <span
+							<TextLoop
+								items={roles}
+								interval={2500}
+								transition="slide"
+								duration={600}
+								className="text-color-primary"
+							/>.
+							<span
 								class="bg-gradient-to-r from-color-primary to-color-accent bg-clip-text text-transparent"
 								><span
 									class="sm:decoration-6 underline decoration-color-secondary decoration-4 md:decoration-8 lg:decoration-[10px]"
 									>faster</span
 								> with Haloway.</span
-							> -->
+							>
 						</h1>
-						<!-- 
+
 						<h2 class="mb-8 text-lg sm:text-xl md:text-2xl lg:text-3xl">
 							Haloway: an easy-to-use writing platform to organize, write, and
 							perfect your college application essays.
-						</h2> -->
+						</h2>
 
 						<div
 							class="flex flex-col justify-center gap-3 sm:flex-row sm:gap-4 lg:justify-start"
@@ -308,7 +223,7 @@
 						<div class="relative w-full max-w-lg">
 							<!-- Add your product image here -->
 							<img
-								src="/your-product-image.png"
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png"
 								alt="Haloway College Application Platform"
 								class="h-auto w-full rounded-lg shadow-2xl"
 							/>
@@ -652,242 +567,6 @@
 	</Section.Root>
 </div>
 
-<!-- Stress Section -->
-<div class="hero relative min-h-[80vh] overflow-hidden">
-	<img
-		src="https://res.cloudinary.com/dqdasxxho/image/upload/v1747532915/stressed-student_ob1v8h.jpg"
-		alt="Stressed student"
-		class="absolute left-0 top-0 h-full w-full object-cover"
-		style="z-index: -1;"
-	/>
-
-	<div
-		class="absolute inset-0 bg-black"
-		style="opacity: 0.55; z-index: 0;"
-	></div>
-
-	<div class="relative z-10 px-4 py-16 text-center sm:py-20">
-		<div class="font-heading mx-auto max-w-5xl">
-			<div>
-				<h1
-					class="mt-4 bg-gradient-to-r from-color-primary to-color-accent bg-clip-text pb-2 text-4xl font-bold text-transparent sm:text-5xl"
-				>
-					Writing college essays is <span
-						class="sm:decoration-5 underline decoration-color-secondary decoration-4 lg:decoration-[8px]"
-						>stressful</span
-					>.
-				</h1>
-				<h2 class="mt-4 pb-2 text-4xl font-bold text-white sm:text-5xl">
-					It doesn't also have to be <span
-						class="sm:decoration-5 underline decoration-color-secondary decoration-4 lg:decoration-[8px]"
-						>disorganized</span
-					>.
-				</h2>
-			</div>
-			<!-- <div
-		  class="mt-6 sm:mt-8 mb-8 sm:mb-12 text-lg sm:text-xl md:text-2xl lg:text-3xl max-w-4xl mx-auto text-center px-2 sm:px-5"
-		>
-		  <p class="mb-4 text-white/90">
-			Whether it's scattered Google Docs or lost Word files buried in
-			folders, managing your essays shouldn't add to your stress.
-		  </p>
-		</div> -->
-
-			<!-- Feature Comparison Table -->
-			<div class="mx-auto mt-12 max-w-6xl sm:mt-16">
-				<div
-					class="rounded-2xl border border-white/10 bg-black/20 p-6 backdrop-blur-sm sm:rounded-3xl sm:p-8 lg:p-10"
-				>
-					<h3 class="mb-8 text-2xl text-white sm:mb-10 sm:text-3xl lg:text-4xl">
-						Why choose <span
-							class="bg-gradient-to-r from-color-primary to-color-accent bg-clip-text font-semibold text-transparent"
-							>{WebsiteName}</span
-						>?
-					</h3>
-
-					<!-- Desktop Table -->
-					<div
-						class="hidden overflow-hidden rounded-xl border border-white/20 lg:block"
-					>
-						<table class="w-full table-fixed border-separate border-spacing-0">
-							<thead>
-								<tr class="bg-white/10 backdrop-blur-sm">
-									<th
-										class="w-1/5 p-4 text-left text-lg font-semibold text-white sm:p-6"
-										>Feature</th
-									>
-									<th
-										class="w-1/5 border-l border-white/10 bg-gradient-to-r from-color-primary/20 to-color-accent/20 p-4 text-center text-lg font-bold text-color-primary sm:p-6"
-									>
-										{WebsiteName}
-									</th>
-									<th
-										class="w-1/5 border-l border-white/10 p-4 text-center text-lg font-semibold text-white/80 sm:p-6"
-										>Google Docs</th
-									>
-									<th
-										class="w-1/5 border-l border-white/10 p-4 text-center text-lg font-semibold text-white/80 sm:p-6"
-										>Word</th
-									>
-									<th
-										class="w-1/5 border-l border-white/10 p-4 text-center text-lg font-semibold text-white/80 sm:p-6"
-										>Notion</th
-									>
-								</tr>
-							</thead>
-							<tbody>
-								{#each comparisonFeatures as feature, index}
-									<tr
-										class="border-t border-white/10 {index % 2 === 0
-											? 'bg-white/5'
-											: 'bg-black/10'}"
-									>
-										<td class="p-4 font-medium text-white sm:p-6"
-											>{feature.name}</td
-										>
-
-										<!-- Haloway -->
-										<td
-											class="border-l border-white/10 bg-gradient-to-r from-color-primary/10 to-color-accent/10 p-4 text-center sm:p-6"
-										>
-											{#if feature.haloway}
-												<div
-													class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-green-500"
-												>
-													<Check class="h-5 w-5 text-white" />
-												</div>
-											{:else}
-												<div
-													class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-500"
-												>
-													<X class="h-5 w-5 text-white" />
-												</div>
-											{/if}
-										</td>
-
-										<!-- Google Docs -->
-										<td class="border-l border-white/10 p-4 text-center sm:p-6">
-											{#if feature.googleDocs}
-												<div
-													class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-green-500"
-												>
-													<Check class="h-5 w-5 text-white" />
-												</div>
-											{:else}
-												<div
-													class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-500"
-												>
-													<X class="h-5 w-5 text-white" />
-												</div>
-											{/if}
-										</td>
-
-										<!-- Word -->
-										<td class="border-l border-white/10 p-4 text-center sm:p-6">
-											{#if feature.word}
-												<div
-													class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-green-500"
-												>
-													<Check class="h-5 w-5 text-white" />
-												</div>
-											{:else}
-												<div
-													class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-500"
-												>
-													<X class="h-5 w-5 text-white" />
-												</div>
-											{/if}
-										</td>
-
-										<!-- Notion -->
-										<td class="border-l border-white/10 p-4 text-center sm:p-6">
-											{#if feature.notion}
-												<div
-													class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-green-500"
-												>
-													<Check class="h-5 w-5 text-white" />
-												</div>
-											{:else}
-												<div
-													class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-500"
-												>
-													<X class="h-5 w-5 text-white" />
-												</div>
-											{/if}
-										</td>
-									</tr>
-								{/each}
-							</tbody>
-						</table>
-					</div>
-
-					<!-- Mobile Cards -->
-					<div class="space-y-6 lg:hidden">
-						{#each comparisonFeatures as feature}
-							<div
-								class="rounded-xl border border-white/20 bg-white/10 p-6 backdrop-blur-sm"
-							>
-								<h4 class="mb-4 text-center text-lg font-bold text-white">
-									{feature.name}
-								</h4>
-								<div class="grid grid-cols-2 gap-3">
-									<!-- Haloway Highlighted -->
-									<div
-										class="flex items-center justify-between rounded-md bg-gradient-to-r from-color-primary/50 to-color-accent/50 px-4 py-3"
-									>
-										<span class="font-semibold text-white">{WebsiteName}</span>
-										{#if feature.haloway}
-											<Check class="h-5 w-5 text-green-400" />
-										{:else}
-											<X class="h-5 w-5 text-red-400" />
-										{/if}
-									</div>
-
-									<!-- Google Docs -->
-									<div
-										class="flex items-center justify-between rounded-md border border-white/10 px-4 py-3"
-									>
-										<span class="text-white/80">Google Docs</span>
-										{#if feature.googleDocs}
-											<Check class="h-5 w-5 text-green-400" />
-										{:else}
-											<X class="h-5 w-5 text-red-400" />
-										{/if}
-									</div>
-
-									<!-- Word -->
-									<div
-										class="flex items-center justify-between rounded-md border border-white/10 px-4 py-3"
-									>
-										<span class="text-white/80">Word</span>
-										{#if feature.word}
-											<Check class="h-5 w-5 text-green-400" />
-										{:else}
-											<X class="h-5 w-5 text-red-400" />
-										{/if}
-									</div>
-
-									<!-- Notion -->
-									<div
-										class="flex items-center justify-between rounded-md border border-white/10 px-4 py-3"
-									>
-										<span class="text-white/80">Notion</span>
-										{#if feature.notion}
-											<Check class="h-5 w-5 text-green-400" />
-										{:else}
-											<X class="h-5 w-5 text-red-400" />
-										{/if}
-									</div>
-								</div>
-							</div>
-						{/each}
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
 <!-- Privacy Section -->
 <Section.Root anchor="security">
 	<div
@@ -908,58 +587,6 @@
 			<div
 				class="rounded-3xl border border-gray-600/30 bg-gradient-to-br from-gray-800/80 via-gray-700/80 to-gray-800/80 p-8 shadow-2xl backdrop-blur-xl sm:rounded-[2rem] sm:p-12 lg:p-16"
 			>
-				<!-- Icon Group -->
-				<!-- <div
-			class="flex justify-center items-center gap-4 sm:gap-6 mb-8 sm:mb-10"
-			>
-			<div
-				class="bg-gradient-to-r from-green-500 to-emerald-500 p-3 sm:p-4 rounded-2xl shadow-lg"
-			>
-				<Shield class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white" />
-			</div>
-			<div
-				class="bg-gradient-to-r from-blue-500 to-cyan-500 p-3 sm:p-4 rounded-2xl shadow-lg"
-			>
-				<Lock class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white" />
-			</div>
-			<div
-				class="bg-gradient-to-r from-color-primary to-color-accent p-3 sm:p-4 rounded-2xl shadow-lg"
-			>
-				<svg
-				class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white"
-				fill="none"
-				stroke="currentColor"
-				viewBox="0 0 24 24"
-				>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-				/>
-				</svg>
-			</div>
-			</div> -->
-
-				<!-- Heading -->
-				<!-- <h1
-			class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-8 sm:mb-10 leading-tight"
-			>
-			<span class="text-white">Your essays are </span>
-			<span
-				class="bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-transparent underline decoration-green-400 decoration-4 sm:decoration-6 lg:decoration-[8px]"
-				>private</span
-			><span class="text-white">, </span>
-			<span
-				class="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent underline decoration-blue-400 decoration-4 sm:decoration-6 lg:decoration-[8px]"
-				>safe</span
-			><span class="text-white">, and </span>
-			<span
-				class="bg-gradient-to-r from-color-primary via-color-accent to-color-primary bg-clip-text text-transparent underline decoration-color-primary decoration-4 sm:decoration-6 lg:decoration-[8px]"
-				>secure</span
-			><span class="text-white">.</span>
-			</h1> -->
-
 				<h2
 					class="mb-8 text-2xl font-bold leading-tight text-gray-400 sm:mb-10 sm:text-3xl md:text-4xl"
 				>
@@ -1089,34 +716,6 @@
 				<div
 					class="flex flex-col items-center justify-center gap-4 text-base sm:flex-row sm:gap-6 sm:text-lg"
 				>
-					<!-- <div class="flex items-center gap-2 text-gray-400">
-				<svg
-				class="w-5 h-5 text-green-400"
-				fill="currentColor"
-				viewBox="0 0 20 20"
-				>
-				<path
-					fill-rule="evenodd"
-					d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-					clip-rule="evenodd"
-				/>
-				</svg>
-				<span>Built with privacy and security in mind.</span>
-			</div> -->
-					<!-- <div class="flex items-center gap-2 text-gray-400">
-				<svg
-				class="w-5 h-5 text-blue-400"
-				fill="currentColor"
-				viewBox="0 0 20 20"
-				>
-				<path
-					fill-rule="evenodd"
-					d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-					clip-rule="evenodd"
-				/>
-				</svg>
-				<span>SOC 2 Certified</span>
-			</div> -->
 					<a
 						href="/legal/privacy"
 						class="flex items-center gap-2 font-semibold text-gray-400 underline transition duration-300 hover:text-white"
@@ -1171,86 +770,34 @@
 						<PenLine class="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
 					</button>
 				</a>
-
-				<!-- Add demo later -->
-				<!-- <div class="text-base-content/60 text-base sm:text-lg">
-			or <a href="/" class="link font-semibold">try our demo</a>
-		  </div> -->
 			</div>
 		</div>
 	</div>
 </div>
 
-<!-- <div class="mb-40 flex flex-col gap-20">
-	<Section.Root>
-		<HeroSection />
-	</Section.Root>
-	<Section.Root>
-		<Section.Header>
-			<Section.Title>Logos Cloud</Section.Title>
-			<Section.Description class="text-balance">
-				To be honest, the below are just logos of tech stack used in this
-				project. They don't work with me. Yet.
-			</Section.Description>
-		</Section.Header>
-		<LogosCloud />
-	</Section.Root>
-	<Section.Root anchor="features">
-		<Section.Header>
-			<Section.Title>Features</Section.Title>
-		</Section.Header>
-		<Features />
-	</Section.Root>
-	<Section.Root>
-		<Section.Header>
-			<Section.Title>Testimonials</Section.Title>
-		</Section.Header>
-		<Testimonials />
-	</Section.Root>
-	<Section.Root anchor="pricing">
-		<Section.Header>
-			<Section.Title>Pricing</Section.Title>
-			<Section.Description class="text-balance">
-				Currently we support subscription based pricing out of the box. However,
-				you can extend the boilerplate to support one-time or custom pricing
-				models.
-			</Section.Description>
-		</Section.Header>
-		<Pricing {prices} />
-	</Section.Root>
-</div> -->
-
 <style>
-	.slot-container {
-		overflow: hidden;
-		position: relative;
+	.slot-machine {
 		display: inline-block;
-		min-width: 200px;
+		vertical-align: baseline;
+		overflow: hidden;
 		height: 1.2em;
+		position: relative;
+		min-width: 200px;
 	}
 
-	.slot-text {
-		position: absolute;
-		width: 100%;
-		transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-		transform-origin: center;
+	.slot-content {
+		transform: translateY(calc(-30% * var(--index)));
+		transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+		will-change: transform;
 	}
 
-	.slot-text.current {
-		transform: translateY(0);
+	.slot-item {
+		height: 1.2em;
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
 	}
 
-	.slot-text.next {
-		transform: translateY(100%);
-	}
-
-	.slot-text.animating {
-		transform: translateY(-100%);
-	}
-
-	.slot-text.next.animating {
-		transform: translateY(0);
-	}
 	.hero-content-fade {
 		opacity: 0;
 		transform: translateY(20px);
@@ -1290,7 +837,7 @@
 		z-index: -10;
 		filter: blur(0);
 		transition: filter 0.4s ease;
-		background: transparent; /* Start with transparent */
+		background: transparent;
 	}
 
 	.glow-container:hover::before {
@@ -1310,7 +857,7 @@
 		font-size: 1rem;
 		padding: 0.75rem 2rem;
 		border-radius: 0.6em;
-		border: none; /* Remove border */
+		border: none;
 		background: linear-gradient(
 			90deg,
 			hsl(var(--color-primary)),
@@ -1324,8 +871,8 @@
 		justify-content: center;
 		gap: 0.5rem;
 		transition: all 0.3s ease;
-		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Softer shadow */
-		outline: none; /* Remove focus outline */
+		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+		outline: none;
 	}
 
 	@media (min-width: 640px) {
