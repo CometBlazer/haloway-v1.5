@@ -56,58 +56,57 @@
 			}
 		}
 	}
+
+	// Find the longest word for minimum width reservation
+	$: longestWord = items.reduce(
+		(longest, current) => (current.length > longest.length ? current : longest),
+		'',
+	);
 </script>
 
 <span class="typewriter-wrapper {className}">
-	<span class="typewriter-text">{displayText}</span><span
-		class="typewriter-cursor"
-	></span>
+	<!-- Invisible spacer that actually reserves width -->
+	<span class="invisible-spacer" aria-hidden="true">{longestWord}</span>
+	<!-- Actual text overlaid on top -->
+	<span class="typewriter-text"
+		>{displayText}<span class="typewriter-cursor"></span></span
+	>
 </span>
 
 <style>
 	.typewriter-wrapper {
-		display: inline-flex;
-		align-items: baseline;
+		display: inline-block;
 		position: relative;
-		vertical-align: baseline;
-		min-height: 1.2em;
+		vertical-align: bottom;
+	}
+
+	.invisible-spacer {
+		display: inline-block;
+		visibility: hidden;
+		height: auto;
+		white-space: pre;
+		pointer-events: none;
+		user-select: none;
 	}
 
 	.typewriter-text {
+		position: absolute;
+		left: 0;
+		top: 0;
 		display: inline-block;
-		min-width: 7ch; /* Use character units for better responsiveness */
-		text-align: left;
 		vertical-align: baseline;
-	}
-
-	/* Responsive width adjustments */
-	@media (max-width: 640px) {
-		.typewriter-text {
-			min-width: 5ch;
-		}
-	}
-
-	@media (min-width: 641px) and (max-width: 768px) {
-		.typewriter-text {
-			min-width: 6ch;
-		}
-	}
-
-	@media (min-width: 769px) {
-		.typewriter-text {
-			min-width: 8ch;
-		}
+		white-space: pre;
 	}
 
 	.typewriter-cursor {
 		display: inline-block;
-		width: 3px;
-		height: 1em;
+		width: 2px;
+		height: 0.9em;
 		background-color: currentColor;
 		margin-left: 2px;
 		animation: blink 1s infinite;
 		vertical-align: baseline;
-		transform: translateY(0.1em); /* Fine-tune cursor alignment */
+		transform: translateY(0.1rem);
 	}
 
 	@keyframes blink {

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as Section from '$lib/components/landing/section';
-	import * as Card from '$lib/components/ui/card';
+	// import * as Card from '$lib/components/ui/card';
 	import { onMount } from 'svelte';
 	import TextLoop from '$lib/components/TextLoop.svelte';
 	// import Features from './components/sections/features/features.svelte';
@@ -26,12 +26,12 @@
 		Lock,
 		Check,
 		BookOpenCheck,
-		X,
+		// X,
 		ArrowRight,
 	} from 'lucide-svelte';
 
 	import AuroraBackground from '$lib/components/AuroraBackground.svelte';
-	import { Button } from '$lib/components/ui/button';
+	// import { Button } from '$lib/components/ui/button';
 
 	const ldJson = {
 		'@context': 'https://schema.org',
@@ -45,7 +45,7 @@
 
 	const featuresData = [
 		{
-			title: 'Minimal Editor & Easy Export ',
+			title: 'Ask admissions questions based on your profile',
 			description:
 				"Write in a beautiful, powerfully simple editor where you can manage prompts, tags, and your drafts in a distraction-free writing environment. Copy-paste directly into Common App when you're ready to submit.",
 			image:
@@ -56,7 +56,7 @@
 			ctaLink: '/schools/uncategorized/write',
 		},
 		{
-			title: 'All In One Place',
+			title: 'Brainstorm outlines with an essay assistant',
 			description:
 				'Create and manage all your college essays in your essay dashboard. Reduce the number of tabs you have open, and easily find your past essays to reference. Track deadlines and never lose track of your application progress again.',
 			image:
@@ -66,7 +66,7 @@
 			ctaLink: '/dashboard',
 		},
 		{
-			title: 'Manage Your Drafts Efficiently',
+			title: 'Get realtime, actionable feedback on essays',
 			description:
 				'Use checkpoints to track your progress and restore any previous version with a single click. Download your essays to save a local copy or upload them to Google Drive for backup.',
 			image:
@@ -146,9 +146,7 @@
 		<div
 			class="relative z-10 mt-24 flex flex-col items-center justify-center py-8 text-center sm:py-12"
 		>
-			<div
-				class="hero-content-fade mb-4 mt-6 max-w-7xl px-4 sm:mb-6 sm:mt-10 md:mt-20"
-			>
+			<div class="mb-4 mt-6 max-w-7xl px-4 sm:mb-6 sm:mt-10 md:mt-20">
 				<!-- Two Column Layout -->
 				<div
 					class="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12"
@@ -200,8 +198,8 @@
 						</h1>
 
 						<h2 class="mb-8 text-lg sm:text-xl md:text-2xl lg:text-3xl">
-							Haloway: an easy-to-use writing platform to organize, write, and
-							perfect your college application essays.
+							An easy-to-use writing platform to organize, write, and perfect
+							your college application essays.
 						</h2>
 
 						<div
@@ -210,7 +208,7 @@
 							<a href="/register">
 								<div class="glow-container">
 									<button class="glow-button">
-										Start writing for free
+										Try free tier
 										<PenLine class="ml-1 h-4 w-4 sm:h-5 sm:w-5" />
 									</button>
 								</div>
@@ -219,15 +217,13 @@
 					</div>
 
 					<!-- Right Column - Product Image -->
-					<div class="flex justify-center lg:justify-end">
+					<div class="hero-content-fade flex justify-center lg:justify-end">
 						<div class="relative w-full max-w-lg">
-							<!-- Add your product image here -->
 							<img
-								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png"
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754333956/Haloway_hero_image_cwv3b6.png"
 								alt="Haloway College Application Platform"
 								class="h-auto w-full rounded-lg shadow-2xl"
 							/>
-							<!-- Optional: Add a subtle glow effect to match your design -->
 							<div
 								class="pointer-events-none absolute inset-0 rounded-lg bg-gradient-to-r from-color-primary/10 to-color-accent/10"
 							></div>
@@ -560,12 +556,366 @@
 	</div>
 </Section.Root>
 
+<!-- Bento Grid Features Section -->
+<Section.Root anchor="bento-features">
+	<div
+		class="from-base-100 to-base-200 relative overflow-hidden bg-gradient-to-b py-16 sm:py-20 lg:py-24"
+	>
+		<!-- Background decoration -->
+		<div
+			class="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-color-accent/5"
+		></div>
+
+		<div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+			<!-- Section Header -->
+			<div class="mb-16 text-center">
+				<h2
+					class="text-base-content mb-6 text-4xl font-bold sm:text-5xl md:text-6xl"
+				>
+					Everything you need to <span
+						class="bg-gradient-to-r from-color-primary to-color-accent bg-clip-text text-transparent"
+						>succeed</span
+					>
+				</h2>
+				<p class="text-base-content/70 mx-auto max-w-3xl text-xl sm:text-2xl">
+					From brainstorming to final submission, Haloway has all the tools you
+					need for your college application journey.
+				</p>
+			</div>
+
+			<!-- Bento Grid -->
+			<div
+				class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8"
+			>
+				<!-- Large Feature: Essay Dashboard -->
+				<div
+					class="group relative overflow-hidden rounded-3xl border border-gray-200/50 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
+				>
+					<div
+						class="absolute inset-0 bg-gradient-to-br from-color-primary/5 to-color-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+					></div>
+					<div class="relative z-10">
+						<div class="mb-6 flex items-center gap-4">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-primary to-color-accent"
+							>
+								<BookText class="h-6 w-6 text-white" />
+							</div>
+							<h3 class="text-2xl font-bold text-gray-900">Essay Dashboard</h3>
+						</div>
+						<p class="mb-6 text-lg text-gray-600">
+							Organize all your college essays in one place. Track deadlines,
+							manage drafts, and never lose sight of your application progress.
+						</p>
+						<div
+							class="h-48 overflow-hidden rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200"
+						>
+							<img
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png"
+								alt="Essay Dashboard Preview"
+								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+							/>
+						</div>
+					</div>
+				</div>
+
+				<!-- AI Assistant -->
+				<div
+					class="group relative overflow-hidden rounded-3xl border border-gray-200/50 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+				>
+					<div
+						class="absolute inset-0 bg-gradient-to-br from-color-info/5 to-color-success/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+					></div>
+					<div class="relative z-10">
+						<div class="mb-6 flex items-center gap-4">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-info to-color-success"
+							>
+								<svg
+									class="h-6 w-6 text-white"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+									/>
+								</svg>
+							</div>
+							<h3 class="text-xl font-bold text-gray-900">AI Brainstorming</h3>
+						</div>
+						<p class="mb-6 text-gray-600">
+							Get personalized prompts and brainstorming assistance to discover
+							your unique story and voice.
+						</p>
+						<div class="space-y-3">
+							<div class="flex items-center gap-3">
+								<div class="h-2 w-2 rounded-full bg-color-info"></div>
+								<span class="text-sm text-gray-600"
+									>Personal story discovery</span
+								>
+							</div>
+							<div class="flex items-center gap-3">
+								<div class="h-2 w-2 rounded-full bg-color-success"></div>
+								<span class="text-sm text-gray-600">Topic exploration</span>
+							</div>
+							<div class="flex items-center gap-3">
+								<div class="h-2 w-2 rounded-full bg-color-primary"></div>
+								<span class="text-sm text-gray-600">Outline generation</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Real-time Feedback -->
+				<div
+					class="group relative overflow-hidden rounded-3xl border border-gray-200/50 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+				>
+					<div
+						class="absolute inset-0 bg-gradient-to-br from-color-accent/5 to-color-warning/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+					></div>
+					<div class="relative z-10">
+						<div class="mb-6 flex items-center gap-4">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-accent to-color-warning"
+							>
+								<Check class="h-6 w-6 text-white" />
+							</div>
+							<h3 class="text-xl font-bold text-gray-900">
+								Real-time Feedback
+							</h3>
+						</div>
+						<p class="mb-6 text-gray-600">
+							Get instant, actionable feedback on your essays as you write to
+							improve clarity and impact.
+						</p>
+						<div
+							class="rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 p-4"
+						>
+							<div class="mb-3 flex items-center justify-between">
+								<span class="text-sm font-medium text-gray-700"
+									>Essay Quality</span
+								>
+								<span class="text-sm font-bold text-color-success">92%</span>
+							</div>
+							<div class="h-2 overflow-hidden rounded-full bg-gray-200">
+								<div
+									class="h-full w-[92%] bg-gradient-to-r from-color-success to-color-info transition-all duration-500"
+								></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Version Control -->
+				<div
+					class="group relative overflow-hidden rounded-3xl border border-gray-200/50 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+				>
+					<div
+						class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+					></div>
+					<div class="relative z-10">
+						<div class="mb-6 flex items-center gap-4">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500"
+							>
+								<BookOpenCheck class="h-6 w-6 text-white" />
+							</div>
+							<h3 class="text-xl font-bold text-gray-900">Version Control</h3>
+						</div>
+						<p class="mb-6 text-gray-600">
+							Save checkpoints and revert to any previous version with one
+							click. Never lose your progress.
+						</p>
+						<div class="space-y-2">
+							<div
+								class="flex items-center justify-between rounded-lg bg-gray-50 p-3"
+							>
+								<span class="text-sm text-gray-600">Final Draft</span>
+								<span class="text-xs text-gray-400">2 hours ago</span>
+							</div>
+							<div
+								class="flex items-center justify-between rounded-lg bg-gray-50 p-3"
+							>
+								<span class="text-sm text-gray-600">Rough Draft v3</span>
+								<span class="text-xs text-gray-400">1 day ago</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Common App Integration -->
+				<div
+					class="group relative overflow-hidden rounded-3xl border border-gray-200/50 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
+				>
+					<div
+						class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+					></div>
+					<div class="relative z-10">
+						<div class="mb-6 flex items-center gap-4">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500"
+							>
+								<ArrowUpRight class="h-6 w-6 text-white" />
+							</div>
+							<h3 class="text-2xl font-bold text-gray-900">Seamless Export</h3>
+						</div>
+						<p class="mb-6 text-lg text-gray-600">
+							Copy-paste directly into Common App, Coalition, or any application
+							platform. Export to Word, Google Docs, or PDF.
+						</p>
+						<div class="grid grid-cols-3 gap-4">
+							<div class="flex flex-col items-center rounded-xl bg-gray-50 p-4">
+								<div class="mb-2 h-8 w-8 rounded-lg bg-orange-500"></div>
+								<span class="text-sm font-medium text-gray-700">Common App</span
+								>
+							</div>
+							<div class="flex flex-col items-center rounded-xl bg-gray-50 p-4">
+								<div class="mb-2 h-8 w-8 rounded-lg bg-blue-600"></div>
+								<span class="text-sm font-medium text-gray-700">Word</span>
+							</div>
+							<div class="flex flex-col items-center rounded-xl bg-gray-50 p-4">
+								<div class="mb-2 h-8 w-8 rounded-lg bg-red-500"></div>
+								<span class="text-sm font-medium text-gray-700">PDF</span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Security & Privacy -->
+				<div
+					class="group relative overflow-hidden rounded-3xl border border-gray-200/50 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+				>
+					<div
+						class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-emerald-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+					></div>
+					<div class="relative z-10">
+						<div class="mb-6 flex items-center gap-4">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500"
+							>
+								<Lock class="h-6 w-6 text-white" />
+							</div>
+							<h3 class="text-xl font-bold text-gray-900">100% Private</h3>
+						</div>
+						<p class="mb-6 text-gray-600">
+							Your essays are encrypted and secure. We never share, sell, or use
+							your data. Your work is yours alone.
+						</p>
+						<div class="flex items-center gap-2 rounded-lg bg-green-50 p-3">
+							<div class="h-2 w-2 rounded-full bg-green-500"></div>
+							<span class="text-sm font-medium text-green-700"
+								>End-to-end encrypted</span
+							>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</Section.Root>
+
 <!-- Features Cloud Section -->
 <div class="bg-base-100 mx-auto max-w-7xl pb-16 sm:pb-20 lg:pb-24">
 	<Section.Root>
 		<div class="justify-around"></div>
 	</Section.Root>
 </div>
+
+<!-- Ethical AI Section -->
+<Section.Root anchor="ethical-ai">
+	<div
+		class="relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-50 px-4 py-20"
+	>
+		<div class="mx-auto max-w-6xl">
+			<div class="grid items-center gap-16 lg:grid-cols-2">
+				<!-- Text Content -->
+				<div class="space-y-6">
+					<!-- Section Title -->
+					<div class="space-y-4">
+						<h2
+							class="text-4xl font-bold tracking-tight text-gray-900 lg:text-5xl"
+						>
+							We Never Write Essays For You
+						</h2>
+						<div class="h-1 w-20 rounded-full bg-color-primary"></div>
+					</div>
+
+					<!-- Main Text -->
+					<div class="space-y-4 leading-relaxed text-gray-600">
+						<p class="text-lg">
+							AI is ethical when it helps bring out your very own voice and
+							personality, not when it replaces your authentic story with
+							generic content.
+						</p>
+
+						<p class="text-lg">
+							We believe that having an AI write essays for you is not only
+							unethical, but the output is boring and generic—the exact opposite
+							of what admissions officers want to see.
+						</p>
+
+						<p class="text-lg">
+							Think of Haloway as your writing coach. We provide guidance,
+							feedback, and structure to help you discover and articulate your
+							unique story in your own words.
+						</p>
+					</div>
+
+					<!-- Stats or Highlights -->
+					<div class="grid grid-cols-2 gap-6 pt-6">
+						<div class="text-center lg:text-left">
+							<div class="text-3xl font-bold text-color-primary">100%</div>
+							<div class="text-sm uppercase tracking-wider text-gray-500">
+								Your Voice
+							</div>
+						</div>
+						<div class="text-center lg:text-left">
+							<div class="text-3xl font-bold text-color-primary">0%</div>
+							<div class="text-sm uppercase tracking-wider text-gray-500">
+								AI Written
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Image -->
+				<div class="relative">
+					<div class="relative">
+						<!-- Background decoration -->
+						<div
+							class="absolute -right-6 -top-6 -z-10 h-full w-full rounded-2xl bg-color-primary/10"
+						></div>
+
+						<!-- Main image -->
+						<img
+							src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=500&q=80"
+							alt="Students working authentically on their essays"
+							class="h-[500px] w-full rounded-2xl object-cover shadow-2xl"
+						/>
+
+						<!-- Floating badge -->
+						<div
+							class="absolute -bottom-6 -left-6 rounded-xl border border-gray-200 bg-white/95 p-4 shadow-lg backdrop-blur-sm"
+						>
+							<div class="flex items-center space-x-3">
+								<div
+									class="h-3 w-3 animate-pulse rounded-full bg-green-500"
+								></div>
+								<span class="text-sm font-medium text-gray-900">
+									100% Authentic Stories
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</Section.Root>
 
 <!-- Privacy Section -->
 <Section.Root anchor="security">
@@ -776,28 +1126,6 @@
 </div>
 
 <style>
-	.slot-machine {
-		display: inline-block;
-		vertical-align: baseline;
-		overflow: hidden;
-		height: 1.2em;
-		position: relative;
-		min-width: 200px;
-	}
-
-	.slot-content {
-		transform: translateY(calc(-30% * var(--index)));
-		transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-		will-change: transform;
-	}
-
-	.slot-item {
-		height: 1.2em;
-		display: flex;
-		align-items: center;
-		justify-content: flex-start;
-	}
-
 	.hero-content-fade {
 		opacity: 0;
 		transform: translateY(20px);
