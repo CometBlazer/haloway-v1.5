@@ -2,6 +2,7 @@
 <script lang="ts">
 	import { MoreVertical, Copy, Check, Sparkles } from 'lucide-svelte';
 	import * as Avatar from '$lib/components/ui/avatar';
+	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import ThinkingIndicator from './ThinkingIndicator.svelte';
 
 	export let width: string = '100%';
@@ -32,6 +33,7 @@
 	let inputFocused: boolean = false;
 	let showSuggestions: boolean = false;
 	let textareaElement: HTMLTextAreaElement;
+	let showClearChatModal: boolean = false;
 
 	// Configurable suggestions - adjust this JSON as needed
 	const suggestions = [
@@ -185,11 +187,20 @@
 		}, 0);
 	}
 
-	function clearChat(): void {
-		messages = [];
+	function openClearChatModal(): void {
+		showClearChatModal = true;
 		showDropdown = false;
+	}
+
+	function confirmClearChat(): void {
+		messages = [];
+		showClearChatModal = false;
 		isThinking = false;
 		currentThinking = null;
+	}
+
+	function cancelClearChat(): void {
+		showClearChatModal = false;
 	}
 
 	function toggleDropdown(): void {
@@ -263,7 +274,7 @@
 					class="absolute right-0 top-full z-10 mt-1 w-36 rounded-md border bg-background shadow-lg"
 				>
 					<button
-						on:click={clearChat}
+						on:click={openClearChatModal}
 						class="w-full rounded-md px-3 py-2 text-left text-sm text-foreground transition-colors hover:bg-muted"
 					>
 						Clear Chat
@@ -453,6 +464,25 @@
 		</div>
 	</div>
 </div>
+
+<!-- Clear Chat Confirmation Modal -->
+<AlertDialog.Root bind:open={showClearChatModal}>
+	<AlertDialog.Content>
+		<AlertDialog.Header>
+			<AlertDialog.Title>Clear Chat History</AlertDialog.Title>
+			<AlertDialog.Description>
+				Are you sure you want to clear all chat messages? This action cannot be
+				undone.
+			</AlertDialog.Description>
+		</AlertDialog.Header>
+		<AlertDialog.Footer>
+			<AlertDialog.Cancel on:click={cancelClearChat}>Cancel</AlertDialog.Cancel>
+			<AlertDialog.Action on:click={confirmClearChat}
+				>Clear Chat</AlertDialog.Action
+			>
+		</AlertDialog.Footer>
+	</AlertDialog.Content>
+</AlertDialog.Root>
 
 <p>I can see your profile, essays, background, and activities.</p>
 
