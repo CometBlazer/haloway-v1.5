@@ -240,7 +240,13 @@
 							<CirclePlus class="h-5 w-5 text-color-primary" />
 							Create Essay
 						</button>
-
+						<a
+							href="/consultant"
+							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+						>
+							<GraduationCap class="h-5 w-5" />
+							College Consultant
+						</a>
 						<a
 							href="/extracurricular-organizer"
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
@@ -254,14 +260,6 @@
 						>
 							<NotebookPen class="h-5 w-5" />
 							Background
-						</a>
-						<a
-							href="/consultant"
-							target="_blank"
-							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-						>
-							<GraduationCap class="h-5 w-5" />
-							College Consultant
 						</a>
 						<a
 							href="/essayfeedback"

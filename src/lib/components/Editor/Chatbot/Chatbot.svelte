@@ -627,7 +627,7 @@
 		class="flex items-center justify-between rounded-t-xl border-b bg-muted/50 p-4"
 	>
 		<div class="flex items-center space-x-3">
-			<h3 class="font-semibold text-foreground">Essay Assistant</h3>
+			<h3 class="font-semibold text-foreground">Clara, Essay Assistant</h3>
 			<div class="flex items-center space-x-2">
 				<div class="h-2 w-2 rounded-full bg-green-500"></div>
 				<span class="text-sm text-muted-foreground">
@@ -729,7 +729,7 @@
 										alt="Clara"
 									/>
 									<Avatar.Fallback>
-										<Sparkles class="h-4 w-4 text-primary-foreground" />
+										<Sparkles class="h-4 w-4 text-primary" />
 									</Avatar.Fallback>
 								</Avatar.Root>
 							</div>
@@ -796,9 +796,7 @@
 								alt="Clara"
 							/>
 							<Avatar.Fallback
-								><Sparkles
-									class="h-4 w-4 text-primary-foreground"
-								/></Avatar.Fallback
+								><Sparkles class="h-4 w-4 text-primary" /></Avatar.Fallback
 							>
 						</Avatar.Root>
 					</div>

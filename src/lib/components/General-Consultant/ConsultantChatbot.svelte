@@ -241,7 +241,7 @@
 		class="flex items-center justify-between rounded-t-xl border-b bg-muted/50 p-4"
 	>
 		<div class="flex items-center space-x-3">
-			<h3 class="font-semibold text-foreground">Essay Assistant</h3>
+			<h3 class="font-semibold text-foreground">Chloe, College Consultant</h3>
 			<div class="flex items-center space-x-2">
 				<div class="h-2 w-2 rounded-full bg-green-500"></div>
 				<span class="text-sm text-muted-foreground">Online</span>
@@ -283,33 +283,37 @@
 			<div class="py-6 text-center">
 				<div class="mb-4 flex justify-center">
 					<div
-						class="flex h-20 w-20 items-center justify-center rounded-full bg-primary"
+						class="flex h-20 w-20 items-center justify-center rounded-full bg-primary md:h-28 md:w-28"
 					>
-						<Avatar.Root class="h-20 w-20">
+						<Avatar.Root class="h-24 w-24 md:h-32 md:w-32">
 							<Avatar.Image
-								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png"
-								alt="Clara"
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754688613/Chloe-headshot-2_fggiag.png"
+								alt="Chloe"
 							/>
 							<Avatar.Fallback>
-								<Sparkles class="h-10 w-10 text-primary-foreground" />
+								<Sparkles class="h-10 w-10 text-primary" />
 							</Avatar.Fallback>
 						</Avatar.Root>
 					</div>
 				</div>
 				<div class="space-y-2 text-foreground">
-					<h4 class="text-lg font-semibold">Hi! I'm Clara 👋</h4>
+					<h4 class="text-2xl font-semibold">Hi! I'm Chloe 👋</h4>
 					<p class="text-sm leading-relaxed text-muted-foreground">
-						I'm your essay reviewer and brainstorming assistant. I can help you
-						with revisions, feedback, and generating first drafts for your
-						writing.
+						I'm a college consultant who can answer questions based on your
+						profile. I can help you answer admissions questions and more!
 					</p>
 					<p class="mt-3 text-xs text-muted-foreground">
-						Select one of the suggestions below or ask me anything about your
-						essay! For more in-depth essay coaching, ask <a
-							href="https://dan.haloway.co"
-							target="_blank"
+						Select one of the suggestions below or ask me anything! For best
+						results, please fill out <a
+							href="/background"
 							class="font-medium underline hover:text-foreground"
-							>Dan the essay coach</a
+							>your background information</a
+						>
+						and your
+						<a
+							href="/extracurricular-organizer"
+							class="font-medium underline hover:text-foreground"
+							>activities list</a
 						>.
 					</p>
 				</div>
@@ -329,13 +333,11 @@
 						>
 							<Avatar.Root>
 								<Avatar.Image
-									src="https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png"
-									alt="Clara"
+									src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754688613/Chloe-headshot-2_fggiag.png"
+									alt="Chloe"
 								/>
 								<Avatar.Fallback
-									><Sparkles
-										class="h-4 w-4 text-primary-foreground"
-									/></Avatar.Fallback
+									><Sparkles class="h-4 w-4 text-primary" /></Avatar.Fallback
 								>
 							</Avatar.Root>
 						</div>
@@ -390,13 +392,11 @@
 					>
 						<Avatar.Root>
 							<Avatar.Image
-								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png"
-								alt="Clara"
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754688613/Chloe-headshot-2_fggiag.png"
+								alt="Chloe"
 							/>
 							<Avatar.Fallback
-								><Sparkles
-									class="h-4 w-4 text-primary-foreground"
-								/></Avatar.Fallback
+								><Sparkles class="h-4 w-4 text-primary" /></Avatar.Fallback
 							>
 						</Avatar.Root>
 					</div>

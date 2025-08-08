@@ -6,7 +6,7 @@
 	<div class="px-4">
 		<div class="mb-8 text-center">
 			<h1 class="mb-4 text-3xl font-bold text-foreground md:text-5xl">
-				Consultant
+				Personal College Consultant
 			</h1>
 			<p class="text-muted-foreground">
 				Please fill out the following information to help our AI understand your
@@ -21,6 +21,6 @@
 			</p>
 		</div>
 
-		<ConsultantChatbot height="600px" />
+		<ConsultantChatbot height="700px" />
 	</div>
 </div>
