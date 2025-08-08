@@ -1,79 +1,114 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { fade, fly } from 'svelte/transition';
 
 	// Props
 	export let items: string[] = [];
-	export let interval: number = 2000; // milliseconds
+	export const interval: number = 3000;
 	export let className: string = '';
-	export let transition: 'fade' | 'slide' | 'fly' = 'slide';
-	export let duration: number = 300;
+	export let typeSpeed: number = 80;
+	export let deleteSpeed: number = 40;
+	export let pauseTime: number = 1500;
 	export let onIndexChange: ((index: number) => void) | undefined = undefined;
 
 	// State
 	let currentIndex = 0;
-	let intervalId: ReturnType<typeof setInterval>;
+	let displayText = '';
+	let isTyping = true;
+	let timeoutId: ReturnType<typeof setTimeout>;
+	let currentCharIndex = 0;
 
-	// Lifecycle
+	// Find the longest word to reserve space
+	$: longestWord = items.reduce(
+		(longest, current) => (current.length > longest.length ? current : longest),
+		'',
+	);
+
 	onMount(() => {
-		if (items.length > 1) {
-			intervalId = setInterval(() => {
-				currentIndex = (currentIndex + 1) % items.length;
-				onIndexChange?.(currentIndex);
-			}, interval);
+		if (items.length > 0) {
+			startTypewriter();
 		}
 	});
 
 	onDestroy(() => {
-		if (intervalId) {
-			clearInterval(intervalId);
+		if (timeoutId) {
+			clearTimeout(timeoutId);
 		}
 	});
 
-	// Custom slide transition
-	function slideTransition(_node: Element, _params: Record<string, unknown>) {
-		return {
-			delay: 0,
-			duration: duration,
-			css: (t: number) => {
-				const opacity = t;
-				const transform = `translateY(${(1 - t) * 20}px)`;
-				return `opacity: ${opacity}; transform: ${transform};`;
-			},
-		};
+	function startTypewriter() {
+		const currentWord = items[currentIndex];
+
+		if (isTyping) {
+			if (currentCharIndex < currentWord.length) {
+				displayText = currentWord.slice(0, currentCharIndex + 1);
+				currentCharIndex++;
+				timeoutId = setTimeout(startTypewriter, typeSpeed);
+			} else {
+				timeoutId = setTimeout(() => {
+					isTyping = false;
+					startTypewriter();
+				}, pauseTime);
+			}
+		} else {
+			if (currentCharIndex > 0) {
+				displayText = currentWord.slice(0, currentCharIndex - 1);
+				currentCharIndex--;
+				timeoutId = setTimeout(startTypewriter, deleteSpeed);
+			} else {
+				currentIndex = (currentIndex + 1) % items.length;
+				onIndexChange?.(currentIndex);
+				isTyping = true;
+				timeoutId = setTimeout(startTypewriter, 200);
+			}
+		}
 	}
 </script>
 
-<div class="relative inline-block whitespace-nowrap {className}">
-	{#key currentIndex}
-		{#if transition === 'fade'}
-			<div
-				in:fade={{ duration }}
-				out:fade={{ duration }}
-				class="absolute inset-0"
-			>
-				{items[currentIndex]}
-			</div>
-		{:else if transition === 'fly'}
-			<div
-				in:fly={{ y: 20, duration }}
-				out:fly={{ y: -20, duration }}
-				class="absolute inset-0"
-			>
-				{items[currentIndex]}
-			</div>
-		{:else}
-			<div
-				in:slideTransition={{}}
-				out:slideTransition={{}}
-				class="absolute inset-0"
-			>
-				{items[currentIndex]}
-			</div>
-		{/if}
-	{/key}
-	<!-- Invisible element to maintain container size -->
-	<div class="invisible">
-		{items[0] || ''}
-	</div>
-</div>
+<span class="typewriter-container {className}">
+	<!-- Invisible spacer to reserve space for longest word -->
+	<span class="invisible-spacer">{longestWord}</span>
+	<!-- Actual content -->
+	<span class="text-content">{displayText}</span><span class="cursor"></span>
+</span>
+
+<style>
+	.typewriter-container {
+		display: inline-block;
+		position: relative;
+		vertical-align: baseline;
+	}
+
+	.text-content {
+		display: inline-block;
+		vertical-align: baseline;
+	}
+
+	.cursor {
+		display: inline-block;
+		width: 2px;
+		height: 0.9em;
+		background-color: currentColor;
+		margin-left: 2px;
+		vertical-align: bottom;
+		animation: blink 1s infinite;
+	}
+
+	.invisible-spacer {
+		visibility: hidden;
+		position: absolute;
+		top: 0;
+		left: 0;
+		white-space: nowrap;
+	}
+
+	@keyframes blink {
+		0%,
+		50% {
+			opacity: 1;
+		}
+		51%,
+		100% {
+			opacity: 0;
+		}
+	}
+</style>

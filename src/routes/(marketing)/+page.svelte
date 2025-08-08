@@ -144,9 +144,7 @@
 	<!-- Hero Section with Aurora Background -->
 	<AuroraBackground showRadialGradient={true} className="mt-[-12rem]">
 		<div class="relative z-10 py-8 sm:py-12">
-			<div
-				class="hero-content-fade mx-auto mb-4 mt-6 max-w-7xl px-4 sm:mb-6 sm:mt-10 md:mt-20"
-			>
+			<div class="mx-auto mb-4 mt-6 max-w-7xl px-4 sm:mb-6 sm:mt-10 md:mt-20">
 				<!-- Two Column Layout -->
 				<div
 					class="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12"
@@ -180,23 +178,21 @@
 						</a>
 
 						<h1
-							class="mb-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
+							class="mb-4 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
 						>
-							Haloway, your Ethical AI College
+							Haloway, Your <span
+								class="sm:decoration-6 underline decoration-color-info decoration-4 md:decoration-8 lg:decoration-[10px]"
+								>Ethical</span
+							>
+							AI College
 							<TextLoop
 								items={roles}
-								interval={2500}
-								transition="slide"
-								duration={600}
-								className="text-color-primary"
-							/>.
-							<span
-								class="bg-gradient-to-r from-color-primary to-color-accent bg-clip-text text-transparent"
-								><span
-									class="sm:decoration-6 underline decoration-color-secondary decoration-4 md:decoration-8 lg:decoration-[10px]"
-									>faster</span
-								> with Haloway.</span
-							>
+								interval={3000}
+								typeSpeed={80}
+								deleteSpeed={40}
+								pauseTime={1500}
+								className="text-color-primary font-bold"
+							/>
 						</h1>
 
 						<h2 class="mb-8 text-lg sm:text-xl md:text-2xl lg:text-3xl">
