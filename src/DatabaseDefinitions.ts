@@ -207,39 +207,6 @@ export interface Database {
 				};
 				Relationships: [];
 			};
-			contact_requests: {
-				Row: {
-					id: string;
-					first_name: string | null;
-					last_name: string | null;
-					email: string | null;
-					phone: string | null;
-					company_name: string | null;
-					message_body: string | null;
-					updated_at: Date | null;
-				};
-				Insert: {
-					id?: string;
-					first_name?: string | null;
-					last_name?: string | null;
-					email?: string | null;
-					phone?: string | null;
-					company_name?: string | null;
-					message_body?: string | null;
-					updated_at?: Date | null;
-				};
-				Update: {
-					id?: string;
-					first_name?: string | null;
-					last_name?: string | null;
-					email?: string | null;
-					phone?: string | null;
-					company_name?: string | null;
-					message_body?: string | null;
-					updated_at?: Date | null;
-				};
-				Relationships: [];
-			};
 			document_tags: {
 				Row: {
 					document_id: string;
