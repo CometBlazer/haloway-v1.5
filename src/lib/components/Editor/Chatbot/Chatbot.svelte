@@ -2,6 +2,8 @@
 <script lang="ts">
 	import { MoreVertical, Copy, Check, Sparkles } from 'lucide-svelte';
 	import * as Avatar from '$lib/components/ui/avatar';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import Button from '$lib/components/ui/button/button.svelte';
 	import ThinkingIndicator from './ThinkingIndicator.svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
@@ -48,6 +50,7 @@
 	let showSuggestions: boolean = false;
 	let textareaElement: HTMLTextAreaElement;
 	let isLoading: boolean = false;
+	let showClearChatModal: boolean = false;
 
 	// Configurable suggestions - adjust this JSON as needed
 	const suggestions = [
@@ -571,11 +574,42 @@
 		}, 0);
 	}
 
-	function clearChat(): void {
-		messages = [];
+	function openClearChatModal(): void {
+		showClearChatModal = true;
 		showDropdown = false;
+	}
+
+	async function confirmClearChat(): Promise<void> {
+		showClearChatModal = false;
+
+		// Clear local messages immediately for better UX
+		messages = [];
 		isThinking = false;
 		currentThinking = null;
+
+		// TODO: Also clear messages from database
+		// Also clear messages from the database
+		// try {
+		// 	const response = await fetch(
+		// 		`/api/ai-chatbot-messages/${$page.params.documentId}`,
+		// 		{
+		// 			method: 'DELETE',
+		// 		},
+		// 	);
+
+		// 	if (!response.ok) {
+		// 		console.error('Failed to clear messages from database');
+		// 		// Could show a toast notification here if desired
+		// 	} else {
+		// 		console.log('Successfully cleared messages from database');
+		// 	}
+		// } catch (error) {
+		// 	console.error('Error clearing messages from database:', error);
+		// }
+	}
+
+	function cancelClearChat(): void {
+		showClearChatModal = false;
 	}
 
 	function toggleDropdown(): void {
@@ -651,7 +685,7 @@
 					class="absolute right-0 top-full z-10 mt-1 w-36 rounded-md border bg-background shadow-lg"
 				>
 					<button
-						on:click={clearChat}
+						on:click={openClearChatModal}
 						class="w-full rounded-md px-3 py-2 text-left text-sm text-foreground transition-colors hover:bg-muted"
 					>
 						Clear Chat
@@ -868,6 +902,26 @@
 		{/if}
 	</div>
 </div>
+
+<!-- Clear Chat Confirmation Modal -->
+<Dialog.Root bind:open={showClearChatModal}>
+	<Dialog.Content class="sm:max-w-md">
+		<Dialog.Header>
+			<Dialog.Title class="mb-2">Clear Chat History</Dialog.Title>
+			<Dialog.Description>
+				Are you sure you want to clear all chat messages? This action cannot be
+				undone.
+			</Dialog.Description>
+		</Dialog.Header>
+
+		<Dialog.Footer class="gap-2">
+			<Button variant="outline" on:click={cancelClearChat}>Cancel</Button>
+			<Button variant="destructive" on:click={confirmClearChat}>
+				Clear Chat
+			</Button>
+		</Dialog.Footer>
+	</Dialog.Content>
+</Dialog.Root>
 
 <style>
 	/* Textarea styling */

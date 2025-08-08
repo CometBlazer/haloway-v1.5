@@ -1,8 +1,9 @@
-<!-- src/lib/components/Editor/Chatbot/Chatbot.svelte -->
+<!-- src/lib/components/General-Consultant/ConsultantChatbot.svelte -->
 <script lang="ts">
 	import { MoreVertical, Copy, Check, Sparkles } from 'lucide-svelte';
 	import * as Avatar from '$lib/components/ui/avatar';
-	import * as AlertDialog from '$lib/components/ui/alert-dialog';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import Button from '$lib/components/ui/button/button.svelte';
 	import ThinkingIndicator from './ThinkingIndicator.svelte';
 
 	export let width: string = '100%';
@@ -466,29 +467,24 @@
 </div>
 
 <!-- Clear Chat Confirmation Modal -->
-<AlertDialog.Root bind:open={showClearChatModal}>
-	<AlertDialog.Content class="sm:max-w-md">
-		<AlertDialog.Header>
-			<AlertDialog.Title class="">Clear Chat History</AlertDialog.Title>
-			<AlertDialog.Description>
+<Dialog.Root bind:open={showClearChatModal}>
+	<Dialog.Content class="sm:max-w-md">
+		<Dialog.Header>
+			<Dialog.Title class="mb-2">Clear Chat History</Dialog.Title>
+			<Dialog.Description>
 				Are you sure you want to clear all chat messages? This action cannot be
 				undone.
-			</AlertDialog.Description>
-		</AlertDialog.Header>
+			</Dialog.Description>
+		</Dialog.Header>
 
-		<AlertDialog.Footer class="gap-2">
-			<AlertDialog.Cancel on:click={cancelClearChat} class="rounded-xl"
-				>Cancel</AlertDialog.Cancel
-			>
-			<AlertDialog.Action
-				on:click={confirmClearChat}
-				class="rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90"
-			>
+		<Dialog.Footer class="gap-2">
+			<Button variant="outline" on:click={cancelClearChat}>Cancel</Button>
+			<Button variant="destructive" on:click={confirmClearChat}>
 				Clear Chat
-			</AlertDialog.Action>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
+			</Button>
+		</Dialog.Footer>
+	</Dialog.Content>
+</Dialog.Root>
 
 <p>I can see your profile, essays, background, and activities.</p>
 
