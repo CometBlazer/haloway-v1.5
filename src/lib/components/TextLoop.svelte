@@ -6,9 +6,8 @@
 	export const interval: number = 3000;
 	export let className: string = '';
 	export let typeSpeed: number = 80;
-	export const deleteSpeed: number = 40;
-	export const pauseTime: number = 1500;
-	export let fixedWidth: string = ''; // Optional: custom width like "200px" or "12rem"
+	export let deleteSpeed: number = 40;
+	export let pauseTime: number = 1500;
 	export let onIndexChange: ((index: number) => void) | undefined = undefined;
 
 	// State
@@ -17,14 +16,6 @@
 	let isTyping = true;
 	let timeoutId: ReturnType<typeof setTimeout>;
 	let currentCharIndex = 0;
-
-	// Find the longest word to reserve space
-	$: longestWord = items.reduce(
-		(longest, current) => (current.length > longest.length ? current : longest),
-		'',
-	);
-
-	$: containerWidth = fixedWidth || `${longestWord.length * 0.6}em`;
 
 	onMount(() => {
 		if (items.length > 0) {
@@ -67,38 +58,56 @@
 	}
 </script>
 
-<span class="typewriter-container {className}" style="width: {containerWidth};">
-	<span class="text-content">{displayText}</span><span class="cursor"></span>
+<span class="typewriter-wrapper {className}">
+	<span class="typewriter-text">{displayText}</span><span
+		class="typewriter-cursor"
+	></span>
 </span>
 
 <style>
-	.typewriter-container {
-		display: inline-block;
+	.typewriter-wrapper {
+		display: inline-flex;
+		align-items: baseline;
 		position: relative;
 		vertical-align: baseline;
+		min-height: 1.2em;
 	}
 
-	.text-content {
+	.typewriter-text {
 		display: inline-block;
+		min-width: 7ch; /* Use character units for better responsiveness */
+		text-align: left;
 		vertical-align: baseline;
 	}
 
-	.cursor {
-		display: inline-block;
-		width: 2px;
-		height: 0.9em;
-		background-color: currentColor;
-		margin-left: 2px;
-		vertical-align: bottom;
-		animation: blink 1s infinite;
+	/* Responsive width adjustments */
+	@media (max-width: 640px) {
+		.typewriter-text {
+			min-width: 5ch;
+		}
 	}
 
-	.invisible-spacer {
-		visibility: hidden;
-		position: absolute;
-		top: 0;
-		left: 0;
-		white-space: nowrap;
+	@media (min-width: 641px) and (max-width: 768px) {
+		.typewriter-text {
+			min-width: 6ch;
+		}
+	}
+
+	@media (min-width: 769px) {
+		.typewriter-text {
+			min-width: 8ch;
+		}
+	}
+
+	.typewriter-cursor {
+		display: inline-block;
+		width: 3px;
+		height: 1em;
+		background-color: currentColor;
+		margin-left: 2px;
+		animation: blink 1s infinite;
+		vertical-align: baseline;
+		transform: translateY(0.1em); /* Fine-tune cursor alignment */
 	}
 
 	@keyframes blink {
