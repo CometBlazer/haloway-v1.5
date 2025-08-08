@@ -469,7 +469,9 @@
 <AlertDialog.Root bind:open={showClearChatModal}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Title>Clear Chat History</AlertDialog.Title>
+			<AlertDialog.Title class="text-destructive"
+				>Clear Chat History</AlertDialog.Title
+			>
 			<AlertDialog.Description>
 				Are you sure you want to clear all chat messages? This action cannot be
 				undone.
