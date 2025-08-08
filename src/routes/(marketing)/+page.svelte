@@ -143,8 +143,12 @@
 <Section.Root>
 	<!-- Hero Section with Aurora Background -->
 	<AuroraBackground showRadialGradient={true} className="mt-[-12rem]">
-		<div class="relative z-10 py-8 sm:py-12">
-			<div class="mx-auto mb-4 mt-6 max-w-7xl px-4 sm:mb-6 sm:mt-10 md:mt-20">
+		<div
+			class="relative z-10 mt-24 flex flex-col items-center justify-center py-8 text-center sm:py-12"
+		>
+			<div
+				class="hero-content-fade mb-4 mt-6 max-w-7xl px-4 sm:mb-6 sm:mt-10 md:mt-20"
+			>
 				<!-- Two Column Layout -->
 				<div
 					class="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12"
@@ -178,7 +182,7 @@
 						</a>
 
 						<h1
-							class="mb-4 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
+							class="mb-4 text-3xl font-bold leading-relaxed tracking-tight sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
 						>
 							Haloway, Your <span
 								class="sm:decoration-6 underline decoration-color-info decoration-4 md:decoration-8 lg:decoration-[10px]"
@@ -190,7 +194,7 @@
 								interval={3000}
 								typeSpeed={80}
 								deleteSpeed={40}
-								pauseTime={1500}
+								pauseTime={3000}
 								className="text-color-primary font-bold"
 							/>
 						</h1>

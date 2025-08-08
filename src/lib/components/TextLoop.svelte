@@ -6,8 +6,9 @@
 	export const interval: number = 3000;
 	export let className: string = '';
 	export let typeSpeed: number = 80;
-	export let deleteSpeed: number = 40;
-	export let pauseTime: number = 1500;
+	export const deleteSpeed: number = 40;
+	export const pauseTime: number = 1500;
+	export let fixedWidth: string = ''; // Optional: custom width like "200px" or "12rem"
 	export let onIndexChange: ((index: number) => void) | undefined = undefined;
 
 	// State
@@ -22,6 +23,8 @@
 		(longest, current) => (current.length > longest.length ? current : longest),
 		'',
 	);
+
+	$: containerWidth = fixedWidth || `${longestWord.length * 0.6}em`;
 
 	onMount(() => {
 		if (items.length > 0) {
@@ -64,10 +67,7 @@
 	}
 </script>
 
-<span class="typewriter-container {className}">
-	<!-- Invisible spacer to reserve space for longest word -->
-	<span class="invisible-spacer">{longestWord}</span>
-	<!-- Actual content -->
+<span class="typewriter-container {className}" style="width: {containerWidth};">
 	<span class="text-content">{displayText}</span><span class="cursor"></span>
 </span>
 
