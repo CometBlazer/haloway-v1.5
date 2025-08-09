@@ -51,7 +51,7 @@
 			image:
 				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png',
 			imageAlt: 'Haloway admissions Q&A interface',
-			ctaText: 'Ask a Question',
+			ctaText: 'Ask Chloe a question',
 			ctaLink: '/schools/uncategorized/write',
 		},
 		{
@@ -61,7 +61,7 @@
 			image:
 				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png',
 			imageAlt: 'Haloway essay brainstorming interface',
-			ctaText: 'Start Brainstorming',
+			ctaText: 'Start brainstorming',
 			ctaLink: '/dashboard',
 		},
 		{
@@ -71,8 +71,35 @@
 			image:
 				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750286065/haloway_version_control_product_screenshot_fstidc.png',
 			imageAlt: 'Haloway essay feedback interface',
-			ctaText: 'Get Feedback',
+			ctaText: "Get Clara's feedback",
 			ctaLink: '/schools/uncategorized/write',
+		},
+	];
+
+	const teamMembers = [
+		{
+			name: 'Dan',
+			description:
+				'Your personal essay brainstorming partner. Dan helps turn your ideas into clear, structured outlines and ensures you know exactly what admissions officers are looking for in each prompt.',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754688614/dan-essay-coach-profile_wa6y5k.png',
+			alt: 'Dan, the essay brainstorming bot',
+		},
+		{
+			name: 'Chloe',
+			description:
+				'Your go-to admissions Q&A expert. Whether you need clarity on the application process or a polished cold email to a professor, Chloe gives you tailored, actionable advice every time.',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754688613/Chloe-headshot-2_fggiag.png',
+			alt: 'Chloe, the admissions Q&A bot',
+		},
+		{
+			name: 'Clara',
+			description:
+				'Your second set of eyes for essay feedback. Clara gives you specific, unique advice on clarity, structure, and flow, so every draft you write is stronger than the last.',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png',
+			alt: 'Clara, the essay feedback bot',
 		},
 	];
 
@@ -552,6 +579,53 @@
 					</div>
 				</div>
 			</div> -->
+		</div>
+	</div>
+</Section.Root>
+
+<!-- Meet the Haloway Team Section -->
+<Section.Root anchor="team">
+	<div
+		class="from-base-100 to-base-200 relative overflow-hidden bg-gradient-to-b py-16 sm:py-20 lg:py-24"
+	>
+		<!-- Background decoration -->
+		<div
+			class="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-color-primary/5"
+		></div>
+
+		<div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+			<!-- Section Header -->
+			<div class="mb-12 text-center">
+				<h2 class="text-base-content text-4xl font-bold sm:text-5xl">
+					Meet Your Consultant Team
+				</h2>
+				<p
+					class="text-base-content/70 mx-auto mt-4 max-w-2xl text-lg sm:text-xl"
+				>
+					Three focused assistants, each built for a specific part of your
+					application.
+				</p>
+			</div>
+
+			<!-- Grid -->
+			<div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+				{#each teamMembers as member}
+					<div
+						class="group relative overflow-hidden rounded-3xl border border-gray-200/50 bg-white p-8 text-center shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+					>
+						<div class="relative z-10">
+							<img
+								src={member.image}
+								alt={member.alt}
+								class="mx-auto mb-4 h-32 w-32 rounded-full object-cover shadow-md ring-4 ring-white"
+								loading="lazy"
+							/>
+							<h3 class="text-xl font-semibold text-gray-900">{member.name}</h3>
+							<p class="mt-3 text-sm text-gray-600">{member.description}</p>
+						</div>
+					</div>
+				{/each}
+			</div>
 		</div>
 	</div>
 </Section.Root>

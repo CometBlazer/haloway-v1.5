@@ -17,7 +17,9 @@
 						class="h-12 w-12 md:h-20 md:w-20"
 					/>
 					<span class="text-2xl font-bold text-foreground">{WebsiteName}</span>
-					<p class="text-lg text-muted-foreground">Where great essays begin.</p>
+					<p class="text-lg text-muted-foreground">
+						Guiding you to your dream school.
+					</p>
 				</a>
 			</div>
 			<!-- Navigation Sections - each takes half the width on mobile -->
