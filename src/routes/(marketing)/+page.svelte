@@ -273,7 +273,7 @@
 		></div>
 
 		<div class="relative">
-			<!-- First Feature: Integrated Editor -->
+			<!-- First Feature: Ask For Admissions Advice -->
 			<div
 				class="lg:mx-auto lg:grid lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-2 lg:gap-16 lg:px-8 xl:gap-24"
 			>
@@ -352,7 +352,7 @@
 									class="h-3 w-3 animate-pulse rounded-full bg-green-500"
 								></div>
 								<span class="text-sm font-medium text-gray-700"
-									>Rich text editing with auto-save</span
+									>Ask Chloe for admissions advice</span
 								>
 							</div>
 						</div>
@@ -440,7 +440,7 @@
 										class="h-3 w-3 animate-pulse rounded-full bg-blue-500"
 									></div>
 									<span class="text-sm font-medium text-gray-700"
-										>Organize essays by school & deadline</span
+										>Brainstorm outlines quickly</span
 									>
 								</div>
 							</div>
@@ -611,17 +611,23 @@
 			<div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
 				{#each teamMembers as member}
 					<div
-						class="group relative overflow-hidden rounded-3xl border border-gray-200/50 bg-white p-8 text-center shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+						class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative overflow-hidden
+						rounded-3xl border p-8
+						text-center shadow-lg backdrop-blur transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
 					>
 						<div class="relative z-10">
 							<img
 								src={member.image}
 								alt={member.alt}
-								class="mx-auto mb-4 h-32 w-32 rounded-full object-cover shadow-md ring-4 ring-white"
+								class="mx-auto mb-4 h-32 w-32 rounded-full object-cover shadow-md"
 								loading="lazy"
 							/>
-							<h3 class="text-xl font-semibold text-gray-900">{member.name}</h3>
-							<p class="mt-3 text-sm text-gray-600">{member.description}</p>
+							<h3 class="text-base-content text-xl font-semibold">
+								{member.name}
+							</h3>
+							<p class="text-base-content/70 mt-3 text-sm">
+								{member.description}
+							</p>
 						</div>
 					</div>
 				{/each}
@@ -656,32 +662,38 @@
 				</p>
 			</div>
 
-			<!-- Bento Grid -->
+			<!-- Bento Grid (dense packing + equal row heights) -->
 			<div
-				class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8"
+				class="grid auto-rows-[1fr] grid-cols-1 gap-6 [grid-auto-flow:dense] md:grid-cols-2
+				lg:grid-cols-3 lg:gap-8"
 			>
 				<!-- Large Feature: Essay Dashboard -->
 				<div
-					class="group relative overflow-hidden rounded-3xl border border-gray-200/50 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
+					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
+					h-full flex-col overflow-hidden
+					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+					duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
 				>
 					<div
 						class="absolute inset-0 bg-gradient-to-br from-color-primary/5 to-color-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
 					></div>
-					<div class="relative z-10">
+					<div class="relative z-10 flex h-full flex-col">
 						<div class="mb-6 flex items-center gap-4">
 							<div
 								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-primary to-color-accent"
 							>
 								<BookText class="h-6 w-6 text-white" />
 							</div>
-							<h3 class="text-2xl font-bold text-gray-900">Essay Dashboard</h3>
+							<h3 class="text-base-content text-2xl font-bold">
+								Essay Dashboard
+							</h3>
 						</div>
-						<p class="mb-6 text-lg text-gray-600">
+						<p class="text-base-content/70 mb-6 text-lg">
 							Organize all your college essays in one place. Track deadlines,
 							manage drafts, and never lose sight of your application progress.
 						</p>
 						<div
-							class="h-48 overflow-hidden rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200"
+							class="from-base-200 to-base-300 mt-auto h-48 overflow-hidden rounded-2xl bg-gradient-to-br"
 						>
 							<img
 								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png"
@@ -692,14 +704,17 @@
 					</div>
 				</div>
 
-				<!-- AI Assistant -->
+				<!-- AI Brainstorming -->
 				<div
-					class="group relative overflow-hidden rounded-3xl border border-gray-200/50 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
+					h-full flex-col overflow-hidden
+					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+					duration-300 hover:-translate-y-2 hover:shadow-2xl"
 				>
 					<div
 						class="absolute inset-0 bg-gradient-to-br from-color-info/5 to-color-success/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
 					></div>
-					<div class="relative z-10">
+					<div class="relative z-10 flex h-full flex-col">
 						<div class="mb-6 flex items-center gap-4">
 							<div
 								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-info to-color-success"
@@ -718,26 +733,32 @@
 									/>
 								</svg>
 							</div>
-							<h3 class="text-xl font-bold text-gray-900">AI Brainstorming</h3>
+							<h3 class="text-base-content text-xl font-bold">
+								AI Brainstorming
+							</h3>
 						</div>
-						<p class="mb-6 text-gray-600">
+						<p class="text-base-content/70 mb-6">
 							Get personalized prompts and brainstorming assistance to discover
 							your unique story and voice.
 						</p>
-						<div class="space-y-3">
+						<div class="mt-auto space-y-3">
 							<div class="flex items-center gap-3">
 								<div class="h-2 w-2 rounded-full bg-color-info"></div>
-								<span class="text-sm text-gray-600"
+								<span class="text-base-content/70 text-sm"
 									>Personal story discovery</span
 								>
 							</div>
 							<div class="flex items-center gap-3">
 								<div class="h-2 w-2 rounded-full bg-color-success"></div>
-								<span class="text-sm text-gray-600">Topic exploration</span>
+								<span class="text-base-content/70 text-sm"
+									>Topic exploration</span
+								>
 							</div>
 							<div class="flex items-center gap-3">
 								<div class="h-2 w-2 rounded-full bg-color-primary"></div>
-								<span class="text-sm text-gray-600">Outline generation</span>
+								<span class="text-base-content/70 text-sm"
+									>Outline generation</span
+								>
 							</div>
 						</div>
 					</div>
@@ -745,36 +766,39 @@
 
 				<!-- Real-time Feedback -->
 				<div
-					class="group relative overflow-hidden rounded-3xl border border-gray-200/50 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
+					h-full flex-col overflow-hidden
+					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+					duration-300 hover:-translate-y-2 hover:shadow-2xl"
 				>
 					<div
 						class="absolute inset-0 bg-gradient-to-br from-color-accent/5 to-color-warning/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
 					></div>
-					<div class="relative z-10">
+					<div class="relative z-10 flex h-full flex-col">
 						<div class="mb-6 flex items-center gap-4">
 							<div
 								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-accent to-color-warning"
 							>
 								<Check class="h-6 w-6 text-white" />
 							</div>
-							<h3 class="text-xl font-bold text-gray-900">
+							<h3 class="text-base-content text-xl font-bold">
 								Real-time Feedback
 							</h3>
 						</div>
-						<p class="mb-6 text-gray-600">
+						<p class="text-base-content/70 mb-6">
 							Get instant, actionable feedback on your essays as you write to
 							improve clarity and impact.
 						</p>
 						<div
-							class="rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 p-4"
+							class="from-base-200 to-base-300 mt-auto rounded-2xl bg-gradient-to-br p-4"
 						>
 							<div class="mb-3 flex items-center justify-between">
-								<span class="text-sm font-medium text-gray-700"
+								<span class="text-base-content/80 text-sm font-medium"
 									>Essay Quality</span
 								>
 								<span class="text-sm font-bold text-color-success">92%</span>
 							</div>
-							<div class="h-2 overflow-hidden rounded-full bg-gray-200">
+							<div class="bg-base-300/60 h-2 overflow-hidden rounded-full">
 								<div
 									class="h-full w-[92%] bg-gradient-to-r from-color-success to-color-info transition-all duration-500"
 								></div>
@@ -785,102 +809,127 @@
 
 				<!-- Version Control -->
 				<div
-					class="group relative overflow-hidden rounded-3xl border border-gray-200/50 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
+					h-full flex-col overflow-hidden
+					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+					duration-300 hover:-translate-y-2 hover:shadow-2xl"
 				>
 					<div
 						class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
 					></div>
-					<div class="relative z-10">
+					<div class="relative z-10 flex h-full flex-col">
 						<div class="mb-6 flex items-center gap-4">
 							<div
 								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500"
 							>
 								<BookOpenCheck class="h-6 w-6 text-white" />
 							</div>
-							<h3 class="text-xl font-bold text-gray-900">Version Control</h3>
+							<h3 class="text-base-content text-xl font-bold">
+								Version Control
+							</h3>
 						</div>
-						<p class="mb-6 text-gray-600">
+						<p class="text-base-content/70 mb-6">
 							Save checkpoints and revert to any previous version with one
 							click. Never lose your progress.
 						</p>
-						<div class="space-y-2">
+						<div class="mt-auto space-y-2">
 							<div
-								class="flex items-center justify-between rounded-lg bg-gray-50 p-3"
+								class="bg-base-200/60 flex items-center justify-between rounded-lg p-3"
 							>
-								<span class="text-sm text-gray-600">Final Draft</span>
-								<span class="text-xs text-gray-400">2 hours ago</span>
+								<span class="text-base-content/70 text-sm">Final Draft</span>
+								<span class="text-base-content/60 text-xs">2 hours ago</span>
 							</div>
 							<div
-								class="flex items-center justify-between rounded-lg bg-gray-50 p-3"
+								class="bg-base-200/60 flex items-center justify-between rounded-lg p-3"
 							>
-								<span class="text-sm text-gray-600">Rough Draft v3</span>
-								<span class="text-xs text-gray-400">1 day ago</span>
+								<span class="text-base-content/70 text-sm">Rough Draft v3</span>
+								<span class="text-base-content/60 text-xs">1 day ago</span>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<!-- Common App Integration -->
+				<!-- Seamless Export -->
 				<div
-					class="group relative overflow-hidden rounded-3xl border border-gray-200/50 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
+					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
+					h-full flex-col overflow-hidden
+					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+					duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
 				>
 					<div
 						class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
 					></div>
-					<div class="relative z-10">
+					<div class="relative z-10 flex h-full flex-col">
 						<div class="mb-6 flex items-center gap-4">
 							<div
 								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500"
 							>
 								<ArrowUpRight class="h-6 w-6 text-white" />
 							</div>
-							<h3 class="text-2xl font-bold text-gray-900">Seamless Export</h3>
+							<h3 class="text-base-content text-2xl font-bold">
+								Seamless Export
+							</h3>
 						</div>
-						<p class="mb-6 text-lg text-gray-600">
+						<p class="text-base-content/70 mb-6 text-lg">
 							Copy-paste directly into Common App, Coalition, or any application
 							platform. Export to Word, Google Docs, or PDF.
 						</p>
-						<div class="grid grid-cols-3 gap-4">
-							<div class="flex flex-col items-center rounded-xl bg-gray-50 p-4">
+						<div class="mt-auto grid grid-cols-3 gap-4">
+							<div
+								class="bg-base-200/60 flex flex-col items-center rounded-xl p-4"
+							>
 								<div class="mb-2 h-8 w-8 rounded-lg bg-orange-500"></div>
-								<span class="text-sm font-medium text-gray-700">Common App</span
+								<span class="text-base-content/80 text-sm font-medium"
+									>Common App</span
 								>
 							</div>
-							<div class="flex flex-col items-center rounded-xl bg-gray-50 p-4">
+							<div
+								class="bg-base-200/60 flex flex-col items-center rounded-xl p-4"
+							>
 								<div class="mb-2 h-8 w-8 rounded-lg bg-blue-600"></div>
-								<span class="text-sm font-medium text-gray-700">Word</span>
+								<span class="text-base-content/80 text-sm font-medium"
+									>Word</span
+								>
 							</div>
-							<div class="flex flex-col items-center rounded-xl bg-gray-50 p-4">
+							<div
+								class="bg-base-200/60 flex flex-col items-center rounded-xl p-4"
+							>
 								<div class="mb-2 h-8 w-8 rounded-lg bg-red-500"></div>
-								<span class="text-sm font-medium text-gray-700">PDF</span>
+								<span class="text-base-content/80 text-sm font-medium">PDF</span
+								>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<!-- Security & Privacy -->
+				<!-- 100% Private -->
 				<div
-					class="group relative overflow-hidden rounded-3xl border border-gray-200/50 bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
+					h-full flex-col overflow-hidden
+					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+					duration-300 hover:-translate-y-2 hover:shadow-2xl"
 				>
 					<div
 						class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-emerald-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
 					></div>
-					<div class="relative z-10">
+					<div class="relative z-10 flex h-full flex-col">
 						<div class="mb-6 flex items-center gap-4">
 							<div
 								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500"
 							>
 								<Lock class="h-6 w-6 text-white" />
 							</div>
-							<h3 class="text-xl font-bold text-gray-900">100% Private</h3>
+							<h3 class="text-base-content text-xl font-bold">100% Private</h3>
 						</div>
-						<p class="mb-6 text-gray-600">
+						<p class="text-base-content/70 mb-6">
 							Your essays are encrypted and secure. We never share, sell, or use
 							your data. Your work is yours alone.
 						</p>
-						<div class="flex items-center gap-2 rounded-lg bg-green-50 p-3">
+						<div
+							class="bg-base-200/60 mt-auto flex items-center gap-2 rounded-lg p-3"
+						>
 							<div class="h-2 w-2 rounded-full bg-green-500"></div>
-							<span class="text-sm font-medium text-green-700"
+							<span class="text-base-content/80 text-sm font-medium"
 								>End-to-end encrypted</span
 							>
 						</div>
