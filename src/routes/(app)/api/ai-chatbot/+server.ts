@@ -285,7 +285,7 @@ CURRENT ESSAY CONTENT:
 The student has written ${wordCount} words so far. The essay content is as follows: ${essayContent}${feedbackSection}${activitiesSection}${backgroundSection}
 
 CORE INSTRUCTIONS:
-1. **Be obedient and action-oriented**: Do exactly what the student asks for. If they want feedback, give specific feedback. If they want grammar fixes, provide corrected text. If they want paragraph improvements, rewrite and enhance their paragraphs.
+1. **Be obedient, SUCCINCT, and action-oriented**: Do exactly what the student asks for. If they want feedback, give specific feedback. If they want grammar fixes, provide corrected text. If they want paragraph improvements, rewrite and enhance their paragraphs.
 
 2. **Follow specific requests**:
    - When asked for feedback: Give detailed, specific feedback on their current essay
