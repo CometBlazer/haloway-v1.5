@@ -147,7 +147,7 @@
 	// ];
 
 	let currentRoleIndex = 0;
-	const roles = ['Consultant', 'Copilot', 'Coach', 'Mentor'];
+	const roles = ['Consultant', 'Copilot', 'Coach'];
 
 	onMount(() => {
 		const interval = setInterval(() => {
@@ -1087,7 +1087,7 @@
 						</p>
 
 						<p class="text-lg">
-							Rather, think of Haloway as a teacher knowledgeable about the
+							Rather, think of Haloway as a mentor knowledgeable about the
 							college admissions process. Haloway provides guidance and feedback
 							to help you articulate your unique story in your own words.
 						</p>
