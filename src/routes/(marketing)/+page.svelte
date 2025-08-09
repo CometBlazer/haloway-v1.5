@@ -658,7 +658,7 @@
 					>
 				</h2>
 				<p class="text-base-content/70 mx-auto max-w-3xl text-xl sm:text-2xl">
-					A focused toolkit for planning, writing, and finishing strong.
+					A look at our versatile platform, built specifically for college apps.
 				</p>
 			</div>
 
