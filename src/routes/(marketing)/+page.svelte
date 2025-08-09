@@ -846,21 +846,21 @@
 					<!-- Main Text -->
 					<div class="space-y-4 leading-relaxed text-gray-600">
 						<p class="text-lg">
+							We believe that having an AI write essays for you is not only
+							unethical, but the output is boring and generic, the exact
+							opposite of what admissions officers want to see.
+						</p>
+
+						<p class="text-lg">
 							AI is ethical when it helps bring out your very own voice and
 							personality, not when it replaces your authentic story with
 							generic content.
 						</p>
 
 						<p class="text-lg">
-							We believe that having an AI write essays for you is not only
-							unethical, but the output is boring and generic—the exact opposite
-							of what admissions officers want to see.
-						</p>
-
-						<p class="text-lg">
-							Think of Haloway as your writing coach. We provide guidance,
-							feedback, and structure to help you discover and articulate your
-							unique story in your own words.
+							Rather, think of Haloway as a teacher knowledgeable about the
+							college admissions process. Haloway provides guidance and feedback
+							to help you articulate your unique story in your own words.
 						</p>
 					</div>
 
@@ -875,7 +875,7 @@
 						<div class="text-center lg:text-left">
 							<div class="text-3xl font-bold text-color-primary">0%</div>
 							<div class="text-sm uppercase tracking-wider text-gray-500">
-								AI Written
+								Generic AI Slop
 							</div>
 						</div>
 					</div>
@@ -897,18 +897,18 @@
 						/>
 
 						<!-- Floating badge -->
-						<div
+						<!-- <div
 							class="absolute -bottom-6 -left-6 rounded-xl border border-gray-200 bg-white/95 p-4 shadow-lg backdrop-blur-sm"
 						>
 							<div class="flex items-center space-x-3">
 								<div
-									class="h-3 w-3 animate-pulse rounded-full bg-green-500"
+									class="h-3 w-3 animate-pulse rounded-full bg-red-500"
 								></div>
 								<span class="text-sm font-medium text-gray-900">
-									100% Authentic Stories
+									0% Plagiarism
 								</span>
 							</div>
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</div>
@@ -1062,7 +1062,7 @@
 				</div>
 
 				<!-- Trust Indicators -->
-				<div
+				<!-- <div
 					class="flex flex-col items-center justify-center gap-4 text-base sm:flex-row sm:gap-6 sm:text-lg"
 				>
 					<a
@@ -1072,7 +1072,7 @@
 						<BookText class="h-5 w-5" />
 						Read Our Privacy Policy
 					</a>
-				</div>
+				</div> -->
 			</div>
 		</div>
 	</div>
