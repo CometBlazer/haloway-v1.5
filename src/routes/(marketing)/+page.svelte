@@ -215,16 +215,18 @@
 					</div>
 
 					<!-- Right Column - Product Image -->
-					<div class="hero-content-fade flex justify-center lg:justify-end">
+					<div
+						class="hero-content-fade hidden justify-center lg:flex lg:justify-end"
+					>
 						<div class="relative w-full max-w-lg">
 							<img
 								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754333956/Haloway_hero_image_cwv3b6.png"
 								alt="Haloway College Application Platform"
-								class="h-auto w-full rounded-2xl shadow-2xl"
+								class="h-[500px] rounded-2xl shadow-2xl"
 							/>
-							<div
+							<!-- <div
 								class="pointer-events-none absolute inset-0 rounded-lg bg-gradient-to-r from-color-primary/10 to-color-accent/10"
-							></div>
+							></div> -->
 						</div>
 					</div>
 				</div>
@@ -836,7 +838,7 @@
 						<h2
 							class="text-4xl font-bold tracking-tight text-gray-900 lg:text-5xl"
 						>
-							We Never Write Essays For You
+							Haloway Never Writes Essays For You
 						</h2>
 						<div class="h-1 w-20 rounded-full bg-color-primary"></div>
 					</div>
@@ -889,9 +891,9 @@
 
 						<!-- Main image -->
 						<img
-							src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=500&q=80"
+							src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754333956/Haloway_hero_image_1_gzcqwm.png"
 							alt="Students working authentically on their essays"
-							class="h-[500px] w-full rounded-2xl object-cover shadow-2xl"
+							class="w-full rounded-2xl object-cover shadow-2xl"
 						/>
 
 						<!-- Floating badge -->
@@ -1188,7 +1190,8 @@
 			hsl(var(--color-primary)),
 			hsl(var(--color-secondary))
 		);
-		color: hsl(var(--color-base-000));
+		/* color: hsl(var(--color-base-000)); */
+		color: black;
 		cursor: pointer;
 		font-weight: 600;
 		display: flex;
