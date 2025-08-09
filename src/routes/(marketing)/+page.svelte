@@ -47,33 +47,31 @@
 		{
 			title: 'Ask admissions questions based on your profile',
 			description:
-				"Write in a beautiful, powerfully simple editor where you can manage prompts, tags, and your drafts in a distraction-free writing environment. Copy-paste directly into Common App when you're ready to submit.",
+				'Quickly find answers to your admissions questions, from choosing extracurriculars and drafting cold emails to selecting recommendation letter teachers to comparing schools, all tailored to your situation.',
 			image:
 				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png',
-			// "https://res.cloudinary.com/dqdasxxho/image/upload/v1750269497/editor_zj9qvi.png",
-			imageAlt: 'Haloway essay editor interface',
-			ctaText: 'Try the Editor',
+			imageAlt: 'Haloway admissions Q&A interface',
+			ctaText: 'Ask a Question',
 			ctaLink: '/schools/uncategorized/write',
 		},
 		{
 			title: 'Brainstorm outlines with an essay assistant',
 			description:
-				'Create and manage all your college essays in your essay dashboard. Reduce the number of tabs you have open, and easily find your past essays to reference. Track deadlines and never lose track of your application progress again.',
+				"Talk to an assistant that helps you organize your thoughts and turn ideas into a clear, actionable outline. Overcome writer's block and gain insight into exactly what admissions officers are looking for in each response.",
 			image:
 				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png',
-			imageAlt: 'Haloway dashboard showing organized essays',
-			ctaText: 'View Dashboard',
+			imageAlt: 'Haloway essay brainstorming interface',
+			ctaText: 'Start Brainstorming',
 			ctaLink: '/dashboard',
 		},
 		{
 			title: 'Get realtime, actionable feedback on essays',
 			description:
-				'Use checkpoints to track your progress and restore any previous version with a single click. Download your essays to save a local copy or upload them to Google Drive for backup.',
+				'See exactly what to fix in your essays with clear suggestions on clarity, structure, and flow so every draft is stronger than the last. Get a fresh set of eyes on your essays with feedback that’s unique to your writing, not generic advice.',
 			image:
-				// "https://res.cloudinary.com/dqdasxxho/image/upload/v1750269499/version-control-cropped_rry8jn.png",
 				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750286065/haloway_version_control_product_screenshot_fstidc.png',
-			imageAlt: 'Checkpoint manager showing version history',
-			ctaText: 'Try the Checkpoint Manager',
+			imageAlt: 'Haloway essay feedback interface',
+			ctaText: 'Get Feedback',
 			ctaLink: '/schools/uncategorized/write',
 		},
 	];
@@ -198,8 +196,8 @@
 						</h1>
 
 						<h2 class="mb-8 text-lg sm:text-xl md:text-2xl lg:text-3xl">
-							An easy-to-use writing platform to organize, write, and perfect
-							your college application essays.
+							Your admissions copilot to navigate the college application
+							journey with ease.
 						</h2>
 
 						<div
@@ -208,7 +206,7 @@
 							<a href="/register">
 								<div class="glow-container">
 									<button class="glow-button">
-										Try free tier
+										Start for free
 										<PenLine class="ml-1 h-4 w-4 sm:h-5 sm:w-5" />
 									</button>
 								</div>
@@ -222,7 +220,7 @@
 							<img
 								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754333956/Haloway_hero_image_cwv3b6.png"
 								alt="Haloway College Application Platform"
-								class="h-auto w-full rounded-lg shadow-2xl"
+								class="h-auto w-full rounded-2xl shadow-2xl"
 							/>
 							<div
 								class="pointer-events-none absolute inset-0 rounded-lg bg-gradient-to-r from-color-primary/10 to-color-accent/10"
@@ -236,7 +234,7 @@
 </Section.Root>
 
 <!-- Features Showcase Section -->
-<Section.Root anchor="features">
+<Section.Root anchor="demo-features">
 	<div
 		class="from-base-100 to-base-200 relative overflow-hidden bg-gradient-to-b py-16 sm:py-20 lg:py-24"
 	>
@@ -513,7 +511,7 @@
 			</div>
 
 			<!-- Section Header -->
-			<div class="mb-16 mt-32 text-center">
+			<!-- <div class="mb-16 mt-32 text-center">
 				<h2 class="text-base-content mb-6 text-4xl sm:text-5xl md:text-6xl">
 					Better than <span
 						class="bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text font-bold text-transparent"
@@ -526,10 +524,10 @@
 					Built specifically for college apps with features that help you write,
 					organize, and perfect your essays.
 				</p>
-			</div>
+			</div> -->
 
 			<!-- Scroll Indicator -->
-			<div class="mt-16 text-center">
+			<!-- <div class="mt-16 text-center">
 				<div
 					class="inline-flex animate-bounce cursor-pointer flex-col items-center gap-3"
 				>
@@ -551,13 +549,13 @@
 						</svg>
 					</div>
 				</div>
-			</div>
+			</div> -->
 		</div>
 	</div>
 </Section.Root>
 
 <!-- Bento Grid Features Section -->
-<Section.Root anchor="bento-features">
+<Section.Root anchor="features">
 	<div
 		class="from-base-100 to-base-200 relative overflow-hidden bg-gradient-to-b py-16 sm:py-20 lg:py-24"
 	>
@@ -578,8 +576,7 @@
 					>
 				</h2>
 				<p class="text-base-content/70 mx-auto max-w-3xl text-xl sm:text-2xl">
-					From brainstorming to final submission, Haloway has all the tools you
-					need for your college application journey.
+					A look at our versatile platform, built specifically for college apps.
 				</p>
 			</div>
 
@@ -938,7 +935,7 @@
 				class="rounded-3xl border border-gray-600/30 bg-gradient-to-br from-gray-800/80 via-gray-700/80 to-gray-800/80 p-8 shadow-2xl backdrop-blur-xl sm:rounded-[2rem] sm:p-12 lg:p-16"
 			>
 				<h2
-					class="mb-8 text-2xl font-bold leading-tight text-gray-400 sm:mb-10 sm:text-3xl md:text-4xl"
+					class="mb-8 text-2xl font-bold leading-tight text-white/80 sm:mb-10 sm:text-3xl md:text-5xl"
 				>
 					Built with security and privacy in mind.
 				</h2>
@@ -975,9 +972,9 @@
 							</h3>
 						</div>
 						<p class="text-base leading-relaxed text-gray-300 sm:text-lg">
-							Your essays are stored securely with Row-Level Security (RLS), so
-							only you can access your work. We never share, sell, or use your
-							data beyond your dashboard. All essays are yours and yours only.
+							Your essays are stored securely with Row-Level Security (RLS), and
+							we never share, sell, or use your data without your permission.
+							All essays are yours and yours only.
 						</p>
 					</div>
 
@@ -1100,15 +1097,15 @@
 				</div>
 			</div>
 
-			<h1 class="mb-6 text-4xl font-extrabold sm:mb-8 md:text-5xl lg:text-6xl">
+			<h1 class="mb-6 text-4xl font-bold sm:mb-8 md:text-5xl lg:text-6xl">
 				Try {WebsiteName} for free today.
 			</h1>
 
 			<p
 				class="text-base-content/80 mx-auto mb-8 max-w-3xl text-lg sm:mb-12 sm:text-xl md:text-2xl"
 			>
-				Experience a faster, more organized way to write your college essays. No
-				credit card required.
+				Get dedicated college admissions help whenever you need it. No credit
+				card required.
 			</p>
 
 			<div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -1116,7 +1113,7 @@
 					<button
 						class="glow-button text-base-100 transform rounded-xl border-0 bg-gradient-to-r from-color-primary to-color-accent px-8 text-base transition-all duration-200 hover:-translate-y-1 hover:from-color-primary/90 hover:to-color-accent/90 sm:px-10 sm:text-lg"
 					>
-						Start writing
+						Try free tier
 						<PenLine class="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
 					</button>
 				</a>
@@ -1149,7 +1146,7 @@
 		background: linear-gradient(
 			90deg,
 			hsl(var(--color-primary)),
-			hsl(var(--color-accent))
+			hsl(var(--color-secondary))
 		);
 		border-radius: 0.9em;
 		transition: all 0.4s ease;
@@ -1172,7 +1169,7 @@
 		background: linear-gradient(
 			90deg,
 			hsl(var(--color-primary)),
-			hsl(var(--color-accent))
+			hsl(var(--color-primary))
 		);
 		filter: blur(1.2em);
 	}
@@ -1189,7 +1186,7 @@
 		background: linear-gradient(
 			90deg,
 			hsl(var(--color-primary)),
-			hsl(var(--color-accent))
+			hsl(var(--color-secondary))
 		);
 		color: hsl(var(--color-base-000));
 		cursor: pointer;
