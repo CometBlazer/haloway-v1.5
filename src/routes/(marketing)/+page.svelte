@@ -667,49 +667,12 @@
 				class="grid auto-rows-[1fr] grid-cols-1 gap-6 [grid-auto-flow:dense] md:grid-cols-2
 				lg:grid-cols-3 lg:gap-8"
 			>
-				<!-- Large Feature: Essay Dashboard -->
+				<!-- 1) Ask admissions questions (LARGE, image) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
 					h-full flex-col overflow-hidden
 					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
 					duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
-				>
-					<div
-						class="absolute inset-0 bg-gradient-to-br from-color-primary/5 to-color-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-					></div>
-					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-6 flex items-center gap-4">
-							<div
-								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-primary to-color-accent"
-							>
-								<BookText class="h-6 w-6 text-white" />
-							</div>
-							<h3 class="text-base-content text-2xl font-bold">
-								Essay Dashboard
-							</h3>
-						</div>
-						<p class="text-base-content/70 mb-6 text-lg">
-							Organize all your college essays in one place. Track deadlines,
-							manage drafts, and never lose sight of your application progress.
-						</p>
-						<div
-							class="from-base-200 to-base-300 mt-auto h-48 overflow-hidden rounded-2xl bg-gradient-to-br"
-						>
-							<img
-								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png"
-								alt="Essay Dashboard Preview"
-								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-							/>
-						</div>
-					</div>
-				</div>
-
-				<!-- AI Brainstorming -->
-				<div
-					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-					h-full flex-col overflow-hidden
-					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-					duration-300 hover:-translate-y-2 hover:shadow-2xl"
 				>
 					<div
 						class="absolute inset-0 bg-gradient-to-br from-color-info/5 to-color-success/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
@@ -719,6 +682,7 @@
 							<div
 								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-info to-color-success"
 							>
+								<!-- chat icon -->
 								<svg
 									class="h-6 w-6 text-white"
 									fill="none"
@@ -729,47 +693,36 @@
 										stroke-linecap="round"
 										stroke-linejoin="round"
 										stroke-width="2"
-										d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+										d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4-.8L3 20l1.8-4A8.955 8.955 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
 									/>
 								</svg>
 							</div>
-							<h3 class="text-base-content text-xl font-bold">
-								AI Brainstorming
+							<h3 class="text-base-content text-2xl font-bold">
+								Ask admissions questions
 							</h3>
 						</div>
-						<p class="text-base-content/70 mb-6">
-							Get personalized prompts and brainstorming assistance to discover
-							your unique story and voice.
+						<p class="text-base-content/70 mb-6 text-lg">
+							Get clear answers on ECs, LORs, cold emails, school comparisons,
+							and more — tailored to your situation.
 						</p>
-						<div class="mt-auto space-y-3">
-							<div class="flex items-center gap-3">
-								<div class="h-2 w-2 rounded-full bg-color-info"></div>
-								<span class="text-base-content/70 text-sm"
-									>Personal story discovery</span
-								>
-							</div>
-							<div class="flex items-center gap-3">
-								<div class="h-2 w-2 rounded-full bg-color-success"></div>
-								<span class="text-base-content/70 text-sm"
-									>Topic exploration</span
-								>
-							</div>
-							<div class="flex items-center gap-3">
-								<div class="h-2 w-2 rounded-full bg-color-primary"></div>
-								<span class="text-base-content/70 text-sm"
-									>Outline generation</span
-								>
-							</div>
+						<div
+							class="from-base-200 to-base-300 mt-auto h-48 overflow-hidden rounded-2xl bg-gradient-to-br"
+						>
+							<img
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png"
+								alt="Admissions Q&A preview"
+								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+							/>
 						</div>
 					</div>
 				</div>
 
-				<!-- Real-time Feedback -->
+				<!-- 2) Realtime, actionable feedback (LARGE, image) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
 					h-full flex-col overflow-hidden
 					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-					duration-300 hover:-translate-y-2 hover:shadow-2xl"
+					duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
 				>
 					<div
 						class="absolute inset-0 bg-gradient-to-br from-color-accent/5 to-color-warning/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
@@ -781,13 +734,13 @@
 							>
 								<Check class="h-6 w-6 text-white" />
 							</div>
-							<h3 class="text-base-content text-xl font-bold">
-								Real-time Feedback
+							<h3 class="text-base-content text-2xl font-bold">
+								Realtime, actionable feedback on essays
 							</h3>
 						</div>
-						<p class="text-base-content/70 mb-6">
-							Get instant, actionable feedback on your essays as you write to
-							improve clarity and impact.
+						<p class="text-base-content/70 mb-6 text-lg">
+							See exactly what to fix — clarity, structure, and flow — with
+							guidance that’s unique to your writing.
 						</p>
 						<div
 							class="from-base-200 to-base-300 mt-auto rounded-2xl bg-gradient-to-br p-4"
@@ -807,7 +760,7 @@
 					</div>
 				</div>
 
-				<!-- Version Control -->
+				<!-- 3) Generate outlines with essay assistant (MED, image) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
 					h-full flex-col overflow-hidden
@@ -815,41 +768,49 @@
 					duration-300 hover:-translate-y-2 hover:shadow-2xl"
 				>
 					<div
-						class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+						class="absolute inset-0 bg-gradient-to-br from-color-primary/5 to-color-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
 					></div>
 					<div class="relative z-10 flex h-full flex-col">
 						<div class="mb-6 flex items-center gap-4">
 							<div
-								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500"
+								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-primary to-color-accent"
 							>
-								<BookOpenCheck class="h-6 w-6 text-white" />
+								<!-- outline icon -->
+								<svg
+									class="h-6 w-6 text-white"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M4 6h16M4 10h10M4 14h16M4 18h10"
+									/>
+								</svg>
 							</div>
 							<h3 class="text-base-content text-xl font-bold">
-								Version Control
+								Generate outlines with essay assistant
 							</h3>
 						</div>
 						<p class="text-base-content/70 mb-6">
-							Save checkpoints and revert to any previous version with one
-							click. Never lose your progress.
+							Turn ideas into clear, structured outlines for any prompt — no
+							more blank page.
 						</p>
-						<div class="mt-auto space-y-2">
-							<div
-								class="bg-base-200/60 flex items-center justify-between rounded-lg p-3"
-							>
-								<span class="text-base-content/70 text-sm">Final Draft</span>
-								<span class="text-base-content/60 text-xs">2 hours ago</span>
-							</div>
-							<div
-								class="bg-base-200/60 flex items-center justify-between rounded-lg p-3"
-							>
-								<span class="text-base-content/70 text-sm">Rough Draft v3</span>
-								<span class="text-base-content/60 text-xs">1 day ago</span>
-							</div>
+						<div
+							class="from-base-200 to-base-300 mt-auto h-40 overflow-hidden rounded-2xl bg-gradient-to-br"
+						>
+							<img
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png"
+								alt="Outline preview"
+								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+							/>
 						</div>
 					</div>
 				</div>
 
-				<!-- Seamless Export -->
+				<!-- 4) Organize essays by school & deadline (LARGE, image) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
 					h-full flex-col overflow-hidden
@@ -864,15 +825,196 @@
 							<div
 								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500"
 							>
-								<ArrowUpRight class="h-6 w-6 text-white" />
+								<BookText class="h-6 w-6 text-white" />
 							</div>
 							<h3 class="text-base-content text-2xl font-bold">
-								Seamless Export
+								Organize essays by school & deadline
 							</h3>
 						</div>
 						<p class="text-base-content/70 mb-6 text-lg">
-							Copy-paste directly into Common App, Coalition, or any application
-							platform. Export to Word, Google Docs, or PDF.
+							One place for essays, status, and timelines — sort by school,
+							track deadlines, and stay on top of every draft.
+						</p>
+						<div
+							class="from-base-200 to-base-300 mt-auto h-48 overflow-hidden rounded-2xl bg-gradient-to-br"
+						>
+							<img
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png"
+								alt="Organizer preview"
+								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+							/>
+						</div>
+					</div>
+				</div>
+
+				<!-- 5) Extracurriculars organizer (MED, image) -->
+				<div
+					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
+					h-full flex-col overflow-hidden
+					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+					duration-300 hover:-translate-y-2 hover:shadow-2xl"
+				>
+					<div
+						class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-green-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+					></div>
+					<div class="relative z-10 flex h-full flex-col">
+						<div class="mb-6 flex items-center gap-4">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-500 to-green-500"
+							>
+								<!-- drag icon -->
+								<svg
+									class="h-6 w-6 text-white"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M8 9h8M8 15h8M6 7l-2 2 2 2M18 13l2 2-2 2"
+									/>
+								</svg>
+							</div>
+							<h3 class="text-base-content text-xl font-bold">
+								Drag-and-drop activities organizer
+							</h3>
+						</div>
+						<p class="text-base-content/70 mb-6">
+							Order your extracurriculars and achievements to highlight what
+							matters most.
+						</p>
+						<div
+							class="from-base-200 to-base-300 mt-auto h-40 overflow-hidden rounded-2xl bg-gradient-to-br"
+						>
+							<!-- placeholder visual -->
+							<div class="grid h-full w-full grid-rows-3 gap-2 p-3">
+								<div
+									class="bg-base-100/80 border-base-300/50 rounded-lg border"
+								></div>
+								<div
+									class="bg-base-100/80 border-base-300/50 rounded-lg border"
+								></div>
+								<div
+									class="bg-base-100/80 border-base-300/50 rounded-lg border"
+								></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- 6) Rich text editor with autosave (SMALL) -->
+				<div
+					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
+					h-full flex-col overflow-hidden
+					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+					duration-300 hover:-translate-y-2 hover:shadow-2xl"
+				>
+					<div class="relative z-10 flex h-full flex-col">
+						<div class="mb-4 flex items-center gap-3">
+							<div
+								class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-color-primary to-color-accent"
+							>
+								<PenLine class="h-5 w-5 text-white" />
+							</div>
+							<h3 class="text-base-content text-lg font-bold">
+								Rich text editing + autosave
+							</h3>
+						</div>
+						<p class="text-base-content/70">
+							Write comfortably with formatting that saves itself in real time.
+						</p>
+						<div class="mt-auto"></div>
+					</div>
+				</div>
+
+				<!-- 7) Version history & checkpoints (SMALL) -->
+				<div
+					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
+					h-full flex-col overflow-hidden
+					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+					duration-300 hover:-translate-y-2 hover:shadow-2xl"
+				>
+					<div class="relative z-10 flex h-full flex-col">
+						<div class="mb-4 flex items-center gap-3">
+							<div
+								class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-purple-500 to-pink-500"
+							>
+								<BookOpenCheck class="h-5 w-5 text-white" />
+							</div>
+							<h3 class="text-base-content text-lg font-bold">
+								Version history & checkpoints
+							</h3>
+						</div>
+						<p class="text-base-content/70">
+							Save milestones and restore any version with one click.
+						</p>
+						<div class="mt-auto"></div>
+					</div>
+				</div>
+
+				<!-- 8) Built-in document chatbot (SMALL) -->
+				<div
+					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
+					h-full flex-col overflow-hidden
+					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+					duration-300 hover:-translate-y-2 hover:shadow-2xl"
+				>
+					<div class="relative z-10 flex h-full flex-col">
+						<div class="mb-4 flex items-center gap-3">
+							<div
+								class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-color-info to-color-success"
+							>
+								<!-- doc chat icon -->
+								<svg
+									class="h-5 w-5 text-white"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M8 16h8M8 12h8m-6 8h6a2 2 0 002-2V7.828a2 2 0 00-.586-1.414l-2.828-2.828A2 2 0 0013.172 3H7a2 2 0 00-2 2v13a2 2 0 002 2h1"
+									/>
+								</svg>
+							</div>
+							<h3 class="text-base-content text-lg font-bold">
+								Built-in document chatbot
+							</h3>
+						</div>
+						<p class="text-base-content/70">
+							Ask questions right in your document without switching tabs.
+						</p>
+						<div class="mt-auto"></div>
+					</div>
+				</div>
+
+				<!-- 9) Seamless export (MED) -->
+				<div
+					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
+					h-full flex-col overflow-hidden
+					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+					duration-300 hover:-translate-y-2 hover:shadow-2xl"
+				>
+					<div
+						class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+					></div>
+					<div class="relative z-10 flex h-full flex-col">
+						<div class="mb-6 flex items-center gap-4">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500"
+							>
+								<ArrowUpRight class="h-6 w-6 text-white" />
+							</div>
+							<h3 class="text-base-content text-xl font-bold">
+								Seamless export
+							</h3>
+						</div>
+						<p class="text-base-content/70 mb-6">
+							Copy into Common App or export to DOC/TXT when you’re ready.
 						</p>
 						<div class="mt-auto grid grid-cols-3 gap-4">
 							<div
@@ -895,43 +1037,9 @@
 								class="bg-base-200/60 flex flex-col items-center rounded-xl p-4"
 							>
 								<div class="mb-2 h-8 w-8 rounded-lg bg-red-500"></div>
-								<span class="text-base-content/80 text-sm font-medium">PDF</span
+								<span class="text-base-content/80 text-sm font-medium">TXT</span
 								>
 							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- 100% Private -->
-				<div
-					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-					h-full flex-col overflow-hidden
-					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-					duration-300 hover:-translate-y-2 hover:shadow-2xl"
-				>
-					<div
-						class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-emerald-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-					></div>
-					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-6 flex items-center gap-4">
-							<div
-								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-green-500 to-emerald-500"
-							>
-								<Lock class="h-6 w-6 text-white" />
-							</div>
-							<h3 class="text-base-content text-xl font-bold">100% Private</h3>
-						</div>
-						<p class="text-base-content/70 mb-6">
-							Your essays are encrypted and secure. We never share, sell, or use
-							your data. Your work is yours alone.
-						</p>
-						<div
-							class="bg-base-200/60 mt-auto flex items-center gap-2 rounded-lg p-3"
-						>
-							<div class="h-2 w-2 rounded-full bg-green-500"></div>
-							<span class="text-base-content/80 text-sm font-medium"
-								>End-to-end encrypted</span
-							>
 						</div>
 					</div>
 				</div>
