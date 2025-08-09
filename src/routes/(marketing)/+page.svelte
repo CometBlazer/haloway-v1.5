@@ -658,7 +658,7 @@
 					>
 				</h2>
 				<p class="text-base-content/70 mx-auto max-w-3xl text-xl sm:text-2xl">
-					A look at our versatile platform, built specifically for college apps.
+					A focused toolkit for planning, writing, and finishing strong.
 				</p>
 			</div>
 
@@ -667,100 +667,7 @@
 				class="grid auto-rows-[1fr] grid-cols-1 gap-6 [grid-auto-flow:dense] md:grid-cols-2
 				lg:grid-cols-3 lg:gap-8"
 			>
-				<!-- 1) Ask admissions questions (LARGE, image) -->
-				<div
-					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-					h-full flex-col overflow-hidden
-					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-					duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
-				>
-					<div
-						class="absolute inset-0 bg-gradient-to-br from-color-info/5 to-color-success/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-					></div>
-					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-6 flex items-center gap-4">
-							<div
-								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-info to-color-success"
-							>
-								<!-- chat icon -->
-								<svg
-									class="h-6 w-6 text-white"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4-.8L3 20l1.8-4A8.955 8.955 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-									/>
-								</svg>
-							</div>
-							<h3 class="text-base-content text-2xl font-bold">
-								Ask admissions questions
-							</h3>
-						</div>
-						<p class="text-base-content/70 mb-6 text-lg">
-							Get clear answers on ECs, LORs, cold emails, school comparisons,
-							and more — tailored to your situation.
-						</p>
-						<div
-							class="from-base-200 to-base-300 mt-auto h-48 overflow-hidden rounded-2xl bg-gradient-to-br"
-						>
-							<img
-								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png"
-								alt="Admissions Q&A preview"
-								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-							/>
-						</div>
-					</div>
-				</div>
-
-				<!-- 2) Realtime, actionable feedback (LARGE, image) -->
-				<div
-					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-					h-full flex-col overflow-hidden
-					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-					duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
-				>
-					<div
-						class="absolute inset-0 bg-gradient-to-br from-color-accent/5 to-color-warning/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-					></div>
-					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-6 flex items-center gap-4">
-							<div
-								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-accent to-color-warning"
-							>
-								<Check class="h-6 w-6 text-white" />
-							</div>
-							<h3 class="text-base-content text-2xl font-bold">
-								Realtime, actionable feedback on essays
-							</h3>
-						</div>
-						<p class="text-base-content/70 mb-6 text-lg">
-							See exactly what to fix — clarity, structure, and flow — with
-							guidance that’s unique to your writing.
-						</p>
-						<div
-							class="from-base-200 to-base-300 mt-auto rounded-2xl bg-gradient-to-br p-4"
-						>
-							<div class="mb-3 flex items-center justify-between">
-								<span class="text-base-content/80 text-sm font-medium"
-									>Essay Quality</span
-								>
-								<span class="text-sm font-bold text-color-success">92%</span>
-							</div>
-							<div class="bg-base-300/60 h-2 overflow-hidden rounded-full">
-								<div
-									class="h-full w-[92%] bg-gradient-to-r from-color-success to-color-info transition-all duration-500"
-								></div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- 3) Generate outlines with essay assistant (MED, image) -->
+				<!-- 1) Generate outlines with essay assistant (MED, image) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
 					h-full flex-col overflow-hidden
@@ -810,6 +717,93 @@
 					</div>
 				</div>
 
+				<!-- 2) Realtime, actionable feedback on essays (LARGE, now with image) -->
+				<div
+					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
+					h-full flex-col overflow-hidden
+					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+					duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
+				>
+					<div
+						class="absolute inset-0 bg-gradient-to-br from-color-accent/5 to-color-warning/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+					></div>
+					<div class="relative z-10 flex h-full flex-col">
+						<div class="mb-6 flex items-center gap-4">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-accent to-color-warning"
+							>
+								<Check class="h-6 w-6 text-white" />
+							</div>
+							<h3 class="text-base-content text-2xl font-bold">
+								Realtime, actionable feedback on essays
+							</h3>
+						</div>
+						<p class="text-base-content/70 mb-6 text-lg">
+							See exactly what to fix — clarity, structure, and flow — with
+							guidance that's unique to your writing.
+						</p>
+						<div
+							class="from-base-200 to-base-300 mt-auto h-48 overflow-hidden rounded-2xl bg-gradient-to-br"
+						>
+							<img
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754333956/Haloway_hero_image_1_gzcqwm.png"
+								alt="Realtime feedback preview"
+								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+							/>
+						</div>
+					</div>
+				</div>
+
+				<!-- 3) Ask admissions questions (LARGE, image) -->
+				<div
+					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
+					h-full flex-col overflow-hidden
+					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+					duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
+				>
+					<div
+						class="absolute inset-0 bg-gradient-to-br from-color-info/5 to-color-success/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+					></div>
+					<div class="relative z-10 flex h-full flex-col">
+						<div class="mb-6 flex items-center gap-4">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-info to-color-success"
+							>
+								<!-- chat icon -->
+								<svg
+									class="h-6 w-6 text-white"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4-.8L3 20l1.8-4A8.955 8.955 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+									/>
+								</svg>
+							</div>
+							<h3 class="text-base-content text-2xl font-bold">
+								Ask admissions questions
+							</h3>
+						</div>
+						<p class="text-base-content/70 mb-6 text-lg">
+							Get clear answers on ECs, LORs, cold emails, school comparisons,
+							and more — tailored to your situation.
+						</p>
+						<div
+							class="from-base-200 to-base-300 mt-auto h-48 overflow-hidden rounded-2xl bg-gradient-to-br"
+						>
+							<img
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png"
+								alt="Admissions Q&A preview"
+								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+							/>
+						</div>
+					</div>
+				</div>
+
 				<!-- 4) Organize essays by school & deadline (LARGE, image) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
@@ -847,7 +841,7 @@
 					</div>
 				</div>
 
-				<!-- 5) Extracurriculars organizer (MED, image) -->
+				<!-- 5) Drag-and-drop activities organizer (MED, NO image; with outlined sample activities) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
 					h-full flex-col overflow-hidden
@@ -881,55 +875,43 @@
 								Drag-and-drop activities organizer
 							</h3>
 						</div>
-						<p class="text-base-content/70 mb-6">
+						<p class="text-base-content/70 mb-4">
 							Order your extracurriculars and achievements to highlight what
 							matters most.
 						</p>
-						<div
-							class="from-base-200 to-base-300 mt-auto h-40 overflow-hidden rounded-2xl bg-gradient-to-br"
-						>
-							<!-- placeholder visual -->
-							<div class="grid h-full w-full grid-rows-3 gap-2 p-3">
-								<div
-									class="bg-base-100/80 border-base-300/50 rounded-lg border"
-								></div>
-								<div
-									class="bg-base-100/80 border-base-300/50 rounded-lg border"
-								></div>
-								<div
-									class="bg-base-100/80 border-base-300/50 rounded-lg border"
-								></div>
-							</div>
-						</div>
-					</div>
-				</div>
 
-				<!-- 6) Rich text editor with autosave (SMALL) -->
-				<div
-					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-					h-full flex-col overflow-hidden
-					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-					duration-300 hover:-translate-y-2 hover:shadow-2xl"
-				>
-					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-4 flex items-center gap-3">
+						<!-- Outlined sample activities -->
+						<div class="mt-auto space-y-2">
 							<div
-								class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-color-primary to-color-accent"
+								class="bg-base-100/80 border-base-300/60 flex items-center justify-between rounded-lg border p-3"
 							>
-								<PenLine class="h-5 w-5 text-white" />
+								<span class="text-base-content/80 text-sm"
+									>Debate Team Captain — Led weekly practices, state finalist</span
+								>
+								<span class="text-base-content/60 text-xs">Leadership</span>
 							</div>
-							<h3 class="text-base-content text-lg font-bold">
-								Rich text editing + autosave
-							</h3>
+							<div
+								class="bg-base-100/80 border-base-300/60 flex items-center justify-between rounded-lg border p-3"
+							>
+								<span class="text-base-content/80 text-sm"
+									>Community Tutoring — 120+ hrs math tutoring for middle
+									schoolers</span
+								>
+								<span class="text-base-content/60 text-xs">Service</span>
+							</div>
+							<div
+								class="bg-base-100/80 border-base-300/60 flex items-center justify-between rounded-lg border p-3"
+							>
+								<span class="text-base-content/80 text-sm"
+									>App Dev Club — Built budgeting app, 500+ downloads</span
+								>
+								<span class="text-base-content/60 text-xs">STEM</span>
+							</div>
 						</div>
-						<p class="text-base-content/70">
-							Write comfortably with formatting that saves itself in real time.
-						</p>
-						<div class="mt-auto"></div>
 					</div>
 				</div>
 
-				<!-- 7) Version history & checkpoints (SMALL) -->
+				<!-- 6) Version history & checkpoints (SMALL, image) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
 					h-full flex-col overflow-hidden
@@ -947,14 +929,22 @@
 								Version history & checkpoints
 							</h3>
 						</div>
-						<p class="text-base-content/70">
+						<p class="text-base-content/70 mb-4">
 							Save milestones and restore any version with one click.
 						</p>
-						<div class="mt-auto"></div>
+						<div
+							class="from-base-200 to-base-300 mt-auto h-40 overflow-hidden rounded-2xl bg-gradient-to-br"
+						>
+							<img
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750286065/haloway_version_control_product_screenshot_fstidc.png"
+								alt="Version history preview"
+								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+							/>
+						</div>
 					</div>
 				</div>
 
-				<!-- 8) Built-in document chatbot (SMALL) -->
+				<!-- 7) Built-in document chatbot (SMALL, image) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
 					h-full flex-col overflow-hidden
@@ -985,19 +975,27 @@
 								Built-in document chatbot
 							</h3>
 						</div>
-						<p class="text-base-content/70">
+						<p class="text-base-content/70 mb-4">
 							Ask questions right in your document without switching tabs.
 						</p>
-						<div class="mt-auto"></div>
+						<div
+							class="from-base-200 to-base-300 mt-auto h-40 overflow-hidden rounded-2xl bg-gradient-to-br"
+						>
+							<img
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png"
+								alt="Document chatbot preview"
+								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+							/>
+						</div>
 					</div>
 				</div>
 
-				<!-- 9) Seamless export (MED) -->
+				<!-- 8) Seamless export (LARGE, NO image; spans 2 columns) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
 					h-full flex-col overflow-hidden
 					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-					duration-300 hover:-translate-y-2 hover:shadow-2xl"
+					duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
 				>
 					<div
 						class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
@@ -1009,7 +1007,7 @@
 							>
 								<ArrowUpRight class="h-6 w-6 text-white" />
 							</div>
-							<h3 class="text-base-content text-xl font-bold">
+							<h3 class="text-base-content text-xl font-bold md:text-2xl">
 								Seamless export
 							</h3>
 						</div>
@@ -1049,11 +1047,11 @@
 </Section.Root>
 
 <!-- Features Cloud Section -->
-<div class="bg-base-100 mx-auto max-w-7xl pb-16 sm:pb-20 lg:pb-24">
+<!-- <div class="bg-base-100 mx-auto max-w-7xl pb-16 sm:pb-20 lg:pb-24">
 	<Section.Root>
 		<div class="justify-around"></div>
 	</Section.Root>
-</div>
+</div> -->
 
 <!-- Ethical AI Section -->
 <Section.Root anchor="ethical-ai">
@@ -1331,7 +1329,11 @@
 			</div>
 
 			<h1 class="mb-6 text-4xl font-bold sm:mb-8 md:text-5xl lg:text-6xl">
-				Try {WebsiteName} for free today.
+				Try {WebsiteName}
+				<span
+					class="sm:decoration-6 underline decoration-color-info decoration-4 md:decoration-8 lg:decoration-[10px]"
+					>for free</span
+				> today.
 			</h1>
 
 			<p
