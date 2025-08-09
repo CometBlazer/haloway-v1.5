@@ -30,7 +30,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import SchoolDropdown from '$lib/components/Editor/SchoolDropdown.svelte';
-	import Banner from '$lib/components/Banner.svelte';
+	// import Banner from '$lib/components/Banner.svelte';
 
 	// Date picker components
 	import CalendarIcon from 'lucide-svelte/icons/calendar';
@@ -105,16 +105,16 @@
 
 <svelte:window on:keydown={handleKeydown} />
 
-<div class="lg:hidden">
+<!-- <div class="z-500 lg:hidden">
 	<Banner
 		text="For the best experience and access to all features, please use a desktop."
 		showBullets={true}
 	/>
-</div>
+</div> -->
 
 <div class="banner-offset flex min-h-screen w-full flex-col bg-muted/40">
 	<aside
-		class="fixed inset-y-0 left-0 !z-[60] hidden w-20 flex-col border-r bg-background sm:flex"
+		class="fixed inset-y-0 left-0 !z-[400] hidden w-20 flex-col border-r bg-background sm:flex"
 	>
 		<nav class="flex flex-col items-center gap-4 px-2 sm:py-5">
 			<a
@@ -201,7 +201,7 @@
 	</aside>
 	<div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-20">
 		<header
-			class="z-60 sticky top-0 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
+			class="sticky top-0 !z-[50] flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
 		>
 			<Sheet.Root>
 				<Sheet.Trigger asChild let:builder>
