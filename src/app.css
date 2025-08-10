@@ -172,7 +172,9 @@
 	} */
 
 	/* Only apply to non-prose paragraphs */
-	:not(.prose) p {
+	:not(.prose) p,
+	:not(.prose) ul,
+	:not(.prose) ol {
 		font-family:
 			'Inter',
 			ui-sans-serif,

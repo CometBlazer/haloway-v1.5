@@ -67,6 +67,116 @@ export interface Database {
 					},
 				];
 			};
+			backgrounds: {
+				Row: {
+					id: string;
+					user_id: string;
+					region_of_living: string | null;
+					first_generation: boolean;
+					low_income: boolean;
+					other_hooks: string | null;
+					intended_major: string | null;
+					class_rank: string | null;
+					ap_ib_college_classes: string | null;
+					gpa: string | null;
+					test_type: string | null;
+					sat: string | null;
+					act: string | null;
+					challenges: string | null;
+					identity_background: string | null;
+					values_beliefs: string | null;
+					personal_qualities: string | null;
+					created_at: Date;
+					updated_at: Date;
+				};
+				Insert: {
+					id?: string;
+					user_id: string;
+					region_of_living?: string | null;
+					first_generation?: boolean;
+					low_income?: boolean;
+					other_hooks?: string | null;
+					intended_major?: string | null;
+					class_rank?: string | null;
+					ap_ib_college_classes?: string | null;
+					gpa?: string | null;
+					test_type?: string | null;
+					sat?: string | null;
+					act?: string | null;
+					challenges?: string | null;
+					identity_background?: string | null;
+					values_beliefs?: string | null;
+					personal_qualities?: string | null;
+					created_at?: Date;
+					updated_at?: Date;
+				};
+				Update: {
+					id?: string;
+					user_id?: string;
+					region_of_living?: string | null;
+					first_generation?: boolean;
+					low_income?: boolean;
+					other_hooks?: string | null;
+					intended_major?: string | null;
+					class_rank?: string | null;
+					ap_ib_college_classes?: string | null;
+					gpa?: string | null;
+					test_type?: string | null;
+					sat?: string | null;
+					act?: string | null;
+					challenges?: string | null;
+					identity_background?: string | null;
+					values_beliefs?: string | null;
+					personal_qualities?: string | null;
+					created_at?: Date;
+					updated_at?: Date;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'backgrounds_user_id_fkey';
+						columns: ['user_id'];
+						referencedRelation: 'users';
+						referencedColumns: ['id'];
+					},
+				];
+			};
+			consultant_chat: {
+				Row: {
+					id: string;
+					title: string;
+					user_id: string;
+					visibility: string;
+					created_at: Date;
+					updated_at: Date;
+					message_history: Json | null;
+				};
+				Insert: {
+					id: string;
+					title?: string | null;
+					user_id: string;
+					visibility?: string | null;
+					created_at?: Date | null;
+					updated_at?: Date | null;
+					message_history?: Json | null;
+				};
+				Update: {
+					id?: string;
+					title?: string | null;
+					user_id?: string;
+					visibility?: string | null;
+					created_at?: Date | null;
+					updated_at?: Date | null;
+					message_history?: Json | null;
+				};
+				Relationships: [
+					{
+						foreignKeyName: 'consultant_chat_user_id_fkey';
+						columns: ['user_id'];
+						referencedRelation: 'users';
+						referencedColumns: ['id'];
+					},
+				];
+			};
 			contact_messages: {
 				Row: {
 					id: string;
@@ -93,39 +203,6 @@ export interface Database {
 					subject?: string | null;
 					body?: string | null;
 					created_at?: Date | null;
-					updated_at?: Date | null;
-				};
-				Relationships: [];
-			};
-			contact_requests: {
-				Row: {
-					id: string;
-					first_name: string | null;
-					last_name: string | null;
-					email: string | null;
-					phone: string | null;
-					company_name: string | null;
-					message_body: string | null;
-					updated_at: Date | null;
-				};
-				Insert: {
-					id?: string;
-					first_name?: string | null;
-					last_name?: string | null;
-					email?: string | null;
-					phone?: string | null;
-					company_name?: string | null;
-					message_body?: string | null;
-					updated_at?: Date | null;
-				};
-				Update: {
-					id?: string;
-					first_name?: string | null;
-					last_name?: string | null;
-					email?: string | null;
-					phone?: string | null;
-					company_name?: string | null;
-					message_body?: string | null;
 					updated_at?: Date | null;
 				};
 				Relationships: [];
@@ -441,12 +518,16 @@ export interface Database {
 }
 
 // Additional type helpers for your components
+export type ConsultantChat =
+	Database['public']['Tables']['consultant_chat']['Row'];
 export type DocumentVersion =
 	Database['public']['Tables']['document_versions']['Row'];
 export type Document = Database['public']['Tables']['documents']['Row'];
 export type Tag = Database['public']['Tables']['tags']['Row'];
 export type School = Database['public']['Tables']['schools']['Row'];
 export type Activity = Database['public']['Tables']['activities']['Row'];
+export type Background = Database['public']['Tables']['backgrounds']['Row'];
+
 // Updated Document type with chatbot_messages
 export type DocumentWithChat =
 	Database['public']['Tables']['documents']['Row'] & {
@@ -472,6 +553,23 @@ export interface ChatMessage {
 	timestamp: string;
 }
 
+// Consultant message parts interface
+export interface ConsultantMessagePart {
+	type: 'text' | 'image' | 'file';
+	text?: string;
+	url?: string;
+	filename?: string;
+}
+
+// Consultant message attachment interface
+export interface ConsultantMessageAttachment {
+	id: string;
+	name: string;
+	type: string;
+	size: number;
+	url: string;
+}
+
 // Type for version data as used in your components - updated to include updated_at, removed word_count
 export interface ComponentVersion {
 	id: string;
@@ -482,4 +580,23 @@ export interface ComponentVersion {
 	document_id?: string | null;
 	content?: Json;
 	latest_ai_response?: string | null; // Added latest_ai_response field
+}
+
+// Background form data interface for easier component usage
+export interface BackgroundFormData {
+	regionOfLiving: string;
+	firstGeneration: boolean;
+	lowIncome: boolean;
+	otherHooks: string;
+	intendedMajor: string;
+	classRank: string;
+	apIbCollegeClasses: string;
+	gpa: string;
+	testType: string;
+	sat: string;
+	act: string;
+	challenges: string;
+	identityBackground: string;
+	valuesBeliefs: string;
+	personalQualities: string;
 }

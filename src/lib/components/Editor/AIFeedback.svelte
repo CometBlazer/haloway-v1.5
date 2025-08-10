@@ -300,7 +300,7 @@
 		loading = true;
 
 		try {
-			const res = await fetch('/api/feedback', {
+			const res = await fetch('/api/essay-feedback', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -425,7 +425,7 @@
 					<span class="mr-2">Analyzing...</span>
 					<RefreshCw class="animate-spin" size={16} />
 				{:else}
-					<span class="mr-2">Get Feedback</span>
+					<span class="mr-2">Submit for Review</span>
 					<Sparkles size={16} />
 				{/if}
 			</Button>
@@ -489,6 +489,9 @@
 				<div class="loading-text">
 					<h3>Analyzing your essay...</h3>
 					<p>Looking at your structure, writing style, and content...</p>
+					<p class="pt-2 text-xs text-muted">
+						This may take a few seconds, please be patient
+					</p>
 				</div>
 			</div>
 		{:else if !hasContent}
@@ -498,7 +501,7 @@
 				<p class="text-left">
 					1. Copy and paste your existing essay into the editor or start writing
 					your draft above. <br />
-					2. Once you have some content, click "Get Feedback" to receive detailed
+					2. Once you have some content, click "Submit for Review" to receive detailed
 					analysis of your writing structure, style, and clarity.
 				</p>
 			</div>
@@ -507,7 +510,7 @@
 				<Sparkles class="primary-color" size={48} />
 				<h3>Get Clara's AI feedback on your essay</h3>
 				<p class="text-center">
-					Click "Get Feedback" above to receive detailed analysis with
+					Click "Submit for Review" above to receive detailed analysis with
 					personalized suggestions for improvement.
 				</p>
 			</div>

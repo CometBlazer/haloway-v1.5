@@ -243,7 +243,7 @@
 					if (sortableContainer) {
 						sortableContainer.classList.add('dragging-active');
 					}
-					console.log('Drag started');
+					// console.log('Drag started');
 				},
 				onEnd: (evt) => {
 					document.body.classList.remove('is-dragging');
@@ -254,7 +254,7 @@
 						}
 					}, 50);
 
-					console.log('Drag ended', evt);
+					// console.log('Drag ended', evt);
 
 					const { oldIndex, newIndex } = evt;
 

@@ -1,4 +1,4 @@
-// src/routes/api/feedback/+server.ts - SERVER-ONLY CREDENTIALS
+// src/routes/api/essay-feedback/+server.ts - SERVER-ONLY CREDENTIALS
 import { json, error } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 

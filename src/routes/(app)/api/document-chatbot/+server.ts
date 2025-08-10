@@ -1,8 +1,9 @@
-// src/routes/api/ai-chatbot/+server.ts
+// src/routes/api/document-chatbot/+server.ts
 import { streamText } from 'ai';
 import { vertexProvider } from '$lib/utils/chatbot-vertex-provider';
 import type { RequestHandler } from './$types.js';
 import type { ChatMessage, UserProfile } from '$lib/types/ai-chatbot.ts';
+import type { Activity, Background } from '../../../../DatabaseDefinitions.js';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	try {
@@ -79,6 +80,31 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			});
 		}
 
+		// Get user activities (ordered by sort_order)
+		const { data: userActivities, error: activitiesError } =
+			await locals.supabase
+				.from('activities')
+				.select('*')
+				.eq('user_id', userId)
+				.order('sort_order', { ascending: true });
+
+		if (activitiesError) {
+			console.error('Error fetching user activities:', activitiesError);
+		}
+
+		// Get user background
+		const { data: userBackground, error: backgroundError } =
+			await locals.supabase
+				.from('backgrounds')
+				.select('*')
+				.eq('user_id', userId)
+				.single();
+
+		if (backgroundError && backgroundError.code !== 'PGRST116') {
+			// PGRST116 is "not found"
+			console.error('Error fetching user background:', backgroundError);
+		}
+
 		// Create user message
 		const userMsg: ChatMessage = {
 			id: `user-${Date.now()}`,
@@ -101,6 +127,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			wordCount,
 			essayContent,
 			currentFeedback,
+			userActivities: userActivities || [],
+			userBackground: userBackground || undefined,
 		});
 
 		// Build conversation history for context
@@ -186,6 +214,8 @@ function buildSystemPrompt({
 	wordCount,
 	essayContent,
 	currentFeedback,
+	userActivities,
+	userBackground,
 }: {
 	userProfile: UserProfile;
 	documentTitle: string;
@@ -196,13 +226,47 @@ function buildSystemPrompt({
 	wordCount: number;
 	essayContent: string;
 	currentFeedback?: string;
+	userActivities?: Activity[];
+	userBackground?: Background;
 }): string {
 	const feedbackSection =
 		currentFeedback && currentFeedback.trim()
 			? `\n\nRECENT AI FEEDBACK:\nThe student has received the following feedback on their current essay:\n${currentFeedback}\n\nYou can reference this feedback when helping the student. If they ask about implementing suggestions from the feedback, help them do so.`
 			: '';
 
-	return `You are Clara, an expert essay writing assistant and tutor. You help students improve their writing by following their specific requests and providing actionable assistance.
+	// Build activities section
+	const activitiesSection =
+		userActivities && userActivities.length > 0
+			? `\n\nSTUDENT EXTRACURRICULAR ACTIVITIES:\n${userActivities
+					.map(
+						(activity, index) =>
+							`${index + 1}. ${activity.activity_type}${activity.organization_name ? ` - ${activity.organization_name}` : ''}
+   Position: ${activity.position_description || 'Not specified'}
+   Description: ${activity.activity_description || 'Not specified'}
+   Time Commitment: ${activity.hours_per_week}hrs/week, ${activity.weeks_per_year} weeks/year
+   Grade Levels: ${Array.isArray(activity.participation_levels) ? activity.participation_levels.join(', ') : 'Not specified'}${activity.college_participation ? ' (continuing in college)' : ''}`,
+					)
+					.join('\n\n')}`
+			: '';
+
+	// Build background section
+	const backgroundSection = userBackground
+		? `\n\nSTUDENT BACKGROUND:\n- Region: ${userBackground.region_of_living || 'Not specified'}
+- First Generation College Student: ${userBackground.first_generation ? 'Yes' : 'No'}
+- Low Income Background: ${userBackground.low_income ? 'Yes' : 'No'}
+- Intended Major: ${userBackground.intended_major || 'Not specified'}
+- GPA: ${userBackground.gpa || 'Not specified'}
+- Test Scores: ${userBackground.test_type ? `${userBackground.test_type} - ${userBackground.sat || userBackground.act || 'Not specified'}` : 'Not specified'}
+- Class Rank: ${userBackground.class_rank || 'Not specified'}
+- AP/IB/College Classes: ${userBackground.ap_ib_college_classes || 'Not specified'}
+${userBackground.other_hooks ? `- Other Notable Background: ${userBackground.other_hooks}` : ''}
+${userBackground.challenges ? `- Challenges/Obstacles: ${userBackground.challenges}` : ''}
+${userBackground.identity_background ? `- Identity/Background: ${userBackground.identity_background}` : ''}
+${userBackground.values_beliefs ? `- Values/Beliefs: ${userBackground.values_beliefs}` : ''}
+${userBackground.personal_qualities ? `- Personal Qualities: ${userBackground.personal_qualities}` : ''}`
+		: '';
+
+	return `You are Clara, an expert essay writing assistant and tutor. You help students improve their writing by following their specific requests and providing actionable assistance. You are developed by Haloway. 
 
 STUDENT CONTEXT:
 - Name: ${userProfile.full_name || 'Student'}
@@ -218,10 +282,10 @@ ASSIGNMENT CONTEXT:
 - Current Word Count: ${wordCount}
 
 CURRENT ESSAY CONTENT:
-The student has written ${wordCount} words so far. The essay content is as follows: ${essayContent}${feedbackSection}
+The student has written ${wordCount} words so far. The essay content is as follows: ${essayContent}${feedbackSection}${activitiesSection}${backgroundSection}
 
 CORE INSTRUCTIONS:
-1. **Be obedient and action-oriented**: Do exactly what the student asks for. If they want feedback, give specific feedback. If they want grammar fixes, provide corrected text. If they want paragraph improvements, rewrite and enhance their paragraphs.
+1. **Be obedient, SUCCINCT, and action-oriented**: Do exactly what the student asks for. If they want feedback, give specific feedback. If they want grammar fixes, provide corrected text. If they want paragraph improvements, rewrite and enhance their paragraphs.
 
 2. **Follow specific requests**:
    - When asked for feedback: Give detailed, specific feedback on their current essay
@@ -233,7 +297,7 @@ CORE INSTRUCTIONS:
 
 3. **ONLY refuse complete ghostwriting**: If asked to write the entire essay from scratch, politely decline but offer to help create an outline, suggest key points, or help them develop their existing ideas into full paragraphs.
 
-4. **Reference their actual content**: Always work with what they've written. Quote specific parts of their essay when giving feedback or suggestions. If they copy pasted a specific paragraph or sentence inside the chat, work with that instead.
+4. **Reference their actual content AND background**: Always work with what they've written. Quote specific parts of their essay when giving feedback or suggestions. If they copy pasted a specific paragraph or sentence inside the chat, work with that instead. Use their extracurricular activities and background information to provide personalized suggestions and help them showcase their unique experiences.
 
 5. **Be direct and helpful**: Skip generic advice and give specific, actionable help. If they ask you to rewrite something, do it. If they ask for better word choices, suggest them.
 
@@ -241,7 +305,24 @@ CORE INSTRUCTIONS:
 
 7. **Consider context**: Keep the assignment prompt, word limit, and their academic goals in mind when helping.
 
-Remember: Your job is to help them improve THEIR writing through whatever assistance they specifically request. Be their obedient writing partner who makes their work better, not someone who writes for them from scratch.`;
+RESPONSE FORMAT RULES:
+- NEVER use markdown formatting (no **bold**, *italics*, or ## headers)
+- Use plain text only
+- For lists, use simple dashes like "- point one" or "- point two"
+- Be CONCISE for quick edits and rewrites - just provide the improved version without long explanations
+- For brainstorming, feedback, and open-ended questions, provide fuller responses
+- Match your response length to the task:
+  * Quick fixes (grammar, conciseness, word choice): Just give the corrected version
+  * Rewrites and improvements: Provide the improved text with minimal explanation
+  * Feedback and brainstorming: Give thorough, detailed responses
+
+EXAMPLES OF GOOD RESPONSES:
+For "make this more concise": Just provide the shorter version without explaining what you changed.
+For "fix the grammar": Just provide the corrected text.
+For "give me feedback": Provide detailed, specific feedback about their writing.
+For "help me brainstorm": Give multiple ideas and suggestions.
+
+Remember: Your job is to help them improve THEIR writing through whatever assistance they specifically request. Be their obedient writing partner who makes their work better, not someone who writes for them from scratch. Match your verbosity to their need - be brief for quick tasks, thorough for complex ones.`;
 }
 
 function buildConversationHistory(messages: ChatMessage[]): string {
