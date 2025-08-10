@@ -147,10 +147,10 @@
 					behavior: 'smooth',
 				});
 
-				console.log('Scrolled to feedback section');
+				// console.log('Scrolled to feedback section');
 				return true; // Success
 			} else {
-				console.log('Feedback element not found');
+				// console.log('Feedback element not found');
 			}
 			return false; // Failed
 		};
@@ -989,7 +989,7 @@
 			}, 30000);
 
 			const hash = window.location.hash;
-			console.log('Page mounted with hash:', hash);
+			// console.log('Page mounted with hash:', hash);
 
 			if (hash === '#feedback') {
 				// Wait a bit longer to ensure everything is loaded
@@ -1035,15 +1035,15 @@
 
 		if (shouldLoadContent) {
 			console.log('Loading content due to version/content change');
-			console.log(
-				'Version ID changed:',
-				data.currentVersion.id !== lastLoadedVersionId,
-			);
-			console.log(
-				'Content changed:',
-				JSON.stringify(data.currentVersion.content) !==
-					JSON.stringify(lastLoadedVersionContent),
-			);
+			// console.log(
+			// 	'Version ID changed:',
+			// 	data.currentVersion.id !== lastLoadedVersionId,
+			// );
+			// console.log(
+			// 	'Content changed:',
+			// 	JSON.stringify(data.currentVersion.content) !==
+			// 		JSON.stringify(lastLoadedVersionContent),
+			// );
 
 			loadVersionContent();
 			lastLoadedVersionId = data.currentVersion.id;
@@ -1058,12 +1058,12 @@
 		editorReady &&
 		contentLoaded
 	) {
-		console.log(
-			'Hash changed to feedback, editor ready:',
-			editorReady,
-			'content loaded:',
-			contentLoaded,
-		);
+		// console.log(
+		// 	'Hash changed to feedback, editor ready:',
+		// 	editorReady,
+		// 	'content loaded:',
+		// 	contentLoaded,
+		// );
 		setTimeout(() => {
 			scrollToFeedback();
 		}, 100);

@@ -1,9 +1,9 @@
-// src/routes/api/ai-chatbot/+server.ts
+// src/routes/api/document-chatbot/+server.ts
 import { streamText } from 'ai';
 import { vertexProvider } from '$lib/utils/chatbot-vertex-provider';
 import type { RequestHandler } from './$types.js';
 import type { ChatMessage, UserProfile } from '$lib/types/ai-chatbot.ts';
-import type { Activity, Background } from '../../../../DatabaseDefinitions.ts';
+import type { Activity, Background } from '../../../../DatabaseDefinitions.js';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	try {
@@ -266,7 +266,7 @@ ${userBackground.values_beliefs ? `- Values/Beliefs: ${userBackground.values_bel
 ${userBackground.personal_qualities ? `- Personal Qualities: ${userBackground.personal_qualities}` : ''}`
 		: '';
 
-	return `You are Clara, an expert essay writing assistant and tutor. You help students improve their writing by following their specific requests and providing actionable assistance.
+	return `You are Clara, an expert essay writing assistant and tutor. You help students improve their writing by following their specific requests and providing actionable assistance. You are developed by Haloway. 
 
 STUDENT CONTEXT:
 - Name: ${userProfile.full_name || 'Student'}
@@ -285,7 +285,7 @@ CURRENT ESSAY CONTENT:
 The student has written ${wordCount} words so far. The essay content is as follows: ${essayContent}${feedbackSection}${activitiesSection}${backgroundSection}
 
 CORE INSTRUCTIONS:
-1. **Be obedient and action-oriented**: Do exactly what the student asks for. If they want feedback, give specific feedback. If they want grammar fixes, provide corrected text. If they want paragraph improvements, rewrite and enhance their paragraphs.
+1. **Be obedient, SUCCINCT, and action-oriented**: Do exactly what the student asks for. If they want feedback, give specific feedback. If they want grammar fixes, provide corrected text. If they want paragraph improvements, rewrite and enhance their paragraphs.
 
 2. **Follow specific requests**:
    - When asked for feedback: Give detailed, specific feedback on their current essay

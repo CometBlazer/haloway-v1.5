@@ -10,7 +10,7 @@
 		Trophy,
 		ExternalLink,
 		NotebookPen,
-		// GraduationCap,
+		GraduationCap,
 		Sparkles,
 	} from 'lucide-svelte';
 
@@ -30,7 +30,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import { Textarea } from '$lib/components/ui/textarea';
 	import SchoolDropdown from '$lib/components/Editor/SchoolDropdown.svelte';
-	import Banner from '$lib/components/Banner.svelte';
+	// import Banner from '$lib/components/Banner.svelte';
 
 	// Date picker components
 	import CalendarIcon from 'lucide-svelte/icons/calendar';
@@ -105,16 +105,16 @@
 
 <svelte:window on:keydown={handleKeydown} />
 
-<div class="lg:hidden">
+<!-- <div class="z-500 lg:hidden">
 	<Banner
 		text="For the best experience and access to all features, please use a desktop."
 		showBullets={true}
 	/>
-</div>
+</div> -->
 
 <div class="banner-offset flex min-h-screen w-full flex-col bg-muted/40">
 	<aside
-		class="fixed inset-y-0 left-0 !z-[60] hidden w-20 flex-col border-r bg-background sm:flex"
+		class="fixed inset-y-0 left-0 !z-[400] hidden w-20 flex-col border-r bg-background sm:flex"
 	>
 		<nav class="flex flex-col items-center gap-4 px-2 sm:py-5">
 			<a
@@ -124,7 +124,14 @@
 				<Logo />
 				<span class="text-xs font-medium text-muted-foreground">Home</span>
 			</a>
-
+			<NavLink
+				href="/dashboard"
+				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
+				activeClass="bg-accent text-accent-foreground"
+			>
+				<Home class="h-5 w-5 text-color-primary" />
+				<span class="text-center text-xs font-medium">Dashboard</span>
+			</NavLink>
 			<!-- Create Essay Button -->
 			<button
 				on:click={handleCreateEssay}
@@ -134,21 +141,13 @@
 				<span class="text-center text-xs font-medium">Create Essay</span>
 			</button>
 			<NavLink
-				href="/dashboard"
-				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
-				activeClass="bg-accent text-accent-foreground"
-			>
-				<Home class="h-5 w-5" />
-				<span class="text-center text-xs font-medium">Dashboard</span>
-			</NavLink>
-			<!-- <NavLink
-				href="/extracurricular-organizer"
+				href="/consultant"
 				class="flex flex-col items-center justify-center gap-1 rounded-lg px-2 py-2 text-muted-foreground transition-colors hover:text-foreground"
 				activeClass="bg-accent text-accent-foreground"
 			>
 				<GraduationCap class="h-5 w-5" />
 				<span class="text-center text-xs font-medium">College Consultant</span>
-			</NavLink> -->
+			</NavLink>
 
 			<NavLink
 				href="/extracurricular-organizer"
@@ -202,7 +201,7 @@
 	</aside>
 	<div class="flex flex-col sm:gap-4 sm:py-4 sm:pl-20">
 		<header
-			class="z-60 sticky top-0 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
+			class="sticky top-0 !z-[50] flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
 		>
 			<Sheet.Root>
 				<Sheet.Trigger asChild let:builder>
@@ -229,7 +228,7 @@
 							href="/dashboard"
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
 						>
-							<Home class="h-5 w-5" />
+							<Home class="h-5 w-5 text-color-primary" />
 							Dashboard
 						</a>
 
@@ -241,7 +240,13 @@
 							<CirclePlus class="h-5 w-5 text-color-primary" />
 							Create Essay
 						</button>
-
+						<a
+							href="/consultant"
+							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+						>
+							<GraduationCap class="h-5 w-5" />
+							College Consultant
+						</a>
 						<a
 							href="/extracurricular-organizer"
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
@@ -256,14 +261,6 @@
 							<NotebookPen class="h-5 w-5" />
 							Background
 						</a>
-						<!-- <a
-							href="https://www.commonapp.org/blog/announcing-2025-2026-common-app-essay-prompts"
-							target="_blank"
-							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-						>
-							<GraduationCap class="h-5 w-5" />
-							College Consultant
-						</a> -->
 						<a
 							href="/essayfeedback"
 							class="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"

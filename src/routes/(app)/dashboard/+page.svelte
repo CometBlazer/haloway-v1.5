@@ -213,7 +213,9 @@
 	<!-- Header -->
 	<div class="dashboard-header mx-auto mb-10">
 		<div class="header-content">
-			<h1 class="header-title">All Essays</h1>
+			<h1 class="mb-4 text-3xl font-bold text-foreground md:text-5xl">
+				All Essays
+			</h1>
 			<p class="header-subtitle">
 				{documents.length} essay{documents.length !== 1 ? 's' : ''} total
 			</p>
@@ -372,14 +374,6 @@
 		align-items: center;
 	}
 
-	.header-title {
-		font-size: 3rem;
-		font-weight: 600;
-		line-height: 1.2;
-		color: hsl(var(--color-base-content));
-		letter-spacing: -0.025em;
-	}
-
 	.header-subtitle {
 		font-size: 1.125rem;
 		color: hsl(var(--color-neutral-content));
@@ -484,10 +478,6 @@
 	@media (max-width: 640px) {
 		.dashboard-container {
 			padding: 1rem;
-		}
-
-		.header-title {
-			font-size: 2rem;
 		}
 	}
 

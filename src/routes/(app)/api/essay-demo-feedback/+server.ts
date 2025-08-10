@@ -1,4 +1,4 @@
-// src/routes/api/demo-feedback/+server.ts - WORKING VERSION, NO GEMINI CALLS
+// src/routes/api/essay-demo-feedback/+server.ts - WORKING VERSION, NO GEMINI CALLS
 import { json, error } from '@sveltejs/kit';
 
 function wordCount(text: string): number {

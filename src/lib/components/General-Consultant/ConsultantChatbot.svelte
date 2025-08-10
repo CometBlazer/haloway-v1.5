@@ -1,30 +1,16 @@
-<!-- src/lib/components/Editor/Chatbot/Chatbot.svelte -->
+<!-- src/lib/components/General-Consultant/ConsultantChatbot.svelte -->
 <script lang="ts">
 	import { MoreVertical, Copy, Check, Sparkles } from 'lucide-svelte';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import ThinkingIndicator from './ThinkingIndicator.svelte';
-	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import type { ChatMessage, Message } from '$lib/types/ai-chatbot.ts';
-	import { toastStore } from '$lib/stores/toast';
 
 	export let width: string = '100%';
 	export let height: string = '400px';
-
-	// Context props - passed from parent page
-	export let getCurrentContent: (() => string) | undefined = undefined;
-	export let getCurrentFeedback: (() => string) | undefined = undefined;
-	export let essayContent: string = '';
-	export let documentTitle: string = '';
-	export let documentPrompt: string = '';
-	export let wordCount: number = 0;
-	export let wordCountLimit: number = 250;
-	export let school: string = '';
-	export let dueDate: string = '';
-	export let status: string = '';
 
 	export let initialMessages: ChatMessage[] = [];
 
@@ -45,12 +31,13 @@
 	let isLoading: boolean = false;
 	let showClearChatModal: boolean = false;
 
-	// Configurable suggestions - adjust this JSON as needed
 	const suggestions = [
-		'Help me brainstorm ideas for this prompt',
-		'Generate a first draft outline for my essay',
-		'Fix all my grammar and spelling mistakes',
-		'Help me shorten this sentence:',
+		'Chance me into the T20s and give me tips on how I can improve my current application.',
+		'What extracurriculars should I pursue?',
+		'What classes should I take based on my major and profile?',
+		'Help me decide who to ask for letters of recommendation.',
+		'Draft me a cold email to a professor asking for research opportunities.',
+		'Help me write a letter of recommendation request email and provide tips on how to approach my teacher.',
 	];
 
 	onMount(() => {
@@ -98,14 +85,9 @@
 
 	async function loadInitialMessages() {
 		try {
-			console.log(
-				'Loading initial messages for document:',
-				$page.params.documentId,
-			);
+			console.log('Loading initial messages for user');
 
-			const response = await fetch(
-				`/api/document-messages-get/${$page.params.documentId}`,
-			);
+			const response = await fetch(`/api/consultant-messages-get`);
 
 			if (response.ok) {
 				const result = await response.json();
@@ -146,27 +128,6 @@
 				scrollToBottom();
 			}
 		}
-	}
-
-	async function getCurrentEssayContent(): Promise<string> {
-		// Try the callback first
-		if (getCurrentContent) {
-			try {
-				const currentText = getCurrentContent();
-				console.log(
-					'Got current content from callback:',
-					currentText.length,
-					'characters',
-				);
-				return currentText;
-			} catch (error) {
-				console.error('Failed to get content from callback:', error);
-			}
-		}
-
-		// Fallback to the prop
-		console.log('Using fallback essayContent prop');
-		return essayContent || '';
 	}
 
 	// Convert messages to the format expected by the server
@@ -210,7 +171,7 @@
 			console.log('Sending message to API...');
 
 			// Send to streaming API route
-			const response = await fetch('/api/document-chatbot', {
+			const response = await fetch('/api/consultant-chatbot', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -218,17 +179,6 @@
 				body: JSON.stringify({
 					message: userMessage,
 					currentMessages: messagesToServerFormat().slice(0, -1), // Exclude user message since it's already in the array
-					documentId: $page.params.documentId,
-					versionId: $page.params.versionId,
-					essayContent: await getCurrentEssayContent(),
-					currentFeedback: getCurrentFeedback ? getCurrentFeedback() : '',
-					documentTitle,
-					documentPrompt,
-					wordCount,
-					wordCountLimit,
-					school,
-					dueDate,
-					status,
 				}),
 			});
 
@@ -403,9 +353,7 @@
 		try {
 			console.log('Fetching latest messages from database...');
 
-			const response = await fetch(
-				`/api/document-messages-get/${$page.params.documentId}`,
-			);
+			const response = await fetch(`/api/consultant-messages-get`);
 
 			if (response.ok) {
 				const result = await response.json();
@@ -582,19 +530,14 @@
 
 		// Clear messages from the database
 		try {
-			const response = await fetch(
-				`/api/document-messages-get/${$page.params.documentId}`,
-				{
-					method: 'DELETE',
-				},
-			);
+			const response = await fetch('/api/consultant-chatbot-clear', {
+				method: 'DELETE',
+			});
 
 			if (!response.ok) {
 				console.error('Failed to clear messages from database');
-				toastStore.show('Failed to clear messages', 'error');
 				// Could show a toast notification here if desired
 			} else {
-				toastStore.show('Successfully cleared messages', 'success');
 				console.log('Successfully cleared messages from database');
 			}
 		} catch (error) {
@@ -655,7 +598,7 @@
 		class="flex items-center justify-between rounded-t-xl border-b bg-muted/50 p-4"
 	>
 		<div class="flex items-center space-x-3">
-			<h3 class="font-semibold text-foreground">Clara, Essay Assistant</h3>
+			<h3 class="font-semibold text-foreground">Chloe, College Consultant</h3>
 			<div class="flex items-center space-x-2">
 				<div class="h-2 w-2 rounded-full bg-green-500"></div>
 				<span class="text-sm text-muted-foreground">
@@ -699,12 +642,12 @@
 			<div class="py-6 text-center">
 				<div class="mb-4 flex justify-center">
 					<div
-						class="flex h-20 w-20 items-center justify-center rounded-full bg-primary"
+						class="flex h-20 w-20 items-center justify-center rounded-full bg-primary md:h-28 md:w-28"
 					>
-						<Avatar.Root class="h-24 w-24">
+						<Avatar.Root class="h-24 w-24 md:h-32 md:w-32">
 							<Avatar.Image
-								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png"
-								alt="Clara"
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754688613/Chloe-headshot-2_fggiag.png"
+								alt="Chloe"
 							/>
 							<Avatar.Fallback>
 								<Sparkles class="h-10 w-10 text-primary" />
@@ -713,27 +656,25 @@
 					</div>
 				</div>
 				<div class="space-y-2 text-foreground">
-					<h4 class="text-xl font-semibold">Hi! I'm Clara 👋</h4>
+					<h4 class="text-2xl font-semibold">Hi! I'm Chloe 👋</h4>
 					<p class="text-sm leading-relaxed text-muted-foreground">
-						I can see your essay and help you improve it! Select one of the
-						suggestions below or ask me anything about your essay. Type away!
+						I'm your college admissions consultant! I can help with application
+						strategy, essay brainstorming, school selection, and all aspects of
+						the college process.
 					</p>
 					<p class="mt-3 text-xs text-muted-foreground">
-						I'm your personal essay reviewer and brainstorming assistant! I can
-						help you with revisions, feedback, and generating first drafts for
-						your writing. For more in-depth essay coaching, ask <a
-							href="https://dan.haloway.co"
-							target="_blank"
-							class="font-medium underline hover:text-foreground"
-							>Dan the essay coach</a
-						>.
-					</p>
-					<p class="mt-3 text-xs text-muted-foreground">
-						Fill out <a
+						Select one of the suggestions below or ask me anything! For best
+						results, please fill out <a
 							href="/background"
 							class="font-medium underline hover:text-foreground"
-							>the background form</a
-						> so I can help you brainstorm ideas and provide personalized feedback!
+							>your background information</a
+						>
+						and your
+						<a
+							href="/extracurricular-organizer"
+							class="font-medium underline hover:text-foreground"
+							>activities list</a
+						>.
 					</p>
 				</div>
 			</div>
@@ -753,15 +694,16 @@
 							>
 								<Avatar.Root>
 									<Avatar.Image
-										src="https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png"
-										alt="Clara"
+										src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754688613/Chloe-headshot-2_fggiag.png"
+										alt="Chloe"
 									/>
-									<Avatar.Fallback>
-										<Sparkles class="h-4 w-4 text-primary" />
-									</Avatar.Fallback>
+									<Avatar.Fallback
+										><Sparkles class="h-4 w-4 text-primary" /></Avatar.Fallback
+									>
 								</Avatar.Root>
 							</div>
 						{/if}
+
 						<!-- Main message -->
 						<div class="relative">
 							<div
@@ -820,8 +762,8 @@
 					>
 						<Avatar.Root>
 							<Avatar.Image
-								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png"
-								alt="Clara"
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754688613/Chloe-headshot-2_fggiag.png"
+								alt="Chloe"
 							/>
 							<Avatar.Fallback
 								><Sparkles class="h-4 w-4 text-primary" /></Avatar.Fallback
@@ -867,7 +809,7 @@
 				on:focus={handleInputFocus}
 				on:blur={handleInputBlur}
 				on:input={handleInputChange}
-				placeholder="Ask me anything about your essay..."
+				placeholder="Ask me anything..."
 				rows="1"
 				disabled={isLoading}
 				class="flex-1 resize-none overflow-hidden rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
@@ -887,13 +829,9 @@
 				{/if}
 			</button>
 		</div>
-
-		<!-- Context indicator -->
-		{#if documentTitle}
-			<div class="mt-2 text-xs text-muted-foreground">
-				→ I can see your essay "{documentTitle}" ({wordCount}/{wordCountLimit} words)
-			</div>
-		{/if}
+		<!-- <div class="mt-2 text-xs text-muted-foreground">
+			→ I can see your profile, background, and activities
+		</div> -->
 	</div>
 </div>
 
@@ -979,16 +917,5 @@
 			transform: translateY(0);
 			opacity: 1;
 		}
-	}
-
-	/* Loading spinner animation */
-	@keyframes spin {
-		to {
-			transform: rotate(360deg);
-		}
-	}
-
-	.animate-spin {
-		animation: spin 1s linear infinite;
 	}
 </style>

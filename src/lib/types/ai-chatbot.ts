@@ -6,6 +6,14 @@ export interface ChatMessage {
 	timestamp: string;
 }
 
+export interface Message {
+	id: string;
+	text: string;
+	sender: 'user' | 'ai';
+	timestamp: string;
+	isStreaming?: boolean;
+}
+
 export interface ChatContext {
 	// Document context
 	documentId: string;
@@ -32,4 +40,14 @@ export interface UserProfile {
 	full_name: string | null;
 	graduation_year: number | null;
 	dream_school: string | null;
+}
+
+// User Document type for consultant chatbot (metadata only)
+export interface UserDocument {
+	title: string | null;
+	prompt: string | null;
+	school: string;
+	status: string | null;
+	due_date: Date | null;
+	word_count_limit: number | null;
 }

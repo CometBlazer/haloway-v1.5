@@ -341,7 +341,7 @@
 			Finish your essays <span
 				class="bg-gradient-to-r from-color-primary to-color-accent bg-clip-text text-transparent"
 				><span
-				class="underline decoration-color-secondary decoration-4 sm:decoration-6 md:decoration-8 lg:decoration-[10px]"
+				class="underline decoration-color-primary decoration-4 sm:decoration-6 md:decoration-8 lg:decoration-[10px]"
 				>faster</span
 				> with Haloway.</span
 			>
@@ -730,13 +730,13 @@
 					class="mt-4 bg-gradient-to-r from-color-primary to-color-accent bg-clip-text pb-2 text-4xl font-bold text-transparent sm:text-5xl"
 				>
 					Writing college essays is <span
-						class="sm:decoration-5 underline decoration-color-secondary decoration-4 lg:decoration-[8px]"
+						class="sm:decoration-5 underline decoration-color-primary decoration-4 lg:decoration-[8px]"
 						>stressful</span
 					>.
 				</h1>
 				<h2 class="mt-4 pb-2 text-4xl font-bold text-white sm:text-5xl">
 					It doesn't also have to be <span
-						class="sm:decoration-5 underline decoration-color-secondary decoration-4 lg:decoration-[8px]"
+						class="sm:decoration-5 underline decoration-color-primary decoration-4 lg:decoration-[8px]"
 						>disorganized</span
 					>.
 				</h2>
