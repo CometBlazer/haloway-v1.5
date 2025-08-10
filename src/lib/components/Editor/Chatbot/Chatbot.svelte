@@ -8,7 +8,7 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import type { ChatMessage } from '$lib/types/ai-chatbot.ts';
+	import type { ChatMessage, Message } from '$lib/types/ai-chatbot.ts';
 
 	export let width: string = '100%';
 	export let height: string = '400px';
@@ -26,14 +26,6 @@
 	export let status: string = '';
 
 	export let initialMessages: ChatMessage[] = [];
-
-	interface Message {
-		id: string;
-		text: string;
-		sender: 'user' | 'ai';
-		timestamp: string;
-		isStreaming?: boolean;
-	}
 
 	let messages: Message[] = [];
 	let inputValue: string = '';

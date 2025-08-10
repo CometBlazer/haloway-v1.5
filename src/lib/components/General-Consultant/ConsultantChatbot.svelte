@@ -5,26 +5,32 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import ThinkingIndicator from './ThinkingIndicator.svelte';
+	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import type { ChatMessage, Message } from '$lib/types/ai-chatbot.ts';
 
 	export let width: string = '100%';
 	export let height: string = '400px';
 
-	interface Message {
-		id: number;
-		text: string;
-		sender: 'user' | 'ai';
-		thinking?: {
-			steps: string[];
-			currentStep: number;
-			isComplete: boolean;
-		};
-	}
+	// Context props - passed from parent page
+	// export let getCurrentContent: (() => string) | undefined = undefined;
+	// export let getCurrentFeedback: (() => string) | undefined = undefined;
+	// export let essayContent: string = '';
+	// export let documentTitle: string = '';
+	// export let documentPrompt: string = '';
+	// export let wordCount: number = 0;
+	// export let wordCountLimit: number = 250;
+	// export let school: string = '';
+	// export let dueDate: string = '';
+	// export let status: string = '';
+
+	export let initialMessages: ChatMessage[] = [];
 
 	let messages: Message[] = [];
 	let inputValue: string = '';
 	let messagesContainer: HTMLDivElement;
 	let showDropdown: boolean = false;
-	let copiedMessageId: number | null = null;
+	let copiedMessageId: string | null = null;
 	let isThinking: boolean = false;
 	let currentThinking: {
 		steps: string[];
@@ -34,9 +40,9 @@
 	let inputFocused: boolean = false;
 	let showSuggestions: boolean = false;
 	let textareaElement: HTMLTextAreaElement;
+	let isLoading: boolean = false;
 	let showClearChatModal: boolean = false;
 
-	// Configurable suggestions - adjust this JSON as needed
 	const suggestions = [
 		'Chance me into the T20s and give me tips on how I can improve my current application.',
 		'What extracurriculars should I pursue?',
@@ -46,38 +52,366 @@
 		'Help me write a letter of recommendation request email and provide tips on how to approach my teacher.',
 	];
 
-	function sendMessage(): void {
-		if (!inputValue.trim()) return;
+	onMount(() => {
+		loadInitialMessages();
+	});
 
-		// Add user message
-		messages = [
-			...messages,
-			{
-				id: Date.now(),
-				text: inputValue,
-				sender: 'user',
-			},
-		];
-
-		inputValue = '';
-		// Reset textarea height
-		if (textareaElement) {
-			textareaElement.style.height = 'auto';
-		}
-		hideSuggestions();
-
-		// Auto-scroll to bottom
+	function scrollToBottom(): void {
 		setTimeout(() => {
 			if (messagesContainer) {
 				messagesContainer.scrollTop = messagesContainer.scrollHeight;
 			}
 		}, 0);
+	}
 
-		// Start thinking process
+	// Format timestamp for display
+	function formatTime(timestamp: string): string {
+		const messageDate = new Date(timestamp);
+		const today = new Date();
+
+		// Check if the message is from today
+		const isToday = messageDate.toDateString() === today.toDateString();
+
+		if (isToday) {
+			// Just show time for today's messages
+			return messageDate.toLocaleTimeString([], {
+				hour: '2-digit',
+				minute: '2-digit',
+			});
+		} else {
+			// Show date and time for older messages
+			return (
+				messageDate.toLocaleDateString([], {
+					month: '2-digit',
+					day: '2-digit',
+					year: '2-digit',
+				}) +
+				' ' +
+				messageDate.toLocaleTimeString([], {
+					hour: '2-digit',
+					minute: '2-digit',
+				})
+			);
+		}
+	}
+
+	async function loadInitialMessages() {
+		try {
+			console.log('Loading initial messages for user');
+
+			const response = await fetch(`/api/get-consultant-messages`);
+
+			if (response.ok) {
+				const result = await response.json();
+				console.log('Initial API response:', result);
+
+				if (result.success && result.messages) {
+					console.log('Processing initial messages:', result.messages.length);
+
+					messages = result.messages.map((msg: ChatMessage) => ({
+						id: msg.id,
+						text: msg.content, // Make sure we're using content, not text
+						sender: msg.role === 'user' ? 'user' : 'ai',
+						timestamp: msg.timestamp,
+					}));
+
+					console.log('Mapped initial messages:', messages.length);
+					scrollToBottom();
+				}
+			} else if (response.status === 401) {
+				goto('/login');
+			} else {
+				console.error(
+					'Failed to load initial messages, status:',
+					response.status,
+				);
+			}
+		} catch (error) {
+			console.error('Failed to load initial messages:', error);
+			// Fall back to using initialMessages prop if API fails
+			if (initialMessages && initialMessages.length > 0) {
+				console.log('Using fallback initial messages:', initialMessages.length);
+				messages = initialMessages.map((msg: ChatMessage) => ({
+					id: msg.id,
+					text: msg.content, // Make sure we're using content
+					sender: msg.role === 'user' ? 'user' : 'ai',
+					timestamp: msg.timestamp,
+				}));
+				scrollToBottom();
+			}
+		}
+	}
+
+	// Convert messages to the format expected by the server
+	function messagesToServerFormat(): ChatMessage[] {
+		return messages.map((msg) => ({
+			id: msg.id,
+			role: msg.sender === 'user' ? 'user' : 'assistant',
+			content: msg.text,
+			timestamp: msg.timestamp,
+		}));
+	}
+
+	async function sendMessage(): Promise<void> {
+		if (!inputValue.trim() || isLoading) return;
+
+		const userMessage = inputValue.trim();
+
+		// Add user message immediately for better UX
+		const userMsg: Message = {
+			id: `user-${Date.now()}`,
+			text: userMessage,
+			sender: 'user',
+			timestamp: new Date().toISOString(),
+		};
+
+		messages = [...messages, userMsg];
+		inputValue = '';
+
+		// Reset textarea height
+		if (textareaElement) {
+			textareaElement.style.height = 'auto';
+		}
+		hideSuggestions();
+		scrollToBottom();
+
+		// Start thinking animation
 		startThinking();
+		isLoading = true;
+
+		try {
+			console.log('Sending message to API...');
+
+			// Send to streaming API route
+			const response = await fetch('/api/ai-chatbot', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					message: userMessage,
+					currentMessages: messagesToServerFormat().slice(0, -1), // Exclude user message since it's already in the array
+				}),
+			});
+
+			console.log('API response status:', response.status);
+
+			if (!response.ok) {
+				const errorText = await response.text();
+				console.error('API error response:', errorText);
+				throw new Error(`HTTP ${response.status}: ${errorText}`);
+			}
+
+			// Create streaming assistant message IMMEDIATELY when first content arrives
+			const assistantId = `assistant-${Date.now()}`;
+			let streamingMsg: Message;
+
+			// Handle streaming response
+			const reader = response.body?.getReader();
+			const decoder = new TextDecoder();
+			let accumulatedText = '';
+			let hasStartedStreaming = false;
+
+			console.log('Starting to read stream...');
+
+			if (reader) {
+				try {
+					// eslint-disable-next-line no-constant-condition
+					while (true) {
+						const { done, value } = await reader.read();
+
+						if (done) {
+							console.log(
+								'Stream completed, final text length:',
+								accumulatedText.length,
+							);
+							break;
+						}
+
+						const chunk = decoder.decode(value, { stream: true });
+						const lines = chunk.split('\n');
+
+						for (const line of lines) {
+							// FIXED: Parse the correct Vercel AI SDK format
+							if (line.startsWith('0:')) {
+								try {
+									// Extract the JSON string after "0:"
+									const jsonStr = line.slice(2); // Remove '0:' prefix
+
+									// Parse the JSON-encoded text chunk
+									const textChunk = JSON.parse(jsonStr);
+
+									console.log('Received text chunk:', textChunk);
+									accumulatedText += textChunk;
+
+									// PARALLEL TRANSITION: Create message AND complete thinking simultaneously
+									if (!hasStartedStreaming) {
+										console.log('Starting parallel transition...');
+
+										// Create streaming message first
+										streamingMsg = {
+											id: assistantId,
+											text: accumulatedText,
+											sender: 'ai',
+											timestamp: new Date().toISOString(),
+											isStreaming: true,
+										};
+
+										messages = [...messages, streamingMsg];
+
+										// Complete thinking immediately after (no delay)
+										completeThinking();
+
+										hasStartedStreaming = true;
+									} else {
+										// Update the streaming message
+										messages = messages.map((msg) =>
+											msg.id === assistantId
+												? { ...msg, text: accumulatedText }
+												: msg,
+										);
+									}
+									scrollToBottom();
+								} catch (error) {
+									console.error(
+										'Failed to parse text chunk:',
+										error,
+										'Line:',
+										line,
+									);
+								}
+							}
+							// Handle other stream events if needed
+							else if (line.startsWith('e:')) {
+								// End/finish event
+								console.log('Stream finish event:', line);
+							} else if (line.startsWith('d:')) {
+								// Data/metadata event
+								console.log('Stream data event:', line);
+							}
+						}
+					}
+				} catch (streamError) {
+					console.error('Stream reading error:', streamError);
+				}
+			}
+
+			// After streaming completes, reload messages from database
+			if (hasStartedStreaming && accumulatedText.length > 0) {
+				console.log('Streaming completed successfully, marking as complete');
+				// Mark streaming as complete
+				messages = messages.map((msg) =>
+					msg.id === assistantId ? { ...msg, isStreaming: false } : msg,
+				);
+
+				// Wait a moment for the database save to complete, then reload
+				setTimeout(async () => {
+					console.log('Reloading messages from database...');
+					await reloadMessagesFromDatabase();
+				}, 1000);
+			} else {
+				// Handle case where no streaming occurred
+				console.log('No streaming data received');
+				completeThinking();
+
+				// Wait and try to reload from database in case it was saved anyway
+				setTimeout(async () => {
+					console.log('Checking database for saved messages...');
+					await reloadMessagesFromDatabase();
+				}, 2000);
+			}
+
+			scrollToBottom();
+		} catch (error) {
+			console.error('Failed to send message:', error);
+
+			// Ensure thinking is completed on error
+			completeThinking();
+
+			// Remove the optimistic user message and show error
+			messages = messages.filter((m) => m.id !== userMsg.id);
+
+			// Check database before showing error - maybe it was saved despite the error
+			setTimeout(async () => {
+				const beforeErrorCount = messages.length;
+				await reloadMessagesFromDatabase();
+
+				// Only show error if no new messages were loaded
+				if (messages.length === beforeErrorCount) {
+					const errorMsg: Message = {
+						id: `error-${Date.now()}`,
+						text: 'Sorry, I encountered an error processing your message. Please try again.',
+						sender: 'ai',
+						timestamp: new Date().toISOString(),
+					};
+
+					messages = [...messages, errorMsg];
+					scrollToBottom();
+				}
+			}, 1000);
+		} finally {
+			console.log('Cleaning up - setting isLoading to false');
+			isLoading = false;
+			// Ensure thinking is stopped
+			if (isThinking) {
+				console.log('Force completing thinking in finally block');
+				completeThinking();
+			}
+		}
+	}
+
+	// Add this new function to reload messages from the database:
+	async function reloadMessagesFromDatabase(): Promise<void> {
+		try {
+			console.log('Fetching latest messages from database...');
+
+			const response = await fetch(`/api/get-consultant-messages`);
+
+			if (response.ok) {
+				const result = await response.json();
+				if (result.success && result.messages) {
+					console.log('Loaded messages from DB:', result.messages.length);
+
+					const loadedMessages = result.messages.map((msg: ChatMessage) => ({
+						id: msg.id,
+						text: msg.content,
+						sender: msg.role === 'user' ? 'user' : 'ai',
+						timestamp: msg.timestamp,
+					}));
+
+					// Only update if we got more messages than we currently have
+					if (loadedMessages.length > messages.length) {
+						console.log('Updating UI with database messages');
+						messages = loadedMessages;
+						scrollToBottom();
+					} else if (loadedMessages.length === messages.length) {
+						// Same count, but check if the last message content is different
+						const lastDbMessage = loadedMessages[loadedMessages.length - 1];
+						const lastUiMessage = messages[messages.length - 1];
+
+						if (
+							lastDbMessage &&
+							lastUiMessage &&
+							lastDbMessage.text !== lastUiMessage.text &&
+							lastDbMessage.sender === 'ai'
+						) {
+							console.log('Updating last message with database version');
+							messages = loadedMessages;
+							scrollToBottom();
+						}
+					}
+				}
+			} else {
+				console.error('Failed to reload messages, status:', response.status);
+			}
+		} catch (error) {
+			console.error('Error reloading messages from database:', error);
+		}
 	}
 
 	function startThinking(): void {
+		console.log('Starting thinking animation');
+
 		isThinking = true;
 		currentThinking = {
 			steps: [
@@ -95,48 +429,53 @@
 		const thinkingInterval = setInterval(() => {
 			if (
 				currentThinking &&
-				currentThinking.currentStep < currentThinking.steps.length - 1
+				currentThinking.currentStep < currentThinking.steps.length - 1 &&
+				isThinking // Add this check to prevent continuing after completion
 			) {
 				currentThinking.currentStep++;
 				currentThinking = { ...currentThinking };
+				console.log('Thinking step:', currentThinking.currentStep);
 			} else {
+				console.log('Thinking interval cleared');
 				clearInterval(thinkingInterval);
-				completeThinking();
+				// Don't auto-complete here - let the streaming logic handle it
 			}
-		}, 800);
+		}, 1500);
 	}
 
 	function completeThinking(): void {
+		console.log('completeThinking called, current state:', {
+			isThinking,
+			currentThinking,
+		});
+
+		// Immediate state clearing - no delays
+		isThinking = false;
+
 		if (currentThinking) {
 			currentThinking.isComplete = true;
+			// Trigger one final reactive update to show completion state briefly
 			currentThinking = { ...currentThinking };
 		}
 
-		// Add AI response after thinking is complete
+		debugState();
+
+		// Clear thinking state immediately (removed setTimeout)
+		// This creates a smooth transition to the streaming response
 		setTimeout(() => {
-			const aiResponse =
-				'This is a longer, more comprehensive response that demonstrates the improved AI capabilities. The system has carefully analyzed your input and is providing a detailed answer that shows the thinking process was worthwhile. This response includes multiple sentences and provides substantial value to continue the conversation effectively.';
-
-			messages = [
-				...messages,
-				{
-					id: Date.now() + 1,
-					text: aiResponse,
-					sender: 'ai',
-					thinking: currentThinking ? { ...currentThinking } : undefined,
-				},
-			];
-
-			isThinking = false;
 			currentThinking = null;
+			console.log('Thinking state cleared immediately');
+		}, 50); // Very brief 50ms to show completion state, then clear
+	}
 
-			// Auto-scroll to bottom
-			setTimeout(() => {
-				if (messagesContainer) {
-					messagesContainer.scrollTop = messagesContainer.scrollHeight;
-				}
-			}, 0);
-		}, 1000);
+	function debugState() {
+		console.log('Current component state:', {
+			isLoading,
+			isThinking,
+			currentThinking,
+			messagesCount: messages.length,
+			lastMessage: messages[messages.length - 1],
+		});
 	}
 
 	function handleKeyPress(event: KeyboardEvent): void {
@@ -193,11 +532,33 @@
 		showDropdown = false;
 	}
 
-	function confirmClearChat(): void {
-		messages = [];
+	async function confirmClearChat(): Promise<void> {
 		showClearChatModal = false;
+
+		// Clear local messages immediately for better UX
+		messages = [];
 		isThinking = false;
 		currentThinking = null;
+
+		// TODO: Also clear messages from database
+		// Also clear messages from the database
+		// try {
+		// 	const response = await fetch(
+		// 		`/api/ai-chatbot-messages/${$page.params.documentId}`,
+		// 		{
+		// 			method: 'DELETE',
+		// 		},
+		// 	);
+
+		// 	if (!response.ok) {
+		// 		console.error('Failed to clear messages from database');
+		// 		// Could show a toast notification here if desired
+		// 	} else {
+		// 		console.log('Successfully cleared messages from database');
+		// 	}
+		// } catch (error) {
+		// 	console.error('Error clearing messages from database:', error);
+		// }
 	}
 
 	function cancelClearChat(): void {
@@ -226,7 +587,7 @@
 		}
 	}
 
-	async function copyMessage(messageId: number, text: string): Promise<void> {
+	async function copyMessage(messageId: string, text: string): Promise<void> {
 		try {
 			await navigator.clipboard.writeText(text);
 			copiedMessageId = messageId;
@@ -355,17 +716,22 @@
 						</div>
 					{/if}
 
-					<div class="flex w-full flex-col space-y-2">
-						<!-- Main message -->
-						<div class="relative">
-							<div
-								class="relative {message.sender === 'user'
-									? 'ml-auto bg-primary text-primary-foreground'
-									: 'bg-muted text-foreground'} ml-2 rounded-lg px-3 py-2"
-							>
-								<p class="whitespace-pre-wrap pb-6 text-sm">{message.text}</p>
+					<!-- Main message -->
+					<div class="relative">
+						<div
+							class="relative {message.sender === 'user'
+								? 'ml-auto bg-primary text-primary-foreground'
+								: 'bg-muted text-foreground'} ml-1 mt-2 rounded-lg px-3 py-2"
+						>
+							<p class="whitespace-pre-wrap pb-6 text-sm">
+								{message.text}
+								{#if message.isStreaming}
+									<span class="animate-pulse">|</span>
+								{/if}
+							</p>
 
-								<!-- Always visible copy button -->
+							<!-- Copy button (hidden while streaming) -->
+							{#if !message.isStreaming}
 								<button
 									on:click={() => copyMessage(message.id, message.text)}
 									class="absolute bottom-2 right-2 rounded p-1 transition-all duration-200 {message.sender ===
@@ -380,17 +746,20 @@
 										<Copy class="h-3 w-3" />
 									{/if}
 								</button>
-							</div>
+							{/if}
 						</div>
 					</div>
 
-					<!-- {#if message.sender === 'user'}
+					<!-- Timestamp (hidden while streaming) -->
+					{#if !message.isStreaming}
 						<div
-							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-secondary"
+							class="text-xs text-muted-foreground {message.sender === 'user'
+								? 'text-right'
+								: 'text-left'}"
 						>
-							<User class="h-4 w-4 text-secondary-foreground" />
+							{formatTime(message.timestamp)}
 						</div>
-					{/if} -->
+					{/if}
 				</div>
 			</div>
 		{/each}

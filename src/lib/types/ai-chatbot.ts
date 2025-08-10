@@ -6,6 +6,14 @@ export interface ChatMessage {
 	timestamp: string;
 }
 
+export interface Message {
+	id: string;
+	text: string;
+	sender: 'user' | 'ai';
+	timestamp: string;
+	isStreaming?: boolean;
+}
+
 export interface ChatContext {
 	// Document context
 	documentId: string;
