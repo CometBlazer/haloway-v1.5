@@ -1,7 +1,6 @@
 <script lang="ts">
 	import * as Section from '$lib/components/landing/section';
 	import * as Card from '$lib/components/ui/card';
-	import { onMount } from 'svelte';
 	// import Features from './components/sections/features/features.svelte';
 	// import HeroSection from './components/sections/hero.svelte';
 	// import LogosCloud from './components/sections/logos-cloud.svelte';
@@ -292,17 +291,6 @@
 			googleDocs: false,
 		},
 	];
-
-	let currentRoleIndex = 0;
-	const roles = ['Consultant', 'Copilot', 'Coach', 'Mentor'];
-
-	onMount(() => {
-		const interval = setInterval(() => {
-			currentRoleIndex = (currentRoleIndex + 1) % roles.length;
-		}, 2000); // Change every 2 seconds
-
-		return () => clearInterval(interval);
-	});
 </script>
 
 <svelte:head>
@@ -315,95 +303,79 @@
 <Section.Root>
 	<!-- Hero Section with Aurora Background -->
 	<AuroraBackground showRadialGradient={true} className="mt-[-12rem]">
-		<div class="relative z-10 py-8 sm:py-12">
+		<div
+			class="relative z-10 flex flex-col items-center justify-center py-8 text-center sm:py-12"
+		>
 			<div
-				class="hero-content-fade mx-auto mb-4 mt-6 max-w-7xl px-4 sm:mb-6 sm:mt-10 md:mt-20"
+				class="hero-content-fade mb-4 mt-6 max-w-5xl px-4 sm:mb-6 sm:mt-10 md:mt-20"
 			>
-				<!-- Two Column Layout -->
-				<div
-					class="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12"
+				<a
+					href="/extracurricular-organizer"
+					class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-xs font-semibold text-primary sm:px-3 sm:text-base md:text-sm"
 				>
-					<!-- Left Column - Text Content -->
-					<div class="flex flex-col text-center lg:text-left">
-						<a
-							href="/extracurricular-organizer"
-							class="mb-6 inline-flex w-fit items-center gap-1 self-center rounded-full bg-primary/10 px-2 py-1 text-xs font-semibold text-primary sm:px-3 sm:text-base md:text-sm lg:self-start"
-						>
-							<div class="flex items-center gap-1"></div>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="14"
-								height="14"
-								class="sm:h-4 sm:w-4"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								><path
-									d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-								/><path d="M5 3v4" /><path d="M19 17v4" /><path
-									d="M3 5h4"
-								/><path d="M17 19h4" /></svg
-							>
-							New! Try Our Free Extracurriculars Organizer
-							<ArrowRight class="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
-						</a>
+					<div class="flex items-center gap-1"></div>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="14"
+						height="14"
+						class="sm:h-4 sm:w-4"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						><path
+							d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
+						/><path d="M5 3v4" /><path d="M19 17v4" /><path d="M3 5h4" /><path
+							d="M17 19h4"
+						/></svg
+					>
+					New! Try Our Free Extracurriculars Organizer
+					<ArrowRight class="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
+				</a>
 
-						<h1
-							class="mb-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
-						>
-							Haloway, your Ethical AI College <span
-								class="inline-block transition-all duration-500 ease-in-out"
-								style="min-width: 200px;"
-							>
-								{roles[currentRoleIndex]}
-							</span>.
-							<span
-								class="bg-gradient-to-r from-color-primary to-color-accent bg-clip-text text-transparent"
-								><span
-									class="sm:decoration-6 underline decoration-color-secondary decoration-4 md:decoration-8 lg:decoration-[10px]"
-									>faster</span
-								> with Haloway.</span
-							>
-						</h1>
+				<!-- <h1
+			class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold px-2 tracking-tight leading-tight"
+			>
+			Finish your essays <span
+				class="bg-gradient-to-r from-color-primary to-color-accent bg-clip-text text-transparent"
+				><span
+				class="underline decoration-color-primary decoration-4 sm:decoration-6 md:decoration-8 lg:decoration-[10px]"
+				>faster</span
+				> with Haloway.</span
+			>
+			</h1> -->
 
-						<h2 class="mb-8 text-lg sm:text-xl md:text-2xl lg:text-3xl">
-							Haloway: an easy-to-use writing platform to organize, write, and
-							perfect your college application essays.
-						</h2>
-
-						<div
-							class="flex flex-col justify-center gap-3 sm:flex-row sm:gap-4 lg:justify-start"
-						>
-							<a href="/register">
-								<div class="glow-container">
-									<button class="glow-button">
-										Start writing for free
-										<PenLine class="ml-1 h-4 w-4 sm:h-5 sm:w-5" />
-									</button>
-								</div>
-							</a>
+				<h2
+					class="mx-auto mb-8 mt-4 max-w-4xl px-2 text-xl sm:mb-10 sm:mt-6 sm:text-2xl md:mb-12 md:mt-8 md:text-4xl lg:text-5xl"
+				>
+					Haloway: an easy-to-use writing platform to organize, write, and
+					perfect your college application essays.
+				</h2>
+				<div
+					class="mt-6 flex flex-col flex-wrap place-content-center gap-3 sm:mt-8 sm:flex-row sm:gap-4"
+				>
+					<a href="/register">
+						<div class="glow-container">
+							<button class="glow-button">
+								Start writing for free
+								<PenLine class="ml-1 h-4 w-4 sm:h-5 sm:w-5" />
+							</button>
 						</div>
-					</div>
-
-					<!-- Right Column - Product Image -->
-					<div class="flex justify-center lg:justify-end">
-						<div class="relative w-full max-w-lg">
-							<!-- Add your product image here -->
-							<img
-								src="/your-product-image.png"
-								alt="Haloway College Application Platform"
-								class="h-auto w-full rounded-lg shadow-2xl"
-							/>
-							<!-- Optional: Add a subtle glow effect to match your design -->
-							<div
-								class="pointer-events-none absolute inset-0 rounded-lg bg-gradient-to-r from-color-primary/10 to-color-accent/10"
-							></div>
-						</div>
-					</div>
+					</a>
 				</div>
+				<!-- Add demo later -->
+				<!-- <h2
+			class="mt-6 sm:mt-8 text-lg sm:text-xl md:text-2xl xl:text-3xl flex flex-col sm:flex-row items-center justify-center gap-2 px-4"
+			>
+			<span>Or just</span>
+			<a href="/" target="_blank" class="link font-bold flex items-center"
+				>try out this demo <ExternalLink
+				class="ml-2 w-4 h-4 sm:w-5 sm:h-5"
+				/></a
+			>
+			</h2> -->
 			</div>
 		</div>
 	</AuroraBackground>
@@ -758,13 +730,13 @@
 					class="mt-4 bg-gradient-to-r from-color-primary to-color-accent bg-clip-text pb-2 text-4xl font-bold text-transparent sm:text-5xl"
 				>
 					Writing college essays is <span
-						class="sm:decoration-5 underline decoration-color-secondary decoration-4 lg:decoration-[8px]"
+						class="sm:decoration-5 underline decoration-color-primary decoration-4 lg:decoration-[8px]"
 						>stressful</span
 					>.
 				</h1>
 				<h2 class="mt-4 pb-2 text-4xl font-bold text-white sm:text-5xl">
 					It doesn't also have to be <span
-						class="sm:decoration-5 underline decoration-color-secondary decoration-4 lg:decoration-[8px]"
+						class="sm:decoration-5 underline decoration-color-primary decoration-4 lg:decoration-[8px]"
 						>disorganized</span
 					>.
 				</h2>
