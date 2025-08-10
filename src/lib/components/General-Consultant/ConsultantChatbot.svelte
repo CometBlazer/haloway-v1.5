@@ -12,18 +12,6 @@
 	export let width: string = '100%';
 	export let height: string = '400px';
 
-	// Context props - passed from parent page
-	// export let getCurrentContent: (() => string) | undefined = undefined;
-	// export let getCurrentFeedback: (() => string) | undefined = undefined;
-	// export let essayContent: string = '';
-	// export let documentTitle: string = '';
-	// export let documentPrompt: string = '';
-	// export let wordCount: number = 0;
-	// export let wordCountLimit: number = 250;
-	// export let school: string = '';
-	// export let dueDate: string = '';
-	// export let status: string = '';
-
 	export let initialMessages: ChatMessage[] = [];
 
 	let messages: Message[] = [];
@@ -866,8 +854,6 @@
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
-
-<p>I can see your profile, essays, background, and activities.</p>
 
 <style>
 	/* Textarea styling */
