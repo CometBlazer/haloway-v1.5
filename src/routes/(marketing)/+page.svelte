@@ -58,7 +58,7 @@
 			description:
 				'Quickly find answers to your admissions questions, from choosing extracurriculars and drafting cold emails to selecting recommendation letter teachers to comparing schools, all tailored to your situation.',
 			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png',
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754849197/Screenshot_2025-08-09_223100_zf4fim.png',
 			imageAlt: 'Haloway admissions Q&A interface',
 			ctaText: 'Ask a question',
 			ctaLink: '/schools/uncategorized/write',
@@ -68,7 +68,7 @@
 			description:
 				"Talk to an assistant that helps you organize your thoughts and turn ideas into a clear, actionable outline. Overcome writer's block and gain insight into exactly what admissions officers are looking for in each response.",
 			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png',
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754849197/Screenshot_2025-08-10_140350_ast3ne.png',
 			imageAlt: 'Haloway essay brainstorming interface',
 			ctaText: 'Start brainstorming',
 			ctaLink: '/dashboard',
@@ -76,9 +76,9 @@
 		{
 			title: 'Get realtime, actionable feedback on essays',
 			description:
-				'See exactly what to fix in your essays with clear suggestions on clarity, structure, and flow so every draft is stronger than the last. Get a fresh set of eyes on your essays with feedback that’s unique to your writing, not generic advice.',
+				"See exactly what to fix in your essays with clear suggestions on clarity, structure, and flow so every draft is stronger than the last. Get a fresh set of eyes on your essays with feedback that's unique to your writing, not generic advice.",
 			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750286065/haloway_version_control_product_screenshot_fstidc.png',
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754795402/Screenshot_2025-08-08_135459_kfgg2w.png',
 			imageAlt: 'Haloway essay feedback interface',
 			ctaText: "Get Clara's feedback",
 			ctaLink: '/schools/uncategorized/write',
@@ -184,12 +184,12 @@
 			id: 1,
 			title: 'Built-in document chatbot',
 			description:
-				'Ask questions right in your document without switching tabs.',
+				'Ask questions right in your document about your essay without switching tabs.',
 			icon: 'doc-chat' as IconType, // Add type assertion
 			gradient: 'from-color-info to-color-success',
 			backgroundGradient: 'from-color-info/5 to-color-success/5',
 			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png',
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754795402/Screenshot_2025-08-08_135334_pf2d0d.png',
 			imageAlt: 'Document chatbot preview',
 			size: 'medium' as const, // Add const assertion for literal types
 			row: 1,
@@ -198,12 +198,12 @@
 			id: 2,
 			title: 'Realtime, actionable feedback on essays',
 			description:
-				"See exactly what to fix — clarity, structure, and flow — with guidance that's unique to your writing.",
+				"See exactly what to fix, whether it's clarity, structure, and flow, with guidance that's unique to your writing.",
 			icon: 'check' as IconType,
 			gradient: 'from-color-accent to-color-warning',
 			backgroundGradient: 'from-color-accent/5 to-color-warning/5',
 			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754333956/Haloway_hero_image_1_gzcqwm.png',
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754795402/Screenshot_2025-08-08_135459_kfgg2w.png',
 			imageAlt: 'Realtime feedback preview',
 			size: 'large' as const,
 			row: 1,
@@ -217,7 +217,7 @@
 			gradient: 'from-color-primary to-color-accent',
 			backgroundGradient: 'from-color-primary/5 to-color-accent/5',
 			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png',
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754849195/Screenshot_2025-08-09_223339_ulryrj.png',
 			imageAlt: 'Admissions Q&A preview',
 			size: 'large' as const,
 			row: 2,
@@ -231,7 +231,7 @@
 			gradient: 'from-blue-500 to-cyan-500',
 			backgroundGradient: 'from-blue-500/5 to-cyan-500/5',
 			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png',
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754849542/Screenshot_2025-08-10_140524_c9nf98.png',
 			imageAlt: 'Rich text editor preview',
 			size: 'medium' as const,
 			row: 2,
@@ -312,19 +312,19 @@
 			exportFeatures: [
 				{ text: 'Character count preserved', color: 'bg-green-500' },
 				{ text: 'Formatting maintained', color: 'bg-blue-500' },
-				{ text: 'Instant download', color: 'bg-purple-500' },
+				{ text: 'Download from editor', color: 'bg-purple-500' },
 				{ text: 'Copy to clipboard', color: 'bg-orange-500' },
 			],
 		},
 		{
 			id: 8,
-			title: 'Version history & checkpoints',
+			title: 'Draft history & checkpoints',
 			description: 'Save milestones and restore any version with one click.',
 			icon: 'history' as IconType,
 			gradient: 'from-color-accent to-color-warning',
 			backgroundGradient: 'from-color-accent/5 to-color-warning/5',
 			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750286065/haloway_version_control_product_screenshot_fstidc.png',
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754849194/Screenshot_2025-08-10_140604_aqldsj.png',
 			imageAlt: 'Version history preview',
 			size: 'medium' as const,
 			row: 4,

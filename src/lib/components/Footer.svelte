@@ -105,7 +105,7 @@
 					href="https://popsy.co/illustrations"
 					target="_blank"
 					variant="link"
-					class="h-auto p-0 text-sm underline hover:no-underline"
+					class="h-auto p-0 text-sm text-muted-foreground hover:underline"
 				>
 					Popsy
 				</Button>.
