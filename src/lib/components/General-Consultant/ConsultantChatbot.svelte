@@ -540,25 +540,21 @@
 		isThinking = false;
 		currentThinking = null;
 
-		// TODO: Also clear messages from database
-		// Also clear messages from the database
-		// try {
-		// 	const response = await fetch(
-		// 		`/api/ai-chatbot-messages/${$page.params.documentId}`,
-		// 		{
-		// 			method: 'DELETE',
-		// 		},
-		// 	);
+		// Clear messages from the database
+		try {
+			const response = await fetch('/api/clear-consultant-messages', {
+				method: 'DELETE',
+			});
 
-		// 	if (!response.ok) {
-		// 		console.error('Failed to clear messages from database');
-		// 		// Could show a toast notification here if desired
-		// 	} else {
-		// 		console.log('Successfully cleared messages from database');
-		// 	}
-		// } catch (error) {
-		// 	console.error('Error clearing messages from database:', error);
-		// }
+			if (!response.ok) {
+				console.error('Failed to clear messages from database');
+				// Could show a toast notification here if desired
+			} else {
+				console.log('Successfully cleared messages from database');
+			}
+		} catch (error) {
+			console.error('Error clearing messages from database:', error);
+		}
 	}
 
 	function cancelClearChat(): void {

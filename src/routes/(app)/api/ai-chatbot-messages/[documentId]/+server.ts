@@ -54,3 +54,62 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 		return json({ error: 'Internal server error' }, { status: 500 });
 	}
 };
+
+// Add the DELETE handler
+export const DELETE: RequestHandler = async ({ locals, params }) => {
+	try {
+		// Get session using the same pattern as your other APIs
+		const { session } = await locals.safeGetSession();
+		if (!session?.user?.id) {
+			return json({ error: 'Unauthorized' }, { status: 401 });
+		}
+
+		const { documentId } = params;
+		const userId = session.user.id;
+
+		if (!documentId) {
+			return json({ error: 'Document ID is required' }, { status: 400 });
+		}
+
+		// Verify document ownership first
+		const { data: document, error: docError } = await locals.supabase
+			.from('documents')
+			.select('user_id')
+			.eq('id', documentId)
+			.single();
+
+		if (docError || !document) {
+			console.error('Document not found:', docError);
+			return json({ error: 'Document not found' }, { status: 404 });
+		}
+
+		if (document.user_id !== userId) {
+			return json({ error: 'Access denied' }, { status: 403 });
+		}
+
+		// Clear the chatbot_messages for this document
+		const { error: updateError } = await locals.supabase
+			.from('documents')
+			.update({
+				chatbot_messages: [],
+				updated_at: new Date(),
+			})
+			.eq('id', documentId)
+			.eq('user_id', userId); // Extra security check
+
+		if (updateError) {
+			console.error('Failed to clear document messages:', updateError);
+			return json({ error: 'Failed to clear messages' }, { status: 500 });
+		}
+
+		console.log('Successfully cleared messages for document:', documentId);
+
+		return json({
+			success: true,
+			message: 'Messages cleared successfully',
+		});
+	} catch (error) {
+		console.error('Clear Document Messages API Error:', error);
+		return json({ error: 'Internal server error' }, { status: 500 });
+	}
+};
