@@ -10,15 +10,38 @@ export const GET: RequestHandler = async ({ locals }) => {
 		}
 
 		// Get the user's chat (assuming one chat per user for now)
-		const { data: chat, error: chatError } = await locals.supabase
+		// eslint-disable-next-line prefer-const
+		let { data: chat, error: chatError } = await locals.supabase
 			.from('consultant_chat')
 			.select('user_id, message_history')
 			.eq('user_id', session.user.id)
 			.single();
 
+		// If chat doesn't exist, create one
 		if (chatError || !chat) {
-			console.error('Chat not found:', chatError);
-			return json({ error: 'Chat not found' }, { status: 404 });
+			console.log(
+				'Chat not found, creating new chat for user:',
+				session.user.id,
+			);
+
+			const { data: newChat, error: createError } = await locals.supabase
+				.from('consultant_chat')
+				.insert({
+					id: crypto.randomUUID(),
+					user_id: session.user.id,
+					title: 'Consultant Chat',
+					visibility: 'private',
+					message_history: [],
+				})
+				.select('user_id, message_history')
+				.single();
+
+			if (createError || !newChat) {
+				console.error('Failed to create chat:', createError);
+				return json({ error: 'Failed to create chat' }, { status: 500 });
+			}
+
+			chat = newChat;
 		}
 
 		// Parse the message_history if it's a string

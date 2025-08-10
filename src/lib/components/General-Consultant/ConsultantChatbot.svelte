@@ -614,10 +614,12 @@
 		class="flex items-center justify-between rounded-t-xl border-b bg-muted/50 p-4"
 	>
 		<div class="flex items-center space-x-3">
-			<h3 class="font-semibold text-foreground">Chloe, College Consultant</h3>
+			<h3 class="font-semibold text-foreground">Clara, Essay Assistant</h3>
 			<div class="flex items-center space-x-2">
 				<div class="h-2 w-2 rounded-full bg-green-500"></div>
-				<span class="text-sm text-muted-foreground">Online</span>
+				<span class="text-sm text-muted-foreground">
+					{isLoading ? 'Thinking...' : 'Online'}
+				</span>
 			</div>
 		</div>
 
@@ -699,67 +701,69 @@
 					? 'justify-end'
 					: 'justify-start'}"
 			>
-				<div class="flex max-w-[80%] items-start space-x-2">
-					{#if message.sender === 'ai'}
-						<div
-							class="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary"
-						>
-							<Avatar.Root>
-								<Avatar.Image
-									src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754688613/Chloe-headshot-2_fggiag.png"
-									alt="Chloe"
-								/>
-								<Avatar.Fallback
-									><Sparkles class="h-4 w-4 text-primary" /></Avatar.Fallback
-								>
-							</Avatar.Root>
-						</div>
-					{/if}
+				<div class="flex max-w-[80%] items-start">
+					<div class="flex w-full flex-col space-y-2">
+						{#if message.sender === 'ai'}
+							<div
+								class="ml-1.5 mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary"
+							>
+								<Avatar.Root>
+									<Avatar.Image
+										src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754688613/Chloe-headshot-2_fggiag.png"
+										alt="Chloe"
+									/>
+									<Avatar.Fallback
+										><Sparkles class="h-4 w-4 text-primary" /></Avatar.Fallback
+									>
+								</Avatar.Root>
+							</div>
+						{/if}
 
-					<!-- Main message -->
-					<div class="relative">
-						<div
-							class="relative {message.sender === 'user'
-								? 'ml-auto bg-primary text-primary-foreground'
-								: 'bg-muted text-foreground'} ml-1 mt-2 rounded-lg px-3 py-2"
-						>
-							<p class="whitespace-pre-wrap pb-6 text-sm">
-								{message.text}
-								{#if message.isStreaming}
-									<span class="animate-pulse">|</span>
-								{/if}
-							</p>
-
-							<!-- Copy button (hidden while streaming) -->
-							{#if !message.isStreaming}
-								<button
-									on:click={() => copyMessage(message.id, message.text)}
-									class="absolute bottom-2 right-2 rounded p-1 transition-all duration-200 {message.sender ===
-									'user'
-										? 'text-primary-foreground/50 hover:bg-white/10 hover:text-primary-foreground'
-										: 'text-muted-foreground hover:bg-black/10 hover:text-foreground'}"
-									aria-label="Copy message"
-								>
-									{#if copiedMessageId === message.id}
-										<Check class="h-3 w-3" />
-									{:else}
-										<Copy class="h-3 w-3" />
+						<!-- Main message -->
+						<div class="relative">
+							<div
+								class="relative {message.sender === 'user'
+									? 'ml-auto bg-primary text-primary-foreground'
+									: 'bg-muted text-foreground'} ml-1 mt-2 rounded-lg px-3 py-2"
+							>
+								<p class="whitespace-pre-wrap pb-6 text-sm">
+									{message.text}
+									{#if message.isStreaming}
+										<span class="animate-pulse">|</span>
 									{/if}
-								</button>
-							{/if}
-						</div>
-					</div>
+								</p>
 
-					<!-- Timestamp (hidden while streaming) -->
-					{#if !message.isStreaming}
-						<div
-							class="text-xs text-muted-foreground {message.sender === 'user'
-								? 'text-right'
-								: 'text-left'}"
-						>
-							{formatTime(message.timestamp)}
+								<!-- Copy button (hidden while streaming) -->
+								{#if !message.isStreaming}
+									<button
+										on:click={() => copyMessage(message.id, message.text)}
+										class="absolute bottom-2 right-2 rounded p-1 transition-all duration-200 {message.sender ===
+										'user'
+											? 'text-primary-foreground/50 hover:bg-white/10 hover:text-primary-foreground'
+											: 'text-muted-foreground hover:bg-black/10 hover:text-foreground'}"
+										aria-label="Copy message"
+									>
+										{#if copiedMessageId === message.id}
+											<Check class="h-3 w-3" />
+										{:else}
+											<Copy class="h-3 w-3" />
+										{/if}
+									</button>
+								{/if}
+							</div>
 						</div>
-					{/if}
+
+						<!-- Timestamp (hidden while streaming) -->
+						{#if !message.isStreaming}
+							<div
+								class="text-xs text-muted-foreground {message.sender === 'user'
+									? 'text-right'
+									: 'text-left'}"
+							>
+								{formatTime(message.timestamp)}
+							</div>
+						{/if}
+					</div>
 				</div>
 			</div>
 		{/each}
@@ -803,6 +807,7 @@
 							on:click={() => selectSuggestion(suggestion)}
 							class="suggestion-button rounded-full border bg-background px-4 py-2 text-sm font-medium text-foreground shadow-lg transition-all duration-200 hover:bg-muted hover:shadow-xl"
 							style="animation-delay: {index * 100}ms"
+							disabled={isLoading}
 						>
 							{suggestion}
 						</button>
@@ -819,17 +824,24 @@
 				on:focus={handleInputFocus}
 				on:blur={handleInputBlur}
 				on:input={handleInputChange}
-				placeholder="Type your message..."
+				placeholder="Ask me anything..."
 				rows="1"
-				class="flex-1 resize-none overflow-hidden rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring"
+				disabled={isLoading}
+				class="flex-1 resize-none overflow-hidden rounded-md border border-input bg-background px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
 				style="transform-origin: bottom;"
 			></textarea>
 			<button
 				on:click={sendMessage}
-				disabled={!inputValue.trim()}
+				disabled={!inputValue.trim() || isLoading}
 				class="flex-shrink-0 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
 			>
-				Send
+				{#if isLoading}
+					<div
+						class="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent"
+					></div>
+				{:else}
+					Send
+				{/if}
 			</button>
 		</div>
 	</div>
