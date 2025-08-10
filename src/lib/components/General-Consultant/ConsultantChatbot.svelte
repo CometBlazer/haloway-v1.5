@@ -183,7 +183,7 @@
 			console.log('Sending message to API...');
 
 			// Send to streaming API route
-			const response = await fetch('/api/ai-chatbot', {
+			const response = await fetch('/api/consultant-chatbot', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -614,7 +614,7 @@
 		class="flex items-center justify-between rounded-t-xl border-b bg-muted/50 p-4"
 	>
 		<div class="flex items-center space-x-3">
-			<h3 class="font-semibold text-foreground">Clara, Essay Assistant</h3>
+			<h3 class="font-semibold text-foreground">Chloe, College Consultant</h3>
 			<div class="flex items-center space-x-2">
 				<div class="h-2 w-2 rounded-full bg-green-500"></div>
 				<span class="text-sm text-muted-foreground">
@@ -674,8 +674,9 @@
 				<div class="space-y-2 text-foreground">
 					<h4 class="text-2xl font-semibold">Hi! I'm Chloe 👋</h4>
 					<p class="text-sm leading-relaxed text-muted-foreground">
-						I'm a college consultant who can answer questions based on your
-						profile. I can help you answer admissions questions and more!
+						I'm your college admissions consultant! I can help with application
+						strategy, essay brainstorming, school selection, and all aspects of
+						the college process.
 					</p>
 					<p class="mt-3 text-xs text-muted-foreground">
 						Select one of the suggestions below or ask me anything! For best
@@ -844,6 +845,9 @@
 				{/if}
 			</button>
 		</div>
+		<!-- <div class="mt-2 text-xs text-muted-foreground">
+			→ I can see your profile, background, and activities
+		</div> -->
 	</div>
 </div>
 
