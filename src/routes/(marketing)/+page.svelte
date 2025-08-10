@@ -21,10 +21,10 @@
 
 	import {
 		PenLine,
-		ArrowUpRight,
-		BookText,
+		// ArrowUpRight,
+		// BookText,
 		Lock,
-		Check,
+		// Check,
 		BookOpenCheck,
 		// X,
 		ArrowRight,
@@ -51,7 +51,7 @@
 			image:
 				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png',
 			imageAlt: 'Haloway admissions Q&A interface',
-			ctaText: 'Ask Chloe a question',
+			ctaText: 'Ask a question',
 			ctaLink: '/schools/uncategorized/write',
 		},
 		{
@@ -249,7 +249,7 @@
 							<img
 								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754333956/Haloway_hero_image_cwv3b6.png"
 								alt="Haloway College Application Platform"
-								class="h-[500px] rounded-2xl shadow-2xl"
+								class="h-auto rounded-2xl shadow-2xl"
 							/>
 							<!-- <div
 								class="pointer-events-none absolute inset-0 rounded-lg bg-gradient-to-r from-color-primary/10 to-color-accent/10"
@@ -440,7 +440,7 @@
 										class="h-3 w-3 animate-pulse rounded-full bg-blue-500"
 									></div>
 									<span class="text-sm font-medium text-gray-700"
-										>Brainstorm outlines quickly</span
+										>Chat with an essay assistant</span
 									>
 								</div>
 							</div>
@@ -530,7 +530,7 @@
 										class="h-3 w-3 animate-pulse rounded-full bg-orange-500"
 									></div>
 									<span class="text-sm font-medium text-gray-700"
-										>Track changes & revert anytime</span
+										>See what still needs to be fixed</span
 									>
 								</div>
 							</div>
@@ -662,27 +662,28 @@
 				</p>
 			</div>
 
-			<!-- Bento Grid (dense packing + equal row heights) -->
+			<!-- Bento Grid (alternating layout) -->
 			<div
-				class="grid auto-rows-[1fr] grid-cols-1 gap-6 [grid-auto-flow:dense] md:grid-cols-2
-				lg:grid-cols-3 lg:gap-8"
+				class="grid auto-rows-[1fr] grid-cols-1 gap-6 [grid-auto-flow:dense] md:grid-cols-3 lg:gap-8"
 			>
-				<!-- 1) Generate outlines with essay assistant (MED, image) -->
+				<!-- Row 1: MED (1 col), LARGE (2 cols) -->
+
+				<!-- 1) Built-in document chatbot (MED) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-					h-full flex-col overflow-hidden
-					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-					duration-300 hover:-translate-y-2 hover:shadow-2xl"
+		h-full flex-col overflow-hidden
+		rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+		duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-1"
 				>
 					<div
-						class="absolute inset-0 bg-gradient-to-br from-color-primary/5 to-color-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+						class="absolute inset-0 bg-gradient-to-br from-color-info/5 to-color-success/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
 					></div>
 					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-6 flex items-center gap-4">
+						<div class="mb-4 flex items-center gap-4">
 							<div
-								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-primary to-color-accent"
+								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-info to-color-success"
 							>
-								<!-- outline icon -->
+								<!-- doc chat icon -->
 								<svg
 									class="h-6 w-6 text-white"
 									fill="none"
@@ -693,57 +694,68 @@
 										stroke-linecap="round"
 										stroke-linejoin="round"
 										stroke-width="2"
-										d="M4 6h16M4 10h10M4 14h16M4 18h10"
+										d="M8 16h8M8 12h8m-6 8h6a2 2 0 002-2V7.828a2 2 0 00-.586-1.414l-2.828-2.828A2 2 0 0013.172 3H7a2 2 0 00-2 2v13a2 2 0 002 2h1"
 									/>
 								</svg>
 							</div>
-							<h3 class="text-base-content text-xl font-bold">
-								Generate outlines with essay assistant
+							<h3 class="text-base-content text-lg font-bold lg:text-xl">
+								Built-in document chatbot
 							</h3>
 						</div>
-						<p class="text-base-content/70 mb-6">
-							Turn ideas into clear, structured outlines for any prompt — no
-							more blank page.
+						<p class="text-base-content/70 mb-4 text-sm lg:text-base">
+							Ask questions right in your document without switching tabs.
 						</p>
 						<div
-							class="from-base-200 to-base-300 mt-auto h-40 overflow-hidden rounded-2xl bg-gradient-to-br"
+							class="from-base-200 to-base-300 mt-auto h-52 overflow-hidden rounded-2xl bg-gradient-to-br lg:h-64"
 						>
 							<img
-								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png"
-								alt="Outline preview"
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png"
+								alt="Document chatbot preview"
 								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 							/>
 						</div>
 					</div>
 				</div>
 
-				<!-- 2) Realtime, actionable feedback on essays (LARGE, now with image) -->
+				<!-- 2) Realtime, actionable feedback on essays (LARGE) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-					h-full flex-col overflow-hidden
-					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-					duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
+		h-full flex-col overflow-hidden
+		rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+		duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
 				>
 					<div
 						class="absolute inset-0 bg-gradient-to-br from-color-accent/5 to-color-warning/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
 					></div>
 					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-6 flex items-center gap-4">
+						<div class="mb-4 flex items-center gap-4">
 							<div
 								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-accent to-color-warning"
 							>
-								<Check class="h-6 w-6 text-white" />
+								<svg
+									class="h-6 w-6 text-white"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M5 13l4 4L19 7"
+									/>
+								</svg>
 							</div>
-							<h3 class="text-base-content text-2xl font-bold">
+							<h3 class="text-base-content text-xl font-bold lg:text-2xl">
 								Realtime, actionable feedback on essays
 							</h3>
 						</div>
-						<p class="text-base-content/70 mb-6 text-lg">
+						<p class="text-base-content/70 mb-6 text-base lg:text-lg">
 							See exactly what to fix — clarity, structure, and flow — with
 							guidance that's unique to your writing.
 						</p>
 						<div
-							class="from-base-200 to-base-300 mt-auto h-48 overflow-hidden rounded-2xl bg-gradient-to-br"
+							class="from-base-200 to-base-300 mt-auto h-64 overflow-hidden rounded-2xl bg-gradient-to-br lg:h-80"
 						>
 							<img
 								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754333956/Haloway_hero_image_1_gzcqwm.png"
@@ -754,20 +766,22 @@
 					</div>
 				</div>
 
-				<!-- 3) Ask admissions questions (LARGE, image) -->
+				<!-- Row 2: LARGE (2 cols), MED (1 col) -->
+
+				<!-- 3) Ask admissions questions (LARGE) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-					h-full flex-col overflow-hidden
-					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-					duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
+		h-full flex-col overflow-hidden
+		rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+		duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
 				>
 					<div
-						class="absolute inset-0 bg-gradient-to-br from-color-info/5 to-color-success/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+						class="absolute inset-0 bg-gradient-to-br from-color-primary/5 to-color-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
 					></div>
 					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-6 flex items-center gap-4">
+						<div class="mb-4 flex items-center gap-4">
 							<div
-								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-info to-color-success"
+								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-primary to-color-accent"
 							>
 								<!-- chat icon -->
 								<svg
@@ -784,16 +798,16 @@
 									/>
 								</svg>
 							</div>
-							<h3 class="text-base-content text-2xl font-bold">
+							<h3 class="text-base-content text-xl font-bold lg:text-2xl">
 								Ask admissions questions
 							</h3>
 						</div>
-						<p class="text-base-content/70 mb-6 text-lg">
+						<p class="text-base-content/70 mb-6 text-base lg:text-lg">
 							Get clear answers on ECs, LORs, cold emails, school comparisons,
 							and more — tailored to your situation.
 						</p>
 						<div
-							class="from-base-200 to-base-300 mt-auto h-48 overflow-hidden rounded-2xl bg-gradient-to-br"
+							class="from-base-200 to-base-300 mt-auto h-64 overflow-hidden rounded-2xl bg-gradient-to-br lg:h-80"
 						>
 							<img
 								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png"
@@ -804,55 +818,70 @@
 					</div>
 				</div>
 
-				<!-- 4) Organize essays by school & deadline (LARGE, image) -->
+				<!-- 4) Rich-text editor with autosave (MED) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-					h-full flex-col overflow-hidden
-					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-					duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
+		h-full flex-col overflow-hidden
+		rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+		duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-1"
 				>
 					<div
 						class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
 					></div>
 					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-6 flex items-center gap-4">
+						<div class="mb-4 flex items-center gap-4">
 							<div
 								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500"
 							>
-								<BookText class="h-6 w-6 text-white" />
+								<!-- rich text editor icon -->
+								<svg
+									class="h-6 w-6 text-white"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+									/>
+								</svg>
 							</div>
-							<h3 class="text-base-content text-2xl font-bold">
-								Organize essays by school & deadline
+							<h3 class="text-base-content text-lg font-bold lg:text-xl">
+								Rich-text editor with autosave
 							</h3>
 						</div>
-						<p class="text-base-content/70 mb-6 text-lg">
-							One place for essays, status, and timelines — sort by school,
-							track deadlines, and stay on top of every draft.
+						<p class="text-base-content/70 mb-4 text-sm lg:text-base">
+							Write with formatting tools and never lose your work with
+							automatic cloud saves.
 						</p>
 						<div
-							class="from-base-200 to-base-300 mt-auto h-48 overflow-hidden rounded-2xl bg-gradient-to-br"
+							class="from-base-200 to-base-300 mt-auto h-52 overflow-hidden rounded-2xl bg-gradient-to-br lg:h-64"
 						>
 							<img
 								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png"
-								alt="Organizer preview"
+								alt="Rich text editor preview"
 								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 							/>
 						</div>
 					</div>
 				</div>
 
-				<!-- 5) Drag-and-drop activities organizer (MED, NO image; with outlined sample activities) -->
+				<!-- Row 3: MED (1 col), LARGE (2 cols) -->
+
+				<!-- 5) Drag-and-drop activities organizer (MED) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-					h-full flex-col overflow-hidden
-					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-					duration-300 hover:-translate-y-2 hover:shadow-2xl"
+		h-full flex-col overflow-hidden
+		rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+		duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-1"
 				>
 					<div
 						class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-green-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
 					></div>
 					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-6 flex items-center gap-4">
+						<div class="mb-4 flex items-center gap-4">
 							<div
 								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-500 to-green-500"
 							>
@@ -871,11 +900,11 @@
 									/>
 								</svg>
 							</div>
-							<h3 class="text-base-content text-xl font-bold">
+							<h3 class="text-base-content text-lg font-bold lg:text-xl">
 								Drag-and-drop activities organizer
 							</h3>
 						</div>
-						<p class="text-base-content/70 mb-4">
+						<p class="text-base-content/70 mb-3 text-sm lg:text-base">
 							Order your extracurriculars and achievements to highlight what
 							matters most.
 						</p>
@@ -886,7 +915,7 @@
 								class="bg-base-100/80 border-base-300/60 flex items-center justify-between rounded-lg border p-3"
 							>
 								<span class="text-base-content/80 text-sm"
-									>Debate Team Captain — Led weekly practices, state finalist</span
+									>Debate Team Captain: Led weekly practices, state finalist</span
 								>
 								<span class="text-base-content/60 text-xs">Leadership</span>
 							</div>
@@ -894,7 +923,7 @@
 								class="bg-base-100/80 border-base-300/60 flex items-center justify-between rounded-lg border p-3"
 							>
 								<span class="text-base-content/80 text-sm"
-									>Community Tutoring — 120+ hrs math tutoring for middle
+									>Community Tutoring: 120+ hrs math tutoring for middle
 									schoolers</span
 								>
 								<span class="text-base-content/60 text-xs">Service</span>
@@ -903,7 +932,7 @@
 								class="bg-base-100/80 border-base-300/60 flex items-center justify-between rounded-lg border p-3"
 							>
 								<span class="text-base-content/80 text-sm"
-									>App Dev Club — Built budgeting app, 500+ downloads</span
+									>App Dev Club: Built budgeting app, 500+ downloads</span
 								>
 								<span class="text-base-content/60 text-xs">STEM</span>
 							</div>
@@ -911,52 +940,221 @@
 					</div>
 				</div>
 
-				<!-- 6) Version history & checkpoints (SMALL, image) -->
+				<!-- 6) Organize essays by school & deadline (LARGE) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-					h-full flex-col overflow-hidden
-					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-					duration-300 hover:-translate-y-2 hover:shadow-2xl"
+		h-full flex-col overflow-hidden
+		rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+		duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
 				>
+					<div
+						class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+					></div>
 					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-4 flex items-center gap-3">
+						<div class="mb-4 flex items-center gap-4">
 							<div
-								class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-purple-500 to-pink-500"
+								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500"
 							>
-								<BookOpenCheck class="h-5 w-5 text-white" />
+								<svg
+									class="h-6 w-6 text-white"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+									/>
+								</svg>
 							</div>
-							<h3 class="text-base-content text-lg font-bold">
-								Version history & checkpoints
+							<h3 class="text-base-content text-xl font-bold lg:text-2xl">
+								Organize essays by school & deadline
 							</h3>
 						</div>
-						<p class="text-base-content/70 mb-4">
-							Save milestones and restore any version with one click.
+						<p class="text-base-content/70 mb-6 text-base lg:text-lg">
+							One place for essays, status, and timelines — sort by school,
+							track deadlines, and stay on top of every draft.
 						</p>
 						<div
-							class="from-base-200 to-base-300 mt-auto h-40 overflow-hidden rounded-2xl bg-gradient-to-br"
+							class="from-base-200 to-base-300 mt-auto h-64 overflow-hidden rounded-2xl bg-gradient-to-br lg:h-80"
 						>
 							<img
-								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750286065/haloway_version_control_product_screenshot_fstidc.png"
-								alt="Version history preview"
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png"
+								alt="Organizer preview"
 								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 							/>
 						</div>
 					</div>
 				</div>
 
-				<!-- 7) Built-in document chatbot (SMALL, image) -->
+				<!-- Row 4: LARGE (2 cols), MED (1 col) -->
+
+				<!-- 7) Seamless export (LARGE) -->
 				<div
 					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-					h-full flex-col overflow-hidden
-					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-					duration-300 hover:-translate-y-2 hover:shadow-2xl"
+		h-full flex-col overflow-hidden
+		rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+		duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
+				>
+					<div
+						class="absolute inset-0 bg-gradient-to-br from-color-info/5 to-color-success/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+					></div>
+					<div class="relative z-10 flex h-full flex-col">
+						<div class="mb-4 flex items-center gap-4">
+							<div
+								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-info to-color-success"
+							>
+								<svg
+									class="h-6 w-6 text-white"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3 3m0 0l-3-3m3 3V8"
+									/>
+								</svg>
+							</div>
+							<h3 class="text-base-content text-xl font-bold lg:text-2xl">
+								Seamless export
+							</h3>
+						</div>
+						<p class="text-base-content/70 mb-6 text-base lg:text-lg">
+							Copy into Common App or export to DOC/TXT when you're ready.
+							One-click exports preserve all your formatting and structure.
+						</p>
+
+						<!-- Enhanced export visualization -->
+						<div class="mt-auto space-y-6">
+							<!-- Export destinations -->
+							<div class="grid grid-cols-3 gap-4">
+								<div
+									class="bg-base-200/60 hover:bg-base-200/80 flex flex-col items-center rounded-xl p-4 transition-all duration-200"
+								>
+									<div
+										class="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500"
+									>
+										<svg
+											class="h-4 w-4 text-white"
+											fill="currentColor"
+											viewBox="0 0 24 24"
+										>
+											<path
+												d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+											/>
+										</svg>
+									</div>
+									<span class="text-base-content/80 text-sm font-medium"
+										>Common App</span
+									>
+									<span class="text-base-content/60 mt-1 text-xs"
+										>Direct paste</span
+									>
+								</div>
+								<div
+									class="bg-base-200/60 hover:bg-base-200/80 flex flex-col items-center rounded-xl p-4 transition-all duration-200"
+								>
+									<div
+										class="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600"
+									>
+										<svg
+											class="h-4 w-4 text-white"
+											fill="currentColor"
+											viewBox="0 0 24 24"
+										>
+											<path
+												d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
+											/>
+										</svg>
+									</div>
+									<span class="text-base-content/80 text-sm font-medium"
+										>Word Doc</span
+									>
+									<span class="text-base-content/60 mt-1 text-xs"
+										>Full formatting</span
+									>
+								</div>
+								<div
+									class="bg-base-200/60 hover:bg-base-200/80 flex flex-col items-center rounded-xl p-4 transition-all duration-200"
+								>
+									<div
+										class="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-gray-600"
+									>
+										<svg
+											class="h-4 w-4 text-white"
+											fill="currentColor"
+											viewBox="0 0 24 24"
+										>
+											<path
+												d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
+											/>
+										</svg>
+									</div>
+									<span class="text-base-content/80 text-sm font-medium"
+										>Plain Text</span
+									>
+									<span class="text-base-content/60 mt-1 text-xs"
+										>Clean copy</span
+									>
+								</div>
+							</div>
+
+							<!-- Export features -->
+							<div class="grid grid-cols-2 gap-3">
+								<div
+									class="bg-base-200/40 flex items-center gap-3 rounded-lg p-3"
+								>
+									<div class="h-2 w-2 rounded-full bg-green-500"></div>
+									<span class="text-base-content/80 text-sm"
+										>Character count preserved</span
+									>
+								</div>
+								<div
+									class="bg-base-200/40 flex items-center gap-3 rounded-lg p-3"
+								>
+									<div class="h-2 w-2 rounded-full bg-blue-500"></div>
+									<span class="text-base-content/80 text-sm"
+										>Formatting maintained</span
+									>
+								</div>
+								<div
+									class="bg-base-200/40 flex items-center gap-3 rounded-lg p-3"
+								>
+									<div class="h-2 w-2 rounded-full bg-purple-500"></div>
+									<span class="text-base-content/80 text-sm"
+										>Instant download</span
+									>
+								</div>
+								<div
+									class="bg-base-200/40 flex items-center gap-3 rounded-lg p-3"
+								>
+									<div class="h-2 w-2 rounded-full bg-orange-500"></div>
+									<span class="text-base-content/80 text-sm"
+										>Copy to clipboard</span
+									>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- 8) Version history & checkpoints (MED) -->
+				<div
+					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
+		h-full flex-col overflow-hidden
+		rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+		duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-1"
 				>
 					<div class="relative z-10 flex h-full flex-col">
 						<div class="mb-4 flex items-center gap-3">
 							<div
-								class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-color-info to-color-success"
+								class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-color-accent to-color-warning"
 							>
-								<!-- doc chat icon -->
 								<svg
 									class="h-5 w-5 text-white"
 									fill="none"
@@ -967,77 +1165,25 @@
 										stroke-linecap="round"
 										stroke-linejoin="round"
 										stroke-width="2"
-										d="M8 16h8M8 12h8m-6 8h6a2 2 0 002-2V7.828a2 2 0 00-.586-1.414l-2.828-2.828A2 2 0 0013.172 3H7a2 2 0 00-2 2v13a2 2 0 002 2h1"
+										d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
 									/>
 								</svg>
 							</div>
 							<h3 class="text-base-content text-lg font-bold">
-								Built-in document chatbot
+								Version history & checkpoints
 							</h3>
 						</div>
-						<p class="text-base-content/70 mb-4">
-							Ask questions right in your document without switching tabs.
+						<p class="text-base-content/70 mb-4 text-sm lg:text-base">
+							Save milestones and restore any version with one click.
 						</p>
 						<div
-							class="from-base-200 to-base-300 mt-auto h-40 overflow-hidden rounded-2xl bg-gradient-to-br"
+							class="from-base-200 to-base-300 mt-auto h-52 overflow-hidden rounded-2xl bg-gradient-to-br lg:h-64"
 						>
 							<img
-								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png"
-								alt="Document chatbot preview"
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750286065/haloway_version_control_product_screenshot_fstidc.png"
+								alt="Version history preview"
 								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 							/>
-						</div>
-					</div>
-				</div>
-
-				<!-- 8) Seamless export (LARGE, NO image; spans 2 columns) -->
-				<div
-					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-					h-full flex-col overflow-hidden
-					rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-					duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
-				>
-					<div
-						class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-					></div>
-					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-6 flex items-center gap-4">
-							<div
-								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500"
-							>
-								<ArrowUpRight class="h-6 w-6 text-white" />
-							</div>
-							<h3 class="text-base-content text-xl font-bold md:text-2xl">
-								Seamless export
-							</h3>
-						</div>
-						<p class="text-base-content/70 mb-6">
-							Copy into Common App or export to DOC/TXT when you’re ready.
-						</p>
-						<div class="mt-auto grid grid-cols-3 gap-4">
-							<div
-								class="bg-base-200/60 flex flex-col items-center rounded-xl p-4"
-							>
-								<div class="mb-2 h-8 w-8 rounded-lg bg-orange-500"></div>
-								<span class="text-base-content/80 text-sm font-medium"
-									>Common App</span
-								>
-							</div>
-							<div
-								class="bg-base-200/60 flex flex-col items-center rounded-xl p-4"
-							>
-								<div class="mb-2 h-8 w-8 rounded-lg bg-blue-600"></div>
-								<span class="text-base-content/80 text-sm font-medium"
-									>Word</span
-								>
-							</div>
-							<div
-								class="bg-base-200/60 flex flex-col items-center rounded-xl p-4"
-							>
-								<div class="mb-2 h-8 w-8 rounded-lg bg-red-500"></div>
-								<span class="text-base-content/80 text-sm font-medium">TXT</span
-								>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -1087,9 +1233,10 @@
 						</p>
 
 						<p class="text-lg">
-							Rather, think of Haloway as a mentor knowledgeable about the
-							college admissions process. Haloway provides guidance and feedback
-							to help you articulate your unique story in your own words.
+							Think of Haloway as a teacher knowledgeable about the college
+							admissions process. A good teacher won't write your essays for
+							you, and neither would Haloway. Instead, Haloway provides guidance
+							and feedback to help you succeed.
 						</p>
 					</div>
 
