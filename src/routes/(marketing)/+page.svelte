@@ -20,11 +20,20 @@
 	} from './../../config';
 
 	import {
+		MessageSquare, // for doc-chat
+		Check, // for check
+		MessageCircle, // for chat
+		Edit, // for edit
+		GripVertical, // for drag
+		Book, // for book
+		Download, // for export
+		History, // for history
+		FileText, // for document
+		CheckCircle, // for export check icon
 		PenLine,
 		// ArrowUpRight,
 		// BookText,
 		Lock,
-		// Check,
 		BookOpenCheck,
 		// X,
 		ArrowRight,
@@ -103,48 +112,224 @@
 		},
 	];
 
-	// const featureCards = [
-	// 	{
-	// 		title: 'Rich Text Editing',
-	// 		icon: PenLine,
-	// 	},
-	// 	{
-	// 		title: 'Realtime Autosave',
-	// 		icon: ArrowUpRight,
-	// 	},
-	// 	{
-	// 		title: 'Draft Version Management',
-	// 		icon: BookText,
-	// 	},
-	// 	{
-	// 		title: 'AI Feedback',
-	// 		icon: Check,
-	// 	},
-	// 	{
-	// 		title: 'Customizable UI',
-	// 		icon: X,
-	// 	},
-	// 	{
-	// 		title: 'Prompt Management',
-	// 		icon: PenLine,
-	// 	},
-	// 	{
-	// 		title: 'Essay Dashboard',
-	// 		icon: BookText,
-	// 	},
-	// 	{
-	// 		title: 'Custom Checkpoints',
-	// 		icon: Check,
-	// 	},
-	// 	{
-	// 		title: 'Built-in Deadline Tracking',
-	// 		icon: Lock,
-	// 	},
-	// 	{
-	// 		title: 'Status Tracking',
-	// 		icon: Check,
-	// 	},
-	// ];
+	// Define the valid icon types
+	type IconType =
+		| 'doc-chat'
+		| 'check'
+		| 'chat'
+		| 'edit'
+		| 'drag'
+		| 'book'
+		| 'export'
+		| 'history'
+		| 'document';
+	type ExportIconType = 'check' | 'document';
+
+	// Icon mapping function that returns Lucide components
+	function getIconComponent(iconType: IconType) {
+		const icons = {
+			'doc-chat': MessageSquare,
+			check: Check,
+			chat: MessageCircle,
+			edit: Edit,
+			drag: GripVertical,
+			book: Book,
+			export: Download,
+			history: History,
+			document: FileText,
+		};
+		return icons[iconType] || icons['check'];
+	}
+
+	// Export icon mapping for small icons
+	function getExportIconComponent(iconType: ExportIconType) {
+		const exportIcons = {
+			check: CheckCircle,
+			document: FileText,
+		};
+		return exportIcons[iconType] || exportIcons['document'];
+	}
+
+	// Your bentoGridData stays the same, just update the interface
+	interface BentoGridItem {
+		id: number;
+		title: string;
+		description: string;
+		icon: IconType;
+		gradient: string;
+		backgroundGradient: string;
+		image: string | null;
+		imageAlt: string;
+		size: 'medium' | 'large';
+		row: number;
+		sampleActivities?: Array<{
+			text: string;
+			category: string;
+		}>;
+		exportOptions?: Array<{
+			name: string;
+			subtitle: string;
+			color: string;
+			icon: ExportIconType;
+		}>;
+		exportFeatures?: Array<{
+			text: string;
+			color: string;
+		}>;
+	}
+
+	// Bento Grid Configuration
+	const bentoGridData: BentoGridItem[] = [
+		{
+			id: 1,
+			title: 'Built-in document chatbot',
+			description:
+				'Ask questions right in your document without switching tabs.',
+			icon: 'doc-chat' as IconType, // Add type assertion
+			gradient: 'from-color-info to-color-success',
+			backgroundGradient: 'from-color-info/5 to-color-success/5',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png',
+			imageAlt: 'Document chatbot preview',
+			size: 'medium' as const, // Add const assertion for literal types
+			row: 1,
+		},
+		{
+			id: 2,
+			title: 'Realtime, actionable feedback on essays',
+			description:
+				"See exactly what to fix — clarity, structure, and flow — with guidance that's unique to your writing.",
+			icon: 'check' as IconType,
+			gradient: 'from-color-accent to-color-warning',
+			backgroundGradient: 'from-color-accent/5 to-color-warning/5',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754333956/Haloway_hero_image_1_gzcqwm.png',
+			imageAlt: 'Realtime feedback preview',
+			size: 'large' as const,
+			row: 1,
+		},
+		{
+			id: 3,
+			title: 'Ask admissions questions',
+			description:
+				'Get clear answers on ECs, LORs, cold emails, school comparisons, and more — tailored to your situation.',
+			icon: 'chat' as IconType,
+			gradient: 'from-color-primary to-color-accent',
+			backgroundGradient: 'from-color-primary/5 to-color-accent/5',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png',
+			imageAlt: 'Admissions Q&A preview',
+			size: 'large' as const,
+			row: 2,
+		},
+		{
+			id: 4,
+			title: 'Rich-text editor with autosave',
+			description:
+				'Write with formatting tools and never lose your work with automatic cloud saves.',
+			icon: 'edit' as IconType,
+			gradient: 'from-blue-500 to-cyan-500',
+			backgroundGradient: 'from-blue-500/5 to-cyan-500/5',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png',
+			imageAlt: 'Rich text editor preview',
+			size: 'medium' as const,
+			row: 2,
+		},
+		{
+			id: 5,
+			title: 'Drag-and-drop activities organizer',
+			description:
+				'Order your extracurriculars and achievements to highlight what matters most.',
+			icon: 'drag' as IconType,
+			gradient: 'from-emerald-500 to-green-500',
+			backgroundGradient: 'from-emerald-500/5 to-green-500/5',
+			image: null,
+			imageAlt: '',
+			size: 'medium' as const,
+			row: 3,
+			sampleActivities: [
+				{
+					text: 'Debate Team Captain: Led weekly practices, state finalist',
+					category: 'Leadership',
+				},
+				{
+					text: 'Community Tutoring: 120+ hrs math tutoring for middle schoolers',
+					category: 'Service',
+				},
+				{
+					text: 'App Dev Club: Built budgeting app, 500+ downloads',
+					category: 'STEM',
+				},
+			],
+		},
+		{
+			id: 6,
+			title: 'Organize essays by school & deadline',
+			description:
+				'One place for essays, status, and timelines — sort by school, track deadlines, and stay on top of every draft.',
+			icon: 'book' as IconType,
+			gradient: 'from-purple-500 to-pink-500',
+			backgroundGradient: 'from-purple-500/5 to-pink-500/5',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png',
+			imageAlt: 'Organizer preview',
+			size: 'large' as const,
+			row: 3,
+		},
+		{
+			id: 7,
+			title: 'Seamless export',
+			description:
+				"Copy into Common App or export to DOC/TXT when you're ready. One-click exports preserve all your formatting and structure.",
+			icon: 'export' as IconType,
+			gradient: 'from-color-info to-color-success',
+			backgroundGradient: 'from-color-info/5 to-color-success/5',
+			image: null,
+			imageAlt: '',
+			size: 'large' as const,
+			row: 4,
+			exportOptions: [
+				{
+					name: 'Common App',
+					subtitle: 'Direct paste',
+					color: 'bg-orange-500',
+					icon: 'check' as ExportIconType,
+				},
+				{
+					name: 'Word Doc',
+					subtitle: 'Full formatting',
+					color: 'bg-blue-600',
+					icon: 'document' as ExportIconType,
+				},
+				{
+					name: 'Plain Text',
+					subtitle: 'Clean copy',
+					color: 'bg-gray-600',
+					icon: 'document' as ExportIconType,
+				},
+			],
+			exportFeatures: [
+				{ text: 'Character count preserved', color: 'bg-green-500' },
+				{ text: 'Formatting maintained', color: 'bg-blue-500' },
+				{ text: 'Instant download', color: 'bg-purple-500' },
+				{ text: 'Copy to clipboard', color: 'bg-orange-500' },
+			],
+		},
+		{
+			id: 8,
+			title: 'Version history & checkpoints',
+			description: 'Save milestones and restore any version with one click.',
+			icon: 'history' as IconType,
+			gradient: 'from-color-accent to-color-warning',
+			backgroundGradient: 'from-color-accent/5 to-color-warning/5',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750286065/haloway_version_control_product_screenshot_fstidc.png',
+			imageAlt: 'Version history preview',
+			size: 'medium' as const,
+			row: 4,
+		},
+	];
 
 	let currentRoleIndex = 0;
 	const roles = ['Consultant', 'Copilot', 'Coach'];
@@ -639,7 +824,7 @@
 <!-- Bento Grid Features Section -->
 <Section.Root anchor="features">
 	<div
-		class="from-base-100 to-base-200 relative overflow-hidden bg-gradient-to-b py-16 sm:py-20 lg:py-24"
+		class="from-base-100 to-base-200 relative overflow-hidden bg-gradient-to-b py-16 sm:py-20 lg:pb-24 lg:pt-20"
 	>
 		<!-- Background decoration -->
 		<div
@@ -663,530 +848,140 @@
 			</div>
 
 			<!-- Bento Grid (alternating layout) -->
+
 			<div
 				class="grid auto-rows-[1fr] grid-cols-1 gap-6 [grid-auto-flow:dense] md:grid-cols-3 lg:gap-8"
 			>
-				<!-- Row 1: MED (1 col), LARGE (2 cols) -->
-
-				<!-- 1) Built-in document chatbot (MED) -->
-				<div
-					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-		h-full flex-col overflow-hidden
-		rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-		duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-1"
-				>
+				{#each bentoGridData as item}
 					<div
-						class="absolute inset-0 bg-gradient-to-br from-color-info/5 to-color-success/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-					></div>
-					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-4 flex items-center gap-4">
-							<div
-								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-info to-color-success"
-							>
-								<!-- doc chat icon -->
-								<svg
-									class="h-6 w-6 text-white"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M8 16h8M8 12h8m-6 8h6a2 2 0 002-2V7.828a2 2 0 00-.586-1.414l-2.828-2.828A2 2 0 0013.172 3H7a2 2 0 00-2 2v13a2 2 0 002 2h1"
-									/>
-								</svg>
-							</div>
-							<h3 class="text-base-content text-lg font-bold lg:text-xl">
-								Built-in document chatbot
-							</h3>
-						</div>
-						<p class="text-base-content/70 mb-4 text-sm lg:text-base">
-							Ask questions right in your document without switching tabs.
-						</p>
+						class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
+			h-full flex-col overflow-hidden
+			rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+			duration-300 hover:-translate-y-2 hover:shadow-2xl {item.size === 'large'
+							? 'md:col-span-2'
+							: 'md:col-span-1'}"
+					>
 						<div
-							class="from-base-200 to-base-300 mt-auto h-52 overflow-hidden rounded-2xl bg-gradient-to-br lg:h-64"
-						>
-							<img
-								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png"
-								alt="Document chatbot preview"
-								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-							/>
-						</div>
-					</div>
-				</div>
-
-				<!-- 2) Realtime, actionable feedback on essays (LARGE) -->
-				<div
-					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-		h-full flex-col overflow-hidden
-		rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-		duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
-				>
-					<div
-						class="absolute inset-0 bg-gradient-to-br from-color-accent/5 to-color-warning/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-					></div>
-					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-4 flex items-center gap-4">
-							<div
-								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-accent to-color-warning"
-							>
-								<svg
-									class="h-6 w-6 text-white"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M5 13l4 4L19 7"
-									/>
-								</svg>
-							</div>
-							<h3 class="text-base-content text-xl font-bold lg:text-2xl">
-								Realtime, actionable feedback on essays
-							</h3>
-						</div>
-						<p class="text-base-content/70 mb-6 text-base lg:text-lg">
-							See exactly what to fix — clarity, structure, and flow — with
-							guidance that's unique to your writing.
-						</p>
-						<div
-							class="from-base-200 to-base-300 mt-auto h-64 overflow-hidden rounded-2xl bg-gradient-to-br lg:h-80"
-						>
-							<img
-								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754333956/Haloway_hero_image_1_gzcqwm.png"
-								alt="Realtime feedback preview"
-								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-							/>
-						</div>
-					</div>
-				</div>
-
-				<!-- Row 2: LARGE (2 cols), MED (1 col) -->
-
-				<!-- 3) Ask admissions questions (LARGE) -->
-				<div
-					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-		h-full flex-col overflow-hidden
-		rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-		duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
-				>
-					<div
-						class="absolute inset-0 bg-gradient-to-br from-color-primary/5 to-color-accent/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-					></div>
-					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-4 flex items-center gap-4">
-							<div
-								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-primary to-color-accent"
-							>
-								<!-- chat icon -->
-								<svg
-									class="h-6 w-6 text-white"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4-.8L3 20l1.8-4A8.955 8.955 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-									/>
-								</svg>
-							</div>
-							<h3 class="text-base-content text-xl font-bold lg:text-2xl">
-								Ask admissions questions
-							</h3>
-						</div>
-						<p class="text-base-content/70 mb-6 text-base lg:text-lg">
-							Get clear answers on ECs, LORs, cold emails, school comparisons,
-							and more — tailored to your situation.
-						</p>
-						<div
-							class="from-base-200 to-base-300 mt-auto h-64 overflow-hidden rounded-2xl bg-gradient-to-br lg:h-80"
-						>
-							<img
-								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png"
-								alt="Admissions Q&A preview"
-								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-							/>
-						</div>
-					</div>
-				</div>
-
-				<!-- 4) Rich-text editor with autosave (MED) -->
-				<div
-					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-		h-full flex-col overflow-hidden
-		rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-		duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-1"
-				>
-					<div
-						class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-					></div>
-					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-4 flex items-center gap-4">
-							<div
-								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500"
-							>
-								<!-- rich text editor icon -->
-								<svg
-									class="h-6 w-6 text-white"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-									/>
-								</svg>
-							</div>
-							<h3 class="text-base-content text-lg font-bold lg:text-xl">
-								Rich-text editor with autosave
-							</h3>
-						</div>
-						<p class="text-base-content/70 mb-4 text-sm lg:text-base">
-							Write with formatting tools and never lose your work with
-							automatic cloud saves.
-						</p>
-						<div
-							class="from-base-200 to-base-300 mt-auto h-52 overflow-hidden rounded-2xl bg-gradient-to-br lg:h-64"
-						>
-							<img
-								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png"
-								alt="Rich text editor preview"
-								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-							/>
-						</div>
-					</div>
-				</div>
-
-				<!-- Row 3: MED (1 col), LARGE (2 cols) -->
-
-				<!-- 5) Drag-and-drop activities organizer (MED) -->
-				<div
-					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-		h-full flex-col overflow-hidden
-		rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-		duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-1"
-				>
-					<div
-						class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-green-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-					></div>
-					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-4 flex items-center gap-4">
-							<div
-								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-500 to-green-500"
-							>
-								<!-- drag icon -->
-								<svg
-									class="h-6 w-6 text-white"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M8 9h8M8 15h8M6 7l-2 2 2 2M18 13l2 2-2 2"
-									/>
-								</svg>
-							</div>
-							<h3 class="text-base-content text-lg font-bold lg:text-xl">
-								Drag-and-drop activities organizer
-							</h3>
-						</div>
-						<p class="text-base-content/70 mb-3 text-sm lg:text-base">
-							Order your extracurriculars and achievements to highlight what
-							matters most.
-						</p>
-
-						<!-- Outlined sample activities -->
-						<div class="mt-auto space-y-2">
-							<div
-								class="bg-base-100/80 border-base-300/60 flex items-center justify-between rounded-lg border p-3"
-							>
-								<span class="text-base-content/80 text-sm"
-									>Debate Team Captain: Led weekly practices, state finalist</span
-								>
-								<span class="text-base-content/60 text-xs">Leadership</span>
-							</div>
-							<div
-								class="bg-base-100/80 border-base-300/60 flex items-center justify-between rounded-lg border p-3"
-							>
-								<span class="text-base-content/80 text-sm"
-									>Community Tutoring: 120+ hrs math tutoring for middle
-									schoolers</span
-								>
-								<span class="text-base-content/60 text-xs">Service</span>
-							</div>
-							<div
-								class="bg-base-100/80 border-base-300/60 flex items-center justify-between rounded-lg border p-3"
-							>
-								<span class="text-base-content/80 text-sm"
-									>App Dev Club: Built budgeting app, 500+ downloads</span
-								>
-								<span class="text-base-content/60 text-xs">STEM</span>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- 6) Organize essays by school & deadline (LARGE) -->
-				<div
-					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-		h-full flex-col overflow-hidden
-		rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-		duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
-				>
-					<div
-						class="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-					></div>
-					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-4 flex items-center gap-4">
-							<div
-								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500"
-							>
-								<svg
-									class="h-6 w-6 text-white"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-									/>
-								</svg>
-							</div>
-							<h3 class="text-base-content text-xl font-bold lg:text-2xl">
-								Organize essays by school & deadline
-							</h3>
-						</div>
-						<p class="text-base-content/70 mb-6 text-base lg:text-lg">
-							One place for essays, status, and timelines — sort by school,
-							track deadlines, and stay on top of every draft.
-						</p>
-						<div
-							class="from-base-200 to-base-300 mt-auto h-64 overflow-hidden rounded-2xl bg-gradient-to-br lg:h-80"
-						>
-							<img
-								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png"
-								alt="Organizer preview"
-								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-							/>
-						</div>
-					</div>
-				</div>
-
-				<!-- Row 4: LARGE (2 cols), MED (1 col) -->
-
-				<!-- 7) Seamless export (LARGE) -->
-				<div
-					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-		h-full flex-col overflow-hidden
-		rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-		duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-2"
-				>
-					<div
-						class="absolute inset-0 bg-gradient-to-br from-color-info/5 to-color-success/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-					></div>
-					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-4 flex items-center gap-4">
-							<div
-								class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-color-info to-color-success"
-							>
-								<svg
-									class="h-6 w-6 text-white"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3 3m0 0l-3-3m3 3V8"
-									/>
-								</svg>
-							</div>
-							<h3 class="text-base-content text-xl font-bold lg:text-2xl">
-								Seamless export
-							</h3>
-						</div>
-						<p class="text-base-content/70 mb-6 text-base lg:text-lg">
-							Copy into Common App or export to DOC/TXT when you're ready.
-							One-click exports preserve all your formatting and structure.
-						</p>
-
-						<!-- Enhanced export visualization -->
-						<div class="mt-auto space-y-6">
-							<!-- Export destinations -->
-							<div class="grid grid-cols-3 gap-4">
+							class="absolute inset-0 bg-gradient-to-br {item.backgroundGradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+						></div>
+						<div class="relative z-10 flex h-full flex-col">
+							<div class="mb-4 flex items-center gap-4">
 								<div
-									class="bg-base-200/60 hover:bg-base-200/80 flex flex-col items-center rounded-xl p-4 transition-all duration-200"
+									class="flex {item.size === 'large'
+										? 'h-12 w-12'
+										: 'h-10 w-10'} items-center justify-center rounded-{item.size ===
+									'large'
+										? '2xl'
+										: 'xl'} bg-gradient-to-r {item.gradient}"
 								>
-									<div
-										class="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500"
-									>
-										<svg
-											class="h-4 w-4 text-white"
-											fill="currentColor"
-											viewBox="0 0 24 24"
+									<!-- Use Lucide icon component directly -->
+									<svelte:component
+										this={getIconComponent(item.icon)}
+										class="{item.size === 'large'
+											? 'h-6 w-6'
+											: 'h-5 w-5'} text-white"
+									/>
+								</div>
+								<h3
+									class="text-base-content {item.size === 'large'
+										? 'text-xl font-bold lg:text-2xl'
+										: 'text-lg font-bold lg:text-xl'}"
+								>
+									{item.title}
+								</h3>
+							</div>
+							<p
+								class="text-base-content/70 mb-4 {item.size === 'large'
+									? 'text-base lg:text-lg'
+									: 'text-sm lg:text-base'}"
+							>
+								{item.description}
+							</p>
+
+							<!-- Regular Image -->
+							{#if item.image}
+								<div
+									class="from-base-200 to-base-300 mt-auto {item.size ===
+									'large'
+										? 'h-64 lg:h-80'
+										: 'h-52 lg:h-64'} overflow-hidden rounded-2xl bg-gradient-to-br"
+								>
+									<img
+										src={item.image}
+										alt={item.imageAlt}
+										class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+									/>
+								</div>
+							{/if}
+
+							<!-- Sample Activities (for drag-and-drop organizer) -->
+							{#if item.sampleActivities}
+								<div class="mt-auto space-y-2">
+									{#each item.sampleActivities as activity}
+										<div
+											class="bg-base-100/80 border-base-300/60 flex items-center justify-between rounded-lg border p-3"
 										>
-											<path
-												d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-											/>
-										</svg>
-									</div>
-									<span class="text-base-content/80 text-sm font-medium"
-										>Common App</span
-									>
-									<span class="text-base-content/60 mt-1 text-xs"
-										>Direct paste</span
-									>
+											<span class="text-base-content/80 text-sm"
+												>{activity.text}</span
+											>
+											<span class="text-base-content/60 text-xs"
+												>{activity.category}</span
+											>
+										</div>
+									{/each}
 								</div>
-								<div
-									class="bg-base-200/60 hover:bg-base-200/80 flex flex-col items-center rounded-xl p-4 transition-all duration-200"
-								>
-									<div
-										class="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600"
-									>
-										<svg
-											class="h-4 w-4 text-white"
-											fill="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
-											/>
-										</svg>
-									</div>
-									<span class="text-base-content/80 text-sm font-medium"
-										>Word Doc</span
-									>
-									<span class="text-base-content/60 mt-1 text-xs"
-										>Full formatting</span
-									>
-								</div>
-								<div
-									class="bg-base-200/60 hover:bg-base-200/80 flex flex-col items-center rounded-xl p-4 transition-all duration-200"
-								>
-									<div
-										class="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-gray-600"
-									>
-										<svg
-											class="h-4 w-4 text-white"
-											fill="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
-											/>
-										</svg>
-									</div>
-									<span class="text-base-content/80 text-sm font-medium"
-										>Plain Text</span
-									>
-									<span class="text-base-content/60 mt-1 text-xs"
-										>Clean copy</span
-									>
-								</div>
-							</div>
+							{/if}
 
-							<!-- Export features -->
-							<div class="grid grid-cols-2 gap-3">
-								<div
-									class="bg-base-200/40 flex items-center gap-3 rounded-lg p-3"
-								>
-									<div class="h-2 w-2 rounded-full bg-green-500"></div>
-									<span class="text-base-content/80 text-sm"
-										>Character count preserved</span
-									>
+							<!-- Export Options (for seamless export) -->
+							{#if item.exportOptions}
+								<div class="mt-auto space-y-6">
+									<!-- Export destinations -->
+									<div class="grid grid-cols-3 gap-4">
+										{#each item.exportOptions as option}
+											<div
+												class="bg-base-200/60 hover:bg-base-200/80 flex flex-col items-center rounded-xl p-4 transition-all duration-200"
+											>
+												<div
+													class="mb-2 h-8 w-8 rounded-lg {option.color} flex items-center justify-center"
+												>
+													<!-- Use Lucide icon component for export options -->
+													<svelte:component
+														this={getExportIconComponent(option.icon)}
+														class="h-4 w-4 text-white"
+													/>
+												</div>
+												<span class="text-base-content/80 text-sm font-medium"
+													>{option.name}</span
+												>
+												<span class="text-base-content/60 mt-1 text-xs"
+													>{option.subtitle}</span
+												>
+											</div>
+										{/each}
+									</div>
+
+									<!-- Export features with proper null checking -->
+									{#if item.exportFeatures && item.exportFeatures.length > 0}
+										<div class="grid grid-cols-2 gap-3">
+											{#each item.exportFeatures as feature}
+												<div
+													class="bg-base-200/40 flex items-center gap-3 rounded-lg p-3"
+												>
+													<div
+														class="h-2 w-2 rounded-full {feature.color}"
+													></div>
+													<span class="text-base-content/80 text-sm"
+														>{feature.text}</span
+													>
+												</div>
+											{/each}
+										</div>
+									{/if}
 								</div>
-								<div
-									class="bg-base-200/40 flex items-center gap-3 rounded-lg p-3"
-								>
-									<div class="h-2 w-2 rounded-full bg-blue-500"></div>
-									<span class="text-base-content/80 text-sm"
-										>Formatting maintained</span
-									>
-								</div>
-								<div
-									class="bg-base-200/40 flex items-center gap-3 rounded-lg p-3"
-								>
-									<div class="h-2 w-2 rounded-full bg-purple-500"></div>
-									<span class="text-base-content/80 text-sm"
-										>Instant download</span
-									>
-								</div>
-								<div
-									class="bg-base-200/40 flex items-center gap-3 rounded-lg p-3"
-								>
-									<div class="h-2 w-2 rounded-full bg-orange-500"></div>
-									<span class="text-base-content/80 text-sm"
-										>Copy to clipboard</span
-									>
-								</div>
-							</div>
+							{/if}
 						</div>
 					</div>
-				</div>
-
-				<!-- 8) Version history & checkpoints (MED) -->
-				<div
-					class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
-		h-full flex-col overflow-hidden
-		rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
-		duration-300 hover:-translate-y-2 hover:shadow-2xl md:col-span-1"
-				>
-					<div class="relative z-10 flex h-full flex-col">
-						<div class="mb-4 flex items-center gap-3">
-							<div
-								class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-color-accent to-color-warning"
-							>
-								<svg
-									class="h-5 w-5 text-white"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-									/>
-								</svg>
-							</div>
-							<h3 class="text-base-content text-lg font-bold">
-								Version history & checkpoints
-							</h3>
-						</div>
-						<p class="text-base-content/70 mb-4 text-sm lg:text-base">
-							Save milestones and restore any version with one click.
-						</p>
-						<div
-							class="from-base-200 to-base-300 mt-auto h-52 overflow-hidden rounded-2xl bg-gradient-to-br lg:h-64"
-						>
-							<img
-								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1750286065/haloway_version_control_product_screenshot_fstidc.png"
-								alt="Version history preview"
-								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-							/>
-						</div>
-					</div>
-				</div>
+				{/each}
 			</div>
 		</div>
 	</div>
@@ -1235,7 +1030,7 @@
 						<p class="text-lg">
 							Think of Haloway as a teacher knowledgeable about the college
 							admissions process. A good teacher won't write your essays for
-							you, and neither would Haloway. Instead, Haloway provides guidance
+							you, and neither will Haloway. Instead, Haloway provides guidance
 							and feedback to help you succeed.
 						</p>
 					</div>
