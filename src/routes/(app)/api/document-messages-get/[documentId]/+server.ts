@@ -1,4 +1,4 @@
-// src/routes/(app)/api/ai-chatbot-messages/[documentId]/+server.ts
+// src/routes/(app)/api/document-messages-get/[documentId]/+server.ts
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 

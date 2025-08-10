@@ -1,9 +1,9 @@
-// src/routes/api/ai-chatbot/+server.ts
+// src/routes/api/document-chatbot/+server.ts
 import { streamText } from 'ai';
 import { vertexProvider } from '$lib/utils/chatbot-vertex-provider';
 import type { RequestHandler } from './$types.js';
 import type { ChatMessage, UserProfile } from '$lib/types/ai-chatbot.ts';
-import type { Activity, Background } from '../../../../DatabaseDefinitions.ts';
+import type { Activity, Background } from '../../../../DatabaseDefinitions.js';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	try {

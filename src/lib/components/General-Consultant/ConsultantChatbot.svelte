@@ -87,7 +87,7 @@
 		try {
 			console.log('Loading initial messages for user');
 
-			const response = await fetch(`/api/get-consultant-messages`);
+			const response = await fetch(`/api/consultant-messages-get`);
 
 			if (response.ok) {
 				const result = await response.json();
@@ -353,7 +353,7 @@
 		try {
 			console.log('Fetching latest messages from database...');
 
-			const response = await fetch(`/api/get-consultant-messages`);
+			const response = await fetch(`/api/consultant-messages-get`);
 
 			if (response.ok) {
 				const result = await response.json();
@@ -530,7 +530,7 @@
 
 		// Clear messages from the database
 		try {
-			const response = await fetch('/api/clear-consultant-messages', {
+			const response = await fetch('/api/consultant-chatbot-clear', {
 				method: 'DELETE',
 			});
 

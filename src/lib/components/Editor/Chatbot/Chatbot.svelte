@@ -104,7 +104,7 @@
 			);
 
 			const response = await fetch(
-				`/api/ai-chatbot-messages/${$page.params.documentId}`,
+				`/api/document-messages-get/${$page.params.documentId}`,
 			);
 
 			if (response.ok) {
@@ -210,7 +210,7 @@
 			console.log('Sending message to API...');
 
 			// Send to streaming API route
-			const response = await fetch('/api/ai-chatbot', {
+			const response = await fetch('/api/document-chatbot', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -404,7 +404,7 @@
 			console.log('Fetching latest messages from database...');
 
 			const response = await fetch(
-				`/api/ai-chatbot-messages/${$page.params.documentId}`,
+				`/api/document-messages-get/${$page.params.documentId}`,
 			);
 
 			if (response.ok) {
@@ -583,7 +583,7 @@
 		// Clear messages from the database
 		try {
 			const response = await fetch(
-				`/api/ai-chatbot-messages/${$page.params.documentId}`,
+				`/api/document-messages-get/${$page.params.documentId}`,
 				{
 					method: 'DELETE',
 				},
