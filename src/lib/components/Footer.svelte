@@ -165,7 +165,7 @@
 					</svg>
 				</Button>
 				<Button
-					href="mailto:unibooth.business@gmail.com"
+					href="mailto:contact@haloway.co"
 					target="_blank"
 					variant="ghost"
 					size="icon"

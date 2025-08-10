@@ -61,7 +61,7 @@
 				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754849197/Screenshot_2025-08-09_223100_zf4fim.png',
 			imageAlt: 'Haloway admissions Q&A interface',
 			ctaText: 'Ask a question',
-			ctaLink: '/schools/uncategorized/write',
+			ctaLink: '/consultant',
 		},
 		{
 			title: 'Brainstorm outlines with an essay assistant',
@@ -1286,7 +1286,7 @@
 			</p>
 
 			<div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
-				<a href="/dashboard">
+				<a href="/register">
 					<button
 						class="glow-button text-base-100 transform rounded-xl border-0 bg-gradient-to-r from-color-primary to-color-accent px-8 text-base transition-all duration-200 hover:-translate-y-1 hover:from-color-primary/90 hover:to-color-accent/90 sm:px-10 sm:text-lg"
 					>
