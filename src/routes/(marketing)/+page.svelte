@@ -1,6 +1,8 @@
 <script lang="ts">
 	import * as Section from '$lib/components/landing/section';
-	import * as Card from '$lib/components/ui/card';
+	// import * as Card from '$lib/components/ui/card';
+	import { onMount } from 'svelte';
+	import TextLoop from '$lib/components/TextLoop.svelte';
 	// import Features from './components/sections/features/features.svelte';
 	// import HeroSection from './components/sections/hero.svelte';
 	// import LogosCloud from './components/sections/logos-cloud.svelte';
@@ -18,18 +20,27 @@
 	} from './../../config';
 
 	import {
+		MessageSquare, // for doc-chat
+		Check, // for check
+		MessageCircle, // for chat
+		Edit, // for edit
+		GripVertical, // for drag
+		Book, // for book
+		Download, // for export
+		History, // for history
+		FileText, // for document
+		CheckCircle, // for export check icon
 		PenLine,
-		ArrowUpRight,
-		BookText,
+		// ArrowUpRight,
+		// BookText,
 		Lock,
-		Check,
 		BookOpenCheck,
-		X,
+		// X,
 		ArrowRight,
 	} from 'lucide-svelte';
 
 	import AuroraBackground from '$lib/components/AuroraBackground.svelte';
-	import { Button } from '$lib/components/ui/button';
+	// import { Button } from '$lib/components/ui/button';
 
 	const ldJson = {
 		'@context': 'https://schema.org',
@@ -41,256 +52,295 @@
 		JSON.stringify(ldJson) + '<'
 	}/script>`;
 
-	const schools = [
-		{
-			name: 'Harvard',
-			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532874/harvard-min_t6lqkm.jpg',
-			showOnMobile: true,
-		},
-		{
-			name: 'MIT',
-			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532875/mit-min_zydu0g.jpg',
-			showOnMobile: false,
-		},
-		{
-			name: 'Stanford',
-			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532875/stanford-min_pjicnr.jpg',
-			showOnMobile: true,
-		},
-		{
-			name: 'Yale',
-			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532880/yale-min_z7n3rs.jpg',
-			showOnMobile: false,
-		},
-		{
-			name: 'Princeton',
-			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532875/princeton-min_tl4yak.jpg',
-			showOnMobile: true,
-		},
-		{
-			name: 'UCLA',
-			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532877/ucla-min_y6bll1.jpg',
-			showOnMobile: true,
-		},
-		// {
-		//   name: "Brown",
-		//   image:
-		//     "https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532873/brown-min_isutma.jpg",
-		//   showOnMobile: false,
-		// },
-		{
-			name: 'UPenn',
-			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532878/upenn-min_xwiyr5.jpg',
-			showOnMobile: false,
-		},
-		{
-			name: 'Cornell',
-			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532873/cornell-min_oakaim.jpg',
-			showOnMobile: false,
-		},
-		{
-			name: 'Duke',
-			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532873/duke-min_v9rnsi.jpg',
-			showOnMobile: false,
-		},
-		// {
-		//   name: "WashU",
-		//   image:
-		//     "https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532879/washu-min_etewmv.jpg",
-		//   showOnMobile: false,
-		// },
-		// {
-		//   name: "Georgetown",
-		//   image:
-		//     "https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532873/georgetown-min_rivio4.jpg",
-		//   showOnMobile: false,
-		// },
-		{
-			name: 'University of Florida',
-			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532877/uf-min_qf891x.jpg',
-			showOnMobile: false,
-		},
-		{
-			name: 'USC',
-			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532878/usc-min_te0xvx.jpg',
-			showOnMobile: true,
-		},
-		{
-			name: 'And more',
-			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/w_800,f_auto,q_auto/v1747532876/student-min_qcyjat.jpg',
-			showOnMobile: true,
-		},
-	];
-
 	const featuresData = [
 		{
-			title: 'Minimal Editor & Easy Export ',
+			title: 'Ask admissions questions based on your profile',
 			description:
-				"Write in a beautiful, powerfully simple editor where you can manage prompts, tags, and your drafts in a distraction-free writing environment. Copy-paste directly into Common App when you're ready to submit.",
+				'Quickly find answers to your admissions questions, from choosing extracurriculars and drafting cold emails to selecting recommendation letter teachers to comparing schools, all tailored to your situation.',
 			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750270312/editor4_ecvzzg.png',
-			// "https://res.cloudinary.com/dqdasxxho/image/upload/v1750269497/editor_zj9qvi.png",
-			imageAlt: 'Haloway essay editor interface',
-			ctaText: 'Try the Editor',
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754849197/Screenshot_2025-08-09_223100_zf4fim.png',
+			imageAlt: 'Haloway admissions Q&A interface',
+			ctaText: 'Ask a question',
 			ctaLink: '/schools/uncategorized/write',
 		},
 		{
-			title: 'All In One Place',
+			title: 'Brainstorm outlines with an essay assistant',
 			description:
-				'Create and manage all your college essays in your essay dashboard. Reduce the number of tabs you have open, and easily find your past essays to reference. Track deadlines and never lose track of your application progress again.',
+				"Talk to an assistant that helps you organize your thoughts and turn ideas into a clear, actionable outline. Overcome writer's block and gain insight into exactly what admissions officers are looking for in each response.",
 			image:
-				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png',
-			imageAlt: 'Haloway dashboard showing organized essays',
-			ctaText: 'View Dashboard',
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754849197/Screenshot_2025-08-10_140350_ast3ne.png',
+			imageAlt: 'Haloway essay brainstorming interface',
+			ctaText: 'Start brainstorming',
 			ctaLink: '/dashboard',
 		},
 		{
-			title: 'Manage Your Drafts Efficiently',
+			title: 'Get realtime, actionable feedback on essays',
 			description:
-				'Use checkpoints to track your progress and restore any previous version with a single click. Download your essays to save a local copy or upload them to Google Drive for backup.',
+				"See exactly what to fix in your essays with clear suggestions on clarity, structure, and flow so every draft is stronger than the last. Get a fresh set of eyes on your essays with feedback that's unique to your writing, not generic advice.",
 			image:
-				// "https://res.cloudinary.com/dqdasxxho/image/upload/v1750269499/version-control-cropped_rry8jn.png",
-				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750286065/haloway_version_control_product_screenshot_fstidc.png',
-			imageAlt: 'Checkpoint manager showing version history',
-			ctaText: 'Try the Checkpoint Manager',
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754795402/Screenshot_2025-08-08_135459_kfgg2w.png',
+			imageAlt: 'Haloway essay feedback interface',
+			ctaText: "Get Clara's feedback",
 			ctaLink: '/schools/uncategorized/write',
 		},
 	];
 
-	// const featureCards = [
-	// 	{
-	// 		title: 'Rich Text Editing',
-	// 		icon: PenLine,
-	// 	},
-	// 	{
-	// 		title: 'Realtime Autosave',
-	// 		icon: ArrowUpRight,
-	// 	},
-	// 	{
-	// 		title: 'Draft Version Management',
-	// 		icon: BookText,
-	// 	},
-	// 	{
-	// 		title: 'AI Feedback',
-	// 		icon: Check,
-	// 	},
-	// 	{
-	// 		title: 'Customizable UI',
-	// 		icon: X,
-	// 	},
-	// 	{
-	// 		title: 'Prompt Management',
-	// 		icon: PenLine,
-	// 	},
-	// 	{
-	// 		title: 'Essay Dashboard',
-	// 		icon: BookText,
-	// 	},
-	// 	{
-	// 		title: 'Custom Checkpoints',
-	// 		icon: Check,
-	// 	},
-	// 	{
-	// 		title: 'Built-in Deadline Tracking',
-	// 		icon: Lock,
-	// 	},
-	// 	{
-	// 		title: 'Status Tracking',
-	// 		icon: Check,
-	// 	},
-	// ];
-
-	const comparisonFeatures = [
+	const teamMembers = [
 		{
-			name: 'Rich-text Editing',
-			haloway: true,
-			notion: true,
-			word: true,
-			googleDocs: true,
+			name: 'Dan',
+			description:
+				'Your personal essay brainstorming partner. Dan helps turn your ideas into clear, structured outlines and ensures you know exactly what admissions officers are looking for in each prompt.',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754688614/dan-essay-coach-profile_wa6y5k.png',
+			alt: 'Dan, the essay brainstorming bot',
 		},
 		{
-			name: 'Realtime Autosave',
-			haloway: true,
-			notion: true,
-			word: true,
-			googleDocs: true,
-		},
-		// {
-		//   name: "Export to .DOC and .TXT",
-		//   haloway: true,
-		//   notion: false,
-		//   word: true,
-		//   googleDocs: true,
-		// },
-		{
-			name: 'Draft Version Management',
-			haloway: true,
-			notion: false,
-			word: true,
-			googleDocs: true,
+			name: 'Chloe',
+			description:
+				'Your go-to admissions Q&A expert. Whether you need clarity on the application process or a polished cold email to a professor, Chloe gives you tailored, actionable advice every time.',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754688613/Chloe-headshot-2_fggiag.png',
+			alt: 'Chloe, the admissions Q&A bot',
 		},
 		{
-			name: 'AI Feedback',
-			haloway: true,
-			notion: true,
-			word: false,
-			googleDocs: false,
-		},
-		{
-			name: 'Customizable UI',
-			haloway: true,
-			notion: true,
-			word: false,
-			googleDocs: false,
-		},
-		{
-			name: 'Prompt Management',
-			haloway: true,
-			notion: false,
-			word: false,
-			googleDocs: false,
-		},
-		{
-			name: 'Essay Dashboard',
-			haloway: true,
-			notion: false,
-			word: false,
-			googleDocs: false,
-		},
-		{
-			name: 'Custom Checkpoints',
-			haloway: true,
-			notion: false,
-			word: false,
-			googleDocs: false,
-		},
-		{
-			name: 'Built-in Deadline Tracking',
-			haloway: true,
-			notion: false,
-			word: false,
-			googleDocs: false,
-		},
-		{
-			name: 'Status Tracking',
-			haloway: true,
-			notion: false,
-			word: false,
-			googleDocs: false,
+			name: 'Clara',
+			description:
+				'Your second set of eyes for essay feedback. Clara gives you specific, unique advice on clarity, structure, and flow, so every draft you write is stronger than the last.',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1752903474/Clara-headshot_aeowlr.png',
+			alt: 'Clara, the essay feedback bot',
 		},
 	];
+
+	// Define the valid icon types
+	type IconType =
+		| 'doc-chat'
+		| 'check'
+		| 'chat'
+		| 'edit'
+		| 'drag'
+		| 'book'
+		| 'export'
+		| 'history'
+		| 'document';
+	type ExportIconType = 'check' | 'document';
+
+	// Icon mapping function that returns Lucide components
+	function getIconComponent(iconType: IconType) {
+		const icons = {
+			'doc-chat': MessageSquare,
+			check: Check,
+			chat: MessageCircle,
+			edit: Edit,
+			drag: GripVertical,
+			book: Book,
+			export: Download,
+			history: History,
+			document: FileText,
+		};
+		return icons[iconType] || icons['check'];
+	}
+
+	// Export icon mapping for small icons
+	function getExportIconComponent(iconType: ExportIconType) {
+		const exportIcons = {
+			check: CheckCircle,
+			document: FileText,
+		};
+		return exportIcons[iconType] || exportIcons['document'];
+	}
+
+	// Your bentoGridData stays the same, just update the interface
+	interface BentoGridItem {
+		id: number;
+		title: string;
+		description: string;
+		icon: IconType;
+		gradient: string;
+		backgroundGradient: string;
+		image: string | null;
+		imageAlt: string;
+		size: 'medium' | 'large';
+		row: number;
+		sampleActivities?: Array<{
+			text: string;
+			category: string;
+		}>;
+		exportOptions?: Array<{
+			name: string;
+			subtitle: string;
+			color: string;
+			icon: ExportIconType;
+		}>;
+		exportFeatures?: Array<{
+			text: string;
+			color: string;
+		}>;
+	}
+
+	// Bento Grid Configuration
+	const bentoGridData: BentoGridItem[] = [
+		{
+			id: 1,
+			title: 'Built-in document chatbot',
+			description:
+				'Ask questions right in your document about your essay without switching tabs.',
+			icon: 'doc-chat' as IconType, // Add type assertion
+			gradient: 'from-color-info to-color-success',
+			backgroundGradient: 'from-color-info/5 to-color-success/5',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754795402/Screenshot_2025-08-08_135334_pf2d0d.png',
+			imageAlt: 'Document chatbot preview',
+			size: 'medium' as const, // Add const assertion for literal types
+			row: 1,
+		},
+		{
+			id: 2,
+			title: 'Realtime, actionable feedback on essays',
+			description:
+				"See exactly what to fix, whether it's clarity, structure, and flow, with guidance that's unique to your writing.",
+			icon: 'check' as IconType,
+			gradient: 'from-color-accent to-color-warning',
+			backgroundGradient: 'from-color-accent/5 to-color-warning/5',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754795402/Screenshot_2025-08-08_135459_kfgg2w.png',
+			imageAlt: 'Realtime feedback preview',
+			size: 'large' as const,
+			row: 1,
+		},
+		{
+			id: 3,
+			title: 'Ask admissions questions',
+			description:
+				'Get clear answers on ECs, LORs, cold emails, school comparisons, and more — tailored to your situation.',
+			icon: 'chat' as IconType,
+			gradient: 'from-color-primary to-color-accent',
+			backgroundGradient: 'from-color-primary/5 to-color-accent/5',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754849195/Screenshot_2025-08-09_223339_ulryrj.png',
+			imageAlt: 'Admissions Q&A preview',
+			size: 'large' as const,
+			row: 2,
+		},
+		{
+			id: 4,
+			title: 'Rich-text editor with autosave',
+			description:
+				'Write with formatting tools and never lose your work with automatic cloud saves.',
+			icon: 'edit' as IconType,
+			gradient: 'from-blue-500 to-cyan-500',
+			backgroundGradient: 'from-blue-500/5 to-cyan-500/5',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754849542/Screenshot_2025-08-10_140524_c9nf98.png',
+			imageAlt: 'Rich text editor preview',
+			size: 'medium' as const,
+			row: 2,
+		},
+		{
+			id: 5,
+			title: 'Drag-and-drop activities organizer',
+			description:
+				'Order your extracurriculars and achievements to highlight what matters most.',
+			icon: 'drag' as IconType,
+			gradient: 'from-emerald-500 to-green-500',
+			backgroundGradient: 'from-emerald-500/5 to-green-500/5',
+			image: null,
+			imageAlt: '',
+			size: 'medium' as const,
+			row: 3,
+			sampleActivities: [
+				{
+					text: 'Debate Team Captain: Led weekly practices, state finalist',
+					category: 'Leadership',
+				},
+				{
+					text: 'Community Tutoring: 120+ hrs math tutoring for middle schoolers',
+					category: 'Service',
+				},
+				{
+					text: 'App Dev Club: Built budgeting app, 500+ downloads',
+					category: 'STEM',
+				},
+			],
+		},
+		{
+			id: 6,
+			title: 'Organize essays by school & deadline',
+			description:
+				'One place for essays, status, and timelines — sort by school, track deadlines, and stay on top of every draft.',
+			icon: 'book' as IconType,
+			gradient: 'from-purple-500 to-pink-500',
+			backgroundGradient: 'from-purple-500/5 to-pink-500/5',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1750269808/dashboard2_g5ypzy.png',
+			imageAlt: 'Organizer preview',
+			size: 'large' as const,
+			row: 3,
+		},
+		{
+			id: 7,
+			title: 'Seamless export',
+			description:
+				"Copy into Common App or export to DOC/TXT when you're ready. One-click exports preserve all your formatting and structure.",
+			icon: 'export' as IconType,
+			gradient: 'from-color-info to-color-success',
+			backgroundGradient: 'from-color-info/5 to-color-success/5',
+			image: null,
+			imageAlt: '',
+			size: 'large' as const,
+			row: 4,
+			exportOptions: [
+				{
+					name: 'Common App',
+					subtitle: 'Direct paste',
+					color: 'bg-orange-500',
+					icon: 'check' as ExportIconType,
+				},
+				{
+					name: 'Word Doc',
+					subtitle: 'Full formatting',
+					color: 'bg-blue-600',
+					icon: 'document' as ExportIconType,
+				},
+				{
+					name: 'Plain Text',
+					subtitle: 'Clean copy',
+					color: 'bg-gray-600',
+					icon: 'document' as ExportIconType,
+				},
+			],
+			exportFeatures: [
+				{ text: 'Character count preserved', color: 'bg-green-500' },
+				{ text: 'Formatting maintained', color: 'bg-blue-500' },
+				{ text: 'Download from editor', color: 'bg-purple-500' },
+				{ text: 'Copy to clipboard', color: 'bg-orange-500' },
+			],
+		},
+		{
+			id: 8,
+			title: 'Draft history & checkpoints',
+			description: 'Save milestones and restore any version with one click.',
+			icon: 'history' as IconType,
+			gradient: 'from-color-accent to-color-warning',
+			backgroundGradient: 'from-color-accent/5 to-color-warning/5',
+			image:
+				'https://res.cloudinary.com/dqdasxxho/image/upload/v1754849194/Screenshot_2025-08-10_140604_aqldsj.png',
+			imageAlt: 'Version history preview',
+			size: 'medium' as const,
+			row: 4,
+		},
+	];
+
+	let currentRoleIndex = 0;
+	const roles = ['Consultant', 'Copilot', 'Coach'];
+
+	onMount(() => {
+		const interval = setInterval(() => {
+			currentRoleIndex = (currentRoleIndex + 1) % roles.length;
+		}, 2500);
+
+		return () => clearInterval(interval);
+	});
 </script>
 
 <svelte:head>
@@ -304,85 +354,101 @@
 	<!-- Hero Section with Aurora Background -->
 	<AuroraBackground showRadialGradient={true} className="mt-[-12rem]">
 		<div
-			class="relative z-10 flex flex-col items-center justify-center py-8 text-center sm:py-12"
+			class="relative z-10 mt-24 flex flex-col items-center justify-center py-8 text-center sm:py-12"
 		>
-			<div
-				class="hero-content-fade mb-4 mt-6 max-w-5xl px-4 sm:mb-6 sm:mt-10 md:mt-20"
-			>
-				<a
-					href="/extracurricular-organizer"
-					class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-1 text-xs font-semibold text-primary sm:px-3 sm:text-base md:text-sm"
-				>
-					<div class="flex items-center gap-1"></div>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="14"
-						height="14"
-						class="sm:h-4 sm:w-4"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						><path
-							d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
-						/><path d="M5 3v4" /><path d="M19 17v4" /><path d="M3 5h4" /><path
-							d="M17 19h4"
-						/></svg
-					>
-					New! Try Our Free Extracurriculars Organizer
-					<ArrowRight class="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
-				</a>
-
-				<!-- <h1
-			class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold px-2 tracking-tight leading-tight"
-			>
-			Finish your essays <span
-				class="bg-gradient-to-r from-color-primary to-color-accent bg-clip-text text-transparent"
-				><span
-				class="underline decoration-color-primary decoration-4 sm:decoration-6 md:decoration-8 lg:decoration-[10px]"
-				>faster</span
-				> with Haloway.</span
-			>
-			</h1> -->
-
-				<h2
-					class="mx-auto mb-8 mt-4 max-w-4xl px-2 text-xl sm:mb-10 sm:mt-6 sm:text-2xl md:mb-12 md:mt-8 md:text-4xl lg:text-5xl"
-				>
-					Haloway: an easy-to-use writing platform to organize, write, and
-					perfect your college application essays.
-				</h2>
+			<div class="mb-4 mt-6 max-w-7xl px-4 sm:mb-6 sm:mt-10 md:mt-20">
+				<!-- Two Column Layout -->
 				<div
-					class="mt-6 flex flex-col flex-wrap place-content-center gap-3 sm:mt-8 sm:flex-row sm:gap-4"
+					class="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12"
 				>
-					<a href="/register">
-						<div class="glow-container">
-							<button class="glow-button">
-								Start writing for free
-								<PenLine class="ml-1 h-4 w-4 sm:h-5 sm:w-5" />
-							</button>
+					<!-- Left Column - Text Content -->
+					<div class="flex flex-col text-center lg:text-left">
+						<a
+							href="/extracurricular-organizer"
+							class="mb-6 inline-flex w-fit items-center gap-1 self-center rounded-full bg-primary/10 px-2 py-1 text-xs font-semibold text-primary sm:px-3 sm:text-base md:text-sm lg:self-start"
+						>
+							<div class="flex items-center gap-1"></div>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="14"
+								height="14"
+								class="sm:h-4 sm:w-4"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><path
+									d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"
+								/><path d="M5 3v4" /><path d="M19 17v4" /><path
+									d="M3 5h4"
+								/><path d="M17 19h4" /></svg
+							>
+							New! Try Our Free Extracurriculars Organizer
+							<ArrowRight class="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
+						</a>
+
+						<h1
+							class="mb-4 text-3xl font-bold leading-relaxed tracking-tight sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
+						>
+							Haloway, Your <span
+								class="sm:decoration-6 underline decoration-color-info decoration-4 md:decoration-8 lg:decoration-[10px]"
+								>Ethical</span
+							>
+							AI College
+							<TextLoop
+								items={roles}
+								interval={3000}
+								typeSpeed={80}
+								deleteSpeed={40}
+								pauseTime={3000}
+								className="text-color-primary font-bold"
+							/>
+						</h1>
+
+						<h2 class="mb-8 text-lg sm:text-xl md:text-2xl lg:text-3xl">
+							Your admissions copilot to navigate the college application
+							journey with ease.
+						</h2>
+
+						<div
+							class="flex flex-col justify-center gap-3 sm:flex-row sm:gap-4 lg:justify-start"
+						>
+							<a href="/register">
+								<div class="glow-container">
+									<button class="glow-button">
+										Start for free
+										<PenLine class="ml-1 h-4 w-4 sm:h-5 sm:w-5" />
+									</button>
+								</div>
+							</a>
 						</div>
-					</a>
+					</div>
+
+					<!-- Right Column - Product Image -->
+					<div
+						class="hero-content-fade hidden justify-center lg:flex lg:justify-end"
+					>
+						<div class="relative w-full max-w-lg">
+							<img
+								src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754333956/Haloway_hero_image_cwv3b6.png"
+								alt="Haloway College Application Platform"
+								class="h-auto rounded-2xl shadow-2xl"
+							/>
+							<!-- <div
+								class="pointer-events-none absolute inset-0 rounded-lg bg-gradient-to-r from-color-primary/10 to-color-accent/10"
+							></div> -->
+						</div>
+					</div>
 				</div>
-				<!-- Add demo later -->
-				<!-- <h2
-			class="mt-6 sm:mt-8 text-lg sm:text-xl md:text-2xl xl:text-3xl flex flex-col sm:flex-row items-center justify-center gap-2 px-4"
-			>
-			<span>Or just</span>
-			<a href="/" target="_blank" class="link font-bold flex items-center"
-				>try out this demo <ExternalLink
-				class="ml-2 w-4 h-4 sm:w-5 sm:h-5"
-				/></a
-			>
-			</h2> -->
 			</div>
 		</div>
 	</AuroraBackground>
 </Section.Root>
 
 <!-- Features Showcase Section -->
-<Section.Root anchor="features">
+<Section.Root anchor="demo-features">
 	<div
 		class="from-base-100 to-base-200 relative overflow-hidden bg-gradient-to-b py-16 sm:py-20 lg:py-24"
 	>
@@ -392,7 +458,7 @@
 		></div>
 
 		<div class="relative">
-			<!-- First Feature: Integrated Editor -->
+			<!-- First Feature: Ask For Admissions Advice -->
 			<div
 				class="lg:mx-auto lg:grid lg:max-w-7xl lg:grid-flow-col-dense lg:grid-cols-2 lg:gap-16 lg:px-8 xl:gap-24"
 			>
@@ -471,7 +537,7 @@
 									class="h-3 w-3 animate-pulse rounded-full bg-green-500"
 								></div>
 								<span class="text-sm font-medium text-gray-700"
-									>Rich text editing with auto-save</span
+									>Ask Chloe for admissions advice</span
 								>
 							</div>
 						</div>
@@ -559,7 +625,7 @@
 										class="h-3 w-3 animate-pulse rounded-full bg-blue-500"
 									></div>
 									<span class="text-sm font-medium text-gray-700"
-										>Organize essays by school & deadline</span
+										>Chat with an essay assistant</span
 									>
 								</div>
 							</div>
@@ -649,7 +715,7 @@
 										class="h-3 w-3 animate-pulse rounded-full bg-orange-500"
 									></div>
 									<span class="text-sm font-medium text-gray-700"
-										>Track changes & revert anytime</span
+										>See what still needs to be fixed</span
 									>
 								</div>
 							</div>
@@ -659,7 +725,7 @@
 			</div>
 
 			<!-- Section Header -->
-			<div class="mb-16 mt-32 text-center">
+			<!-- <div class="mb-16 mt-32 text-center">
 				<h2 class="text-base-content mb-6 text-4xl sm:text-5xl md:text-6xl">
 					Better than <span
 						class="bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text font-bold text-transparent"
@@ -672,10 +738,10 @@
 					Built specifically for college apps with features that help you write,
 					organize, and perfect your essays.
 				</p>
-			</div>
+			</div> -->
 
 			<!-- Scroll Indicator -->
-			<div class="mt-16 text-center">
+			<!-- <div class="mt-16 text-center">
 				<div
 					class="inline-flex animate-bounce cursor-pointer flex-col items-center gap-3"
 				>
@@ -697,346 +763,329 @@
 						</svg>
 					</div>
 				</div>
+			</div> -->
+		</div>
+	</div>
+</Section.Root>
+
+<!-- Meet the Haloway Team Section -->
+<Section.Root anchor="team">
+	<div
+		class="from-base-100 to-base-200 relative overflow-hidden bg-gradient-to-b py-16 sm:py-20 lg:py-24"
+	>
+		<!-- Background decoration -->
+		<div
+			class="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-color-primary/5"
+		></div>
+
+		<div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+			<!-- Section Header -->
+			<div class="mb-12 text-center">
+				<h2 class="text-base-content text-4xl font-bold sm:text-5xl">
+					Meet Your Consultant Team
+				</h2>
+				<p
+					class="text-base-content/70 mx-auto mt-4 max-w-2xl text-lg sm:text-xl"
+				>
+					Three focused assistants, each built for a specific part of your
+					application.
+				</p>
+			</div>
+
+			<!-- Grid -->
+			<div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+				{#each teamMembers as member}
+					<div
+						class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative overflow-hidden
+						rounded-3xl border p-8
+						text-center shadow-lg backdrop-blur transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+					>
+						<div class="relative z-10">
+							<img
+								src={member.image}
+								alt={member.alt}
+								class="mx-auto mb-4 h-32 w-32 rounded-full object-cover shadow-md"
+								loading="lazy"
+							/>
+							<h3 class="text-base-content text-xl font-semibold">
+								{member.name}
+							</h3>
+							<p class="text-base-content/70 mt-3 text-sm">
+								{member.description}
+							</p>
+						</div>
+					</div>
+				{/each}
+			</div>
+		</div>
+	</div>
+</Section.Root>
+
+<!-- Bento Grid Features Section -->
+<Section.Root anchor="features">
+	<div
+		class="from-base-100 to-base-200 relative overflow-hidden bg-gradient-to-b py-16 sm:py-20 lg:pb-24 lg:pt-20"
+	>
+		<!-- Background decoration -->
+		<div
+			class="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-color-accent/5"
+		></div>
+
+		<div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+			<!-- Section Header -->
+			<div class="mb-16 text-center">
+				<h2
+					class="text-base-content mb-6 text-4xl font-bold sm:text-5xl md:text-6xl"
+				>
+					Everything you need to <span
+						class="bg-gradient-to-r from-color-primary to-color-accent bg-clip-text text-transparent"
+						>succeed</span
+					>
+				</h2>
+				<p class="text-base-content/70 mx-auto max-w-3xl text-xl sm:text-2xl">
+					A look at our versatile platform, built specifically for college apps.
+				</p>
+			</div>
+
+			<!-- Bento Grid (alternating layout) -->
+
+			<div
+				class="grid auto-rows-[1fr] grid-cols-1 gap-6 [grid-auto-flow:dense] md:grid-cols-3 lg:gap-8"
+			>
+				{#each bentoGridData as item}
+					<div
+						class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative flex
+			h-full flex-col overflow-hidden
+			rounded-3xl border p-8 shadow-lg backdrop-blur transition-all
+			duration-300 hover:-translate-y-2 hover:shadow-2xl {item.size === 'large'
+							? 'md:col-span-2'
+							: 'md:col-span-1'}"
+					>
+						<div
+							class="absolute inset-0 bg-gradient-to-br {item.backgroundGradient} opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+						></div>
+						<div class="relative z-10 flex h-full flex-col">
+							<div class="mb-4 flex items-center gap-4">
+								<div
+									class="flex {item.size === 'large'
+										? 'h-12 w-12'
+										: 'h-10 w-10'} items-center justify-center rounded-{item.size ===
+									'large'
+										? '2xl'
+										: 'xl'} bg-gradient-to-r {item.gradient}"
+								>
+									<!-- Use Lucide icon component directly -->
+									<svelte:component
+										this={getIconComponent(item.icon)}
+										class="{item.size === 'large'
+											? 'h-6 w-6'
+											: 'h-5 w-5'} text-white"
+									/>
+								</div>
+								<h3
+									class="text-base-content {item.size === 'large'
+										? 'text-xl font-bold lg:text-2xl'
+										: 'text-lg font-bold lg:text-xl'}"
+								>
+									{item.title}
+								</h3>
+							</div>
+							<p
+								class="text-base-content/70 mb-4 {item.size === 'large'
+									? 'text-base lg:text-lg'
+									: 'text-sm lg:text-base'}"
+							>
+								{item.description}
+							</p>
+
+							<!-- Regular Image -->
+							{#if item.image}
+								<div
+									class="from-base-200 to-base-300 mt-auto {item.size ===
+									'large'
+										? 'h-64 lg:h-80'
+										: 'h-52 lg:h-64'} overflow-hidden rounded-2xl bg-gradient-to-br"
+								>
+									<img
+										src={item.image}
+										alt={item.imageAlt}
+										class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+									/>
+								</div>
+							{/if}
+
+							<!-- Sample Activities (for drag-and-drop organizer) -->
+							{#if item.sampleActivities}
+								<div class="mt-auto space-y-2">
+									{#each item.sampleActivities as activity}
+										<div
+											class="bg-base-100/80 border-base-300/60 flex items-center justify-between rounded-lg border p-3"
+										>
+											<span class="text-base-content/80 text-sm"
+												>{activity.text}</span
+											>
+											<span class="text-base-content/60 text-xs"
+												>{activity.category}</span
+											>
+										</div>
+									{/each}
+								</div>
+							{/if}
+
+							<!-- Export Options (for seamless export) -->
+							{#if item.exportOptions}
+								<div class="mt-auto space-y-6">
+									<!-- Export destinations -->
+									<div class="grid grid-cols-3 gap-4">
+										{#each item.exportOptions as option}
+											<div
+												class="bg-base-200/60 hover:bg-base-200/80 flex flex-col items-center rounded-xl p-4 transition-all duration-200"
+											>
+												<div
+													class="mb-2 h-8 w-8 rounded-lg {option.color} flex items-center justify-center"
+												>
+													<!-- Use Lucide icon component for export options -->
+													<svelte:component
+														this={getExportIconComponent(option.icon)}
+														class="h-4 w-4 text-white"
+													/>
+												</div>
+												<span class="text-base-content/80 text-sm font-medium"
+													>{option.name}</span
+												>
+												<span class="text-base-content/60 mt-1 text-xs"
+													>{option.subtitle}</span
+												>
+											</div>
+										{/each}
+									</div>
+
+									<!-- Export features with proper null checking -->
+									{#if item.exportFeatures && item.exportFeatures.length > 0}
+										<div class="grid grid-cols-2 gap-3">
+											{#each item.exportFeatures as feature}
+												<div
+													class="bg-base-200/40 flex items-center gap-3 rounded-lg p-3"
+												>
+													<div
+														class="h-2 w-2 rounded-full {feature.color}"
+													></div>
+													<span class="text-base-content/80 text-sm"
+														>{feature.text}</span
+													>
+												</div>
+											{/each}
+										</div>
+									{/if}
+								</div>
+							{/if}
+						</div>
+					</div>
+				{/each}
 			</div>
 		</div>
 	</div>
 </Section.Root>
 
 <!-- Features Cloud Section -->
-<div class="bg-base-100 mx-auto max-w-7xl pb-16 sm:pb-20 lg:pb-24">
+<!-- <div class="bg-base-100 mx-auto max-w-7xl pb-16 sm:pb-20 lg:pb-24">
 	<Section.Root>
 		<div class="justify-around"></div>
 	</Section.Root>
-</div>
+</div> -->
 
-<!-- Stress Section -->
-<div class="hero relative min-h-[80vh] overflow-hidden">
-	<img
-		src="https://res.cloudinary.com/dqdasxxho/image/upload/v1747532915/stressed-student_ob1v8h.jpg"
-		alt="Stressed student"
-		class="absolute left-0 top-0 h-full w-full object-cover"
-		style="z-index: -1;"
-	/>
-
+<!-- Ethical AI Section -->
+<Section.Root anchor="ethical-ai">
 	<div
-		class="absolute inset-0 bg-black"
-		style="opacity: 0.55; z-index: 0;"
-	></div>
-
-	<div class="relative z-10 px-4 py-16 text-center sm:py-20">
-		<div class="font-heading mx-auto max-w-5xl">
-			<div>
-				<h1
-					class="mt-4 bg-gradient-to-r from-color-primary to-color-accent bg-clip-text pb-2 text-4xl font-bold text-transparent sm:text-5xl"
-				>
-					Writing college essays is <span
-						class="sm:decoration-5 underline decoration-color-primary decoration-4 lg:decoration-[8px]"
-						>stressful</span
-					>.
-				</h1>
-				<h2 class="mt-4 pb-2 text-4xl font-bold text-white sm:text-5xl">
-					It doesn't also have to be <span
-						class="sm:decoration-5 underline decoration-color-primary decoration-4 lg:decoration-[8px]"
-						>disorganized</span
-					>.
-				</h2>
-			</div>
-			<!-- <div
-		  class="mt-6 sm:mt-8 mb-8 sm:mb-12 text-lg sm:text-xl md:text-2xl lg:text-3xl max-w-4xl mx-auto text-center px-2 sm:px-5"
-		>
-		  <p class="mb-4 text-white/90">
-			Whether it's scattered Google Docs or lost Word files buried in
-			folders, managing your essays shouldn't add to your stress.
-		  </p>
-		</div> -->
-
-			<!-- Feature Comparison Table -->
-			<div class="mx-auto mt-12 max-w-6xl sm:mt-16">
-				<div
-					class="rounded-2xl border border-white/10 bg-black/20 p-6 backdrop-blur-sm sm:rounded-3xl sm:p-8 lg:p-10"
-				>
-					<h3 class="mb-8 text-2xl text-white sm:mb-10 sm:text-3xl lg:text-4xl">
-						Why choose <span
-							class="bg-gradient-to-r from-color-primary to-color-accent bg-clip-text font-semibold text-transparent"
-							>{WebsiteName}</span
-						>?
-					</h3>
-
-					<!-- Desktop Table -->
-					<div
-						class="hidden overflow-hidden rounded-xl border border-white/20 lg:block"
-					>
-						<table class="w-full table-fixed border-separate border-spacing-0">
-							<thead>
-								<tr class="bg-white/10 backdrop-blur-sm">
-									<th
-										class="w-1/5 p-4 text-left text-lg font-semibold text-white sm:p-6"
-										>Feature</th
-									>
-									<th
-										class="w-1/5 border-l border-white/10 bg-gradient-to-r from-color-primary/20 to-color-accent/20 p-4 text-center text-lg font-bold text-color-primary sm:p-6"
-									>
-										{WebsiteName}
-									</th>
-									<th
-										class="w-1/5 border-l border-white/10 p-4 text-center text-lg font-semibold text-white/80 sm:p-6"
-										>Google Docs</th
-									>
-									<th
-										class="w-1/5 border-l border-white/10 p-4 text-center text-lg font-semibold text-white/80 sm:p-6"
-										>Word</th
-									>
-									<th
-										class="w-1/5 border-l border-white/10 p-4 text-center text-lg font-semibold text-white/80 sm:p-6"
-										>Notion</th
-									>
-								</tr>
-							</thead>
-							<tbody>
-								{#each comparisonFeatures as feature, index}
-									<tr
-										class="border-t border-white/10 {index % 2 === 0
-											? 'bg-white/5'
-											: 'bg-black/10'}"
-									>
-										<td class="p-4 font-medium text-white sm:p-6"
-											>{feature.name}</td
-										>
-
-										<!-- Haloway -->
-										<td
-											class="border-l border-white/10 bg-gradient-to-r from-color-primary/10 to-color-accent/10 p-4 text-center sm:p-6"
-										>
-											{#if feature.haloway}
-												<div
-													class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-green-500"
-												>
-													<Check class="h-5 w-5 text-white" />
-												</div>
-											{:else}
-												<div
-													class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-500"
-												>
-													<X class="h-5 w-5 text-white" />
-												</div>
-											{/if}
-										</td>
-
-										<!-- Google Docs -->
-										<td class="border-l border-white/10 p-4 text-center sm:p-6">
-											{#if feature.googleDocs}
-												<div
-													class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-green-500"
-												>
-													<Check class="h-5 w-5 text-white" />
-												</div>
-											{:else}
-												<div
-													class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-500"
-												>
-													<X class="h-5 w-5 text-white" />
-												</div>
-											{/if}
-										</td>
-
-										<!-- Word -->
-										<td class="border-l border-white/10 p-4 text-center sm:p-6">
-											{#if feature.word}
-												<div
-													class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-green-500"
-												>
-													<Check class="h-5 w-5 text-white" />
-												</div>
-											{:else}
-												<div
-													class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-500"
-												>
-													<X class="h-5 w-5 text-white" />
-												</div>
-											{/if}
-										</td>
-
-										<!-- Notion -->
-										<td class="border-l border-white/10 p-4 text-center sm:p-6">
-											{#if feature.notion}
-												<div
-													class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-green-500"
-												>
-													<Check class="h-5 w-5 text-white" />
-												</div>
-											{:else}
-												<div
-													class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-red-500"
-												>
-													<X class="h-5 w-5 text-white" />
-												</div>
-											{/if}
-										</td>
-									</tr>
-								{/each}
-							</tbody>
-						</table>
+		class="relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-gray-50 px-4 py-20"
+	>
+		<div class="mx-auto max-w-6xl">
+			<div class="grid items-center gap-16 lg:grid-cols-2">
+				<!-- Text Content -->
+				<div class="space-y-6">
+					<!-- Section Title -->
+					<div class="space-y-4">
+						<h2
+							class="text-4xl font-bold tracking-tight text-gray-900 lg:text-5xl"
+						>
+							Haloway Never Writes Essays For You
+						</h2>
+						<div class="h-1 w-20 rounded-full bg-color-primary"></div>
 					</div>
 
-					<!-- Mobile Cards -->
-					<div class="space-y-6 lg:hidden">
-						{#each comparisonFeatures as feature}
-							<div
-								class="rounded-xl border border-white/20 bg-white/10 p-6 backdrop-blur-sm"
-							>
-								<h4 class="mb-4 text-center text-lg font-bold text-white">
-									{feature.name}
-								</h4>
-								<div class="grid grid-cols-2 gap-3">
-									<!-- Haloway Highlighted -->
-									<div
-										class="flex items-center justify-between rounded-md bg-gradient-to-r from-color-primary/50 to-color-accent/50 px-4 py-3"
-									>
-										<span class="font-semibold text-white">{WebsiteName}</span>
-										{#if feature.haloway}
-											<Check class="h-5 w-5 text-green-400" />
-										{:else}
-											<X class="h-5 w-5 text-red-400" />
-										{/if}
-									</div>
+					<!-- Main Text -->
+					<div class="space-y-4 leading-relaxed text-gray-600">
+						<p class="text-lg">
+							We believe that having an AI write essays for you is not only
+							unethical, but the output is boring and generic, the exact
+							opposite of what admissions officers want to see.
+						</p>
 
-									<!-- Google Docs -->
-									<div
-										class="flex items-center justify-between rounded-md border border-white/10 px-4 py-3"
-									>
-										<span class="text-white/80">Google Docs</span>
-										{#if feature.googleDocs}
-											<Check class="h-5 w-5 text-green-400" />
-										{:else}
-											<X class="h-5 w-5 text-red-400" />
-										{/if}
-									</div>
+						<p class="text-lg">
+							AI is ethical when it helps bring out your very own voice and
+							personality, not when it replaces your authentic story with
+							generic content.
+						</p>
 
-									<!-- Word -->
-									<div
-										class="flex items-center justify-between rounded-md border border-white/10 px-4 py-3"
-									>
-										<span class="text-white/80">Word</span>
-										{#if feature.word}
-											<Check class="h-5 w-5 text-green-400" />
-										{:else}
-											<X class="h-5 w-5 text-red-400" />
-										{/if}
-									</div>
+						<p class="text-lg">
+							Think of Haloway as a teacher knowledgeable about the college
+							admissions process. A good teacher won't write your essays for
+							you, and neither will Haloway. Instead, Haloway provides guidance
+							and feedback to help you succeed.
+						</p>
+					</div>
 
-									<!-- Notion -->
-									<div
-										class="flex items-center justify-between rounded-md border border-white/10 px-4 py-3"
-									>
-										<span class="text-white/80">Notion</span>
-										{#if feature.notion}
-											<Check class="h-5 w-5 text-green-400" />
-										{:else}
-											<X class="h-5 w-5 text-red-400" />
-										{/if}
-									</div>
-								</div>
+					<!-- Stats or Highlights -->
+					<div class="grid grid-cols-2 gap-6 pt-6">
+						<div class="text-center lg:text-left">
+							<div class="text-3xl font-bold text-color-primary">100%</div>
+							<div class="text-sm uppercase tracking-wider text-gray-500">
+								Your Voice
 							</div>
-						{/each}
+						</div>
+						<div class="text-center lg:text-left">
+							<div class="text-3xl font-bold text-color-primary">0%</div>
+							<div class="text-sm uppercase tracking-wider text-gray-500">
+								Generic AI Slop
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Image -->
+				<div class="relative">
+					<div class="relative">
+						<!-- Background decoration -->
+						<div
+							class="absolute -right-6 -top-6 -z-10 h-full w-full rounded-2xl bg-color-primary/10"
+						></div>
+
+						<!-- Main image -->
+						<img
+							src="https://res.cloudinary.com/dqdasxxho/image/upload/v1754333956/Haloway_hero_image_1_gzcqwm.png"
+							alt="Students working authentically on their essays"
+							class="w-full rounded-2xl object-cover shadow-2xl"
+						/>
+
+						<!-- Floating badge -->
+						<!-- <div
+							class="absolute -bottom-6 -left-6 rounded-xl border border-gray-200 bg-white/95 p-4 shadow-lg backdrop-blur-sm"
+						>
+							<div class="flex items-center space-x-3">
+								<div
+									class="h-3 w-3 animate-pulse rounded-full bg-red-500"
+								></div>
+								<span class="text-sm font-medium text-gray-900">
+									0% Plagiarism
+								</span>
+							</div>
+						</div> -->
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-
-<!-- Schools Section -->
-<div class="min-h-[60vh] bg-color-base-100 py-12 sm:min-h-[70vh] sm:py-16">
-	<div class="px-4 py-6 sm:px-7 sm:py-8">
-		<div class="mx-auto max-w-7xl text-center">
-			<h1 class="px-2 text-4xl lg:text-5xl">
-				<span class="font-bold italic">Ready? </span>Pick a school
-			</h1>
-		</div>
-
-		<div
-			class="mx-auto mt-12 grid max-w-7xl grid-cols-1 gap-4 px-4 sm:mt-16 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8"
-		>
-			{#each schools.filter((school) => school.showOnMobile) as school (school.name)}
-				<Card.Root
-					class="mx-auto w-full max-w-sm overflow-hidden bg-color-base-200 shadow-xl transition-shadow hover:shadow-2xl sm:hidden"
-				>
-					<div class="relative aspect-square overflow-hidden">
-						<img
-							src={school.image}
-							alt={school.name}
-							class="h-full w-full object-cover"
-							loading="lazy"
-						/>
-					</div>
-
-					<Card.Content
-						class="flex flex-col items-center p-4 text-center sm:p-6"
-					>
-						<Card.Title
-							class="mb-3 text-lg sm:mb-4 sm:text-xl lg:mb-6 lg:text-2xl"
-						>
-							{school.name}
-						</Card.Title>
-						<!-- Replace with links to actual schools later (getUrlSafeName) -->
-						<Button
-							href="/schools"
-							class="{school.name === 'And more'
-								? 'bg-amber-500 hover:bg-amber-600'
-								: 'bg-foreground'} btn-sm sm:btn-md w-full rounded-full text-sm sm:text-base lg:text-lg"
-						>
-							<span>
-								{school.name === 'And more'
-									? 'Choose another school'
-									: 'Start writing'}
-							</span>
-							<ArrowUpRight class="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
-						</Button>
-					</Card.Content>
-				</Card.Root>
-			{/each}
-
-			{#each schools as school (school.name)}
-				<Card.Root
-					class="mx-auto hidden w-full max-w-sm overflow-hidden bg-color-base-200 shadow-xl transition-shadow hover:shadow-2xl sm:block"
-				>
-					<div class="relative aspect-square overflow-hidden">
-						<img
-							src={school.image}
-							alt={school.name}
-							class="h-full w-full object-cover"
-							loading="lazy"
-						/>
-					</div>
-
-					<Card.Content
-						class="flex flex-col items-center p-4 text-center sm:p-6"
-					>
-						<Card.Title
-							class="mb-3 text-lg sm:mb-4 sm:text-xl lg:mb-6 lg:text-2xl"
-						>
-							{school.name}
-						</Card.Title>
-						<!-- Replace with links to actual schools later (getUrlSafeName) -->
-						<Button
-							href="/schools"
-							class="{school.name === 'And more'
-								? 'bg-amber-500 hover:bg-amber-600'
-								: 'bg-foreground'} btn-sm sm:btn-md w-full rounded-full text-sm sm:text-base lg:text-lg"
-						>
-							<span>
-								{school.name === 'And more'
-									? 'Choose another school'
-									: 'Start writing'}
-							</span>
-							<ArrowUpRight class="ml-3 mt-0.5 h-4 w-4 sm:h-5 sm:w-5" />
-						</Button>
-					</Card.Content>
-				</Card.Root>
-			{/each}
-		</div>
-	</div>
-</div>
+</Section.Root>
 
 <!-- Privacy Section -->
 <Section.Root anchor="security">
@@ -1058,60 +1107,8 @@
 			<div
 				class="rounded-3xl border border-gray-600/30 bg-gradient-to-br from-gray-800/80 via-gray-700/80 to-gray-800/80 p-8 shadow-2xl backdrop-blur-xl sm:rounded-[2rem] sm:p-12 lg:p-16"
 			>
-				<!-- Icon Group -->
-				<!-- <div
-			class="flex justify-center items-center gap-4 sm:gap-6 mb-8 sm:mb-10"
-			>
-			<div
-				class="bg-gradient-to-r from-green-500 to-emerald-500 p-3 sm:p-4 rounded-2xl shadow-lg"
-			>
-				<Shield class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white" />
-			</div>
-			<div
-				class="bg-gradient-to-r from-blue-500 to-cyan-500 p-3 sm:p-4 rounded-2xl shadow-lg"
-			>
-				<Lock class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white" />
-			</div>
-			<div
-				class="bg-gradient-to-r from-color-primary to-color-accent p-3 sm:p-4 rounded-2xl shadow-lg"
-			>
-				<svg
-				class="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white"
-				fill="none"
-				stroke="currentColor"
-				viewBox="0 0 24 24"
-				>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-				/>
-				</svg>
-			</div>
-			</div> -->
-
-				<!-- Heading -->
-				<!-- <h1
-			class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-8 sm:mb-10 leading-tight"
-			>
-			<span class="text-white">Your essays are </span>
-			<span
-				class="bg-gradient-to-r from-green-400 via-emerald-400 to-green-500 bg-clip-text text-transparent underline decoration-green-400 decoration-4 sm:decoration-6 lg:decoration-[8px]"
-				>private</span
-			><span class="text-white">, </span>
-			<span
-				class="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent underline decoration-blue-400 decoration-4 sm:decoration-6 lg:decoration-[8px]"
-				>safe</span
-			><span class="text-white">, and </span>
-			<span
-				class="bg-gradient-to-r from-color-primary via-color-accent to-color-primary bg-clip-text text-transparent underline decoration-color-primary decoration-4 sm:decoration-6 lg:decoration-[8px]"
-				>secure</span
-			><span class="text-white">.</span>
-			</h1> -->
-
 				<h2
-					class="mb-8 text-2xl font-bold leading-tight text-gray-400 sm:mb-10 sm:text-3xl md:text-4xl"
+					class="mb-8 text-2xl font-bold leading-tight text-white/80 sm:mb-10 sm:text-3xl md:text-5xl"
 				>
 					Built with security and privacy in mind.
 				</h2>
@@ -1148,9 +1145,9 @@
 							</h3>
 						</div>
 						<p class="text-base leading-relaxed text-gray-300 sm:text-lg">
-							Your essays are stored securely with Row-Level Security (RLS), so
-							only you can access your work. We never share, sell, or use your
-							data beyond your dashboard. All essays are yours and yours only.
+							Your essays are stored securely with Row-Level Security (RLS), and
+							we never share, sell, or use your data without your permission.
+							All essays are yours and yours only.
 						</p>
 					</div>
 
@@ -1236,37 +1233,9 @@
 				</div>
 
 				<!-- Trust Indicators -->
-				<div
+				<!-- <div
 					class="flex flex-col items-center justify-center gap-4 text-base sm:flex-row sm:gap-6 sm:text-lg"
 				>
-					<!-- <div class="flex items-center gap-2 text-gray-400">
-				<svg
-				class="w-5 h-5 text-green-400"
-				fill="currentColor"
-				viewBox="0 0 20 20"
-				>
-				<path
-					fill-rule="evenodd"
-					d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-					clip-rule="evenodd"
-				/>
-				</svg>
-				<span>Built with privacy and security in mind.</span>
-			</div> -->
-					<!-- <div class="flex items-center gap-2 text-gray-400">
-				<svg
-				class="w-5 h-5 text-blue-400"
-				fill="currentColor"
-				viewBox="0 0 20 20"
-				>
-				<path
-					fill-rule="evenodd"
-					d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-					clip-rule="evenodd"
-				/>
-				</svg>
-				<span>SOC 2 Certified</span>
-			</div> -->
 					<a
 						href="/legal/privacy"
 						class="flex items-center gap-2 font-semibold text-gray-400 underline transition duration-300 hover:text-white"
@@ -1274,7 +1243,7 @@
 						<BookText class="h-5 w-5" />
 						Read Our Privacy Policy
 					</a>
-				</div>
+				</div> -->
 			</div>
 		</div>
 	</div>
@@ -1301,15 +1270,19 @@
 				</div>
 			</div>
 
-			<h1 class="mb-6 text-4xl font-extrabold sm:mb-8 md:text-5xl lg:text-6xl">
-				Try {WebsiteName} for free today.
+			<h1 class="mb-6 text-4xl font-bold sm:mb-8 md:text-5xl lg:text-6xl">
+				Try {WebsiteName}
+				<span
+					class="sm:decoration-6 underline decoration-color-info decoration-4 md:decoration-8 lg:decoration-[10px]"
+					>for free</span
+				> today.
 			</h1>
 
 			<p
 				class="text-base-content/80 mx-auto mb-8 max-w-3xl text-lg sm:mb-12 sm:text-xl md:text-2xl"
 			>
-				Experience a faster, more organized way to write your college essays. No
-				credit card required.
+				Get dedicated college admissions help whenever you need it. No credit
+				card required.
 			</p>
 
 			<div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -1317,58 +1290,14 @@
 					<button
 						class="glow-button text-base-100 transform rounded-xl border-0 bg-gradient-to-r from-color-primary to-color-accent px-8 text-base transition-all duration-200 hover:-translate-y-1 hover:from-color-primary/90 hover:to-color-accent/90 sm:px-10 sm:text-lg"
 					>
-						Start writing
+						Try free tier
 						<PenLine class="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
 					</button>
 				</a>
-
-				<!-- Add demo later -->
-				<!-- <div class="text-base-content/60 text-base sm:text-lg">
-			or <a href="/" class="link font-semibold">try our demo</a>
-		  </div> -->
 			</div>
 		</div>
 	</div>
 </div>
-
-<!-- <div class="mb-40 flex flex-col gap-20">
-	<Section.Root>
-		<HeroSection />
-	</Section.Root>
-	<Section.Root>
-		<Section.Header>
-			<Section.Title>Logos Cloud</Section.Title>
-			<Section.Description class="text-balance">
-				To be honest, the below are just logos of tech stack used in this
-				project. They don't work with me. Yet.
-			</Section.Description>
-		</Section.Header>
-		<LogosCloud />
-	</Section.Root>
-	<Section.Root anchor="features">
-		<Section.Header>
-			<Section.Title>Features</Section.Title>
-		</Section.Header>
-		<Features />
-	</Section.Root>
-	<Section.Root>
-		<Section.Header>
-			<Section.Title>Testimonials</Section.Title>
-		</Section.Header>
-		<Testimonials />
-	</Section.Root>
-	<Section.Root anchor="pricing">
-		<Section.Header>
-			<Section.Title>Pricing</Section.Title>
-			<Section.Description class="text-balance">
-				Currently we support subscription based pricing out of the box. However,
-				you can extend the boilerplate to support one-time or custom pricing
-				models.
-			</Section.Description>
-		</Section.Header>
-		<Pricing {prices} />
-	</Section.Root>
-</div> -->
 
 <style>
 	.hero-content-fade {
@@ -1394,7 +1323,7 @@
 		background: linear-gradient(
 			90deg,
 			hsl(var(--color-primary)),
-			hsl(var(--color-accent))
+			hsl(var(--color-secondary))
 		);
 		border-radius: 0.9em;
 		transition: all 0.4s ease;
@@ -1410,14 +1339,14 @@
 		z-index: -10;
 		filter: blur(0);
 		transition: filter 0.4s ease;
-		background: transparent; /* Start with transparent */
+		background: transparent;
 	}
 
 	.glow-container:hover::before {
 		background: linear-gradient(
 			90deg,
 			hsl(var(--color-primary)),
-			hsl(var(--color-accent))
+			hsl(var(--color-primary))
 		);
 		filter: blur(1.2em);
 	}
@@ -1430,13 +1359,14 @@
 		font-size: 1rem;
 		padding: 0.75rem 2rem;
 		border-radius: 0.6em;
-		border: none; /* Remove border */
+		border: none;
 		background: linear-gradient(
 			90deg,
 			hsl(var(--color-primary)),
-			hsl(var(--color-accent))
+			hsl(var(--color-secondary))
 		);
-		color: hsl(var(--color-base-000));
+		/* color: hsl(var(--color-base-000)); */
+		color: black;
 		cursor: pointer;
 		font-weight: 600;
 		display: flex;
@@ -1444,8 +1374,8 @@
 		justify-content: center;
 		gap: 0.5rem;
 		transition: all 0.3s ease;
-		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Softer shadow */
-		outline: none; /* Remove focus outline */
+		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+		outline: none;
 	}
 
 	@media (min-width: 640px) {

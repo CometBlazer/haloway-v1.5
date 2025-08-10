@@ -2,12 +2,11 @@ import type { Provider } from '@supabase/supabase-js';
 
 export const WebsiteName: string = 'Haloway';
 export const WebsiteBaseUrl: string = 'https://haloway.co';
-export const WebsiteSlogan: string =
-	'The Ultimate College Essay Writing Platform';
+export const WebsiteSlogan: string = 'Your Personal Admissions Copilot';
 export const WebsiteKeywords: string =
-	'college essay writing, college essays, college essay help, college essay tips, college apps, college application, essay examples, essay writing service, essay writing platform, college application essays, college essay prompts, college essay examples, college essay tips and tricks, college essay brainstorming, college essay editing, college essay feedback';
+	'college admissions, college applications, AI admissions assistant, college application help, essay writing, college essay help, college application tips, college application guidance, college activities list, application planning, essay brainstorming, essay editing, essay feedback, college application organization';
 export const WebsiteDescription: string =
-	'Haloway is a college essay writing platform that helps students draft, organize, and finalize their essays with ease. With beautiful UI and draft-management features, Haloway aims to replace Google Docs as the go-to tool for college essay writing.';
+	'Haloway is an AI-powered admissions assistant that helps students plan, write, and refine their college applications in one place.';
 export const CreateProfileStep: boolean = true;
 
 /* You'll need to configure your providers in
