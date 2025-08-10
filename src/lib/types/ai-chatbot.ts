@@ -41,3 +41,13 @@ export interface UserProfile {
 	graduation_year: number | null;
 	dream_school: string | null;
 }
+
+// User Document type for consultant chatbot (metadata only)
+export interface UserDocument {
+	title: string | null;
+	prompt: string | null;
+	school: string;
+	status: string | null;
+	due_date: Date | null;
+	word_count_limit: number | null;
+}
