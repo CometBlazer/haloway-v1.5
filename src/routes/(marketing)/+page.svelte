@@ -794,11 +794,14 @@
 
 			<!-- Grid -->
 			<div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-				{#each teamMembers as member}
+				{#each teamMembers as member, index}
 					<div
 						class="border-base-300/50 bg-base-100/80 supports-[backdrop-filter]:bg-base-100/60 group relative overflow-hidden
-						rounded-3xl border p-8
-						text-center shadow-lg backdrop-blur transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
+   		rounded-3xl border p-8
+   		text-center shadow-lg backdrop-blur transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl
+   		{index === 2
+							? 'sm:col-span-2 sm:mx-auto sm:max-w-sm lg:col-span-1 lg:mx-0 lg:max-w-none'
+							: ''}"
 					>
 						<div class="relative z-10">
 							<img
