@@ -199,6 +199,18 @@
 			return;
 		}
 
+		// Check if selection is visible in viewport
+		const { view } = editor;
+		const coord = view.coordsAtPos(from);
+		const editorRect = element.getBoundingClientRect();
+
+		// Hide bubble menu if selection is outside the editor's visible area
+		// Not working as intended, TODO: fix later
+		if (coord.top < editorRect.top || coord.bottom > editorRect.bottom) {
+			showBubbleMenu = false;
+			return;
+		}
+
 		// Your existing positioning code for non-iOS devices
 		requestAnimationFrame(() => {
 			const { view } = editor;
