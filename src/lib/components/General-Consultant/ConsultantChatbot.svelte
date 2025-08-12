@@ -9,6 +9,8 @@
 	import { onMount } from 'svelte';
 	import type { ChatMessage, Message } from '$lib/types/ai-chatbot.ts';
 
+	import { formatMessageTimestamp } from '$lib/utils/timestamp';
+
 	export let width: string = '100%';
 	export let height: string = '400px';
 
@@ -54,33 +56,7 @@
 
 	// Format timestamp for display
 	function formatTime(timestamp: string): string {
-		const messageDate = new Date(timestamp);
-		const today = new Date();
-
-		// Check if the message is from today
-		const isToday = messageDate.toDateString() === today.toDateString();
-
-		if (isToday) {
-			// Just show time for today's messages
-			return messageDate.toLocaleTimeString([], {
-				hour: '2-digit',
-				minute: '2-digit',
-			});
-		} else {
-			// Show date and time for older messages
-			return (
-				messageDate.toLocaleDateString([], {
-					month: '2-digit',
-					day: '2-digit',
-					year: '2-digit',
-				}) +
-				' ' +
-				messageDate.toLocaleTimeString([], {
-					hour: '2-digit',
-					minute: '2-digit',
-				})
-			);
-		}
+		return formatMessageTimestamp(timestamp);
 	}
 
 	async function loadInitialMessages() {
