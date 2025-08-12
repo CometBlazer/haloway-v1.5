@@ -11,6 +11,13 @@
 	import type { ChatMessage, Message } from '$lib/types/ai-chatbot.ts';
 	import { toastStore } from '$lib/stores/toast';
 
+	// Import timestamp utilities
+	import {
+		formatMessageTimestamp,
+		formatRelativeTimestamp,
+		formatTimestampWithOptions,
+	} from '$lib/utils/timestamp';
+
 	export let width: string = '100%';
 	export let height: string = '400px';
 
@@ -65,37 +72,28 @@
 		}, 0);
 	}
 
-	// Format timestamp for display
+	// Now using the utility function instead of inline formatting
 	function formatTime(timestamp: string): string {
-		const messageDate = new Date(timestamp);
-		const today = new Date();
-
-		// Check if the message is from today
-		const isToday = messageDate.toDateString() === today.toDateString();
-
-		if (isToday) {
-			// Just show time for today's messages
-			return messageDate.toLocaleTimeString([], {
-				hour: '2-digit',
-				minute: '2-digit',
-			});
-		} else {
-			// Show date and time for older messages
-			return (
-				messageDate.toLocaleDateString([], {
-					month: '2-digit',
-					day: '2-digit',
-					year: '2-digit',
-				}) +
-				' ' +
-				messageDate.toLocaleTimeString([], {
-					hour: '2-digit',
-					minute: '2-digit',
-				})
-			);
-		}
+		return formatMessageTimestamp(timestamp);
 	}
 
+	// LATER ALTERNATIVE: use the options version
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	function formatTimeAdvanced(timestamp: string): string {
+		return formatTimestampWithOptions(timestamp, {
+			detectUserPreference: true,
+			removeLeadingZeros: true,
+			showSeconds: false,
+		});
+	}
+
+	// ANOTHER LATER ALTERNATIVE: Or use relative formatting (Today, Yesterday, etc.)
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	function formatTimeRelative(timestamp: string): string {
+		return formatRelativeTimestamp(timestamp);
+	}
+
+	// Rest of your component code remains the same...
 	async function loadInitialMessages() {
 		try {
 			console.log(
@@ -116,7 +114,7 @@
 
 					messages = result.messages.map((msg: ChatMessage) => ({
 						id: msg.id,
-						text: msg.content, // Make sure we're using content, not text
+						text: msg.content,
 						sender: msg.role === 'user' ? 'user' : 'ai',
 						timestamp: msg.timestamp,
 					}));
@@ -134,12 +132,11 @@
 			}
 		} catch (error) {
 			console.error('Failed to load initial messages:', error);
-			// Fall back to using initialMessages prop if API fails
 			if (initialMessages && initialMessages.length > 0) {
 				console.log('Using fallback initial messages:', initialMessages.length);
 				messages = initialMessages.map((msg: ChatMessage) => ({
 					id: msg.id,
-					text: msg.content, // Make sure we're using content
+					text: msg.content,
 					sender: msg.role === 'user' ? 'user' : 'ai',
 					timestamp: msg.timestamp,
 				}));
