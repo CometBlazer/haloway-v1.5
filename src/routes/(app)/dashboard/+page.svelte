@@ -232,20 +232,56 @@
 		</div>
 
 		<!-- Info Banner -->
+		<!-- Info Banner -->
 		<Alert.Root class="info-banner">
-			<Alert.Description class="text-center">
-				<p class="banner-text">
-					We're working on improving the user experience for searching, email
-					notifications, and more. Love what you see? <strong
-						>Share <a href={WebsiteBaseUrl} class="banner-link" target="_blank"
-							>{WebsiteBaseUrl}</a
-						>
-						with your friends</strong
-					>
-					and help us grow!
-					<br /> <br />
-					To create a new essay, click the "Create Essay" button in the left sidebar.
-				</p>
+			<Alert.Description class="text-left">
+				<div class="banner-text">
+					<p class="mb-4 text-lg"><strong>Quick Actions:</strong></p>
+					<ul class="mb-4 ml-4 space-y-2">
+						<li>
+							Click the "<strong>Create Essay</strong>" button in the left
+							sidebar to add a school prompt
+						</li>
+						<li>
+							Ask admissions questions to <a
+								href="/consultant"
+								class="banner-link"><em>Chloe the college consultant</em></a
+							>
+						</li>
+						<li>
+							Work on your common app <a
+								href="/extracurricular-organizer"
+								class="banner-link"><em>activities list</em></a
+							>
+						</li>
+						<li>
+							Fill out your <a href="/background" class="banner-link"
+								><em>background</em></a
+							> to get more tailored responses
+						</li>
+						<li>
+							Get dedicated essay help with <a
+								href="https://dan.haloway.co"
+								target="_blank"
+								class="banner-link"><em>Dan</em></a
+							>
+						</li>
+						<li>
+							Questions? <a href="/contact" class="banner-link"
+								><em>Contact us</em></a
+							>
+						</li>
+					</ul>
+					<p>
+						Enjoy using Haloway so far? <strong
+							>Share <a
+								href={WebsiteBaseUrl}
+								class="banner-link"
+								target="_blank">{WebsiteBaseUrl}</a
+							> with your friends</strong
+						> and help us grow!
+					</p>
+				</div>
 			</Alert.Description>
 		</Alert.Root>
 

@@ -18,7 +18,7 @@
 					/>
 					<span class="text-2xl font-bold text-foreground">{WebsiteName}</span>
 					<p class="text-lg text-muted-foreground">
-						Guiding you to your dream school.
+						Work smarter. Apply stronger.
 					</p>
 				</a>
 			</div>
