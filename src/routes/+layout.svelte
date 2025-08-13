@@ -12,6 +12,7 @@
 	import MetaTags from './(marketing)/meta-tags.svelte';
 	import { browser, dev } from '$app/environment';
 	import { inject } from '@vercel/analytics';
+	import { initGA, trackPageView } from '$lib/analytics';
 
 	export let data;
 
@@ -19,6 +20,8 @@
 	$: ({ supabase, session } = data);
 
 	onMount(() => {
+		initGA();
+
 		if (browser && !dev) {
 			inject({ mode: 'production' });
 		}
@@ -50,6 +53,11 @@
 			default:
 				throw new Error('Failed to load alert dialog');
 		}
+	}
+
+	// Track page changes for SPA navigation
+	$: if ($page.url) {
+		trackPageView($page.url.href);
 	}
 </script>
 
