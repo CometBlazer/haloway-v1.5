@@ -231,7 +231,7 @@ function buildSystemPrompt({
 }): string {
 	const feedbackSection =
 		currentFeedback && currentFeedback.trim()
-			? `\n\nRECENT AI FEEDBACK:\nThe student has received the following feedback on their current essay:\n${currentFeedback}\n\nYou can reference this feedback when helping the student. If they ask about implementing suggestions from the feedback, help them do so.`
+			? `\n\nRECENT AI FEEDBACK:\nThe student has received the following feedback from "Clara's AI Essay Review", which is YOUR feedback, on their current essay:\n${currentFeedback}\n\nYou can reference this feedback when helping the student. If they ask about implementing suggestions from the feedback, help them do so.`
 			: '';
 
 	// Build activities section
