@@ -13,7 +13,10 @@ env:
   PRIVATE_SMTP_USER: 'fake_smtp_user'
   PRIVATE_SMTP_PASSWORD: 'fake_smtp_pass'
   PRIVATE_ADMIN_EMAIL: 'fake_admin_email@example.com'
-  PRIVATE_FROM_ADMIN_EMAIL: 'fake_from_admin_email@example.com'
+  PRIVATE_FROM_ADMIN_EMAIL:
+    'fake_from_admin_email@example.com'
+    # Add Google Analytics ID
+  PUBLIC_GA_MEASUREMENT_ID: 'G-D9X3SVXWRC'
 
 jobs:
   build_and_test:

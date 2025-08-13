@@ -18,6 +18,8 @@ env:
   GOOGLE_VERTEX_PROJECT: 'fake_vertex_project'
   GOOGLE_CLIENT_EMAIL: 'fake_vertex_email@fake.com'
   GOOGLE_PRIVATE_KEY: 'fake_vertex_private_key'
+  # Add Google Analytics ID
+  PUBLIC_GA_MEASUREMENT_ID: 'G-D9X3SVXWRC'
   NODE_OPTIONS: '--max-old-space-size=4096'
 
 jobs:
