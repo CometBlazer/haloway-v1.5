@@ -12,6 +12,7 @@
 		CheckCircle,
 		Info,
 		Lock,
+		MessageSquare,
 	} from 'lucide-svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { toastStore } from '$lib/stores/toast';
@@ -31,6 +32,7 @@
 		feedbackReceived: { feedback: string; wordCount: number };
 		contentLocked: { locked: boolean };
 		saveRequired: Record<string, never>;
+		implementFeedback: { message: string };
 	}>();
 
 	// Make feedback reactive to existingFeedback changes
@@ -252,6 +254,15 @@
 			console.error('Failed to save before feedback:', error);
 			toastStore.show('Failed to save content. Please try again.', 'error');
 			return false;
+		}
+	}
+
+	// Function to handle implement changes
+	function handleImplementChanges() {
+		if (hasFeedback) {
+			const implementMessage = `Please help me implement the changes from your feedback into my essay`;
+			// console.log('message 1', implementMessage);
+			dispatch('implementFeedback', { message: implementMessage });
 		}
 	}
 
@@ -532,6 +543,20 @@
 
 	<!-- AI Disclaimer -->
 	<div class="ai-disclaimer">
+		<!-- New implement button -->
+		{#if hasFeedback}
+			<div class="mb-4">
+				<Button
+					variant="default"
+					size="sm"
+					on:click={handleImplementChanges}
+					class="gap-2"
+				>
+					<MessageSquare class="h-4 w-4" />
+					Implement changes in feedback
+				</Button>
+			</div>
+		{/if}
 		<div class="disclaimer-header">
 			<Info size={16} class="disclaimer-icon" />
 			<span class="disclaimer-title">Important AI Disclaimer</span>

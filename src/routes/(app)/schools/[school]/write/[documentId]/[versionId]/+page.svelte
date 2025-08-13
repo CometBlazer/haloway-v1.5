@@ -318,6 +318,25 @@
 		console.log('Feedback received and processed');
 	}
 
+	// Add feedback implementation handler
+	function handleImplementFeedback(event: CustomEvent<{ message: string }>) {
+		// Find the chatbot component and set its input value
+		const chatbotElement = document.querySelector(
+			'textarea[placeholder*="Ask me anything"]',
+		) as HTMLTextAreaElement;
+
+		if (chatbotElement) {
+			chatbotElement.value = event.detail.message;
+			chatbotElement.dispatchEvent(new Event('input', { bubbles: true }));
+			chatbotElement.focus();
+
+			// Scroll to chatbot
+			chatbotElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		}
+
+		// console.log('message 2', event.detail.message);
+	}
+
 	// Watch for version changes and update feedback
 	$: if (data.currentVersion?.latest_ai_response !== currentFeedback) {
 		currentFeedback = data.currentVersion?.latest_ai_response || null;
@@ -1164,6 +1183,7 @@
 									on:feedbackReceived={handleFeedbackReceived}
 									on:contentLocked={handleContentLocked}
 									on:saveRequired={handleSaveRequired}
+									on:implementFeedback={handleImplementFeedback}
 								/>
 							</div>
 						</Section.Root>
@@ -1226,6 +1246,7 @@
 						on:feedbackReceived={handleFeedbackReceived}
 						on:contentLocked={handleContentLocked}
 						on:saveRequired={handleSaveRequired}
+						on:implementFeedback={handleImplementFeedback}
 					/>
 				</div>
 			</Section.Root>
