@@ -12,7 +12,7 @@
 	import MetaTags from './(marketing)/meta-tags.svelte';
 	import { browser, dev } from '$app/environment';
 	import { inject } from '@vercel/analytics';
-	import { initGA, trackPageView } from '$lib/analytics';
+	// import { initGA, trackPageView } from '$lib/analytics';
 
 	export let data;
 
@@ -20,13 +20,13 @@
 	$: ({ supabase, session } = data);
 
 	onMount(() => {
-		console.log(
-			'Layout mounted, browser:',
-			browser,
-			'hostname:',
-			window.location.hostname,
-		);
-		initGA();
+		// console.log(
+		// 	'Layout mounted, browser:',
+		// 	browser,
+		// 	'hostname:',
+		// 	window.location.hostname,
+		// );
+		// initGA();
 
 		if (browser && !dev) {
 			inject({ mode: 'production' });
@@ -62,9 +62,9 @@
 	}
 
 	// Track page changes for SPA navigation
-	$: if ($page.url) {
-		trackPageView($page.url.href);
-	}
+	// $: if ($page.url) {
+	// 	trackPageView($page.url.href);
+	// }
 </script>
 
 <AlertDialog.Root bind:open={hasAlertDialog}>
