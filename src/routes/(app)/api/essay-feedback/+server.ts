@@ -189,12 +189,6 @@ export async function POST({ request }) {
    **E. Next steps:** At least two clear, implementable suggestions (grammar, conciseness, structure).
    **F. Conclude:** End with a positive encouragement like "Keep up the good work!"
    
-**Length check**  
-   • Essay is ${words} words; target is **${limit}** words.  
-   • If blank → "Hey, nothing here yet—let's get typing!"  
-   • If ${words} < ${limit / 1.25} → "At ${words} words, it's a bit short. Aim for around ${limit} words."  
-   • If ${words} > ${limit} → "At ${words} words, it's too long. Let's tighten to the essentials."  
-   
 **Tone**  
    • Snappy and encouraging ("Love your hook!")  
    • Never random—always tie advice back to clarity, conciseness, grammar, or structure.
