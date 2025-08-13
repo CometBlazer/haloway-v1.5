@@ -1,5 +1,5 @@
 // src/lib/analytics.ts
-import { browser, dev } from '$app/environment';
+import { browser } from '$app/environment';
 import { PUBLIC_GA_MEASUREMENT_ID } from '$env/static/public';
 
 // Google Analytics types
@@ -31,7 +31,10 @@ declare global {
 export const GA_MEASUREMENT_ID = PUBLIC_GA_MEASUREMENT_ID || 'G-D9X3SVXWRC';
 
 export function initGA(): void {
-	if (!browser || dev || !GA_MEASUREMENT_ID) return;
+	// Only check browser and if we're not on localhost
+	if (!browser || window.location.hostname === 'localhost') return;
+
+	console.log('Initializing GA...'); // Debug log
 
 	// Load gtag script
 	const script = document.createElement('script');
@@ -51,10 +54,15 @@ export function initGA(): void {
 
 	window.gtag('js', new Date());
 	window.gtag('config', GA_MEASUREMENT_ID);
+
+	console.log('GA initialized with ID:', GA_MEASUREMENT_ID); // Debug log
 }
 
 export function trackPageView(url: string): void {
-	if (!browser || dev || !window.gtag) return;
+	if (!browser || window.location.hostname === 'localhost' || !window.gtag)
+		return;
+
+	console.log('Tracking page view:', url); // Debug log
 
 	window.gtag('config', GA_MEASUREMENT_ID, {
 		page_location: url,
@@ -67,7 +75,8 @@ export function trackEvent(
 	label?: string,
 	value?: number,
 ): void {
-	if (!browser || dev || !window.gtag) return;
+	if (!browser || window.location.hostname === 'localhost' || !window.gtag)
+		return;
 
 	window.gtag('event', action, {
 		event_category: category,

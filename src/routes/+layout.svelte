@@ -20,6 +20,12 @@
 	$: ({ supabase, session } = data);
 
 	onMount(() => {
+		console.log(
+			'Layout mounted, browser:',
+			browser,
+			'hostname:',
+			window.location.hostname,
+		);
 		initGA();
 
 		if (browser && !dev) {
