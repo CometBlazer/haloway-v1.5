@@ -144,7 +144,6 @@
 						Just a few more details before we get started!
 					</p>
 					<p class="text-sm text-muted-foreground">
-						We collect this data solely to understand how Haloway is being used.
 						You can always update your profile later.
 					</p>
 				</div>
